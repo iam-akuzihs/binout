@@ -1,0 +1,6230 @@
+[
+  {
+    "Default": {
+      "$type": "ConfigAbility",
+      "abilityName": "DynamicAbility_DirtyWater",
+      "modifiers": {
+        "DirtyWater_Handler": {
+          "modifierName": "",
+          "elementDurability": 100,
+          "modifierMixins": [
+            {
+              "$type": "CurLocalAvatarMixinV2",
+              "modifierName": "AvatarAnimatorDecider"
+            },
+            {
+              "$type": "CurLocalAvatarMixinV2",
+              "modifierName": "DiveGVDecider"
+            }
+          ],
+          "onAdded": [
+            {
+              "$type": "AttachModifier",
+              "modifierName": "IncreasingPollutionVal"
+            },
+            {
+              "$type": "AttachModifier",
+              "modifierName": "DecreasingPollutionVal"
+            }
+          ]
+        },
+        "AvatarAnimatorDecider": {
+          "modifierName": "",
+          "elementDurability": 100,
+          "modifierMixins": [
+            {
+              "$type": "AttachToStateIDMixin",
+              "stateIDs": [
+                "Swim"
+              ],
+              "modifierName": "UNIQUE_SwimAnimatorDecider",
+              "isCheckOnAttach": true
+            },
+            {
+              "$type": "AttachToStateIDMixin",
+              "stateIDs": [
+                "Dive"
+              ],
+              "modifierName": "UNIQUE_DiveAnimatorDecider",
+              "isCheckOnAttach": true
+            }
+          ]
+        },
+        "DiveGVDecider": {
+          "modifierName": "",
+          "elementDurability": 100,
+          "thinkInterval": 0.2,
+          "onThinkInterval": [
+            {
+              "$type": "Predicated",
+              "targetPredicates": [
+                {
+                  "$type": "ByAny",
+                  "predicates": [
+                    {
+                      "$type": "ByHasModifier",
+                      "modifierName": "UNIQUE_Avatar_Diving_Common_Handler"
+                    },
+                    {
+                      "$type": "ByTargetGlobalValue",
+                      "key": "_IS_DiveAnimator",
+                      "value": 1
+                    }
+                  ]
+                }
+              ],
+              "successActions": [
+                {
+                  "$type": "SetGlobalValue",
+                  "target": "Team",
+                  "value": 1,
+                  "key": "_IS_DiveDirtyWater",
+                  "maxValue": 0,
+                  "minValue": 0
+                }
+              ],
+              "failActions": [
+                {
+                  "$type": "SetGlobalValue",
+                  "target": "Team",
+                  "value": 0,
+                  "key": "_IS_DiveDirtyWater",
+                  "maxValue": 0,
+                  "minValue": 0
+                }
+              ]
+            }
+          ]
+        },
+        "UNIQUE_DiveAnimatorDecider": {
+          "modifierName": "",
+          "isUnique": true,
+          "elementDurability": 100,
+          "onAdded": [
+            {
+              "$type": "SetGlobalValue",
+              "value": 1,
+              "key": "_IS_DiveAnimator",
+              "maxValue": 0,
+              "minValue": 0
+            }
+          ],
+          "onRemoved": [
+            {
+              "$type": "SetGlobalValue",
+              "value": 0,
+              "key": "_IS_DiveAnimator",
+              "maxValue": 0,
+              "minValue": 0
+            }
+          ]
+        },
+        "UNIQUE_SwimAnimatorDecider": {
+          "modifierName": "",
+          "isUnique": true,
+          "elementDurability": 100,
+          "onAdded": [
+            {
+              "$type": "SetGlobalValue",
+              "target": "Team",
+              "value": 1,
+              "key": "_IS_SwimDirtyWater",
+              "maxValue": 0,
+              "minValue": 0
+            }
+          ],
+          "onRemoved": [
+            {
+              "$type": "SetGlobalValue",
+              "target": "Team",
+              "value": 0,
+              "key": "_IS_SwimDirtyWater",
+              "maxValue": 0,
+              "minValue": 0
+            }
+          ]
+        },
+        "IncreasingPollutionVal": {
+          "modifierName": "",
+          "elementDurability": 100,
+          "thinkInterval": 1,
+          "onAdded": [
+            {
+              "$type": "Predicated",
+              "targetPredicates": [
+                {
+                  "$type": "ByTargetGlobalValue",
+                  "target": "Team",
+                  "key": "SGV_DirtyWater_Status",
+                  "value": 1
+                }
+              ],
+              "successActions": [
+                {
+                  "$type": "Predicated",
+                  "targetPredicates": [
+                    {
+                      "$type": "ByAny",
+                      "predicates": [
+                        {
+                          "$type": "ByTargetGlobalValue",
+                          "target": "Team",
+                          "key": "_IS_SwimDirtyWater",
+                          "value": 1
+                        },
+                        {
+                          "$type": "ByTargetGlobalValue",
+                          "target": "Team",
+                          "key": "_IS_DiveDirtyWater",
+                          "value": 1
+                        }
+                      ]
+                    }
+                  ],
+                  "successActions": [
+                    {
+                      "$type": "AddRegionalPlayVarValue",
+                      "varType": "DirtyWaterErosion",
+                      "addValue": 3
+                    }
+                  ]
+                }
+              ]
+            }
+          ],
+          "onThinkInterval": [
+            {
+              "$type": "Predicated",
+              "targetPredicates": [
+                {
+                  "$type": "ByTargetGlobalValue",
+                  "target": "Team",
+                  "key": "SGV_DirtyWater_Status",
+                  "value": 1
+                }
+              ],
+              "successActions": [
+                {
+                  "$type": "Predicated",
+                  "targetPredicates": [
+                    {
+                      "$type": "ByAny",
+                      "predicates": [
+                        {
+                          "$type": "ByTargetGlobalValue",
+                          "target": "Team",
+                          "key": "_IS_SwimDirtyWater",
+                          "value": 1
+                        },
+                        {
+                          "$type": "ByTargetGlobalValue",
+                          "target": "Team",
+                          "key": "_IS_DiveDirtyWater",
+                          "value": 1
+                        }
+                      ]
+                    }
+                  ],
+                  "successActions": [
+                    {
+                      "$type": "AddRegionalPlayVarValue",
+                      "varType": "DirtyWaterErosion",
+                      "addValue": 3
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        "DecreasingPollutionVal": {
+          "modifierName": "",
+          "elementDurability": 100,
+          "thinkInterval": 1,
+          "onAdded": [
+            {
+              "$type": "Predicated",
+              "targetPredicates": [
+                {
+                  "$type": "ByTargetGlobalValue",
+                  "target": "Team",
+                  "key": "SGV_DirtyWater_Status",
+                  "value": 0
+                }
+              ],
+              "successActions": [
+                {
+                  "$type": "AddRegionalPlayVarValue",
+                  "varType": "DirtyWaterErosion",
+                  "addValue": -10
+                }
+              ],
+              "failActions": [
+                {
+                  "$type": "Predicated",
+                  "targetPredicates": [
+                    {
+                      "$type": "ByTargetGlobalValue",
+                      "target": "Team",
+                      "key": "_IS_SwimDirtyWater",
+                      "value": 0
+                    },
+                    {
+                      "$type": "ByTargetGlobalValue",
+                      "target": "Team",
+                      "key": "_IS_DiveDirtyWater",
+                      "value": 0
+                    }
+                  ],
+                  "successActions": [
+                    {
+                      "$type": "AddRegionalPlayVarValue",
+                      "varType": "DirtyWaterErosion",
+                      "addValue": -10
+                    }
+                  ]
+                }
+              ]
+            }
+          ],
+          "onThinkInterval": [
+            {
+              "$type": "Predicated",
+              "targetPredicates": [
+                {
+                  "$type": "ByTargetGlobalValue",
+                  "target": "Team",
+                  "key": "SGV_DirtyWater_Status",
+                  "value": 0
+                }
+              ],
+              "successActions": [
+                {
+                  "$type": "AddRegionalPlayVarValue",
+                  "varType": "DirtyWaterErosion",
+                  "addValue": -10
+                }
+              ],
+              "failActions": [
+                {
+                  "$type": "Predicated",
+                  "targetPredicates": [
+                    {
+                      "$type": "ByTargetGlobalValue",
+                      "target": "Team",
+                      "key": "_IS_SwimDirtyWater",
+                      "value": 0
+                    },
+                    {
+                      "$type": "ByTargetGlobalValue",
+                      "target": "Team",
+                      "key": "_IS_DiveDirtyWater",
+                      "value": 0
+                    }
+                  ],
+                  "successActions": [
+                    {
+                      "$type": "AddRegionalPlayVarValue",
+                      "varType": "DirtyWaterErosion",
+                      "addValue": -10
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      },
+      "onAdded": [
+        {
+          "$type": "AttachModifier",
+          "modifierName": "DirtyWater_Handler"
+        }
+      ],
+      "isDynamicAbility": true
+    }
+  },
+  {
+    "Default": {
+      "$type": "ConfigAbility",
+      "abilityName": "SceneObj_Area_Fd_Property_Ani_Prop_ScoutRobot_01",
+      "abilityMixins": [
+        {
+          "$type": "AttachToGadgetStateMixin",
+          "modifierName": "Deactive"
+        },
+        {
+          "$type": "AttachToGadgetStateMixin",
+          "gadgetState": 201,
+          "modifierName": "Active"
+        },
+        {
+          "$type": "AttachToGadgetStateMixin",
+          "gadgetState": 202,
+          "modifierName": "Scaning"
+        },
+        {
+          "$type": "AttachToGadgetStateMixin",
+          "gadgetState": 203,
+          "modifierName": "Finish"
+        }
+      ],
+      "modifiers": {
+        "Deactive": {
+          "modifierName": "",
+          "elementDurability": 100
+        },
+        "Active": {
+          "modifierName": "",
+          "elementDurability": 100
+        },
+        "Scaning": {
+          "modifierName": "",
+          "duration": 4,
+          "elementDurability": 100,
+          "onRemoved": [
+            {
+              "$type": "ChangeGadgetState"
+            }
+          ]
+        },
+        "Finish": {
+          "modifierName": "",
+          "elementDurability": 100
+        },
+        "HitManager": {
+          "modifierName": "",
+          "elementDurability": 100,
+          "onBeingHit": [
+            {
+              "$type": "Predicated",
+              "targetPredicates": [
+                {
+                  "$type": "ByAttackTags",
+                  "attackTags": [
+                    "JellyFish_Bomb"
+                  ]
+                }
+              ],
+              "successActions": [
+                {
+                  "$type": "ChangeGadgetState",
+                  "state": 201
+                }
+              ]
+            }
+          ]
+        }
+      },
+      "onAdded": [
+        {
+          "$type": "ApplyModifier",
+          "modifierName": "HitManager"
+        }
+      ]
+    }
+  },
+  {
+    "Default": {
+      "$type": "ConfigAbility",
+      "abilityName": "SceneObj_Area_Fd_Property_Ani_Prop_FDPipeDoorLarge_01",
+      "abilityMixins": [
+        {
+          "$type": "AttachToGadgetStateMixin",
+          "modifierName": "Close_Charged"
+        },
+        {
+          "$type": "AttachToGadgetStateMixin",
+          "gadgetState": 201,
+          "modifierName": "Open"
+        },
+        {
+          "$type": "AttachToGadgetStateMixin",
+          "gadgetState": 202,
+          "modifierName": "Close_Uncharged"
+        },
+        {
+          "$type": "AttachToGadgetStateMixin",
+          "gadgetState": 203,
+          "modifierName": "Close_Lock"
+        }
+      ],
+      "modifiers": {
+        "Close_Charged": {
+          "modifierName": "",
+          "elementDurability": 100,
+          "modifierMixins": [
+            {
+              "$type": "ShaderStateMachineSwitchMixin",
+              "HPJJAKOLMIC": 1,
+              "CEIFKFCFIIL": ""
+            }
+          ],
+          "onAdded": [
+            {
+              "$type": "SetAnimatorInt",
+              "intID": "GadgetState",
+              "value": 0
+            },
+            {
+              "$type": "Predicated",
+              "targetPredicates": [
+                {
+                  "$type": "ByTargetGlobalValue",
+                  "key": "UnlockEff",
+                  "value": 1
+                }
+              ],
+              "successActions": [
+                {
+                  "$type": "AttachEffect",
+                  "effectPattern": "Eff_SceneObj_FDPipeDoorLarge_01_Unlcok",
+                  "born": {
+                    "$type": "ConfigBornByAttachPoint",
+                    "useRotation": true,
+                    "attachPointName": "RootNode"
+                  }
+                }
+              ]
+            },
+            {
+              "$type": "SetLightColorIntensity",
+              "NHNCJFFPMPN": "Light1",
+              "JJPLCACAHCF": {
+                "r": 0.3088,
+                "g": 0.9141,
+                "b": 1,
+                "a": 1
+              },
+              "KBPHHCKHBKB": 1.2,
+              "PGLCEOMMPFN": true,
+              "JPJAJMFMJAP": true,
+              "HEDPFJKENDL": true,
+              "lerpTime": 1
+            },
+            {
+              "$type": "SetLightColorIntensity",
+              "NHNCJFFPMPN": "Light2",
+              "JJPLCACAHCF": {
+                "r": 0.3088,
+                "g": 0.9141,
+                "b": 1,
+                "a": 1
+              },
+              "KBPHHCKHBKB": 1.2,
+              "PGLCEOMMPFN": true,
+              "JPJAJMFMJAP": true,
+              "HEDPFJKENDL": true,
+              "lerpTime": 1
+            }
+          ],
+          "onRemoved": [
+            {
+              "$type": "Predicated",
+              "targetPredicates": [
+                {
+                  "$type": "HKDMEKKBAKE",
+                  "target": "Self",
+                  "gadgetState": 201
+                }
+              ],
+              "successActions": [
+                {
+                  "$type": "FireEffect",
+                  "effectPattern": "Eff_SceneObj_FDPipeDoorLarge_01_Open",
+                  "born": {
+                    "$type": "ConfigBornByAttachPoint",
+                    "useRotation": true,
+                    "attachPointName": "RootNode"
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        "Open": {
+          "modifierName": "",
+          "elementDurability": 100,
+          "modifierMixins": [
+            {
+              "$type": "ShaderStateMachineSwitchMixin",
+              "HPJJAKOLMIC": 1,
+              "CEIFKFCFIIL": ""
+            }
+          ],
+          "onAdded": [
+            {
+              "$type": "SetGlobalValue",
+              "value": 0,
+              "key": "UnlockEff",
+              "maxValue": 0,
+              "minValue": 0
+            },
+            {
+              "$type": "SetAnimatorInt",
+              "intID": "GadgetState",
+              "value": 201
+            },
+            {
+              "$type": "SetLightColorIntensity",
+              "NHNCJFFPMPN": "Light1",
+              "JJPLCACAHCF": {
+                "r": 0.3088,
+                "g": 0.9141,
+                "b": 1,
+                "a": 1
+              },
+              "PGLCEOMMPFN": true,
+              "JPJAJMFMJAP": true,
+              "HEDPFJKENDL": true,
+              "lerpTime": 1
+            },
+            {
+              "$type": "SetLightColorIntensity",
+              "NHNCJFFPMPN": "Light2",
+              "JJPLCACAHCF": {
+                "r": 0.3088,
+                "g": 0.9141,
+                "b": 1,
+                "a": 1
+              },
+              "PGLCEOMMPFN": true,
+              "JPJAJMFMJAP": true,
+              "HEDPFJKENDL": true,
+              "lerpTime": 1
+            }
+          ],
+          "onRemoved": [
+            {
+              "$type": "FireEffect",
+              "effectPattern": "Eff_SceneObj_FDPipeDoorLarge_01_Close",
+              "born": {
+                "$type": "ConfigBornByAttachPoint",
+                "useRotation": true,
+                "attachPointName": "RootNode"
+              }
+            }
+          ]
+        },
+        "Close_Uncharged": {
+          "modifierName": "",
+          "elementDurability": 100,
+          "modifierMixins": [
+            {
+              "$type": "ShaderStateMachineSwitchMixin",
+              "HPJJAKOLMIC": 2,
+              "CEIFKFCFIIL": ""
+            }
+          ],
+          "onAdded": [
+            {
+              "$type": "SetGlobalValue",
+              "value": 1,
+              "key": "UnlockEff",
+              "maxValue": 0,
+              "minValue": 0
+            },
+            {
+              "$type": "SetAnimatorInt",
+              "intID": "GadgetState",
+              "value": 0
+            },
+            {
+              "$type": "SetLightColorIntensity",
+              "NHNCJFFPMPN": "Light1",
+              "JJPLCACAHCF": {
+                "r": 0.9044,
+                "g": 0.2761,
+                "b": 0.2194,
+                "a": 1
+              },
+              "KBPHHCKHBKB": 1.2,
+              "PGLCEOMMPFN": true,
+              "JPJAJMFMJAP": true,
+              "HEDPFJKENDL": true,
+              "lerpTime": 1
+            },
+            {
+              "$type": "SetLightColorIntensity",
+              "NHNCJFFPMPN": "Light2",
+              "JJPLCACAHCF": {
+                "r": 0.9044,
+                "g": 0.2761,
+                "b": 0.2194,
+                "a": 1
+              },
+              "KBPHHCKHBKB": 1.2,
+              "PGLCEOMMPFN": true,
+              "JPJAJMFMJAP": true,
+              "HEDPFJKENDL": true,
+              "lerpTime": 1
+            }
+          ],
+          "onRemoved": [
+            {
+              "$type": "Predicated",
+              "targetPredicates": [
+                {
+                  "$type": "HKDMEKKBAKE",
+                  "target": "Self",
+                  "gadgetState": 201
+                }
+              ],
+              "successActions": [
+                {
+                  "$type": "FireEffect",
+                  "effectPattern": "Eff_SceneObj_FDPipeDoorLarge_01_Open",
+                  "born": {
+                    "$type": "ConfigBornByAttachPoint",
+                    "useRotation": true,
+                    "attachPointName": "RootNode"
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        "Close_Lock": {
+          "modifierName": "",
+          "elementDurability": 100,
+          "modifierMixins": [
+            {
+              "$type": "ShaderStateMachineSwitchMixin",
+              "CEIFKFCFIIL": ""
+            }
+          ],
+          "onAdded": [
+            {
+              "$type": "SetGlobalValue",
+              "value": 1,
+              "key": "UnlockEff",
+              "maxValue": 0,
+              "minValue": 0
+            },
+            {
+              "$type": "SetAnimatorInt",
+              "intID": "GadgetState",
+              "value": 0
+            },
+            {
+              "$type": "SetLightColorIntensity",
+              "NHNCJFFPMPN": "Light1",
+              "JJPLCACAHCF": {
+                "r": 0.9044,
+                "g": 0.2761,
+                "b": 0.2194,
+                "a": 1
+              },
+              "PGLCEOMMPFN": true,
+              "JPJAJMFMJAP": true,
+              "HEDPFJKENDL": true,
+              "lerpTime": 1
+            },
+            {
+              "$type": "SetLightColorIntensity",
+              "NHNCJFFPMPN": "Light2",
+              "JJPLCACAHCF": {
+                "r": 0.9044,
+                "g": 0.2761,
+                "b": 0.2194,
+                "a": 1
+              },
+              "PGLCEOMMPFN": true,
+              "JPJAJMFMJAP": true,
+              "HEDPFJKENDL": true,
+              "lerpTime": 1
+            }
+          ],
+          "onRemoved": [
+            {
+              "$type": "Predicated",
+              "targetPredicates": [
+                {
+                  "$type": "HKDMEKKBAKE",
+                  "target": "Self",
+                  "gadgetState": 201
+                }
+              ],
+              "successActions": [
+                {
+                  "$type": "FireEffect",
+                  "effectPattern": "Eff_SceneObj_FDPipeDoorLarge_01_Open",
+                  "born": {
+                    "$type": "ConfigBornByAttachPoint",
+                    "useRotation": true,
+                    "attachPointName": "RootNode"
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      }
+    }
+  },
+  {
+    "Default": {
+      "$type": "ConfigAbility",
+      "abilityName": "SceneObj_Area_Fd_Property_Ani_Prop_FDPipeDoorLarge_02",
+      "abilityMixins": [
+        {
+          "$type": "AttachToGadgetStateMixin",
+          "modifierName": "Close_Charged"
+        },
+        {
+          "$type": "AttachToGadgetStateMixin",
+          "gadgetState": 201,
+          "modifierName": "Open"
+        },
+        {
+          "$type": "AttachToGadgetStateMixin",
+          "gadgetState": 202,
+          "modifierName": "Close_Uncharged"
+        },
+        {
+          "$type": "AttachToGadgetStateMixin",
+          "gadgetState": 203,
+          "modifierName": "Close_Lock"
+        }
+      ],
+      "modifiers": {
+        "Close_Charged": {
+          "modifierName": "",
+          "elementDurability": 100,
+          "modifierMixins": [
+            {
+              "$type": "ShaderStateMachineSwitchMixin",
+              "HPJJAKOLMIC": 1,
+              "CEIFKFCFIIL": ""
+            }
+          ],
+          "onAdded": [
+            {
+              "$type": "SetAnimatorInt",
+              "intID": "GadgetState",
+              "value": 0
+            },
+            {
+              "$type": "SetLightColorIntensity",
+              "NHNCJFFPMPN": "Light1",
+              "JJPLCACAHCF": {
+                "r": 0.3088,
+                "g": 0.9141,
+                "b": 1,
+                "a": 1
+              },
+              "KBPHHCKHBKB": 1.2,
+              "PGLCEOMMPFN": true,
+              "JPJAJMFMJAP": true,
+              "HEDPFJKENDL": true,
+              "lerpTime": 1
+            },
+            {
+              "$type": "SetLightColorIntensity",
+              "NHNCJFFPMPN": "Light2",
+              "JJPLCACAHCF": {
+                "r": 0.3088,
+                "g": 0.9141,
+                "b": 1,
+                "a": 1
+              },
+              "KBPHHCKHBKB": 1.2,
+              "PGLCEOMMPFN": true,
+              "JPJAJMFMJAP": true,
+              "HEDPFJKENDL": true,
+              "lerpTime": 1
+            }
+          ],
+          "onRemoved": [
+            {
+              "$type": "Predicated",
+              "targetPredicates": [
+                {
+                  "$type": "HKDMEKKBAKE",
+                  "target": "Self",
+                  "gadgetState": 201
+                }
+              ],
+              "successActions": [
+                {
+                  "$type": "FireEffect",
+                  "effectPattern": "Eff_SceneObj_FDPipeDoorLarge_01_OpenUW",
+                  "born": {
+                    "$type": "ConfigBornByAttachPoint",
+                    "useRotation": true,
+                    "attachPointName": "RootNode"
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        "Open": {
+          "modifierName": "",
+          "elementDurability": 100,
+          "modifierMixins": [
+            {
+              "$type": "ShaderStateMachineSwitchMixin",
+              "HPJJAKOLMIC": 1,
+              "CEIFKFCFIIL": ""
+            }
+          ],
+          "onAdded": [
+            {
+              "$type": "SetGlobalValue",
+              "value": 0,
+              "key": "UnlockEff",
+              "maxValue": 0,
+              "minValue": 0
+            },
+            {
+              "$type": "SetAnimatorInt",
+              "intID": "GadgetState",
+              "value": 201
+            },
+            {
+              "$type": "SetLightColorIntensity",
+              "NHNCJFFPMPN": "Light1",
+              "JJPLCACAHCF": {
+                "r": 0.3088,
+                "g": 0.9141,
+                "b": 1,
+                "a": 1
+              },
+              "PGLCEOMMPFN": true,
+              "JPJAJMFMJAP": true,
+              "HEDPFJKENDL": true,
+              "lerpTime": 1
+            },
+            {
+              "$type": "SetLightColorIntensity",
+              "NHNCJFFPMPN": "Light2",
+              "JJPLCACAHCF": {
+                "r": 0.3088,
+                "g": 0.9141,
+                "b": 1,
+                "a": 1
+              },
+              "PGLCEOMMPFN": true,
+              "JPJAJMFMJAP": true,
+              "HEDPFJKENDL": true,
+              "lerpTime": 1
+            }
+          ],
+          "onRemoved": [
+            {
+              "$type": "FireEffect",
+              "effectPattern": "Eff_SceneObj_FDPipeDoorLarge_01_CloseUW",
+              "born": {
+                "$type": "ConfigBornByAttachPoint",
+                "useRotation": true,
+                "attachPointName": "RootNode"
+              }
+            }
+          ]
+        },
+        "Close_Uncharged": {
+          "modifierName": "",
+          "elementDurability": 100,
+          "modifierMixins": [
+            {
+              "$type": "ShaderStateMachineSwitchMixin",
+              "HPJJAKOLMIC": 2,
+              "CEIFKFCFIIL": ""
+            }
+          ],
+          "onAdded": [
+            {
+              "$type": "SetGlobalValue",
+              "value": 1,
+              "key": "UnlockEff",
+              "maxValue": 0,
+              "minValue": 0
+            },
+            {
+              "$type": "SetAnimatorInt",
+              "intID": "GadgetState",
+              "value": 0
+            },
+            {
+              "$type": "SetLightColorIntensity",
+              "NHNCJFFPMPN": "Light1",
+              "JJPLCACAHCF": {
+                "r": 0.9044,
+                "g": 0.2761,
+                "b": 0.2194,
+                "a": 1
+              },
+              "KBPHHCKHBKB": 1.2,
+              "PGLCEOMMPFN": true,
+              "JPJAJMFMJAP": true,
+              "HEDPFJKENDL": true,
+              "lerpTime": 1
+            },
+            {
+              "$type": "SetLightColorIntensity",
+              "NHNCJFFPMPN": "Light2",
+              "JJPLCACAHCF": {
+                "r": 0.9044,
+                "g": 0.2761,
+                "b": 0.2194,
+                "a": 1
+              },
+              "KBPHHCKHBKB": 1.2,
+              "PGLCEOMMPFN": true,
+              "JPJAJMFMJAP": true,
+              "HEDPFJKENDL": true,
+              "lerpTime": 1
+            }
+          ],
+          "onRemoved": [
+            {
+              "$type": "Predicated",
+              "targetPredicates": [
+                {
+                  "$type": "HKDMEKKBAKE",
+                  "target": "Self",
+                  "gadgetState": 201
+                }
+              ],
+              "successActions": [
+                {
+                  "$type": "FireEffect",
+                  "effectPattern": "Eff_SceneObj_FDPipeDoorLarge_01_OpenUW",
+                  "born": {
+                    "$type": "ConfigBornByAttachPoint",
+                    "useRotation": true,
+                    "attachPointName": "RootNode"
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        "Close_Lock": {
+          "modifierName": "",
+          "elementDurability": 100,
+          "modifierMixins": [
+            {
+              "$type": "ShaderStateMachineSwitchMixin",
+              "CEIFKFCFIIL": ""
+            }
+          ],
+          "onAdded": [
+            {
+              "$type": "SetGlobalValue",
+              "value": 1,
+              "key": "UnlockEff",
+              "maxValue": 0,
+              "minValue": 0
+            },
+            {
+              "$type": "SetAnimatorInt",
+              "intID": "GadgetState",
+              "value": 0
+            },
+            {
+              "$type": "SetLightColorIntensity",
+              "NHNCJFFPMPN": "Light1",
+              "JJPLCACAHCF": {
+                "r": 0.9044,
+                "g": 0.2761,
+                "b": 0.2194,
+                "a": 1
+              },
+              "PGLCEOMMPFN": true,
+              "JPJAJMFMJAP": true,
+              "HEDPFJKENDL": true,
+              "lerpTime": 1
+            },
+            {
+              "$type": "SetLightColorIntensity",
+              "NHNCJFFPMPN": "Light2",
+              "JJPLCACAHCF": {
+                "r": 0.9044,
+                "g": 0.2761,
+                "b": 0.2194,
+                "a": 1
+              },
+              "PGLCEOMMPFN": true,
+              "JPJAJMFMJAP": true,
+              "HEDPFJKENDL": true,
+              "lerpTime": 1
+            }
+          ],
+          "onRemoved": [
+            {
+              "$type": "Predicated",
+              "targetPredicates": [
+                {
+                  "$type": "HKDMEKKBAKE",
+                  "target": "Self",
+                  "gadgetState": 201
+                }
+              ],
+              "successActions": [
+                {
+                  "$type": "FireEffect",
+                  "effectPattern": "Eff_SceneObj_FDPipeDoorLarge_01_OpenUW",
+                  "born": {
+                    "$type": "ConfigBornByAttachPoint",
+                    "useRotation": true,
+                    "attachPointName": "RootNode"
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      }
+    }
+  },
+  {
+    "Default": {
+      "$type": "ConfigAbility",
+      "abilityName": "SceneObj_Area_Fd_Property_Ani_Prop_FDPipeDoorSmall_01",
+      "abilityMixins": [
+        {
+          "$type": "AttachToGadgetStateMixin",
+          "modifierName": "Close_Charged"
+        },
+        {
+          "$type": "AttachToGadgetStateMixin",
+          "gadgetState": 201,
+          "modifierName": "Open"
+        },
+        {
+          "$type": "AttachToGadgetStateMixin",
+          "gadgetState": 202,
+          "modifierName": "Close_Uncharged"
+        },
+        {
+          "$type": "AttachToGadgetStateMixin",
+          "gadgetState": 203,
+          "modifierName": "Close_Lock"
+        }
+      ],
+      "modifiers": {
+        "Close_Charged": {
+          "modifierName": "",
+          "elementDurability": 100,
+          "modifierMixins": [
+            {
+              "$type": "ShaderStateMachineSwitchMixin",
+              "HPJJAKOLMIC": 1,
+              "CEIFKFCFIIL": ""
+            }
+          ],
+          "onAdded": [
+            {
+              "$type": "SetAnimatorInt",
+              "intID": "GadgetState",
+              "value": 0
+            },
+            {
+              "$type": "Predicated",
+              "targetPredicates": [
+                {
+                  "$type": "ByTargetGlobalValue",
+                  "key": "UnlockEff",
+                  "value": 1
+                }
+              ],
+              "successActions": [
+                {
+                  "$type": "AttachEffect",
+                  "effectPattern": "Eff_SceneObj_FDPipeDoorSmall_01_Unlcok",
+                  "born": {
+                    "$type": "ConfigBornByAttachPoint",
+                    "useRotation": true,
+                    "attachPointName": "RootNode"
+                  }
+                }
+              ]
+            },
+            {
+              "$type": "SetLightColorIntensity",
+              "NHNCJFFPMPN": "Light1",
+              "JJPLCACAHCF": {
+                "r": 0.3088,
+                "g": 0.9141,
+                "b": 1,
+                "a": 1
+              },
+              "KBPHHCKHBKB": 1.2,
+              "PGLCEOMMPFN": true,
+              "JPJAJMFMJAP": true,
+              "HEDPFJKENDL": true,
+              "lerpTime": 1
+            },
+            {
+              "$type": "SetLightColorIntensity",
+              "NHNCJFFPMPN": "Light2",
+              "JJPLCACAHCF": {
+                "r": 0.3088,
+                "g": 0.9141,
+                "b": 1,
+                "a": 1
+              },
+              "KBPHHCKHBKB": 1.2,
+              "PGLCEOMMPFN": true,
+              "JPJAJMFMJAP": true,
+              "HEDPFJKENDL": true,
+              "lerpTime": 1
+            }
+          ],
+          "onRemoved": [
+            {
+              "$type": "Predicated",
+              "targetPredicates": [
+                {
+                  "$type": "HKDMEKKBAKE",
+                  "target": "Self",
+                  "gadgetState": 201
+                }
+              ],
+              "successActions": [
+                {
+                  "$type": "FireEffect",
+                  "effectPattern": "Eff_SceneObj_FDPipeDoorSmall_01_Open",
+                  "born": {
+                    "$type": "ConfigBornByAttachPoint",
+                    "useRotation": true,
+                    "attachPointName": "RootNode"
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        "Open": {
+          "modifierName": "",
+          "elementDurability": 100,
+          "modifierMixins": [
+            {
+              "$type": "ShaderStateMachineSwitchMixin",
+              "HPJJAKOLMIC": 1,
+              "CEIFKFCFIIL": ""
+            }
+          ],
+          "onAdded": [
+            {
+              "$type": "SetGlobalValue",
+              "value": 0,
+              "key": "UnlockEff",
+              "maxValue": 0,
+              "minValue": 0
+            },
+            {
+              "$type": "SetAnimatorInt",
+              "intID": "GadgetState",
+              "value": 201
+            },
+            {
+              "$type": "SetLightColorIntensity",
+              "NHNCJFFPMPN": "Light1",
+              "JJPLCACAHCF": {
+                "r": 0.3088,
+                "g": 0.9141,
+                "b": 1,
+                "a": 1
+              },
+              "PGLCEOMMPFN": true,
+              "JPJAJMFMJAP": true,
+              "HEDPFJKENDL": true,
+              "lerpTime": 1
+            },
+            {
+              "$type": "SetLightColorIntensity",
+              "NHNCJFFPMPN": "Light2",
+              "JJPLCACAHCF": {
+                "r": 0.3088,
+                "g": 0.9141,
+                "b": 1,
+                "a": 1
+              },
+              "PGLCEOMMPFN": true,
+              "JPJAJMFMJAP": true,
+              "HEDPFJKENDL": true,
+              "lerpTime": 1
+            }
+          ],
+          "onRemoved": [
+            {
+              "$type": "FireEffect",
+              "effectPattern": "Eff_SceneObj_FDPipeDoorSmall_01_Close",
+              "born": {
+                "$type": "ConfigBornByAttachPoint",
+                "useRotation": true,
+                "attachPointName": "RootNode"
+              }
+            }
+          ]
+        },
+        "Close_Uncharged": {
+          "modifierName": "",
+          "elementDurability": 100,
+          "modifierMixins": [
+            {
+              "$type": "ShaderStateMachineSwitchMixin",
+              "HPJJAKOLMIC": 2,
+              "CEIFKFCFIIL": ""
+            }
+          ],
+          "onAdded": [
+            {
+              "$type": "SetGlobalValue",
+              "value": 1,
+              "key": "UnlockEff",
+              "maxValue": 0,
+              "minValue": 0
+            },
+            {
+              "$type": "SetAnimatorInt",
+              "intID": "GadgetState",
+              "value": 0
+            },
+            {
+              "$type": "SetLightColorIntensity",
+              "NHNCJFFPMPN": "Light1",
+              "JJPLCACAHCF": {
+                "r": 0.9044,
+                "g": 0.2761,
+                "b": 0.2194,
+                "a": 1
+              },
+              "KBPHHCKHBKB": 1.2,
+              "PGLCEOMMPFN": true,
+              "JPJAJMFMJAP": true,
+              "HEDPFJKENDL": true,
+              "lerpTime": 1
+            },
+            {
+              "$type": "SetLightColorIntensity",
+              "NHNCJFFPMPN": "Light2",
+              "JJPLCACAHCF": {
+                "r": 0.9044,
+                "g": 0.2761,
+                "b": 0.2194,
+                "a": 1
+              },
+              "KBPHHCKHBKB": 1.2,
+              "PGLCEOMMPFN": true,
+              "JPJAJMFMJAP": true,
+              "HEDPFJKENDL": true,
+              "lerpTime": 1
+            }
+          ],
+          "onRemoved": [
+            {
+              "$type": "Predicated",
+              "targetPredicates": [
+                {
+                  "$type": "HKDMEKKBAKE",
+                  "target": "Self",
+                  "gadgetState": 201
+                }
+              ],
+              "successActions": [
+                {
+                  "$type": "FireEffect",
+                  "effectPattern": "Eff_SceneObj_FDPipeDoorSmall_01_Open",
+                  "born": {
+                    "$type": "ConfigBornByAttachPoint",
+                    "useRotation": true,
+                    "attachPointName": "RootNode"
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        "Close_Lock": {
+          "modifierName": "",
+          "elementDurability": 100,
+          "modifierMixins": [
+            {
+              "$type": "ShaderStateMachineSwitchMixin",
+              "CEIFKFCFIIL": ""
+            }
+          ],
+          "onAdded": [
+            {
+              "$type": "SetGlobalValue",
+              "value": 1,
+              "key": "UnlockEff",
+              "maxValue": 0,
+              "minValue": 0
+            },
+            {
+              "$type": "SetAnimatorInt",
+              "intID": "GadgetState",
+              "value": 0
+            },
+            {
+              "$type": "SetLightColorIntensity",
+              "NHNCJFFPMPN": "Light1",
+              "JJPLCACAHCF": {
+                "r": 0.9044,
+                "g": 0.2761,
+                "b": 0.2194,
+                "a": 1
+              },
+              "PGLCEOMMPFN": true,
+              "JPJAJMFMJAP": true,
+              "HEDPFJKENDL": true,
+              "lerpTime": 1
+            },
+            {
+              "$type": "SetLightColorIntensity",
+              "NHNCJFFPMPN": "Light2",
+              "JJPLCACAHCF": {
+                "r": 0.9044,
+                "g": 0.2761,
+                "b": 0.2194,
+                "a": 1
+              },
+              "PGLCEOMMPFN": true,
+              "JPJAJMFMJAP": true,
+              "HEDPFJKENDL": true,
+              "lerpTime": 1
+            }
+          ],
+          "onRemoved": [
+            {
+              "$type": "Predicated",
+              "targetPredicates": [
+                {
+                  "$type": "HKDMEKKBAKE",
+                  "target": "Self",
+                  "gadgetState": 201
+                }
+              ],
+              "successActions": [
+                {
+                  "$type": "FireEffect",
+                  "effectPattern": "Eff_SceneObj_FDPipeDoorSmall_01_Open",
+                  "born": {
+                    "$type": "ConfigBornByAttachPoint",
+                    "useRotation": true,
+                    "attachPointName": "RootNode"
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      }
+    }
+  },
+  {
+    "Default": {
+      "$type": "ConfigAbility",
+      "abilityName": "SceneObj_Area_Fd_Property_Ani_Prop_FDPipeDoorSmall_02",
+      "abilityMixins": [
+        {
+          "$type": "AttachToGadgetStateMixin",
+          "modifierName": "Close_Charged"
+        },
+        {
+          "$type": "AttachToGadgetStateMixin",
+          "gadgetState": 201,
+          "modifierName": "Open"
+        },
+        {
+          "$type": "AttachToGadgetStateMixin",
+          "gadgetState": 202,
+          "modifierName": "Close_Uncharged"
+        },
+        {
+          "$type": "AttachToGadgetStateMixin",
+          "gadgetState": 203,
+          "modifierName": "Close_Lock"
+        }
+      ],
+      "modifiers": {
+        "Close_Charged": {
+          "modifierName": "",
+          "elementDurability": 100,
+          "modifierMixins": [
+            {
+              "$type": "ShaderStateMachineSwitchMixin",
+              "HPJJAKOLMIC": 1,
+              "CEIFKFCFIIL": ""
+            }
+          ],
+          "onAdded": [
+            {
+              "$type": "SetAnimatorInt",
+              "intID": "GadgetState",
+              "value": 0
+            },
+            {
+              "$type": "SetLightColorIntensity",
+              "NHNCJFFPMPN": "Light1",
+              "JJPLCACAHCF": {
+                "r": 0.3088,
+                "g": 0.9141,
+                "b": 1,
+                "a": 1
+              },
+              "KBPHHCKHBKB": 1.2,
+              "PGLCEOMMPFN": true,
+              "JPJAJMFMJAP": true,
+              "HEDPFJKENDL": true,
+              "lerpTime": 1
+            },
+            {
+              "$type": "SetLightColorIntensity",
+              "NHNCJFFPMPN": "Light2",
+              "JJPLCACAHCF": {
+                "r": 0.3088,
+                "g": 0.9141,
+                "b": 1,
+                "a": 1
+              },
+              "KBPHHCKHBKB": 1.2,
+              "PGLCEOMMPFN": true,
+              "JPJAJMFMJAP": true,
+              "HEDPFJKENDL": true,
+              "lerpTime": 1
+            }
+          ],
+          "onRemoved": [
+            {
+              "$type": "Predicated",
+              "targetPredicates": [
+                {
+                  "$type": "HKDMEKKBAKE",
+                  "target": "Self",
+                  "gadgetState": 201
+                }
+              ],
+              "successActions": [
+                {
+                  "$type": "FireEffect",
+                  "effectPattern": "Eff_SceneObj_FDPipeDoorSmall_01_OpenUW",
+                  "born": {
+                    "$type": "ConfigBornByAttachPoint",
+                    "useRotation": true,
+                    "attachPointName": "RootNode"
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        "Open": {
+          "modifierName": "",
+          "elementDurability": 100,
+          "modifierMixins": [
+            {
+              "$type": "ShaderStateMachineSwitchMixin",
+              "HPJJAKOLMIC": 1,
+              "CEIFKFCFIIL": ""
+            }
+          ],
+          "onAdded": [
+            {
+              "$type": "SetGlobalValue",
+              "value": 0,
+              "key": "UnlockEff",
+              "maxValue": 0,
+              "minValue": 0
+            },
+            {
+              "$type": "SetAnimatorInt",
+              "intID": "GadgetState",
+              "value": 201
+            },
+            {
+              "$type": "SetLightColorIntensity",
+              "NHNCJFFPMPN": "Light1",
+              "JJPLCACAHCF": {
+                "r": 0.3088,
+                "g": 0.9141,
+                "b": 1,
+                "a": 1
+              },
+              "PGLCEOMMPFN": true,
+              "JPJAJMFMJAP": true,
+              "HEDPFJKENDL": true,
+              "lerpTime": 1
+            },
+            {
+              "$type": "SetLightColorIntensity",
+              "NHNCJFFPMPN": "Light2",
+              "JJPLCACAHCF": {
+                "r": 0.3088,
+                "g": 0.9141,
+                "b": 1,
+                "a": 1
+              },
+              "PGLCEOMMPFN": true,
+              "JPJAJMFMJAP": true,
+              "HEDPFJKENDL": true,
+              "lerpTime": 1
+            }
+          ],
+          "onRemoved": [
+            {
+              "$type": "FireEffect",
+              "effectPattern": "Eff_SceneObj_FDPipeDoorSmall_01_CloseUW",
+              "born": {
+                "$type": "ConfigBornByAttachPoint",
+                "useRotation": true,
+                "attachPointName": "RootNode"
+              }
+            }
+          ]
+        },
+        "Close_Uncharged": {
+          "modifierName": "",
+          "elementDurability": 100,
+          "modifierMixins": [
+            {
+              "$type": "ShaderStateMachineSwitchMixin",
+              "HPJJAKOLMIC": 2,
+              "CEIFKFCFIIL": ""
+            }
+          ],
+          "onAdded": [
+            {
+              "$type": "SetGlobalValue",
+              "value": 1,
+              "key": "UnlockEff",
+              "maxValue": 0,
+              "minValue": 0
+            },
+            {
+              "$type": "SetAnimatorInt",
+              "intID": "GadgetState",
+              "value": 0
+            },
+            {
+              "$type": "SetLightColorIntensity",
+              "NHNCJFFPMPN": "Light1",
+              "JJPLCACAHCF": {
+                "r": 0.9044,
+                "g": 0.2761,
+                "b": 0.2194,
+                "a": 1
+              },
+              "KBPHHCKHBKB": 1.2,
+              "PGLCEOMMPFN": true,
+              "JPJAJMFMJAP": true,
+              "HEDPFJKENDL": true,
+              "lerpTime": 1
+            },
+            {
+              "$type": "SetLightColorIntensity",
+              "NHNCJFFPMPN": "Light2",
+              "JJPLCACAHCF": {
+                "r": 0.9044,
+                "g": 0.2761,
+                "b": 0.2194,
+                "a": 1
+              },
+              "KBPHHCKHBKB": 1.2,
+              "PGLCEOMMPFN": true,
+              "JPJAJMFMJAP": true,
+              "HEDPFJKENDL": true,
+              "lerpTime": 1
+            }
+          ],
+          "onRemoved": [
+            {
+              "$type": "Predicated",
+              "targetPredicates": [
+                {
+                  "$type": "HKDMEKKBAKE",
+                  "target": "Self",
+                  "gadgetState": 201
+                }
+              ],
+              "successActions": [
+                {
+                  "$type": "FireEffect",
+                  "effectPattern": "Eff_SceneObj_FDPipeDoorSmall_01_OpenUW",
+                  "born": {
+                    "$type": "ConfigBornByAttachPoint",
+                    "useRotation": true,
+                    "attachPointName": "RootNode"
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        "Close_Lock": {
+          "modifierName": "",
+          "elementDurability": 100,
+          "modifierMixins": [
+            {
+              "$type": "ShaderStateMachineSwitchMixin",
+              "CEIFKFCFIIL": ""
+            }
+          ],
+          "onAdded": [
+            {
+              "$type": "SetGlobalValue",
+              "value": 1,
+              "key": "UnlockEff",
+              "maxValue": 0,
+              "minValue": 0
+            },
+            {
+              "$type": "SetAnimatorInt",
+              "intID": "GadgetState",
+              "value": 0
+            },
+            {
+              "$type": "SetLightColorIntensity",
+              "NHNCJFFPMPN": "Light1",
+              "JJPLCACAHCF": {
+                "r": 0.9044,
+                "g": 0.2761,
+                "b": 0.2194,
+                "a": 1
+              },
+              "PGLCEOMMPFN": true,
+              "JPJAJMFMJAP": true,
+              "HEDPFJKENDL": true,
+              "lerpTime": 1
+            },
+            {
+              "$type": "SetLightColorIntensity",
+              "NHNCJFFPMPN": "Light2",
+              "JJPLCACAHCF": {
+                "r": 0.9044,
+                "g": 0.2761,
+                "b": 0.2194,
+                "a": 1
+              },
+              "PGLCEOMMPFN": true,
+              "JPJAJMFMJAP": true,
+              "HEDPFJKENDL": true,
+              "lerpTime": 1
+            }
+          ],
+          "onRemoved": [
+            {
+              "$type": "Predicated",
+              "targetPredicates": [
+                {
+                  "$type": "HKDMEKKBAKE",
+                  "target": "Self",
+                  "gadgetState": 201
+                }
+              ],
+              "successActions": [
+                {
+                  "$type": "FireEffect",
+                  "effectPattern": "Eff_SceneObj_FDPipeDoorSmall_01_OpenUW",
+                  "born": {
+                    "$type": "ConfigBornByAttachPoint",
+                    "useRotation": true,
+                    "attachPointName": "RootNode"
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      }
+    }
+  },
+  {
+    "Default": {
+      "$type": "ConfigAbility",
+      "abilityName": "SceneObj_Area_Fd_Property_Ani_Prop_TransferStationDoor_01",
+      "abilityMixins": [
+        {
+          "$type": "AttachToGadgetStateMixin",
+          "modifierName": "Close"
+        },
+        {
+          "$type": "AttachToGadgetStateMixin",
+          "gadgetState": 201,
+          "modifierName": "Open"
+        },
+        {
+          "$type": "AttachToGadgetStateMixin",
+          "gadgetState": 202,
+          "modifierName": "AnimatorOpen"
+        }
+      ],
+      "modifiers": {
+        "Close": {
+          "modifierName": "",
+          "elementDurability": 100,
+          "modifierMixins": [
+            {
+              "$type": "ShaderStateMachineSwitchMixin",
+              "CEIFKFCFIIL": ""
+            }
+          ],
+          "onAdded": [
+            {
+              "$type": "SetAnimatorInt",
+              "intID": "GadgetState",
+              "value": 0
+            },
+            {
+              "$type": "SetLightColorIntensity",
+              "NHNCJFFPMPN": "Light1",
+              "JJPLCACAHCF": {
+                "r": 0.9044,
+                "g": 0.2761,
+                "b": 0.2194,
+                "a": 1
+              },
+              "KBPHHCKHBKB": 0.6,
+              "PGLCEOMMPFN": true,
+              "JPJAJMFMJAP": true,
+              "HEDPFJKENDL": true,
+              "lerpTime": 1
+            },
+            {
+              "$type": "SetLightColorIntensity",
+              "NHNCJFFPMPN": "Light2",
+              "JJPLCACAHCF": {
+                "r": 0.9044,
+                "g": 0.2761,
+                "b": 0.2194,
+                "a": 1
+              },
+              "KBPHHCKHBKB": 0.6,
+              "PGLCEOMMPFN": true,
+              "JPJAJMFMJAP": true,
+              "HEDPFJKENDL": true,
+              "lerpTime": 1
+            }
+          ]
+        },
+        "Open": {
+          "modifierName": "",
+          "duration": 2.1,
+          "elementDurability": 100,
+          "thinkInterval": 2,
+          "modifierMixins": [
+            {
+              "$type": "ShaderStateMachineSwitchMixin",
+              "HPJJAKOLMIC": 1,
+              "CEIFKFCFIIL": ""
+            }
+          ],
+          "onAdded": [
+            {
+              "$type": "AttachEffect",
+              "effectPattern": "Eff_SceneObj_FDPipeDoorLarge_01_Unlcok",
+              "born": {
+                "$type": "ConfigBornByAttachPoint",
+                "useRotation": true,
+                "attachPointName": "RootNode"
+              }
+            },
+            {
+              "$type": "SetLightColorIntensity",
+              "NHNCJFFPMPN": "Light1",
+              "JJPLCACAHCF": {
+                "r": 0.9044,
+                "g": 0.2761,
+                "b": 0.2194,
+                "a": 1
+              },
+              "KBPHHCKHBKB": 0.6,
+              "PGLCEOMMPFN": true,
+              "JPJAJMFMJAP": true,
+              "HEDPFJKENDL": true,
+              "lerpTime": 1
+            },
+            {
+              "$type": "SetLightColorIntensity",
+              "NHNCJFFPMPN": "Light2",
+              "JJPLCACAHCF": {
+                "r": 0.9044,
+                "g": 0.2761,
+                "b": 0.2194,
+                "a": 1
+              },
+              "KBPHHCKHBKB": 0.6,
+              "PGLCEOMMPFN": true,
+              "JPJAJMFMJAP": true,
+              "HEDPFJKENDL": true,
+              "lerpTime": 1
+            }
+          ],
+          "onThinkInterval": [
+            {
+              "$type": "ChangeGadgetState",
+              "state": 202
+            },
+            {
+              "$type": "FireEffect",
+              "effectPattern": "Eff_Sc_TransferStationDoor_Water_01",
+              "born": {
+                "$type": "ConfigBornByAttachPoint",
+                "useRotation": true,
+                "attachPointName": "AttachPoint"
+              }
+            }
+          ]
+        },
+        "AnimatorOpen": {
+          "modifierName": "",
+          "elementDurability": 100,
+          "modifierMixins": [
+            {
+              "$type": "ShaderStateMachineSwitchMixin",
+              "HPJJAKOLMIC": 1,
+              "CEIFKFCFIIL": ""
+            }
+          ],
+          "onAdded": [
+            {
+              "$type": "SetLightColorIntensity",
+              "NHNCJFFPMPN": "Light1",
+              "JJPLCACAHCF": {
+                "r": 0.9044,
+                "g": 0.2761,
+                "b": 0.2194,
+                "a": 1
+              },
+              "PGLCEOMMPFN": true,
+              "JPJAJMFMJAP": true,
+              "HEDPFJKENDL": true,
+              "lerpTime": 1
+            },
+            {
+              "$type": "SetLightColorIntensity",
+              "NHNCJFFPMPN": "Light2",
+              "JJPLCACAHCF": {
+                "r": 0.9044,
+                "g": 0.2761,
+                "b": 0.2194,
+                "a": 1
+              },
+              "PGLCEOMMPFN": true,
+              "JPJAJMFMJAP": true,
+              "HEDPFJKENDL": true,
+              "lerpTime": 1
+            },
+            {
+              "$type": "SetAnimatorInt",
+              "intID": "GadgetState",
+              "value": 201
+            }
+          ]
+        }
+      }
+    }
+  },
+  {
+    "Default": {
+      "$type": "ConfigAbility",
+      "abilityName": "SceneObj_Area_Common_Property_Ani_Prop_LandGas_01",
+      "abilityMixins": [
+        {
+          "$type": "AttachToGadgetStateMixin",
+          "modifierName": "NoGas"
+        },
+        {
+          "$type": "AttachToGadgetStateMixin",
+          "gadgetState": 201,
+          "modifierName": "SmallGas"
+        },
+        {
+          "$type": "AttachToGadgetStateMixin",
+          "gadgetState": 202,
+          "modifierName": "MiddleGas"
+        },
+        {
+          "$type": "AttachToGadgetStateMixin",
+          "gadgetState": 203,
+          "modifierName": "BigGas"
+        },
+        {
+          "$type": "AttachToGadgetStateMixin",
+          "gadgetState": 204,
+          "modifierName": "BiggestGas"
+        }
+      ],
+      "modifiers": {
+        "NoGas": {
+          "modifierName": "",
+          "elementDurability": 100
+        },
+        "SmallGas": {
+          "modifierName": "",
+          "elementDurability": 100,
+          "onAdded": [
+            {
+              "$type": "AttachEffect",
+              "effectPattern": "Eff_SceneObj_Area_Fd_Property_Ani_Prop_LandGas_01",
+              "born": {
+                "$type": "ConfigBornByAttachPoint",
+                "useRotation": true,
+                "attachPointName": "AttachPoint"
+              }
+            }
+          ]
+        },
+        "MiddleGas": {
+          "modifierName": "",
+          "elementDurability": 100,
+          "onAdded": [
+            {
+              "$type": "AttachEffect",
+              "effectPattern": "Eff_SceneObj_Area_Fd_Property_Ani_Prop_LandGas_02",
+              "born": {
+                "$type": "ConfigBornByAttachPoint",
+                "useRotation": true,
+                "attachPointName": "AttachPoint"
+              }
+            }
+          ]
+        },
+        "BigGas": {
+          "modifierName": "",
+          "elementDurability": 100,
+          "onAdded": [
+            {
+              "$type": "AttachEffect",
+              "effectPattern": "Eff_SceneObj_Area_Fd_Property_Ani_Prop_LandGas_03",
+              "born": {
+                "$type": "ConfigBornByAttachPoint",
+                "useRotation": true,
+                "attachPointName": "AttachPoint"
+              }
+            }
+          ]
+        },
+        "BiggestGas": {
+          "modifierName": "",
+          "elementDurability": 100,
+          "onAdded": [
+            {
+              "$type": "AttachEffect",
+              "effectPattern": "Eff_SceneObj_Area_Fd_Property_Ani_Prop_LandGas_03",
+              "born": {
+                "$type": "ConfigBornByAttachPoint",
+                "useRotation": true,
+                "attachPointName": "AttachPoint"
+              },
+              "scale": 1.3
+            }
+          ]
+        }
+      }
+    }
+  },
+  {
+    "Default": {
+      "$type": "ConfigAbility",
+      "abilityName": "SceneObj_Area_Common_Property_Ani_Prop_UnderseaGas_01",
+      "abilityMixins": [
+        {
+          "$type": "AttachToGadgetStateMixin",
+          "modifierName": "NoGas"
+        },
+        {
+          "$type": "AttachToGadgetStateMixin",
+          "gadgetState": 201,
+          "modifierName": "SmallGas"
+        },
+        {
+          "$type": "AttachToGadgetStateMixin",
+          "gadgetState": 202,
+          "modifierName": "MiddleGas"
+        },
+        {
+          "$type": "AttachToGadgetStateMixin",
+          "gadgetState": 203,
+          "modifierName": "BigGas"
+        }
+      ],
+      "modifiers": {
+        "NoGas": {
+          "modifierName": "",
+          "elementDurability": 100
+        },
+        "SmallGas": {
+          "modifierName": "",
+          "elementDurability": 100,
+          "onAdded": [
+            {
+              "$type": "AttachEffect",
+              "effectPattern": "Eff_SceneObj_Area_Fd_Property_Ani_Prop_UnderseaGas_01",
+              "born": {
+                "$type": "ConfigBornByAttachPoint",
+                "useRotation": true,
+                "attachPointName": "AttachPoint"
+              }
+            }
+          ]
+        },
+        "MiddleGas": {
+          "modifierName": "",
+          "elementDurability": 100,
+          "onAdded": [
+            {
+              "$type": "AttachEffect",
+              "effectPattern": "Eff_SceneObj_Area_Fd_Property_Ani_Prop_UnderseaGas_02",
+              "born": {
+                "$type": "ConfigBornByAttachPoint",
+                "useRotation": true,
+                "attachPointName": "AttachPoint"
+              }
+            }
+          ]
+        },
+        "BigGas": {
+          "modifierName": "",
+          "elementDurability": 100,
+          "onAdded": [
+            {
+              "$type": "AttachEffect",
+              "effectPattern": "Eff_SceneObj_Area_Fd_Property_Ani_Prop_UnderseaGas_03",
+              "born": {
+                "$type": "ConfigBornByAttachPoint",
+                "useRotation": true,
+                "attachPointName": "AttachPoint"
+              }
+            }
+          ]
+        }
+      }
+    }
+  },
+  {
+    "Default": {
+      "$type": "ConfigAbility",
+      "abilityName": "SceneObj_Area_Fd_Property_Ani_Prop_EnergyCage_01",
+      "abilityMixins": [
+        {
+          "$type": "AttachToGadgetStateMixin",
+          "modifierName": "UnchargedState"
+        },
+        {
+          "$type": "AttachToGadgetStateMixin",
+          "gadgetState": 201,
+          "modifierName": "ChargedAndCloseState"
+        },
+        {
+          "$type": "AttachToGadgetStateMixin",
+          "gadgetState": 901,
+          "modifierName": "Lock"
+        },
+        {
+          "$type": "AttachToGadgetStateMixin",
+          "gadgetState": 902,
+          "modifierName": "Open"
+        }
+      ],
+      "modifiers": {
+        "UnchargedState": {
+          "modifierName": "",
+          "elementDurability": 100,
+          "modifierMixins": [
+            {
+              "$type": "ShaderStateMachineSwitchMixin",
+              "HPJJAKOLMIC": 1,
+              "CEIFKFCFIIL": ""
+            }
+          ],
+          "onAdded": [
+            {
+              "$type": "SetGlobalValue",
+              "doOffStage": true,
+              "value": 0,
+              "key": "_Ability_Fd_Energy_Mark",
+              "maxValue": 0,
+              "minValue": 0
+            },
+            {
+              "$type": "SetAnimatorInt",
+              "intID": "GadgetState",
+              "value": 0
+            }
+          ],
+          "onRemoved": [
+            {
+              "$type": "Predicated",
+              "targetPredicates": [
+                {
+                  "$type": "HKDMEKKBAKE",
+                  "target": "Self",
+                  "gadgetState": 201
+                }
+              ],
+              "successActions": [
+                {
+                  "$type": "FireEffect",
+                  "effectPattern": "Eff_SceneObj_EnergyCage_01_Unlock",
+                  "born": {
+                    "$type": "ConfigBornByAttachPoint",
+                    "useRotation": true,
+                    "attachPointName": "AttachPoint"
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        "ChargedAndCloseState": {
+          "modifierName": "",
+          "elementDurability": 100,
+          "modifierMixins": [
+            {
+              "$type": "ShaderStateMachineSwitchMixin",
+              "HPJJAKOLMIC": 2,
+              "CEIFKFCFIIL": ""
+            }
+          ],
+          "onAdded": [
+            {
+              "$type": "SetGlobalValue",
+              "doOffStage": true,
+              "value": 1,
+              "key": "_Ability_Fd_Energy_Mark",
+              "maxValue": 0,
+              "minValue": 0
+            },
+            {
+              "$type": "SetAnimatorInt",
+              "intID": "GadgetState",
+              "value": 201
+            }
+          ]
+        },
+        "Open": {
+          "modifierName": "",
+          "elementDurability": 100,
+          "modifierMixins": [
+            {
+              "$type": "ShaderStateMachineSwitchMixin",
+              "HPJJAKOLMIC": 3,
+              "CEIFKFCFIIL": ""
+            }
+          ],
+          "onAdded": [
+            {
+              "$type": "SetAnimatorInt",
+              "intID": "GadgetState",
+              "value": 202
+            }
+          ]
+        },
+        "Lock": {
+          "modifierName": "",
+          "elementDurability": 100,
+          "modifierMixins": [
+            {
+              "$type": "ShaderStateMachineSwitchMixin",
+              "CEIFKFCFIIL": ""
+            }
+          ],
+          "onAdded": [
+            {
+              "$type": "SetAnimatorInt",
+              "intID": "GadgetState",
+              "value": 0
+            }
+          ]
+        }
+      }
+    }
+  },
+  {
+    "Default": {
+      "$type": "ConfigAbility",
+      "abilityName": "SceneObj_Area_Fd_Property_Ani_Prop_FDStabilizers_01",
+      "abilityMixins": [
+        {
+          "$type": "AttachModifierToSelfGlobalValueNoInitMixin",
+          "globalValueKey": "SGV_EnvironmentType",
+          "valueSteps": [
+            1.5,
+            2.5
+          ],
+          "modifierNameSteps": [
+            "Underwater"
+          ],
+          "EEEHPOEMFKM": true
+        },
+        {
+          "$type": "AttachToGadgetStateMixin",
+          "modifierName": "UnchargedState"
+        },
+        {
+          "$type": "AttachToGadgetStateMixin",
+          "gadgetState": 101,
+          "modifierName": "Start"
+        },
+        {
+          "$type": "AttachToGadgetStateMixin",
+          "gadgetState": 102,
+          "modifierName": "SingleSuccess"
+        },
+        {
+          "$type": "AttachToGadgetStateMixin",
+          "gadgetState": 201,
+          "modifierName": "ChargedState"
+        },
+        {
+          "$type": "AttachToGadgetStateMixin",
+          "gadgetState": 202,
+          "modifierName": "Success"
+        },
+        {
+          "$type": "AttachToGadgetStateMixin",
+          "gadgetState": 901,
+          "modifierName": "Lock"
+        },
+        {
+          "$type": "AttachToGadgetStateMixin",
+          "gadgetState": 902,
+          "modifierName": "Fail"
+        },
+        {
+          "$type": "AttachToGadgetStateMixin",
+          "gadgetState": 903,
+          "modifierName": "EnergyLogic"
+        },
+        {
+          "$type": "AttachToGadgetStateMixin",
+          "gadgetState": 904,
+          "modifierName": "QuestFail"
+        },
+        {
+          "$type": "DoActionOnGlobalValueChangeMixin",
+          "globalValueKey": "SGV_Right_Position",
+          "actions": [
+            {
+              "$type": "SetGlobalValueToOverrideMap",
+              "globalValueKey": "SGV_Right_Position",
+              "overrideMapKey": "_Right_Position"
+            }
+          ]
+        },
+        {
+          "$type": "DoActionOnGlobalValueChangeMixin",
+          "globalValueKey": "SGV_Circle_Speed",
+          "actions": [
+            {
+              "$type": "SetGlobalValueToOverrideMap",
+              "globalValueKey": "SGV_Circle_Speed",
+              "overrideMapKey": "_Circle_Speed"
+            }
+          ]
+        }
+      ],
+      "abilitySpecials": {
+        "Right_Position": 0,
+        "Circle_Speed": 0
+      },
+      "modifiers": {
+        "Underwater": {
+          "modifierName": "",
+          "elementDurability": 100,
+          "modifierMixins": [
+            {
+              "$type": "ChangeLockTypeMixin",
+              "lockType": "Avatar&Monster_Lv4"
+            }
+          ]
+        },
+        "UnchargedState": {
+          "modifierName": "",
+          "elementDurability": 100,
+          "modifierMixins": [
+            {
+              "$type": "ShaderStateMachineSwitchMixin",
+              "HPJJAKOLMIC": 1,
+              "DJMLPIJPFNO": 10,
+              "CEIFKFCFIIL": ""
+            }
+          ],
+          "onAdded": [
+            {
+              "$type": "SetGlobalValue",
+              "doOffStage": true,
+              "value": 0,
+              "key": "_Ability_Fd_Energy_Mark",
+              "maxValue": 0,
+              "minValue": 0
+            },
+            {
+              "$type": "SetAnimatorInt",
+              "intID": "Start",
+              "value": 0
+            }
+          ]
+        },
+        "Start": {
+          "modifierName": "",
+          "elementDurability": 100,
+          "thinkInterval": 0.5,
+          "onAdded": [
+            {
+              "$type": "Predicated",
+              "otherTargets": {
+                "$type": "SelectTargetsByShape",
+                "entityTypePriority": [
+                  "Avatar"
+                ],
+                "shapeName": "CircleR15H30",
+                "campTargetType": "All",
+                "sizeRatio": 1
+              },
+              "targetPredicates": [
+                {
+                  "$type": "ByEntityTypes",
+                  "entityTypes": [
+                    "Avatar"
+                  ]
+                }
+              ],
+              "successActions": [
+                {
+                  "$type": "AttachModifier",
+                  "target": "Target",
+                  "modifierName": "StabilizerAvatarHit"
+                }
+              ]
+            },
+            {
+              "$type": "SetGlobalValue",
+              "doOffStage": true,
+              "value": 1,
+              "key": "_Ability_Fd_Energy_Mark",
+              "maxValue": 0,
+              "minValue": 0
+            },
+            {
+              "$type": "SetGlobalValueToOverrideMap",
+              "globalValueKey": "SGV_Right_Position",
+              "overrideMapKey": "_Right_Position"
+            },
+            {
+              "$type": "SetGlobalValueToOverrideMap",
+              "globalValueKey": "SGV_Circle_Speed",
+              "overrideMapKey": "_Circle_Speed"
+            },
+            {
+              "$type": "SetAnimatorFloat",
+              "floatID": "Circle_Speed",
+              "value": "_Circle_Speed"
+            },
+            {
+              "$type": "AttachModifier",
+              "modifierName": "EffManager"
+            },
+            {
+              "$type": "SetAnimatorInt",
+              "intID": "Start",
+              "value": 2
+            }
+          ],
+          "onThinkInterval": [
+            {
+              "$type": "Predicated",
+              "otherTargets": {
+                "$type": "SelectTargetsByShape",
+                "entityTypePriority": [
+                  "Avatar"
+                ],
+                "shapeName": "CircleR15H30",
+                "campTargetType": "All",
+                "sizeRatio": 1
+              },
+              "targetPredicates": [
+                {
+                  "$type": "ByEntityTypes",
+                  "entityTypes": [
+                    "Avatar"
+                  ]
+                }
+              ],
+              "successActions": [
+                {
+                  "$type": "AttachModifier",
+                  "target": "Target",
+                  "modifierName": "StabilizerAvatarHit"
+                }
+              ]
+            }
+          ]
+        },
+        "StabilizerAvatarHit": {
+          "modifierName": "",
+          "elementDurability": 100,
+          "onHittingOther": [
+            {
+              "$type": "Predicated",
+              "target": "Other",
+              "targetPredicates": [
+                {
+                  "$type": "ByTargetGlobalValue",
+                  "key": "_IS_Stabilizer",
+                  "value": 1
+                }
+              ],
+              "successActions": [
+                {
+                  "$type": "Predicated",
+                  "target": "Other",
+                  "targetPredicates": [
+                    {
+                      "$type": "ByHasModifier",
+                      "modifierName": "HitDecider"
+                    }
+                  ],
+                  "failActions": [
+                    {
+                      "$type": "Predicated",
+                      "target": "Other",
+                      "targetPredicates": [
+                        {
+                          "$type": "ByAny",
+                          "predicates": [
+                            {
+                              "$type": "PKELFKHABED",
+                              "predicates": [
+                                {
+                                  "$type": "ByTargetGlobalValue",
+                                  "key": "_IS_Stabilizer",
+                                  "value": 1
+                                },
+                                {
+                                  "$type": "ByAnimatorFloat",
+                                  "logic": "Equal",
+                                  "value": 1,
+                                  "parameter": "Circle_Pos_Right1"
+                                },
+                                {
+                                  "$type": "ByTargetGlobalValue",
+                                  "key": "SGV_Right_Position",
+                                  "value": 1
+                                }
+                              ]
+                            },
+                            {
+                              "$type": "PKELFKHABED",
+                              "predicates": [
+                                {
+                                  "$type": "ByTargetGlobalValue",
+                                  "key": "_IS_Stabilizer",
+                                  "value": 1
+                                },
+                                {
+                                  "$type": "ByAnimatorFloat",
+                                  "logic": "Equal",
+                                  "value": 2,
+                                  "parameter": "Circle_Pos_Right2"
+                                },
+                                {
+                                  "$type": "ByTargetGlobalValue",
+                                  "key": "SGV_Right_Position",
+                                  "value": 2
+                                }
+                              ]
+                            },
+                            {
+                              "$type": "PKELFKHABED",
+                              "predicates": [
+                                {
+                                  "$type": "ByTargetGlobalValue",
+                                  "key": "_IS_Stabilizer",
+                                  "value": 1
+                                },
+                                {
+                                  "$type": "ByAnimatorFloat",
+                                  "logic": "Equal",
+                                  "value": 3,
+                                  "parameter": "Circle_Pos_Right3"
+                                },
+                                {
+                                  "$type": "ByTargetGlobalValue",
+                                  "key": "SGV_Right_Position",
+                                  "value": 3
+                                }
+                              ]
+                            }
+                          ]
+                        }
+                      ],
+                      "successActions": [
+                        {
+                          "$type": "ServerLuaCall",
+                          "target": "Caster",
+                          "luaCallType": "FromGroup",
+                          "isTarget": true,
+                          "funcName": "SLC_player_hit_stabilizer_success",
+                          "AFEHPHNEJHM": 0,
+                          "param2": 0,
+                          "param3": 0
+                        },
+                        {
+                          "$type": "FireEffect",
+                          "target": "Caster",
+                          "effectPattern": "Eff_SceneObj_FDStabilizers_Attacked"
+                        },
+                        {
+                          "$type": "ApplyModifier",
+                          "target": "Caster",
+                          "modifierName": "HitDecider"
+                        }
+                      ],
+                      "failActions": [
+                        {
+                          "$type": "ServerLuaCall",
+                          "target": "Caster",
+                          "luaCallType": "FromGroup",
+                          "isTarget": true,
+                          "funcName": "SLC_player_hit_stabilizer_fail",
+                          "AFEHPHNEJHM": 0,
+                          "param2": 0,
+                          "param3": 0
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        "HitDecider": {
+          "modifierName": "",
+          "duration": 0.1,
+          "elementDurability": 100
+        },
+        "EffManager": {
+          "modifierName": "",
+          "elementDurability": 100,
+          "onAdded": [
+            {
+              "$type": "Predicated",
+              "targetPredicates": [
+                {
+                  "$type": "ByTargetGlobalValue",
+                  "target": "Self",
+                  "key": "SGV_Right_Position",
+                  "value": 1
+                }
+              ],
+              "successActions": [
+                {
+                  "$type": "AttachModifier",
+                  "modifierName": "LowLight"
+                }
+              ]
+            },
+            {
+              "$type": "Predicated",
+              "targetPredicates": [
+                {
+                  "$type": "ByTargetGlobalValue",
+                  "target": "Self",
+                  "key": "SGV_Right_Position",
+                  "value": 2
+                }
+              ],
+              "successActions": [
+                {
+                  "$type": "AttachModifier",
+                  "modifierName": "MiddleLight"
+                }
+              ]
+            },
+            {
+              "$type": "Predicated",
+              "targetPredicates": [
+                {
+                  "$type": "ByTargetGlobalValue",
+                  "target": "Self",
+                  "key": "SGV_Right_Position",
+                  "value": 3
+                }
+              ],
+              "successActions": [
+                {
+                  "$type": "AttachModifier",
+                  "modifierName": "TopLight"
+                }
+              ]
+            }
+          ],
+          "onReconnect": [
+            {
+              "$type": "Predicated",
+              "targetPredicates": [
+                {
+                  "$type": "ByTargetGlobalValue",
+                  "target": "Self",
+                  "key": "SGV_Right_Position",
+                  "value": 1
+                }
+              ]
+            },
+            {
+              "$type": "Predicated",
+              "targetPredicates": [
+                {
+                  "$type": "ByTargetGlobalValue",
+                  "target": "Self",
+                  "key": "SGV_Right_Position",
+                  "value": 2
+                }
+              ]
+            },
+            {
+              "$type": "Predicated",
+              "targetPredicates": [
+                {
+                  "$type": "ByTargetGlobalValue",
+                  "target": "Self",
+                  "key": "SGV_Right_Position",
+                  "value": 3
+                }
+              ]
+            }
+          ]
+        },
+        "LowLight": {
+          "modifierName": "",
+          "elementDurability": 100,
+          "modifierMixins": [
+            {
+              "$type": "ShaderStateMachineSwitchMixin",
+              "HPJJAKOLMIC": 3,
+              "DJMLPIJPFNO": 10,
+              "CEIFKFCFIIL": ""
+            }
+          ]
+        },
+        "MiddleLight": {
+          "modifierName": "",
+          "elementDurability": 100,
+          "modifierMixins": [
+            {
+              "$type": "ShaderStateMachineSwitchMixin",
+              "HPJJAKOLMIC": 4,
+              "DJMLPIJPFNO": 10,
+              "CEIFKFCFIIL": ""
+            }
+          ]
+        },
+        "TopLight": {
+          "modifierName": "",
+          "elementDurability": 100,
+          "modifierMixins": [
+            {
+              "$type": "ShaderStateMachineSwitchMixin",
+              "HPJJAKOLMIC": 5,
+              "DJMLPIJPFNO": 10,
+              "CEIFKFCFIIL": ""
+            }
+          ]
+        },
+        "SingleSuccess": {
+          "modifierName": "",
+          "elementDurability": 100,
+          "modifierMixins": [
+            {
+              "$type": "ShaderStateMachineSwitchMixin",
+              "HPJJAKOLMIC": 2,
+              "DJMLPIJPFNO": 10,
+              "CEIFKFCFIIL": ""
+            }
+          ],
+          "onAdded": [
+            {
+              "$type": "SetGlobalValue",
+              "doOffStage": true,
+              "value": 1,
+              "key": "_Ability_Fd_Energy_Mark",
+              "maxValue": 0,
+              "minValue": 0
+            }
+          ]
+        },
+        "ChargedState": {
+          "modifierName": "",
+          "elementDurability": 100,
+          "modifierMixins": [
+            {
+              "$type": "ShaderStateMachineSwitchMixin",
+              "HPJJAKOLMIC": 2,
+              "CEIFKFCFIIL": ""
+            }
+          ],
+          "onAdded": [
+            {
+              "$type": "SetGlobalValue",
+              "doOffStage": true,
+              "value": 1,
+              "key": "_Ability_Fd_Energy_Mark",
+              "maxValue": 0,
+              "minValue": 0
+            },
+            {
+              "$type": "SetAnimatorInt",
+              "intID": "Start",
+              "value": 1
+            }
+          ]
+        },
+        "Success": {
+          "modifierName": "",
+          "elementDurability": 100,
+          "modifierMixins": [
+            {
+              "$type": "ShaderStateMachineSwitchMixin",
+              "HPJJAKOLMIC": 6,
+              "DJMLPIJPFNO": 11,
+              "CEIFKFCFIIL": ""
+            }
+          ],
+          "onAdded": [
+            {
+              "$type": "SetGlobalValue",
+              "doOffStage": true,
+              "value": 2,
+              "key": "_Ability_Fd_Energy_Mark",
+              "maxValue": 0,
+              "minValue": 0
+            },
+            {
+              "$type": "SetAnimatorInt",
+              "intID": "Start",
+              "value": 1
+            },
+            {
+              "$type": "FireEffect",
+              "effectPattern": "Eff_SceneObj_FDStabilizers_Succeed",
+              "born": {
+                "$type": "ConfigBornByAttachPoint",
+                "useRotation": true,
+                "attachPointName": "RootNode"
+              }
+            }
+          ]
+        },
+        "Lock": {
+          "modifierName": "",
+          "elementDurability": 100,
+          "modifierMixins": [
+            {
+              "$type": "ShaderStateMachineSwitchMixin",
+              "CEIFKFCFIIL": ""
+            }
+          ],
+          "onAdded": [
+            {
+              "$type": "AttachEffect",
+              "effectPattern": "Eff_Item_SpecialTreasureBox_LockIdle",
+              "born": {
+                "$type": "ConfigBornByAttachPoint",
+                "useRotation": true,
+                "attachPointName": "RootNode"
+              }
+            },
+            {
+              "$type": "SetAnimatorInt",
+              "intID": "Start",
+              "value": 0
+            }
+          ],
+          "onRemoved": [
+            {
+              "$type": "FireEffect",
+              "effectPattern": "Eff_Item_SpecialTreasureBox_Unlock",
+              "born": {
+                "$type": "ConfigBornByAttachPoint",
+                "useRotation": true,
+                "attachPointName": "RootNode"
+              }
+            }
+          ]
+        },
+        "Fail": {
+          "modifierName": "",
+          "duration": 3,
+          "elementDurability": 100,
+          "modifierMixins": [
+            {
+              "$type": "ShaderStateMachineSwitchMixin",
+              "HPJJAKOLMIC": 2,
+              "DJMLPIJPFNO": 10,
+              "CEIFKFCFIIL": ""
+            }
+          ],
+          "onAdded": [
+            {
+              "$type": "SetGlobalValue",
+              "doOffStage": true,
+              "value": 1,
+              "key": "_Ability_Fd_Energy_Mark",
+              "maxValue": 0,
+              "minValue": 0
+            },
+            {
+              "$type": "SetAnimatorInt",
+              "intID": "Start",
+              "value": 0
+            },
+            {
+              "$type": "Predicated",
+              "targetPredicates": [
+                {
+                  "$type": "ByTargetGlobalValue",
+                  "target": "Self",
+                  "key": "SGV_EnvironmentType",
+                  "value": 0,
+                  "compareType": "NoneOrEqual"
+                }
+              ],
+              "successActions": [
+                {
+                  "$type": "AttachEffect",
+                  "effectPattern": "Eff_SceneObj_FDStabilizers_Failed_01",
+                  "born": {
+                    "$type": "ConfigBornByAttachPoint",
+                    "useRotation": true,
+                    "attachPointName": "AttachPoint"
+                  }
+                }
+              ],
+              "failActions": [
+                {
+                  "$type": "FireEffect",
+                  "effectPattern": "Eff_SceneObj_FDStabilizers_WaterFailed",
+                  "born": {
+                    "$type": "ConfigBornByAttachPoint",
+                    "useRotation": true,
+                    "attachPointName": "RootNode"
+                  }
+                }
+              ]
+            }
+          ],
+          "onRemoved": [
+            {
+              "$type": "ChangeGadgetState",
+              "state": 201
+            }
+          ]
+        },
+        "EnergyLogic": {
+          "modifierName": "",
+          "elementDurability": 100
+        },
+        "QuestFail": {
+          "modifierName": "",
+          "elementDurability": 100,
+          "onAdded": [
+            {
+              "$type": "AttachEffect",
+              "effectPattern": "Eff_SceneObj_FDStabilizers_Failed_02",
+              "born": {
+                "$type": "ConfigBornByAttachPoint",
+                "useRotation": true,
+                "attachPointName": "AttachPoint"
+              }
+            },
+            {
+              "$type": "SetAnimatorInt",
+              "intID": "Start",
+              "value": 0
+            }
+          ]
+        }
+      },
+      "onAdded": [
+        {
+          "$type": "SetGlobalValue",
+          "value": 1,
+          "key": "_IS_Stabilizer",
+          "maxValue": 0,
+          "minValue": 0
+        }
+      ]
+    }
+  },
+  {
+    "Default": {
+      "$type": "ConfigAbility",
+      "abilityName": "SceneObj_Area_Fd_Property_Ani_Prop_HiliFirework_01",
+      "abilityMixins": [
+        {
+          "$type": "AttachToGadgetStateMixin",
+          "modifierName": "None"
+        },
+        {
+          "$type": "AttachToGadgetStateMixin",
+          "gadgetState": 101,
+          "modifierName": "Up"
+        },
+        {
+          "$type": "AttachToGadgetStateMixin",
+          "gadgetState": 201,
+          "modifierName": "Wire"
+        },
+        {
+          "$type": "AttachToGadgetStateMixin",
+          "gadgetState": 202,
+          "modifierName": "FireWork"
+        }
+      ],
+      "modifiers": {
+        "HitManager": {
+          "modifierName": "",
+          "elementDurability": 100,
+          "onBeingHit": [
+            {
+              "$type": "Predicated",
+              "targetPredicates": [
+                {
+                  "$type": "ByHitElement",
+                  "element": "Fire"
+                },
+                {
+                  "$type": "ByTargetGlobalValue",
+                  "target": "Self",
+                  "key": "_Already_Fire",
+                  "value": 0
+                },
+                {
+                  "$type": "HKDMEKKBAKE",
+                  "target": "Self",
+                  "gadgetState": 101
+                }
+              ],
+              "successActions": [
+                {
+                  "$type": "ChangeGadgetState",
+                  "state": 201
+                },
+                {
+                  "$type": "SetGlobalValue",
+                  "value": 1,
+                  "key": "_Already_Fire",
+                  "maxValue": 0,
+                  "minValue": 0
+                }
+              ]
+            }
+          ]
+        },
+        "None": {
+          "modifierName": "",
+          "elementDurability": 100
+        },
+        "Up": {
+          "modifierName": "",
+          "elementDurability": 100,
+          "onAdded": [
+            {
+              "$type": "AttachEffect",
+              "effectPattern": "Eff_SceneObj_Area_Fd_Property_Ani_Prop_HiliFirework_03",
+              "born": {
+                "$type": "ConfigBornByAttachPoint",
+                "useRotation": true,
+                "attachPointName": "RootNode"
+              }
+            },
+            {
+              "$type": "SetAnimatorInt",
+              "intID": "GadgetState",
+              "value": 201
+            }
+          ]
+        },
+        "Wire": {
+          "modifierName": "",
+          "elementDurability": 100,
+          "onAdded": [
+            {
+              "$type": "AttachEffect",
+              "effectPattern": "Eff_SceneObj_Area_Fd_Property_Ani_Prop_HiliFirework_01",
+              "born": {
+                "$type": "ConfigBornByAttachPoint",
+                "useRotation": true,
+                "attachPointName": "AttachPoint"
+              }
+            }
+          ]
+        },
+        "FireWork": {
+          "modifierName": "",
+          "duration": 10,
+          "elementDurability": 100,
+          "onAdded": [
+            {
+              "$type": "AttachModifier",
+              "modifierName": "FirstAttack"
+            },
+            {
+              "$type": "AttachEffect",
+              "effectPattern": "Eff_SceneObj_Area_Fd_Property_Ani_Prop_HiliFirework_02",
+              "born": {
+                "$type": "ConfigBornByAttachPoint",
+                "useRotation": true,
+                "attachPointName": "RootNode"
+              }
+            },
+            {
+              "$type": "EnableSceneTransformByName",
+              "transformNames": [
+                "Transmitter"
+              ]
+            },
+            {
+              "$type": "AttachModifier",
+              "modifierName": "AttackManager"
+            }
+          ],
+          "onRemoved": [
+            {
+              "$type": "KillSelf"
+            }
+          ]
+        },
+        "AttackManager": {
+          "modifierName": "",
+          "elementDurability": 100,
+          "thinkInterval": 0.25,
+          "onThinkInterval": [
+            {
+              "$type": "TriggerAbility",
+              "abilityName": "SceneObj_Area_Fd_Property_Ani_Prop_HiliFirework_01_Attack01"
+            }
+          ]
+        },
+        "FirstAttack": {
+          "modifierName": "",
+          "elementDurability": 100,
+          "onAdded": [
+            {
+              "$type": "TriggerAttackEvent",
+              "attackEvent": {
+                "attackPattern": {
+                  "$type": "ConfigAttackSphere",
+                  "triggerType": "TriggerNoRepeat",
+                  "radius": 4
+                },
+                "attackInfo": {
+                  "attackTag": "",
+                  "attenuationTag": "",
+                  "attenuationGroup": "default",
+                  "attackProperty": {
+                    "damagePercentage": 1,
+                    "damagePercentageRatio": 0,
+                    "elementType": "Fire",
+                    "elementDurability": 50,
+                    "strikeType": "Blunt",
+                    "enBreak": 9999999,
+                    "__exp_arkhe": 0
+                  },
+                  "hitPattern": {
+                    "onHitEffectName": "default",
+                    "hitImpulseType": "LV6",
+                    "hitHaltTimeScale": 0.05
+                  },
+                  "forceCameraShake": true,
+                  "cameraShake": {
+                    "shakeRange": 0.36,
+                    "shakeTime": 0.36
+                  }
+                }
+              },
+              "targetType": "Enemy",
+              "entityTypes": [
+                "Avatar"
+              ]
+            }
+          ]
+        }
+      },
+      "onAdded": [
+        {
+          "$type": "SetGlobalValue",
+          "value": 0,
+          "key": "_Already_Fire",
+          "maxValue": 0,
+          "minValue": 0
+        },
+        {
+          "$type": "ApplyModifier",
+          "modifierName": "HitManager"
+        }
+      ]
+    }
+  },
+  {
+    "Default": {
+      "$type": "ConfigAbility",
+      "abilityName": "SceneObj_Area_Fd_Property_Ani_Prop_HiliFirework_01_Attack01",
+      "abilitySpecials": {
+        "DamageSystemValue": 1,
+        "DamageRatio": 0.1
+      },
+      "modifiers": {
+        "FireWorkAttack01": {
+          "stacking": "MultipleRefresh",
+          "stackingOption": {
+            "abilitySpecialName": "",
+            "maxModifierNumForMultipleType": 1
+          },
+          "modifierName": "",
+          "elementDurability": 100,
+          "onAdded": [
+            {
+              "$type": "TriggerAttackEvent",
+              "attackEvent": {
+                "attackPattern": {
+                  "$type": "ConfigAttackSphere",
+                  "triggerType": "TriggerNoRepeat",
+                  "radius": 4
+                },
+                "attackInfo": {
+                  "attackTag": "",
+                  "attenuationTag": "",
+                  "attenuationGroup": "default",
+                  "attackProperty": {
+                    "damagePercentageRatio": 0,
+                    "elementType": "Fire",
+                    "elementDurability": 25,
+                    "strikeType": "Default",
+                    "enBreak": 0,
+                    "attackType": "Range",
+                    "damageExtra": [
+                      "DamageRatio",
+                      "DamageSystemValue",
+                      "MUL"
+                    ],
+                    "__exp_arkhe": 0
+                  },
+                  "hitPattern": {
+                    "onHitEffectName": "default",
+                    "hitImpulseType": "LV6"
+                  }
+                }
+              },
+              "targetType": "Enemy",
+              "entityTypes": [
+                "Avatar"
+              ]
+            }
+          ]
+        }
+      },
+      "onAdded": [
+        {
+          "$type": "SetSystemValueToOverrideMap",
+          "key": "DamageSystemValue",
+          "type": "ElementLevelCo"
+        }
+      ],
+      "onAbilityStart": [
+        {
+          "$type": "ApplyModifier",
+          "modifierName": "FireWorkAttack01"
+        }
+      ]
+    }
+  },
+  {
+    "Default": {
+      "$type": "ConfigAbility",
+      "abilityName": "SceneObj_Area_Fd_Property_Ani_Ajar_SciTowerBarrier_01",
+      "modifiers": {
+        "StateManager": {
+          "modifierName": "",
+          "elementDurability": 100,
+          "modifierMixins": [
+            {
+              "$type": "AttachToGadgetStateMixin",
+              "modifierName": "Close"
+            },
+            {
+              "$type": "AttachToGadgetStateMixin",
+              "gadgetState": 201,
+              "modifierName": "Open"
+            }
+          ]
+        },
+        "Close": {
+          "modifierName": "",
+          "elementDurability": 100,
+          "onAdded": [
+            {
+              "$type": "EnableSceneTransformByName",
+              "transformNames": [
+                "AirWall"
+              ],
+              "setEnable": true
+            },
+            {
+              "$type": "AttachEffect",
+              "effectPattern": "Eff_ScenObj_SciTowerBarrier",
+              "born": {
+                "$type": "ConfigBornByAttachPoint",
+                "useRotation": true,
+                "attachPointName": "AttachPoint"
+              }
+            }
+          ],
+          "onRemoved": [
+            {
+              "$type": "FireEffect",
+              "effectPattern": "Eff_ScenObj_SciTowerBarrier_Die",
+              "born": {
+                "$type": "ConfigBornByAttachPoint",
+                "useRotation": true,
+                "attachPointName": "AttachPoint"
+              }
+            }
+          ]
+        },
+        "Open": {
+          "modifierName": "",
+          "elementDurability": 100,
+          "onAdded": [
+            {
+              "$type": "EnableSceneTransformByName",
+              "transformNames": [
+                "AirWall"
+              ]
+            }
+          ]
+        }
+      },
+      "onAdded": [
+        {
+          "$type": "ApplyModifier",
+          "modifierName": "StateManager"
+        }
+      ]
+    }
+  },
+  {
+    "Default": {
+      "$type": "ConfigAbility",
+      "abilityName": "SceneObj_Area_Fd_Property_Ani_Prop_FDLabSuppressor_01",
+      "abilityMixins": [
+        {
+          "$type": "AttachToGadgetStateMixin",
+          "modifierName": "DefaultState"
+        },
+        {
+          "$type": "AttachToGadgetStateMixin",
+          "gadgetState": 201,
+          "modifierName": "Disappear"
+        }
+      ],
+      "modifiers": {
+        "DefaultState": {
+          "modifierName": "",
+          "elementDurability": 100,
+          "modifierMixins": [
+            {
+              "$type": "ShaderStateMachineSwitchMixin",
+              "CEIFKFCFIIL": ""
+            }
+          ],
+          "onAdded": [
+            {
+              "$type": "AttachEffect",
+              "effectPattern": "Eff_SceneObj_FDLabSuppressor_Pollution",
+              "born": {
+                "$type": "ConfigBornByAttachPoint",
+                "useRotation": true,
+                "attachPointName": "AttachPoint"
+              }
+            }
+          ]
+        },
+        "Disappear": {
+          "modifierName": "",
+          "elementDurability": 100,
+          "modifierMixins": [
+            {
+              "$type": "ShaderStateMachineSwitchMixin",
+              "HPJJAKOLMIC": 1,
+              "CEIFKFCFIIL": ""
+            }
+          ],
+          "onAdded": [
+            {
+              "$type": "FireEffect",
+              "effectPattern": "Eff_SceneObj_FDLabSuppressor_Disappear",
+              "born": {
+                "$type": "ConfigBornByAttachPoint",
+                "useRotation": true,
+                "attachPointName": "AttachPoint"
+              }
+            },
+            {
+              "$type": "AttachModifier",
+              "modifierName": "Kill_suppressor"
+            }
+          ]
+        },
+        "Kill_suppressor": {
+          "modifierName": "",
+          "duration": 0.7,
+          "elementDurability": 100,
+          "onRemoved": [
+            {
+              "$type": "KillSelf"
+            }
+          ]
+        }
+      }
+    }
+  },
+  {
+    "Default": {
+      "$type": "ConfigAbility",
+      "abilityName": "SceneObj_Area_Fd_Property_Ani_Prop_FDOreLab_01",
+      "modifiers": {
+        "StateManager": {
+          "modifierName": "",
+          "elementDurability": 100,
+          "modifierMixins": [
+            {
+              "$type": "AttachToGadgetStateMixin",
+              "modifierName": "NotStable"
+            },
+            {
+              "$type": "AttachToGadgetStateMixin",
+              "gadgetState": 101,
+              "modifierName": "SuppressorDeliver"
+            },
+            {
+              "$type": "AttachToGadgetStateMixin",
+              "gadgetState": 102,
+              "modifierName": "CoreDeliver"
+            },
+            {
+              "$type": "AttachToGadgetStateMixin",
+              "gadgetState": 103,
+              "modifierName": "LeftStabilizerDeliver"
+            },
+            {
+              "$type": "AttachToGadgetStateMixin",
+              "gadgetState": 104,
+              "modifierName": "RightStabilizerDeliver"
+            },
+            {
+              "$type": "AttachToGadgetStateMixin",
+              "gadgetState": 105,
+              "modifierName": "TwoStabilizerDeliver"
+            },
+            {
+              "$type": "AttachToGadgetStateMixin",
+              "gadgetState": 201,
+              "modifierName": "Stable"
+            },
+            {
+              "$type": "AttachToGadgetStateMixin",
+              "gadgetState": 202,
+              "modifierName": "StableAndFix"
+            }
+          ]
+        },
+        "NotStable": {
+          "modifierName": "",
+          "elementDurability": 100,
+          "modifierMixins": [
+            {
+              "$type": "ShaderStateMachineSwitchMixin",
+              "CEIFKFCFIIL": ""
+            }
+          ],
+          "onAdded": [
+            {
+              "$type": "EnableSceneTransformByName",
+              "transformNames": [
+                "Suppressor0"
+              ]
+            },
+            {
+              "$type": "EnableSceneTransformByName",
+              "transformNames": [
+                "Suppressor1"
+              ]
+            },
+            {
+              "$type": "EnableSceneTransformByName",
+              "transformNames": [
+                "Suppressor2"
+              ]
+            },
+            {
+              "$type": "EnableSceneTransformByName",
+              "transformNames": [
+                "Suppressor3"
+              ]
+            },
+            {
+              "$type": "AttachEffect",
+              "effectPattern": "Eff_SceneObj_FDOreLab_Spillover",
+              "born": {
+                "$type": "ConfigBornByAttachPoint",
+                "useRotation": true,
+                "attachPointName": "RootNode"
+              }
+            }
+          ]
+        },
+        "SuppressorDeliver": {
+          "modifierName": "",
+          "elementDurability": 100,
+          "onAdded": [
+            {
+              "$type": "EnableSceneTransformByName",
+              "transformNames": [
+                "Suppressor0"
+              ],
+              "setEnable": true
+            },
+            {
+              "$type": "EnableSceneTransformByName",
+              "transformNames": [
+                "Suppressor1"
+              ],
+              "setEnable": true
+            },
+            {
+              "$type": "EnableSceneTransformByName",
+              "transformNames": [
+                "Suppressor2"
+              ],
+              "setEnable": true
+            },
+            {
+              "$type": "EnableSceneTransformByName",
+              "transformNames": [
+                "Suppressor3"
+              ],
+              "setEnable": true
+            }
+          ]
+        },
+        "CoreDeliver": {
+          "modifierName": "",
+          "elementDurability": 100,
+          "onAdded": [
+            {
+              "$type": "EnableSceneTransformByName",
+              "transformNames": [
+                "Suppressor0"
+              ],
+              "setEnable": true
+            },
+            {
+              "$type": "EnableSceneTransformByName",
+              "transformNames": [
+                "Suppressor1"
+              ],
+              "setEnable": true
+            },
+            {
+              "$type": "EnableSceneTransformByName",
+              "transformNames": [
+                "Suppressor2"
+              ],
+              "setEnable": true
+            },
+            {
+              "$type": "EnableSceneTransformByName",
+              "transformNames": [
+                "Suppressor3"
+              ],
+              "setEnable": true
+            }
+          ]
+        },
+        "LeftStabilizerDeliver": {
+          "modifierName": "",
+          "elementDurability": 100,
+          "modifierMixins": [
+            {
+              "$type": "ShaderStateMachineSwitchMixin",
+              "HPJJAKOLMIC": 2,
+              "CEIFKFCFIIL": ""
+            }
+          ],
+          "onAdded": [
+            {
+              "$type": "EnableSceneTransformByName",
+              "transformNames": [
+                "Suppressor0"
+              ],
+              "setEnable": true
+            },
+            {
+              "$type": "EnableSceneTransformByName",
+              "transformNames": [
+                "Suppressor1"
+              ],
+              "setEnable": true
+            },
+            {
+              "$type": "EnableSceneTransformByName",
+              "transformNames": [
+                "Suppressor2"
+              ],
+              "setEnable": true
+            },
+            {
+              "$type": "EnableSceneTransformByName",
+              "transformNames": [
+                "Suppressor3"
+              ],
+              "setEnable": true
+            }
+          ]
+        },
+        "RightStabilizerDeliver": {
+          "modifierName": "",
+          "elementDurability": 100,
+          "modifierMixins": [
+            {
+              "$type": "ShaderStateMachineSwitchMixin",
+              "HPJJAKOLMIC": 1,
+              "CEIFKFCFIIL": ""
+            }
+          ],
+          "onAdded": [
+            {
+              "$type": "EnableSceneTransformByName",
+              "transformNames": [
+                "Suppressor0"
+              ],
+              "setEnable": true
+            },
+            {
+              "$type": "EnableSceneTransformByName",
+              "transformNames": [
+                "Suppressor1"
+              ],
+              "setEnable": true
+            },
+            {
+              "$type": "EnableSceneTransformByName",
+              "transformNames": [
+                "Suppressor2"
+              ],
+              "setEnable": true
+            },
+            {
+              "$type": "EnableSceneTransformByName",
+              "transformNames": [
+                "Suppressor3"
+              ],
+              "setEnable": true
+            }
+          ]
+        },
+        "TwoStabilizerDeliver": {
+          "modifierName": "",
+          "elementDurability": 100,
+          "modifierMixins": [
+            {
+              "$type": "ShaderStateMachineSwitchMixin",
+              "HPJJAKOLMIC": 3,
+              "CEIFKFCFIIL": ""
+            }
+          ],
+          "onAdded": [
+            {
+              "$type": "EnableSceneTransformByName",
+              "transformNames": [
+                "Suppressor0"
+              ],
+              "setEnable": true
+            },
+            {
+              "$type": "EnableSceneTransformByName",
+              "transformNames": [
+                "Suppressor1"
+              ],
+              "setEnable": true
+            },
+            {
+              "$type": "EnableSceneTransformByName",
+              "transformNames": [
+                "Suppressor2"
+              ],
+              "setEnable": true
+            },
+            {
+              "$type": "EnableSceneTransformByName",
+              "transformNames": [
+                "Suppressor3"
+              ],
+              "setEnable": true
+            }
+          ]
+        },
+        "Stable": {
+          "modifierName": "",
+          "elementDurability": 100,
+          "modifierMixins": [
+            {
+              "$type": "ShaderStateMachineSwitchMixin",
+              "HPJJAKOLMIC": 3,
+              "CEIFKFCFIIL": ""
+            }
+          ],
+          "onAdded": [
+            {
+              "$type": "EnableSceneTransformByName",
+              "transformNames": [
+                "Suppressor0"
+              ],
+              "setEnable": true
+            },
+            {
+              "$type": "EnableSceneTransformByName",
+              "transformNames": [
+                "Suppressor1"
+              ],
+              "setEnable": true
+            },
+            {
+              "$type": "EnableSceneTransformByName",
+              "transformNames": [
+                "Suppressor2"
+              ],
+              "setEnable": true
+            },
+            {
+              "$type": "EnableSceneTransformByName",
+              "transformNames": [
+                "Suppressor3"
+              ],
+              "setEnable": true
+            },
+            {
+              "$type": "AttachEffect",
+              "effectPattern": "Eff_SceneObj_FDOreLab_Stable",
+              "born": {
+                "$type": "ConfigBornByAttachPoint",
+                "useRotation": true,
+                "attachPointName": "RootNode"
+              }
+            },
+            {
+              "$type": "SetAnimatorInt",
+              "intID": "GadgetState",
+              "value": 201
+            }
+          ]
+        },
+        "StableAndFix": {
+          "modifierName": "",
+          "elementDurability": 100,
+          "modifierMixins": [
+            {
+              "$type": "ShaderStateMachineSwitchMixin",
+              "HPJJAKOLMIC": 3,
+              "CEIFKFCFIIL": ""
+            }
+          ],
+          "onAdded": [
+            {
+              "$type": "EnableSceneTransformByName",
+              "transformNames": [
+                "Suppressor0"
+              ],
+              "setEnable": true
+            },
+            {
+              "$type": "EnableSceneTransformByName",
+              "transformNames": [
+                "Suppressor1"
+              ],
+              "setEnable": true
+            },
+            {
+              "$type": "EnableSceneTransformByName",
+              "transformNames": [
+                "Suppressor2"
+              ],
+              "setEnable": true
+            },
+            {
+              "$type": "EnableSceneTransformByName",
+              "transformNames": [
+                "Suppressor3"
+              ],
+              "setEnable": true
+            }
+          ]
+        }
+      },
+      "onAdded": [
+        {
+          "$type": "ApplyModifier",
+          "modifierName": "StateManager"
+        }
+      ]
+    }
+  },
+  {
+    "Default": {
+      "$type": "ConfigAbility",
+      "abilityName": "SceneObj_Area_Fd_Property_Ani_Prop_FontaineSciTank_01",
+      "abilityMixins": [
+        {
+          "$type": "AttachModifierToSelfGlobalValueNoInitMixin",
+          "globalValueKey": "SGV_EnvironmentType",
+          "valueSteps": [
+            1.5,
+            2.5
+          ],
+          "modifierNameSteps": [
+            "Underwater"
+          ],
+          "EEEHPOEMFKM": true
+        },
+        {
+          "$type": "AttachToGadgetStateMixin",
+          "modifierName": "NormalCreate"
+        },
+        {
+          "$type": "AttachToGadgetStateMixin",
+          "gadgetState": 201,
+          "modifierName": "Broken"
+        }
+      ],
+      "modifiers": {
+        "Underwater": {
+          "modifierName": "",
+          "elementDurability": 100,
+          "modifierMixins": [
+            {
+              "$type": "ChangeLockTypeMixin",
+              "lockType": "Avatar&Monster_Lv4"
+            }
+          ]
+        },
+        "NormalCreate": {
+          "modifierName": "",
+          "elementDurability": 100,
+          "onAdded": [
+            {
+              "$type": "FireEffect",
+              "effectPattern": "Eff_SceneObj_Area_Fd_Property_Ani_Prop_FontaineSciTank_01"
+            }
+          ]
+        },
+        "Broken": {
+          "modifierName": "",
+          "elementDurability": 100,
+          "onAdded": [
+            {
+              "$type": "KillSelf"
+            }
+          ]
+        },
+        "BombBoxLoop": {
+          "modifierName": "",
+          "elementDurability": 100,
+          "onBeingHit": [
+            {
+              "$type": "ChangeGadgetState",
+              "state": 201
+            },
+            {
+              "$type": "Predicated",
+              "targetPredicates": [
+                {
+                  "$type": "ByTargetGlobalValue",
+                  "target": "Self",
+                  "key": "SGV_EnvironmentType",
+                  "value": 0,
+                  "compareType": "NoneOrEqual"
+                }
+              ],
+              "successActions": [
+                {
+                  "$type": "FireEffect",
+                  "effectPattern": "Eff_SceneObj_Area_Fd_Property_Ani_Prop_FontaineSciTank_02"
+                }
+              ],
+              "failActions": [
+                {
+                  "$type": "FireEffect",
+                  "effectPattern": "Eff_SceneObj_Area_Common_Property_Ani_Prop_OreFountaine_02",
+                  "born": {
+                    "$type": "ConfigBornByAttachPoint",
+                    "useRotation": true,
+                    "attachPointName": "AttachPoint"
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      },
+      "onAdded": [
+        {
+          "$type": "ApplyModifier",
+          "modifierName": "BombBoxLoop"
+        }
+      ]
+    }
+  },
+  {
+    "Default": {
+      "$type": "ConfigAbility",
+      "abilityName": "SceneObj_Area_Fd_Property_Ani_Prop_FactoryBlower_02_Ability",
+      "abilityMixins": [
+        {
+          "$type": "AttachToGadgetStateMixin",
+          "modifierName": "ShowState"
+        }
+      ],
+      "modifiers": {
+        "ShowState": {
+          "modifierName": "",
+          "elementDurability": 100,
+          "onAdded": [
+            {
+              "$type": "AttachEffect",
+              "effectPattern": "Eff_SceneObj_FactoryBlowerSmallSlow_Light_01",
+              "isPlatformDependent": true
+            }
+          ]
+        }
+      }
+    }
+  },
+  {
+    "Default": {
+      "$type": "ConfigAbility",
+      "abilityName": "SceneObj_Area_Fd_Property_Ani_Prop_FactoryBlower_03_Ability",
+      "abilityMixins": [
+        {
+          "$type": "AttachToGadgetStateMixin",
+          "modifierName": "MoveState"
+        },
+        {
+          "$type": "AttachToGadgetStateMixin",
+          "gadgetState": 201,
+          "modifierName": "StillState"
+        }
+      ],
+      "modifiers": {
+        "MoveState": {
+          "modifierName": "",
+          "elementDurability": 100,
+          "onAdded": [
+            {
+              "$type": "EnableSceneTransformByName",
+              "transformNames": [
+                "Move"
+              ],
+              "setEnable": true
+            },
+            {
+              "$type": "EnableSceneTransformByName",
+              "transformNames": [
+                "Still"
+              ]
+            }
+          ]
+        },
+        "StillState": {
+          "modifierName": "",
+          "elementDurability": 100,
+          "onAdded": [
+            {
+              "$type": "EnableSceneTransformByName",
+              "transformNames": [
+                "Move"
+              ]
+            },
+            {
+              "$type": "EnableSceneTransformByName",
+              "transformNames": [
+                "Still"
+              ],
+              "setEnable": true
+            }
+          ]
+        }
+      }
+    }
+  },
+  {
+    "Default": {
+      "$type": "ConfigAbility",
+      "abilityName": "SceneObj_Area_Xm_Property_Ani_Prop_FDBubble_01_Ability",
+      "abilityMixins": [
+        {
+          "$type": "AttachToGadgetStateMixin",
+          "modifierName": "BubbleState"
+        },
+        {
+          "$type": "AttachToGadgetStateMixin",
+          "gadgetState": 201,
+          "modifierName": "EmptyState"
+        },
+        {
+          "$type": "AttachToGadgetStateMixin",
+          "gadgetState": 202,
+          "modifierName": "FinishState"
+        }
+      ],
+      "modifiers": {
+        "EmptyState": {
+          "modifierName": "",
+          "elementDurability": 100,
+          "onAdded": [
+            {
+              "$type": "EnableSceneTransformByName",
+              "transformNames": [
+                "RootNode"
+              ]
+            }
+          ]
+        },
+        "BubbleState": {
+          "modifierName": "",
+          "elementDurability": 100,
+          "onAdded": [
+            {
+              "$type": "AttachEffect",
+              "effectPattern": "Eff_SceneObj_FDBubble_BornIdle"
+            },
+            {
+              "$type": "EnableSceneTransformByName",
+              "transformNames": [
+                "RootNode"
+              ],
+              "setEnable": true
+            }
+          ],
+          "onBeingHit": [
+            {
+              "$type": "ChangeGadgetState",
+              "state": 202
+            },
+            {
+              "$type": "ApplyModifier",
+              "modifierName": "BubbleExplode"
+            }
+          ]
+        },
+        "FinishState": {
+          "modifierName": "",
+          "elementDurability": 100,
+          "onAdded": [
+            {
+              "$type": "EnableSceneTransformByName",
+              "transformNames": [
+                "RootNode"
+              ]
+            }
+          ]
+        },
+        "BubbleExplode": {
+          "modifierName": "",
+          "duration": 1,
+          "elementDurability": 100,
+          "onAdded": [
+            {
+              "$type": "FireEffect",
+              "effectPattern": "Eff_SceneObj_FDBubble_Disappear"
+            },
+            {
+              "$type": "EnableSceneTransformByName",
+              "transformNames": [
+                "RootNode"
+              ]
+            }
+          ]
+        }
+      },
+      "onFieldEnter": [
+        {
+          "$type": "Predicated",
+          "predicates": [
+            {
+              "$type": "HKDMEKKBAKE"
+            }
+          ],
+          "successActions": [
+            {
+              "$type": "ChangeGadgetState",
+              "state": 202
+            },
+            {
+              "$type": "ApplyModifier",
+              "modifierName": "BubbleExplode"
+            }
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "Default": {
+      "$type": "ConfigAbility",
+      "abilityName": "Bullet_BubbleGun_01_Ability",
+      "onAbilityStart": [
+        {
+          "$type": "DebugLog",
+          "content": "BubbleGun: onAbilityStart!!"
+        },
+        {
+          "$type": "TriggerAudio",
+          "operation": {
+            "$type": "ConfigAudioEventOp",
+            "operation": {
+              "text": "Play_amb_sceneObj_gear_bubbleGun_hit"
+            }
+          }
+        }
+      ]
+    }
+  },
+  {
+    "Default": {
+      "$type": "ConfigAbility",
+      "abilityName": "Bullet_BubbleGun_02_Ability",
+      "onAbilityStart": [
+        {
+          "$type": "DebugLog",
+          "content": "BubbleGun: onAbilityStart!!"
+        },
+        {
+          "$type": "TriggerAudio",
+          "operation": {
+            "$type": "ConfigAudioEventOp",
+            "operation": {
+              "text": "Play_amb_sceneObj_gear_bubbleGun_hit"
+            }
+          }
+        }
+      ]
+    }
+  },
+  {
+    "Default": {
+      "$type": "ConfigAbility",
+      "abilityName": "Bullet_BubbleGun_03_Ability",
+      "onAbilityStart": [
+        {
+          "$type": "DebugLog",
+          "content": "BubbleGun: onAbilityStart!!"
+        },
+        {
+          "$type": "TriggerAudio",
+          "operation": {
+            "$type": "ConfigAudioEventOp",
+            "operation": {
+              "text": "Play_amb_sceneObj_gear_bubbleGun_hit"
+            }
+          }
+        }
+      ]
+    }
+  },
+  {
+    "Default": {
+      "$type": "ConfigAbility",
+      "abilityName": "SceneObj_Area_Fd_Property_Ani_Prop_PrisonFistTarget_01_Ability",
+      "abilityMixins": [
+        {
+          "$type": "AttachToGadgetStateMixin",
+          "modifierName": "OffState"
+        },
+        {
+          "$type": "AttachToGadgetStateMixin",
+          "gadgetState": 201,
+          "modifierName": "ReadyState"
+        },
+        {
+          "$type": "AttachToGadgetStateMixin",
+          "gadgetState": 901,
+          "modifierName": "WaitState"
+        },
+        {
+          "$type": "ServerUpdateGlobalValueMixin",
+          "key": "_Ability_FistTarget_Success",
+          "useLimitRange": true,
+          "maxValue": 1,
+          "minValue": 0
+        },
+        {
+          "$type": "AttachModifierToSelfGlobalValueMixin",
+          "globalValueKey": "_Ability_FistTarget_Success",
+          "defaultGlobalValueOnCreate": 0,
+          "valueSteps": [
+            0.5,
+            1.5
+          ],
+          "modifierNameSteps": [
+            "FistTarget_Success"
+          ],
+          "EEEHPOEMFKM": true
+        },
+        {
+          "$type": "ServerUpdateGlobalValueMixin",
+          "key": "_Ability_FistTarget_HitResult",
+          "useLimitRange": true,
+          "maxValue": 2,
+          "minValue": 0
+        },
+        {
+          "$type": "AttachModifierToSelfGlobalValueMixin",
+          "globalValueKey": "_Ability_FistTarget_HitResult",
+          "defaultGlobalValueOnCreate": 0,
+          "valueSteps": [
+            0.5,
+            1.5,
+            2.5
+          ],
+          "modifierNameSteps": [
+            "FistTarget_Wrong",
+            "FistTarget_Right"
+          ],
+          "EEEHPOEMFKM": true
+        }
+      ],
+      "modifiers": {
+        "FistTarget_Success": {
+          "modifierName": "",
+          "duration": 0.2,
+          "elementDurability": 100,
+          "onAdded": [
+            {
+              "$type": "FireEffect",
+              "effectPattern": "Eff_SceneObj_PrisonFistTarget_01_Finish"
+            }
+          ],
+          "onRemoved": [
+            {
+              "$type": "SetGlobalValue",
+              "value": 0,
+              "key": "_Ability_FistTarget_Success",
+              "maxValue": 0,
+              "minValue": 0
+            }
+          ]
+        },
+        "FistTarget_Wrong": {
+          "modifierName": "",
+          "duration": 0.5,
+          "elementDurability": 100,
+          "modifierMixins": [
+            {
+              "$type": "ShaderStateMachineSwitchMixin",
+              "HPJJAKOLMIC": 1,
+              "CEIFKFCFIIL": "",
+              "isTrigger": true
+            }
+          ],
+          "onRemoved": [
+            {
+              "$type": "SetGlobalValueV2",
+              "value": 0,
+              "key": "_Ability_FistTarget_HitResult",
+              "maxValue": 0,
+              "minValue": 0
+            }
+          ]
+        },
+        "FistTarget_Right": {
+          "modifierName": "",
+          "duration": 0.5,
+          "elementDurability": 100,
+          "onAdded": [
+            {
+              "$type": "SetAnimatorTrigger",
+              "triggerID": "Hit"
+            }
+          ],
+          "onRemoved": [
+            {
+              "$type": "SetGlobalValueV2",
+              "value": 0,
+              "key": "_Ability_FistTarget_HitResult",
+              "maxValue": 0,
+              "minValue": 0
+            },
+            {
+              "$type": "ChangeGadgetState"
+            }
+          ]
+        },
+        "UNIQUE_FistTarget_Hit": {
+          "stacking": "Unique",
+          "modifierName": "",
+          "isUnique": true,
+          "duration": 0.5,
+          "elementDurability": 100,
+          "onAdded": [
+            {
+              "$type": "FireEffect",
+              "effectPattern": "Eff_SceneObj_PrisonFistTarget_01_Hit"
+            },
+            {
+              "$type": "ServerLuaCall",
+              "luaCallType": "FromGroup",
+              "funcName": "SLC_FistTarget_BeingHit",
+              "AFEHPHNEJHM": 0,
+              "param2": 0,
+              "param3": 0
+            },
+            {
+              "$type": "SetAnimatorTrigger",
+              "triggerID": "Hit"
+            }
+          ]
+        },
+        "OffState": {
+          "modifierName": "",
+          "elementDurability": 100,
+          "modifierMixins": [
+            {
+              "$type": "ShaderStateMachineSwitchMixin",
+              "NMJAPBJJEGO": true,
+              "CEIFKFCFIIL": ""
+            }
+          ],
+          "onAdded": [
+            {
+              "$type": "EnableHitBoxByName",
+              "hitBoxNames": [
+                "HitBox"
+              ]
+            }
+          ]
+        },
+        "WaitState": {
+          "modifierName": "",
+          "elementDurability": 100,
+          "modifierMixins": [
+            {
+              "$type": "ShaderStateMachineSwitchMixin",
+              "HPJJAKOLMIC": 3,
+              "NMJAPBJJEGO": true,
+              "CEIFKFCFIIL": ""
+            }
+          ],
+          "onAdded": [
+            {
+              "$type": "EnableHitBoxByName",
+              "hitBoxNames": [
+                "HitBox"
+              ]
+            }
+          ]
+        },
+        "ReadyState": {
+          "modifierName": "",
+          "elementDurability": 100,
+          "modifierMixins": [
+            {
+              "$type": "ShaderStateMachineSwitchMixin",
+              "HPJJAKOLMIC": 2,
+              "NMJAPBJJEGO": true,
+              "CEIFKFCFIIL": ""
+            }
+          ],
+          "onAdded": [
+            {
+              "$type": "EnableHitBoxByName",
+              "hitBoxNames": [
+                "HitBox"
+              ],
+              "setEnable": true
+            }
+          ],
+          "onBeingHit": [
+            {
+              "$type": "AttachModifier",
+              "modifierName": "UNIQUE_FistTarget_Hit"
+            }
+          ]
+        }
+      }
+    }
+  },
+  {
+    "Default": {
+      "$type": "ConfigAbility",
+      "abilityName": "SceneObj_Area_Fd_Property_Ani_Prop_PrisonWorkerMachine_01_Ability",
+      "abilityMixins": [
+        {
+          "$type": "AttachToGadgetStateMixin",
+          "modifierName": "StopState"
+        },
+        {
+          "$type": "AttachToGadgetStateMixin",
+          "gadgetState": 201,
+          "modifierName": "WaitState"
+        },
+        {
+          "$type": "AttachToGadgetStateMixin",
+          "gadgetState": 903,
+          "modifierName": "ActiveState"
+        },
+        {
+          "$type": "AttachToGadgetStateMixin",
+          "gadgetState": 901,
+          "modifierName": "HitState"
+        },
+        {
+          "$type": "AttachToGadgetStateMixin",
+          "gadgetState": 902,
+          "modifierName": "JumpState"
+        },
+        {
+          "$type": "AttachToGadgetStateMixin",
+          "gadgetState": 202,
+          "modifierName": "FinishState"
+        },
+        {
+          "$type": "AttachToGadgetStateMixin",
+          "gadgetState": 204,
+          "modifierName": "FakeState"
+        },
+        {
+          "$type": "FieldEntityCountChangeMixin",
+          "campTargetType": "All",
+          "targetPredicates": [
+            {
+              "$type": "ByEntityTypes",
+              "entityTypes": [
+                "Avatar"
+              ]
+            }
+          ],
+          "onFieldEnter": [
+            {
+              "$type": "AttachModifier",
+              "target": "Team",
+              "modifierName": "UNIQUE_WorkerMachine_CheckJump_Team"
+            }
+          ],
+          "onFieldExit": [
+            {
+              "$type": "RemoveUniqueModifier",
+              "target": "Team",
+              "modifierName": "UNIQUE_WorkerMachine_CheckJump_Team"
+            }
+          ],
+          "replaceOnAddedInTick": true,
+          "simpleCountGlobaValueKey": "_Ability_PrisonWorkerMachine_AvatarCount",
+          "CEEECMFFGFL": true,
+          "simpleCountMaxValue": 1,
+          "simpleCountMinValue": 0
+        },
+        {
+          "$type": "AttachModifierToSelfGlobalValueMixin",
+          "globalValueKey": "_Ability_WorkerMachine_Jump",
+          "defaultGlobalValueOnCreate": 0,
+          "valueSteps": [
+            0.5,
+            1.5
+          ],
+          "modifierNameSteps": [
+            "WorkerMachine_Jump"
+          ],
+          "EEEHPOEMFKM": true
+        },
+        {
+          "$type": "ServerUpdateGlobalValueMixin",
+          "key": "_Ability_WorkerMachine_Jump",
+          "useLimitRange": true,
+          "maxValue": 1,
+          "minValue": 0
+        }
+      ],
+      "modifiers": {
+        "UNIQUE_WorkerMachine_Steam": {
+          "stacking": "Unique",
+          "modifierName": "",
+          "isUnique": true,
+          "elementDurability": 100,
+          "onAdded": [
+            {
+              "$type": "AttachEffect",
+              "effectPattern": "Eff_SceneObj_PrisonWorkerMachine_01_Steam_Loop"
+            }
+          ]
+        },
+        "UNIQUE_WorkerMachine_CheckJump_Team": {
+          "stacking": "Unique",
+          "modifierName": "",
+          "isUnique": true,
+          "elementDurability": 100,
+          "modifierMixins": [
+            {
+              "$type": "CurLocalAvatarMixinV2",
+              "modifierName": "WorkerMachine_CheckJump_Avatar"
+            }
+          ]
+        },
+        "WorkerMachine_CheckJump_Avatar": {
+          "modifierName": "",
+          "elementDurability": 100,
+          "modifierMixins": [
+            {
+              "$type": "AttachToAnimatorStateIDMixin",
+              "stateIDs": [
+                "FallOnGround",
+                "FallOnGroundLit",
+                "FallToGroundRun",
+                "FallToGroundRunHard",
+                "FallToGroundSprint"
+              ],
+              "modifierName": "UNIQUE_WorkerMachine_Land_Avatar"
+            }
+          ]
+        },
+        "UNIQUE_WorkerMachine_Land_Avatar": {
+          "stacking": "Unique",
+          "modifierName": "",
+          "isUnique": true,
+          "duration": 0.2,
+          "elementDurability": 100,
+          "onAdded": [
+            {
+              "$type": "ServerLuaCall",
+              "luaCallType": "CurGalleryControlGroup",
+              "funcName": "SLC_WorkerMachine_Jump",
+              "AFEHPHNEJHM": 0,
+              "param2": 0,
+              "param3": 0
+            }
+          ]
+        },
+        "WorkerMachine_Jump": {
+          "modifierName": "",
+          "duration": 0.2,
+          "elementDurability": 100,
+          "onAdded": [
+            {
+              "$type": "Predicated",
+              "targetPredicates": [
+                {
+                  "$type": "ByAny",
+                  "predicates": [
+                    {
+                      "$type": "HKDMEKKBAKE",
+                      "target": "Self",
+                      "gadgetState": 901
+                    },
+                    {
+                      "$type": "HKDMEKKBAKE",
+                      "target": "Self",
+                      "gadgetState": 902
+                    },
+                    {
+                      "$type": "HKDMEKKBAKE",
+                      "target": "Self",
+                      "gadgetState": 903
+                    }
+                  ]
+                }
+              ],
+              "successActions": [
+                {
+                  "$type": "SetAnimatorTrigger",
+                  "otherTargets": {
+                    "$type": "ODOCBBCLHLC",
+                    "operation": "XOR",
+                    "ratio": 2
+                  },
+                  "triggerID": "Jump"
+                },
+                {
+                  "$type": "FireEffect",
+                  "effectPattern": "Eff_SceneObj_PrisonWorkerMachine_01_Board_Hit"
+                }
+              ]
+            },
+            {
+              "$type": "Predicated",
+              "targetPredicates": [
+                {
+                  "$type": "HKDMEKKBAKE",
+                  "target": "Self",
+                  "gadgetState": 902
+                }
+              ],
+              "successActions": [
+                {
+                  "$type": "FireEffect",
+                  "effectPattern": "Eff_SceneObj_PrisonWorkerMachine_01_Hammer"
+                },
+                {
+                  "$type": "FireEffect",
+                  "effectPattern": "Eff_SceneObj_PrisonWorkerMachine_01_Hit"
+                },
+                {
+                  "$type": "FireEffect",
+                  "effectPattern": "Eff_SceneObj_PrisonWorkerMachine_01_Steam_Burst"
+                },
+                {
+                  "$type": "SetAnimatorTrigger",
+                  "triggerID": "Hit"
+                }
+              ]
+            }
+          ],
+          "onRemoved": [
+            {
+              "$type": "SetGlobalValue",
+              "value": 0,
+              "key": "_Ability_WorkerMachine_Jump",
+              "maxValue": 0,
+              "minValue": 0
+            }
+          ]
+        },
+        "FakeState": {
+          "modifierName": "",
+          "duration": 1,
+          "elementDurability": 100,
+          "modifierMixins": [
+            {
+              "$type": "ShaderStateMachineSwitchMixin",
+              "HPJJAKOLMIC": 1,
+              "NMJAPBJJEGO": true,
+              "CEIFKFCFIIL": ""
+            }
+          ],
+          "onAdded": [
+            {
+              "$type": "FireEffect",
+              "effectPattern": "Eff_SceneObj_PrisonWorkerMachine_01_Hammer"
+            },
+            {
+              "$type": "FireEffect",
+              "effectPattern": "Eff_SceneObj_PrisonWorkerMachine_01_Hit"
+            },
+            {
+              "$type": "FireEffect",
+              "effectPattern": "Eff_SceneObj_PrisonWorkerMachine_01_Steam_Burst"
+            },
+            {
+              "$type": "SetAnimatorTrigger",
+              "triggerID": "Hit"
+            }
+          ],
+          "onRemoved": [
+            {
+              "$type": "ChangeGadgetState",
+              "state": 903
+            }
+          ]
+        },
+        "StopState": {
+          "modifierName": "",
+          "elementDurability": 100,
+          "modifierMixins": [
+            {
+              "$type": "ShaderStateMachineSwitchMixin",
+              "DJMLPIJPFNO": 4,
+              "CEIFKFCFIIL": ""
+            }
+          ],
+          "onAdded": [
+            {
+              "$type": "RemoveUniqueModifier",
+              "modifierName": "UNIQUE_WorkerMachine_Steam"
+            },
+            {
+              "$type": "ChangeGadgetState",
+              "otherTargets": {
+                "$type": "ODOCBBCLHLC",
+                "operation": "XOR",
+                "ratio": 2
+              }
+            }
+          ]
+        },
+        "WaitState": {
+          "modifierName": "",
+          "elementDurability": 100,
+          "modifierMixins": [
+            {
+              "$type": "ShaderStateMachineSwitchMixin",
+              "DJMLPIJPFNO": 4,
+              "CEIFKFCFIIL": ""
+            }
+          ],
+          "onAdded": [
+            {
+              "$type": "RemoveUniqueModifier",
+              "modifierName": "UNIQUE_WorkerMachine_Steam"
+            },
+            {
+              "$type": "ChangeGadgetState",
+              "otherTargets": {
+                "$type": "ODOCBBCLHLC",
+                "operation": "XOR",
+                "ratio": 2
+              }
+            }
+          ]
+        },
+        "HitState": {
+          "modifierName": "",
+          "elementDurability": 100,
+          "modifierMixins": [
+            {
+              "$type": "ShaderStateMachineSwitchMixin",
+              "HPJJAKOLMIC": 2,
+              "DJMLPIJPFNO": 4,
+              "CEIFKFCFIIL": ""
+            }
+          ],
+          "onAdded": [
+            {
+              "$type": "AttachModifier",
+              "modifierName": "UNIQUE_WorkerMachine_Steam"
+            },
+            {
+              "$type": "ChangeGadgetState",
+              "otherTargets": {
+                "$type": "ODOCBBCLHLC",
+                "operation": "XOR",
+                "ratio": 1
+              },
+              "state": 901
+            },
+            {
+              "$type": "ChangeGadgetState",
+              "otherTargets": {
+                "$type": "ODOCBBCLHLC",
+                "operation": "XOR",
+                "ratio": 2
+              },
+              "state": 201
+            }
+          ],
+          "onBeingHit": [
+            {
+              "$type": "ChangeGadgetState",
+              "state": 903
+            }
+          ]
+        },
+        "JumpState": {
+          "modifierName": "",
+          "duration": 2.1,
+          "elementDurability": 100,
+          "thinkInterval": 2,
+          "modifierMixins": [
+            {
+              "$type": "ShaderStateMachineSwitchMixin",
+              "HPJJAKOLMIC": 3,
+              "DJMLPIJPFNO": 4,
+              "CEIFKFCFIIL": ""
+            }
+          ],
+          "onAdded": [
+            {
+              "$type": "AttachModifier",
+              "modifierName": "UNIQUE_WorkerMachine_Steam"
+            },
+            {
+              "$type": "AttachEffect",
+              "effectPattern": "Eff_SceneObj_PrisonWorkerMachine_01_Board_Appear"
+            },
+            {
+              "$type": "ChangeGadgetState",
+              "otherTargets": {
+                "$type": "ODOCBBCLHLC",
+                "operation": "XOR",
+                "ratio": 1
+              },
+              "state": 902
+            },
+            {
+              "$type": "ChangeGadgetState",
+              "otherTargets": {
+                "$type": "ODOCBBCLHLC",
+                "operation": "XOR",
+                "ratio": 2
+              },
+              "state": 201
+            }
+          ],
+          "onThinkInterval": [
+            {
+              "$type": "ChangeGadgetState",
+              "predicates": [
+                {
+                  "$type": "ByNot",
+                  "predicates": [
+                    {
+                      "$type": "ByTargetGlobalValue",
+                      "target": "Self",
+                      "key": "SGV_WorkerMachine_Finish",
+                      "value": 1
+                    }
+                  ]
+                }
+              ],
+              "state": 903
+            }
+          ]
+        },
+        "ActiveState": {
+          "modifierName": "",
+          "elementDurability": 100,
+          "modifierMixins": [
+            {
+              "$type": "ShaderStateMachineSwitchMixin",
+              "HPJJAKOLMIC": 1,
+              "DJMLPIJPFNO": 4,
+              "CEIFKFCFIIL": ""
+            }
+          ],
+          "onAdded": [
+            {
+              "$type": "AttachModifier",
+              "modifierName": "UNIQUE_WorkerMachine_Steam"
+            },
+            {
+              "$type": "ChangeGadgetState",
+              "otherTargets": {
+                "$type": "ODOCBBCLHLC",
+                "operation": "XOR",
+                "ratio": 1
+              },
+              "state": 903
+            },
+            {
+              "$type": "ChangeGadgetState",
+              "otherTargets": {
+                "$type": "ODOCBBCLHLC",
+                "operation": "XOR",
+                "ratio": 2
+              },
+              "state": 201
+            }
+          ]
+        },
+        "FinishState": {
+          "modifierName": "",
+          "elementDurability": 100,
+          "modifierMixins": [
+            {
+              "$type": "ShaderStateMachineSwitchMixin",
+              "DJMLPIJPFNO": 4,
+              "CEIFKFCFIIL": ""
+            }
+          ],
+          "onAdded": [
+            {
+              "$type": "RemoveUniqueModifier",
+              "modifierName": "UNIQUE_WorkerMachine_Steam"
+            },
+            {
+              "$type": "FireEffect",
+              "effectPattern": "Eff_SceneObj_PrisonWorkerMachine_01_Steam_Burst"
+            },
+            {
+              "$type": "FireEffect",
+              "effectPattern": "Eff_SceneObj_PrisonWorkerMachine_01_Finish"
+            },
+            {
+              "$type": "ChangeGadgetState",
+              "otherTargets": {
+                "$type": "ODOCBBCLHLC",
+                "operation": "XOR",
+                "ratio": 1
+              },
+              "state": 202
+            },
+            {
+              "$type": "ChangeGadgetState",
+              "otherTargets": {
+                "$type": "ODOCBBCLHLC",
+                "operation": "XOR",
+                "ratio": 2
+              }
+            }
+          ]
+        }
+      },
+      "onAdded": [
+        {
+          "$type": "SetGlobalValueV2",
+          "value": 0,
+          "key": "_Ability_PrisonWorkerMachine_AvatarCount",
+          "maxValue": 0,
+          "minValue": 0
+        },
+        {
+          "$type": "SetGlobalValue",
+          "value": 0,
+          "key": "_Ability_WorkerMachine_Jump",
+          "maxValue": 0,
+          "minValue": 0
+        }
+      ]
+    }
+  },
+  {
+    "Default": {
+      "$type": "ConfigAbility",
+      "abilityName": "SceneObj_Area_Fd_Property_Ani_Prop_PrisonWorkerMachine_02_Ability",
+      "abilityMixins": [
+        {
+          "$type": "AttachToGadgetStateMixin",
+          "modifierName": "HideState"
+        },
+        {
+          "$type": "AttachToGadgetStateMixin",
+          "gadgetState": 201,
+          "modifierName": "WaitState"
+        },
+        {
+          "$type": "AttachToGadgetStateMixin",
+          "gadgetState": 903,
+          "modifierName": "ActiveState"
+        },
+        {
+          "$type": "AttachToGadgetStateMixin",
+          "gadgetState": 901,
+          "modifierName": "HitState"
+        },
+        {
+          "$type": "AttachToGadgetStateMixin",
+          "gadgetState": 902,
+          "modifierName": "JumpState"
+        },
+        {
+          "$type": "AttachToGadgetStateMixin",
+          "gadgetState": 202,
+          "modifierName": "FinishState"
+        }
+      ],
+      "modifiers": {
+        "HideState": {
+          "modifierName": "",
+          "elementDurability": 100,
+          "modifierMixins": [
+            {
+              "$type": "ShaderStateMachineSwitchMixin",
+              "DJMLPIJPFNO": 4,
+              "CEIFKFCFIIL": ""
+            }
+          ],
+          "onAdded": [
+            {
+              "$type": "EnableSceneTransformByName",
+              "transformNames": [
+                "Unfinished"
+              ]
+            },
+            {
+              "$type": "EnableSceneTransformByName",
+              "transformNames": [
+                "Finished"
+              ]
+            }
+          ]
+        },
+        "WaitState": {
+          "modifierName": "",
+          "elementDurability": 100,
+          "modifierMixins": [
+            {
+              "$type": "ShaderStateMachineSwitchMixin",
+              "DJMLPIJPFNO": 4,
+              "CEIFKFCFIIL": ""
+            }
+          ],
+          "onAdded": [
+            {
+              "$type": "EnableSceneTransformByName",
+              "transformNames": [
+                "Unfinished"
+              ],
+              "setEnable": true
+            },
+            {
+              "$type": "EnableSceneTransformByName",
+              "transformNames": [
+                "Finished"
+              ]
+            }
+          ]
+        },
+        "HitState": {
+          "modifierName": "",
+          "elementDurability": 100,
+          "modifierMixins": [
+            {
+              "$type": "ShaderStateMachineSwitchMixin",
+              "HPJJAKOLMIC": 2,
+              "DJMLPIJPFNO": 4,
+              "CEIFKFCFIIL": ""
+            }
+          ],
+          "onAdded": [
+            {
+              "$type": "EnableSceneTransformByName",
+              "transformNames": [
+                "Unfinished"
+              ],
+              "setEnable": true
+            },
+            {
+              "$type": "EnableSceneTransformByName",
+              "transformNames": [
+                "Finished"
+              ]
+            }
+          ]
+        },
+        "JumpState": {
+          "modifierName": "",
+          "elementDurability": 100,
+          "modifierMixins": [
+            {
+              "$type": "ShaderStateMachineSwitchMixin",
+              "HPJJAKOLMIC": 1,
+              "DJMLPIJPFNO": 4,
+              "CEIFKFCFIIL": ""
+            }
+          ],
+          "onAdded": [
+            {
+              "$type": "EnableSceneTransformByName",
+              "transformNames": [
+                "Unfinished"
+              ],
+              "setEnable": true
+            },
+            {
+              "$type": "EnableSceneTransformByName",
+              "transformNames": [
+                "Finished"
+              ]
+            }
+          ]
+        },
+        "ActiveState": {
+          "modifierName": "",
+          "elementDurability": 100,
+          "modifierMixins": [
+            {
+              "$type": "ShaderStateMachineSwitchMixin",
+              "HPJJAKOLMIC": 3,
+              "DJMLPIJPFNO": 4,
+              "CEIFKFCFIIL": ""
+            }
+          ],
+          "onAdded": [
+            {
+              "$type": "EnableSceneTransformByName",
+              "transformNames": [
+                "Unfinished"
+              ],
+              "setEnable": true
+            },
+            {
+              "$type": "EnableSceneTransformByName",
+              "transformNames": [
+                "Finished"
+              ]
+            }
+          ]
+        },
+        "FinishState": {
+          "modifierName": "",
+          "elementDurability": 100,
+          "onAdded": [
+            {
+              "$type": "EnableSceneTransformByName",
+              "transformNames": [
+                "Unfinished"
+              ]
+            },
+            {
+              "$type": "EnableSceneTransformByName",
+              "transformNames": [
+                "Finished"
+              ],
+              "setEnable": true
+            }
+          ]
+        }
+      }
+    }
+  },
+  {
+    "Default": {
+      "$type": "ConfigAbility",
+      "abilityName": "SceneObj_Area_Fd_Property_Ani_Prop_PrisonWorkerMachine_03_Ability",
+      "abilityMixins": [
+        {
+          "$type": "AttachToGadgetStateMixin",
+          "modifierName": "DefaultState"
+        },
+        {
+          "$type": "AttachToGadgetStateMixin",
+          "gadgetState": 201,
+          "modifierName": "StartState"
+        }
+      ],
+      "modifiers": {
+        "DefaultState": {
+          "modifierName": "",
+          "elementDurability": 100
+        },
+        "StartState": {
+          "modifierName": "",
+          "elementDurability": 100
+        }
+      }
+    }
+  },
+  {
+    "Default": {
+      "$type": "ConfigAbility",
+      "abilityName": "SceneObj_Level_Fd_Property_Ani_Prop_SealValveSwitch_01",
+      "abilityMixins": [
+        {
+          "$type": "AttachToGadgetStateMixin",
+          "modifierName": "Normal"
+        },
+        {
+          "$type": "AttachToGadgetStateMixin",
+          "gadgetState": 201,
+          "modifierName": "ValveOpen"
+        },
+        {
+          "$type": "AttachToGadgetStateMixin",
+          "gadgetState": 202,
+          "modifierName": "Lock"
+        }
+      ],
+      "modifiers": {
+        "Normal": {
+          "modifierName": "",
+          "elementDurability": 100,
+          "modifierMixins": [
+            {
+              "$type": "ShaderStateMachineSwitchMixin",
+              "CEIFKFCFIIL": ""
+            }
+          ]
+        },
+        "ValveOpen": {
+          "modifierName": "",
+          "elementDurability": 100,
+          "modifierMixins": [
+            {
+              "$type": "ShaderStateMachineSwitchMixin",
+              "HPJJAKOLMIC": 1,
+              "CEIFKFCFIIL": ""
+            }
+          ],
+          "onAdded": [
+            {
+              "$type": "SetAnimatorTrigger",
+              "triggerID": "Attack",
+              "MPTriggerOnRemote": true
+            }
+          ]
+        },
+        "Lock": {
+          "modifierName": "",
+          "elementDurability": 100,
+          "modifierMixins": [
+            {
+              "$type": "ShaderStateMachineSwitchMixin",
+              "CEIFKFCFIIL": ""
+            }
+          ],
+          "onAdded": [
+            {
+              "$type": "AttachEffect",
+              "effectPattern": "Eff_Item_SpecialTreasureBox_LockIdle",
+              "born": {
+                "$type": "ConfigBornByAttachPoint",
+                "useRotation": true,
+                "attachPointName": "AttachPoint"
+              }
+            }
+          ],
+          "onRemoved": [
+            {
+              "$type": "FireEffect",
+              "effectPattern": "Eff_Item_SpecialTreasureBox_Unlock",
+              "born": {
+                "$type": "ConfigBornByAttachPoint",
+                "useRotation": true,
+                "attachPointName": "AttachPoint"
+              }
+            }
+          ]
+        }
+      }
+    }
+  },
+  {
+    "Default": {
+      "$type": "ConfigAbility",
+      "abilityName": "SceneObj_Level_Fd_Property_Ani_Prop_SealValve_01",
+      "abilityMixins": [
+        {
+          "$type": "AttachToGadgetStateMixin",
+          "modifierName": "Close"
+        },
+        {
+          "$type": "AttachToGadgetStateMixin",
+          "gadgetState": 201,
+          "modifierName": "Open"
+        }
+      ],
+      "modifiers": {
+        "Close": {
+          "modifierName": "",
+          "elementDurability": 100,
+          "onAdded": [
+            {
+              "$type": "SetAnimatorInt",
+              "intID": "GadgetState",
+              "value": 0
+            }
+          ],
+          "onRemoved": [
+            {
+              "$type": "FireEffect",
+              "effectPattern": "Eff_SceneObj_SealValve_01_Open",
+              "born": {
+                "$type": "ConfigBornByAttachPoint",
+                "useRotation": true,
+                "attachPointName": "RootNode"
+              }
+            }
+          ]
+        },
+        "Open": {
+          "modifierName": "",
+          "elementDurability": 100,
+          "onAdded": [
+            {
+              "$type": "SetAnimatorInt",
+              "intID": "GadgetState",
+              "value": 201
+            }
+          ]
+        }
+      }
+    }
+  },
+  {
+    "Default": {
+      "$type": "ConfigAbility",
+      "abilityName": "SceneObj_Indoor_Fd_Property_Ani_Prop_PrisonSecretGate_01",
+      "abilityMixins": [
+        {
+          "$type": "AttachToGadgetStateMixin",
+          "modifierName": "Close"
+        },
+        {
+          "$type": "AttachToGadgetStateMixin",
+          "gadgetState": 201,
+          "modifierName": "Open"
+        }
+      ],
+      "modifiers": {
+        "Close": {
+          "modifierName": "",
+          "elementDurability": 100,
+          "onAdded": [
+            {
+              "$type": "SetAnimatorInt",
+              "intID": "GadgetState",
+              "value": 0
+            }
+          ]
+        },
+        "Open": {
+          "modifierName": "",
+          "elementDurability": 100,
+          "onAdded": [
+            {
+              "$type": "SetAnimatorInt",
+              "intID": "GadgetState",
+              "value": 201
+            }
+          ]
+        }
+      }
+    }
+  },
+  {
+    "Default": {
+      "$type": "ConfigAbility",
+      "abilityName": "SceneObj_Area_Fd_Property_Ani_Tree_FactoryElevator_02",
+      "abilityMixins": [
+        {
+          "$type": "AttachToGadgetStateMixin",
+          "modifierName": "Lock"
+        },
+        {
+          "$type": "AttachToGadgetStateMixin",
+          "gadgetState": 201,
+          "modifierName": "Open"
+        },
+        {
+          "$type": "AttachToGadgetStateMixin",
+          "gadgetState": 202,
+          "modifierName": "Close"
+        }
+      ],
+      "modifiers": {
+        "LightManager": {
+          "modifierName": "",
+          "elementDurability": 100,
+          "onAdded": [
+            {
+              "$type": "AttachEffect",
+              "effectPattern": "Eff_SceneObj_Area_Fd_Property_Ani_Tree_FactoryElevator_02_Light",
+              "born": {
+                "$type": "ConfigBornByAttachPoint",
+                "useRotation": true,
+                "attachPointName": "RootNode"
+              },
+              "isPlatformDependent": true
+            }
+          ]
+        },
+        "Lock": {
+          "modifierName": "",
+          "elementDurability": 100,
+          "onAdded": [
+            {
+              "$type": "SetMaterialParamFloatByTransform",
+              "canBeHandledOnRecover": true,
+              "matName": "light",
+              "patternName": "_EmissionStrength",
+              "value": 0.5
+            },
+            {
+              "$type": "RemoveModifier",
+              "modifierName": "LightManager"
+            }
+          ]
+        },
+        "Open": {
+          "modifierName": "",
+          "elementDurability": 100,
+          "onAdded": [
+            {
+              "$type": "SetAnimatorInt",
+              "intID": "GadgetState",
+              "value": 201
+            },
+            {
+              "$type": "FireEffect",
+              "effectPattern": "Eff_SceneObj_Area_Common_Property_Ani_Prop_FactoryElevator_01",
+              "born": {
+                "$type": "ConfigBornByAttachPoint",
+                "useRotation": true,
+                "attachPointName": "AttachPoint"
+              }
+            },
+            {
+              "$type": "FireEffect",
+              "effectPattern": "Eff_SceneObj_Area_Common_Property_Ani_Prop_FactoryElevator_02",
+              "born": {
+                "$type": "ConfigBornByAttachPoint",
+                "useRotation": true,
+                "attachPointName": "RootNode"
+              }
+            },
+            {
+              "$type": "SetMaterialParamFloatByTransform",
+              "canBeHandledOnRecover": true,
+              "matName": "light",
+              "patternName": "_EmissionStrength",
+              "value": 4.91
+            },
+            {
+              "$type": "ApplyModifier",
+              "modifierName": "LightManager"
+            }
+          ]
+        },
+        "Close": {
+          "modifierName": "",
+          "elementDurability": 100,
+          "onAdded": [
+            {
+              "$type": "SetAnimatorInt",
+              "intID": "GadgetState",
+              "value": 0
+            },
+            {
+              "$type": "SetMaterialParamFloatByTransform",
+              "canBeHandledOnRecover": true,
+              "matName": "light",
+              "patternName": "_EmissionStrength",
+              "value": 4.91
+            },
+            {
+              "$type": "ApplyModifier",
+              "modifierName": "LightManager"
+            }
+          ]
+        }
+      }
+    }
+  },
+  {
+    "Default": {
+      "$type": "ConfigAbility",
+      "abilityName": "SceneObj_Indoor_Fd_Property_Ani_Prop_PrisonOfficeFrostedGlass_01",
+      "abilityMixins": [
+        {
+          "$type": "AttachToGadgetStateMixin",
+          "modifierName": "Close"
+        },
+        {
+          "$type": "AttachToGadgetStateMixin",
+          "gadgetState": 201,
+          "modifierName": "Open"
+        }
+      ],
+      "modifiers": {
+        "Close": {
+          "modifierName": "",
+          "elementDurability": 100,
+          "modifierMixins": [
+            {
+              "$type": "ShaderStateMachineSwitchMixin",
+              "HPJJAKOLMIC": 1,
+              "CEIFKFCFIIL": ""
+            }
+          ]
+        },
+        "Open": {
+          "modifierName": "",
+          "elementDurability": 100,
+          "modifierMixins": [
+            {
+              "$type": "ShaderStateMachineSwitchMixin",
+              "CEIFKFCFIIL": ""
+            }
+          ]
+        }
+      }
+    }
+  },
+  {
+    "Default": {
+      "$type": "ConfigAbility",
+      "abilityName": "SceneObj_Indoor_Fd_Property_Ani_Prop_PrisonOfficeFrostedGlass_02",
+      "abilityMixins": [
+        {
+          "$type": "AttachToGadgetStateMixin",
+          "modifierName": "Close"
+        },
+        {
+          "$type": "AttachToGadgetStateMixin",
+          "gadgetState": 201,
+          "modifierName": "Open"
+        }
+      ],
+      "modifiers": {
+        "Close": {
+          "modifierName": "",
+          "elementDurability": 100
+        },
+        "Open": {
+          "modifierName": "",
+          "elementDurability": 100
+        }
+      }
+    }
+  },
+  {
+    "Default": {
+      "$type": "ConfigAbility",
+      "abilityName": "SceneObj_Quest_SimpleGadgetTalk_LimitAngle_Ability",
+      "onFieldEnter": [
+        {
+          "$type": "Predicated",
+          "target": "CurLocalAvatar",
+          "targetPredicates": [
+            {
+              "$type": "FEFBBODKDON",
+              "logic": "LesserOrEqual",
+              "value": 90,
+              "MDEODOKEDHI": false,
+              "NIGJLOBJLJJ": ""
+            },
+            {
+              "$type": "FEFBBODKDON",
+              "logic": "GreaterOrEqual",
+              "value": -90,
+              "MDEODOKEDHI": false,
+              "NIGJLOBJLJJ": ""
+            }
+          ],
+          "successActions": [
+            {
+              "$type": "EnableGadgetIntee",
+              "enable": true
+            }
+          ],
+          "failActions": [
+            {
+              "$type": "EnableGadgetIntee"
+            }
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "Default": {
+      "$type": "ConfigAbility",
+      "abilityName": "SceneObj_Area_Fd_Property_Ani_Prop_ShardPrimalOre_01_Ability"
+    }
+  },
+  {
+    "Default": {
+      "$type": "ConfigAbility",
+      "abilityName": "SceneObj_Area_Common_Property_Ani_Prop_PrimalKey_02_Ability",
+      "onKill": [
+        {
+          "$type": "FireEffect",
+          "effectPattern": "Eff_SceneObj_PrimalKey_08"
+        }
+      ]
+    }
+  },
+  {
+    "Default": {
+      "$type": "ConfigAbility",
+      "abilityName": "SceneObj_Area_Fd_Property_Ani_Ajar_TrainingJar_01_Ability",
+      "abilityMixins": [
+        {
+          "$type": "AttachToGadgetStateMixin",
+          "modifierName": "NormalCreate"
+        },
+        {
+          "$type": "AttachToGadgetStateMixin",
+          "gadgetState": 201,
+          "modifierName": "Broken"
+        }
+      ],
+      "modifiers": {
+        "NormalCreate": {
+          "modifierName": "",
+          "elementDurability": 100,
+          "onAdded": [
+            {
+              "$type": "FireEffect",
+              "effectPattern": "Eff_SceneObj_Area_Fd_Property_Ani_Prop_FontaineSciTank_01"
+            }
+          ]
+        },
+        "Broken": {
+          "modifierName": "",
+          "elementDurability": 100,
+          "onAdded": [
+            {
+              "$type": "KillSelf"
+            }
+          ]
+        },
+        "BombBoxLoop": {
+          "modifierName": "",
+          "elementDurability": 100,
+          "onBeingHit": [
+            {
+              "$type": "Predicated",
+              "target": "Other",
+              "targetPredicates": [
+                {
+                  "$type": "ByAttackTags",
+                  "attackTags": [
+                    "TrainingJar"
+                  ]
+                }
+              ],
+              "successActions": [
+                {
+                  "$type": "ChangeGadgetState",
+                  "state": 201
+                },
+                {
+                  "$type": "FireEffect",
+                  "effectPattern": "Eff_SceneObj_HumanJars_01_Destroy"
+                }
+              ]
+            }
+          ]
+        }
+      },
+      "onAdded": [
+        {
+          "$type": "ApplyModifier",
+          "modifierName": "BombBoxLoop"
+        }
+      ]
+    }
+  },
+  {
+    "Default": {
+      "$type": "ConfigAbility",
+      "abilityName": "SceneObj_Area_Fd_Property_Ani_Prop_PotHitbox_01",
+      "abilityMixins": [
+        {
+          "$type": "AttachToGadgetStateMixin",
+          "modifierName": "HitAble"
+        },
+        {
+          "$type": "AttachToGadgetStateMixin",
+          "gadgetState": 201,
+          "modifierName": "AlreadyHit"
+        }
+      ],
+      "modifiers": {
+        "HitAble": {
+          "modifierName": "",
+          "elementDurability": 100,
+          "onBeingHit": [
+            {
+              "$type": "Predicated",
+              "target": "Target",
+              "targetPredicates": [
+                {
+                  "$type": "IAIDEINPHNP"
+                }
+              ],
+              "successActions": [
+                {
+                  "$type": "ChangeGadgetState",
+                  "state": 201
+                }
+              ]
+            }
+          ]
+        },
+        "AlreadyHit": {
+          "modifierName": "",
+          "elementDurability": 100
+        }
+      }
+    }
+  },
+  {
+    "Default": {
+      "$type": "ConfigAbility",
+      "abilityName": "SceneObj_Area_Md_Property_Ani_Prop_FishblasterZhuoKong_01",
+      "onAdded": [
+        {
+          "$type": "EnableGadgetIntee",
+          "enable": true
+        }
+      ]
+    }
+  },
+  {
+    "Default": {
+      "$type": "ConfigAbility",
+      "abilityName": "SceneObj_Area_Fd_Property_Ani_Prop_DirtyWTShield_01",
+      "abilityMixins": [
+        {
+          "$type": "AttachToGadgetStateMixin",
+          "modifierName": "AirWallEnable"
+        },
+        {
+          "$type": "AttachToGadgetStateMixin",
+          "gadgetState": 201,
+          "modifierName": "Break"
+        }
+      ],
+      "modifiers": {
+        "AirWallEnable": {
+          "modifierName": "",
+          "elementDurability": 100,
+          "modifierMixins": [
+            {
+              "$type": "FieldEntityCountChangeMixin",
+              "campTargetType": "All",
+              "targetPredicates": [
+                {
+                  "$type": "ByEntityTypes",
+                  "entityTypes": [
+                    "Avatar"
+                  ]
+                },
+                {
+                  "$type": "ByHasModifier",
+                  "modifierName": "ArkheCannon_Shoot_State_OnAvatar_Sub"
+                }
+              ],
+              "onFieldEnter": [
+                {
+                  "$type": "AttachEffect",
+                  "effectPattern": "Eff_SceneObj_DirtyWTShield_Disappear",
+                  "born": {
+                    "$type": "ConfigBornByAttachPoint",
+                    "useRotation": true,
+                    "attachPointName": "AttachPoint"
+                  }
+                }
+              ],
+              "replaceOnAddedInTick": true,
+              "simpleCountGlobaValueKey": "DirtyWTShield_Count",
+              "CEEECMFFGFL": true,
+              "simpleCountMaxValue": 1,
+              "simpleCountMinValue": 0
+            }
+          ],
+          "onAdded": [
+            {
+              "$type": "SetGlobalValue",
+              "value": 0,
+              "key": "Is_Broken",
+              "maxValue": 0,
+              "minValue": 0
+            },
+            {
+              "$type": "AttachEffect",
+              "effectPattern": "Eff_SceneObj_DirtyWTShield_01",
+              "born": {
+                "$type": "ConfigBornByAttachPoint",
+                "useRotation": true,
+                "attachPointName": "RootNode"
+              }
+            }
+          ]
+        },
+        "Break": {
+          "modifierName": "",
+          "elementDurability": 100,
+          "onAdded": [
+            {
+              "$type": "EnableSceneTransformByName",
+              "transformNames": [
+                "Airwall"
+              ]
+            }
+          ]
+        }
+      }
+    }
+  },
+  {
+    "Default": {
+      "$type": "ConfigAbility",
+      "abilityName": "SceneObj_Area_Fd_Property_Ani_Prop_DirtyWTShield_02",
+      "abilityMixins": [
+        {
+          "$type": "AttachToGadgetStateMixin",
+          "modifierName": "AirWallEnable"
+        },
+        {
+          "$type": "AttachToGadgetStateMixin",
+          "gadgetState": 201,
+          "modifierName": "Break"
+        }
+      ],
+      "modifiers": {
+        "AirWallEnable": {
+          "modifierName": "",
+          "elementDurability": 100,
+          "modifierMixins": [
+            {
+              "$type": "FieldEntityCountChangeMixin",
+              "campTargetType": "All",
+              "targetPredicates": [
+                {
+                  "$type": "ByEntityTypes",
+                  "entityTypes": [
+                    "Avatar"
+                  ]
+                },
+                {
+                  "$type": "ByHasModifier",
+                  "modifierName": "ArkheCannon_Shoot_State_OnAvatar_Sub"
+                }
+              ],
+              "onFieldEnter": [
+                {
+                  "$type": "AttachEffect",
+                  "effectPattern": "Eff_SceneObj_DirtyWTShield_Disappear",
+                  "born": {
+                    "$type": "ConfigBornByAttachPoint",
+                    "useRotation": true,
+                    "attachPointName": "AttachPoint"
+                  }
+                }
+              ],
+              "replaceOnAddedInTick": true,
+              "simpleCountGlobaValueKey": "DirtyWTShield_Count",
+              "CEEECMFFGFL": true,
+              "simpleCountMaxValue": 1,
+              "simpleCountMinValue": 0
+            }
+          ],
+          "onAdded": [
+            {
+              "$type": "AttachEffect",
+              "effectPattern": "Eff_SceneObj_DirtyWTShield_02",
+              "born": {
+                "$type": "ConfigBornByAttachPoint",
+                "useRotation": true,
+                "attachPointName": "RootNode"
+              }
+            }
+          ]
+        },
+        "Break": {
+          "modifierName": "",
+          "elementDurability": 100,
+          "onAdded": [
+            {
+              "$type": "EnableSceneTransformByName",
+              "transformNames": [
+                "Airwall"
+              ]
+            }
+          ]
+        }
+      }
+    }
+  },
+  {
+    "Default": {
+      "$type": "ConfigAbility",
+      "abilityName": "SceneObj_Area_Fd_Property_Ani_Prop_DirtyWTShield_03",
+      "abilityMixins": [
+        {
+          "$type": "AttachToGadgetStateMixin",
+          "modifierName": "AirWallEnable"
+        },
+        {
+          "$type": "AttachToGadgetStateMixin",
+          "gadgetState": 201,
+          "modifierName": "Break"
+        }
+      ],
+      "modifiers": {
+        "AirWallEnable": {
+          "modifierName": "",
+          "elementDurability": 100,
+          "modifierMixins": [
+            {
+              "$type": "FieldEntityCountChangeMixin",
+              "campTargetType": "All",
+              "targetPredicates": [
+                {
+                  "$type": "ByEntityTypes",
+                  "entityTypes": [
+                    "Avatar"
+                  ]
+                },
+                {
+                  "$type": "ByHasModifier",
+                  "modifierName": "ArkheCannon_Shoot_State_OnAvatar_Sub"
+                }
+              ],
+              "onFieldEnter": [
+                {
+                  "$type": "AttachEffect",
+                  "effectPattern": "Eff_SceneObj_DirtyWTShield_Disappear",
+                  "born": {
+                    "$type": "ConfigBornByAttachPoint",
+                    "useRotation": true,
+                    "attachPointName": "AttachPoint"
+                  }
+                }
+              ],
+              "replaceOnAddedInTick": true,
+              "simpleCountGlobaValueKey": "DirtyWTShield_Count",
+              "CEEECMFFGFL": true,
+              "simpleCountMaxValue": 1,
+              "simpleCountMinValue": 0
+            }
+          ],
+          "onAdded": [
+            {
+              "$type": "AttachEffect",
+              "effectPattern": "Eff_SceneObj_DirtyWTShield_03",
+              "born": {
+                "$type": "ConfigBornByAttachPoint",
+                "useRotation": true,
+                "attachPointName": "RootNode"
+              }
+            }
+          ]
+        },
+        "Break": {
+          "modifierName": "",
+          "elementDurability": 100,
+          "onAdded": [
+            {
+              "$type": "SetGlobalValue",
+              "value": 1,
+              "key": "Is_Broken",
+              "maxValue": 0,
+              "minValue": 0
+            },
+            {
+              "$type": "EnableSceneTransformByName",
+              "transformNames": [
+                "Airwall"
+              ]
+            }
+          ]
+        }
+      }
+    }
+  },
+  {
+    "Default": {
+      "$type": "ConfigAbility",
+      "abilityName": "SceneObj_Area_Fd_Property_Ani_Prop_DirtyWTShield_04",
+      "abilityMixins": [
+        {
+          "$type": "AttachToGadgetStateMixin",
+          "modifierName": "AirWallEnable"
+        },
+        {
+          "$type": "AttachToGadgetStateMixin",
+          "gadgetState": 201,
+          "modifierName": "Break"
+        }
+      ],
+      "modifiers": {
+        "AirWallEnable": {
+          "modifierName": "",
+          "elementDurability": 100,
+          "modifierMixins": [
+            {
+              "$type": "FieldEntityCountChangeMixin",
+              "campTargetType": "All",
+              "targetPredicates": [
+                {
+                  "$type": "ByEntityTypes",
+                  "entityTypes": [
+                    "Avatar"
+                  ]
+                },
+                {
+                  "$type": "ByHasModifier",
+                  "modifierName": "ArkheCannon_Shoot_State_OnAvatar_Sub"
+                }
+              ],
+              "onFieldEnter": [
+                {
+                  "$type": "AttachEffect",
+                  "effectPattern": "Eff_SceneObj_DirtyWTShield_Disappear",
+                  "born": {
+                    "$type": "ConfigBornByAttachPoint",
+                    "useRotation": true,
+                    "attachPointName": "AttachPoint"
+                  }
+                }
+              ],
+              "replaceOnAddedInTick": true,
+              "simpleCountGlobaValueKey": "DirtyWTShield_Count",
+              "CEEECMFFGFL": true,
+              "simpleCountMaxValue": 1,
+              "simpleCountMinValue": 0
+            }
+          ],
+          "onAdded": [
+            {
+              "$type": "AttachEffect",
+              "effectPattern": "Eff_SceneObj_DirtyWTShield_04",
+              "born": {
+                "$type": "ConfigBornByAttachPoint",
+                "useRotation": true,
+                "attachPointName": "RootNode"
+              }
+            }
+          ]
+        },
+        "Break": {
+          "modifierName": "",
+          "elementDurability": 100,
+          "onAdded": [
+            {
+              "$type": "SetGlobalValue",
+              "value": 1,
+              "key": "Is_Broken",
+              "maxValue": 0,
+              "minValue": 0
+            },
+            {
+              "$type": "EnableSceneTransformByName",
+              "transformNames": [
+                "Airwall"
+              ]
+            }
+          ]
+        }
+      }
+    }
+  },
+  {
+    "Default": {
+      "$type": "ConfigAbility",
+      "abilityName": "SceneObj_Area_Fd_Property_Ani_Prop_FDFacPipeValve_02",
+      "abilityMixins": [
+        {
+          "$type": "AttachToGadgetStateMixin",
+          "modifierName": "None"
+        },
+        {
+          "$type": "AttachToGadgetStateMixin",
+          "gadgetState": 101,
+          "modifierName": "0Degree"
+        },
+        {
+          "$type": "AttachToGadgetStateMixin",
+          "gadgetState": 102,
+          "modifierName": "90Degree"
+        },
+        {
+          "$type": "AttachToGadgetStateMixin",
+          "gadgetState": 103,
+          "modifierName": "180Degree"
+        },
+        {
+          "$type": "AttachToGadgetStateMixin",
+          "gadgetState": 104,
+          "modifierName": "270Degree"
+        },
+        {
+          "$type": "AttachToGadgetStateMixin",
+          "gadgetState": 901,
+          "modifierName": "SuccessState"
+        }
+      ],
+      "modifiers": {
+        "None": {
+          "modifierName": "",
+          "elementDurability": 100,
+          "modifierMixins": [
+            {
+              "$type": "ShaderStateMachineSwitchMixin",
+              "CEIFKFCFIIL": ""
+            }
+          ]
+        },
+        "0Degree": {
+          "modifierName": "",
+          "elementDurability": 100,
+          "modifierMixins": [
+            {
+              "$type": "ShaderStateMachineSwitchMixin",
+              "CEIFKFCFIIL": ""
+            }
+          ],
+          "onAdded": [
+            {
+              "$type": "EnableSceneTransformByName",
+              "transformNames": [
+                "Valve"
+              ],
+              "setEnable": true
+            },
+            {
+              "$type": "SetAnimatorInt",
+              "intID": "degree",
+              "value": 0
+            }
+          ]
+        },
+        "90Degree": {
+          "modifierName": "",
+          "elementDurability": 100,
+          "modifierMixins": [
+            {
+              "$type": "ShaderStateMachineSwitchMixin",
+              "CEIFKFCFIIL": ""
+            }
+          ],
+          "onAdded": [
+            {
+              "$type": "SetAnimatorInt",
+              "intID": "degree",
+              "value": 90
+            }
+          ]
+        },
+        "180Degree": {
+          "modifierName": "",
+          "elementDurability": 100,
+          "modifierMixins": [
+            {
+              "$type": "ShaderStateMachineSwitchMixin",
+              "CEIFKFCFIIL": ""
+            }
+          ],
+          "onAdded": [
+            {
+              "$type": "SetAnimatorInt",
+              "intID": "degree",
+              "value": 180
+            }
+          ]
+        },
+        "270Degree": {
+          "modifierName": "",
+          "elementDurability": 100,
+          "modifierMixins": [
+            {
+              "$type": "ShaderStateMachineSwitchMixin",
+              "CEIFKFCFIIL": ""
+            }
+          ],
+          "onAdded": [
+            {
+              "$type": "SetAnimatorInt",
+              "intID": "degree",
+              "value": 270
+            }
+          ]
+        },
+        "SuccessState": {
+          "modifierName": "",
+          "elementDurability": 100,
+          "modifierMixins": [
+            {
+              "$type": "ShaderStateMachineSwitchMixin",
+              "HPJJAKOLMIC": 3,
+              "CEIFKFCFIIL": ""
+            }
+          ]
+        }
+      }
+    }
+  },
+  {
+    "Default": {
+      "$type": "ConfigAbility",
+      "abilityName": "SceneObj_Area_Fd_Property_Ani_Prop_FdSeaobstacles_01",
+      "modifiers": {
+        "OnHit": {
+          "modifierName": "",
+          "elementDurability": 100,
+          "onBeingHit": [
+            {
+              "$type": "LoseHP",
+              "predicates": [
+                {
+                  "$type": "ByAttackTags",
+                  "attackTags": [
+                    "Skiff_Cannon_Small"
+                  ]
+                }
+              ],
+              "amount": 100,
+              "amount": ""
+            },
+            {
+              "$type": "LoseHP",
+              "predicates": [
+                {
+                  "$type": "ByAttackTags",
+                  "attackTags": [
+                    "Skiff_Cannon_Big"
+                  ]
+                }
+              ],
+              "amount": 400,
+              "amount": ""
+            },
+            {
+              "$type": "LoseHP",
+              "predicates": [
+                {
+                  "$type": "ByAttackTags",
+                  "attackTags": [
+                    "Sea_Bomb_Barrel"
+                  ]
+                }
+              ],
+              "amount": 300,
+              "amount": ""
+            }
+          ]
+        },
+        "AttachEffect": {
+          "modifierName": "",
+          "elementDurability": 100,
+          "onAdded": [
+            {
+              "$type": "AttachEffect",
+              "effectPattern": "Eff_SceneObj_FdWaterObjRipple_01"
+            }
+          ]
+        }
+      },
+      "onAdded": [
+        {
+          "$type": "ApplyModifier",
+          "modifierName": "OnHit"
+        },
+        {
+          "$type": "ApplyModifier",
+          "modifierName": "AttachEffect"
+        }
+      ],
+      "onKill": [
+        {
+          "$type": "FireEffect",
+          "effectPattern": "Eff_SceneObj_Seaobstacles_01_Destroy"
+        }
+      ]
+    }
+  },
+  {
+    "Default": {
+      "$type": "ConfigAbility",
+      "abilityName": "SceneObj_Area_Fd_Property_Ani_Prop_FdHiliSeaLookout_01",
+      "modifiers": {
+        "AttachEffect": {
+          "modifierName": "",
+          "elementDurability": 100,
+          "onAdded": [
+            {
+              "$type": "AttachEffect",
+              "effectPattern": "Eff_SceneObj_FdWaterObjRipple_02"
+            }
+          ]
+        }
+      },
+      "onAdded": [
+        {
+          "$type": "ApplyModifier",
+          "modifierName": "AttachEffect"
+        }
+      ]
+    }
+  }
+]
