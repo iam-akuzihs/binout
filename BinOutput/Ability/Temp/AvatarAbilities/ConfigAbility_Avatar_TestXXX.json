@@ -1,40 +1,95 @@
 [
   {
     "Default": {
-      "modifiers": {
-        "ExtraAttack_StaminaCost": {
-          "onAdded": [
-            {
-              "$type": "AvatarSkillStart",
-              "skillID": 10001,
-              "cdRatio": 1,
-              "costStaminaRatio": "ExtraAttack_Sword_Stamina_Cost",
-              "cdRatio": 1
-            }
-          ],
-          "elementDurability": 100,
-          "modifierName": "",
-          "__unk_Q3323398612": 0
-        },
-        "ExtraAttack_AS_Effect": {
-          "onAdded": [
-            {
-              "$type": "AttachEffect",
-              "ILLLPEOODKP": "",
-              "scale": 1,
-              "effectPattern": "Eff_Avatar_Male_Sword_Kaeya_ExtraAttack_SwordAS"
-            }
-          ],
-          "stacking": "Unique",
-          "elementDurability": 100,
-          "modifierName": "",
-          "__unk_Q3323398612": 0
-        }
-      },
       "abilityMixins": [
         {
           "$type": "ButtonHoldChargeMixin",
-          "skillID": 10461,
+          "chargeStateIDs": [
+            "Attack01",
+            "Attack02",
+            "Attack03",
+            "Attack04",
+            "Run"
+          ],
+          "chargeTime": 0.12,
+          "onBeginCharged": [
+            {
+              "$type": "SetAnimatorBool",
+              "boolID": "IsCharging",
+              "value": true
+            }
+          ],
+          "onBeginSecondCharged": [
+            {
+              "$type": "SetAnimatorTrigger",
+              "predicates": [
+                {
+                  "$type": "ByLocalAvatarStamina",
+                  "logic": "GreaterOrEqual",
+                  "stamina": [
+                    "ExtraAttack_Sword_Stamina_Cost",
+                    "Flexible_Stamina",
+                    "ADD"
+                  ]
+                }
+              ],
+              "triggerID": "DoSkill"
+            },
+            {
+              "$type": "SetAnimatorInt",
+              "intID": "SkillID",
+              "predicates": [
+                {
+                  "$type": "ByLocalAvatarStamina",
+                  "logic": "GreaterOrEqual",
+                  "stamina": [
+                    "ExtraAttack_Sword_Stamina_Cost",
+                    "Flexible_Stamina",
+                    "ADD"
+                  ]
+                }
+              ],
+              "value": 6
+            },
+            {
+              "$type": "SetAnimatorBool",
+              "boolID": "IsCharging"
+            }
+          ],
+          "onBeginUncharged": [
+            {
+              "$type": "SetAnimatorTrigger",
+              "triggerID": "DoSkill"
+            },
+            {
+              "$type": "SetAnimatorInt",
+              "intID": "SkillID",
+              "predicates": [
+                {
+                  "$type": "ByAny",
+                  "predicates": [
+                    {
+                      "$type": "ByAnimatorInt",
+                      "logic": "Equal",
+                      "parameter": "ComboCount",
+                      "value": 0
+                    },
+                    {
+                      "$type": "ByAnimatorInt",
+                      "logic": "Equal",
+                      "parameter": "ComboCount",
+                      "value": 5
+                    }
+                  ]
+                }
+              ],
+              "value": 99
+            },
+            {
+              "$type": "SetAnimatorBool",
+              "boolID": "IsCharging"
+            }
+          ],
           "onReleaseCharged": [
             {
               "$type": "SetAnimatorBool",
@@ -46,128 +101,91 @@
               "value": 1
             }
           ],
-          "onBeginUncharged": [
-            {
-              "$type": "SetAnimatorTrigger",
-              "triggerID": "DoSkill"
-            },
-            {
-              "$type": "SetAnimatorInt",
-              "intID": "SkillID",
-              "value": 99,
-              "predicates": [
-                {
-                  "$type": "ByAny",
-                  "predicates": [
-                    {
-                      "$type": "ByAnimatorInt",
-                      "value": 0,
-                      "parameter": "ComboCount",
-                      "logic": "Equal"
-                    },
-                    {
-                      "$type": "ByAnimatorInt",
-                      "value": 5,
-                      "parameter": "ComboCount",
-                      "logic": "Equal"
-                    }
-                  ]
-                }
-              ]
-            },
-            {
-              "$type": "SetAnimatorBool",
-              "boolID": "IsCharging"
-            }
-          ],
-          "secondChargeTime": 0.2,
-          "chargeTime": 0.12,
-          "onBeginCharged": [
-            {
-              "$type": "SetAnimatorBool",
-              "value": true,
-              "boolID": "IsCharging"
-            }
-          ],
-          "onBeginSecondCharged": [
-            {
-              "$type": "SetAnimatorTrigger",
-              "triggerID": "DoSkill",
-              "predicates": [
-                {
-                  "$type": "ByLocalAvatarStamina",
-                  "stamina": [
-                    "ExtraAttack_Sword_Stamina_Cost",
-                    "Flexible_Stamina",
-                    "ADD"
-                  ],
-                  "logic": "GreaterOrEqual"
-                }
-              ]
-            },
-            {
-              "$type": "SetAnimatorInt",
-              "intID": "SkillID",
-              "value": 6,
-              "predicates": [
-                {
-                  "$type": "ByLocalAvatarStamina",
-                  "stamina": [
-                    "ExtraAttack_Sword_Stamina_Cost",
-                    "Flexible_Stamina",
-                    "ADD"
-                  ],
-                  "logic": "GreaterOrEqual"
-                }
-              ]
-            },
-            {
-              "$type": "SetAnimatorBool",
-              "boolID": "IsCharging"
-            }
-          ],
-          "chargeStateIDs": [
-            "Attack01",
-            "Attack02",
-            "Attack03",
-            "Attack04",
-            "Run"
-          ],
           "onReleaseUncharged": [
             {
               "$type": "SetAnimatorInt",
               "intID": "SkillID",
               "value": 1
             }
-          ]
+          ],
+          "secondChargeTime": 0.2,
+          "skillID": 10461
         },
         {
           "$type": "AttachToNormalizedTimeMixin",
           "modifierName": "ExtraAttack_AS_Effect",
-          "__unk_Q2081332355": "",
+          "normalizeStart": 0.21,
           "stateID": "ExtraAttack_AS",
-          "normalizeStart": 0.21
+          "__unk_Q2081332355": ""
         },
         {
           "$type": "AttachToStateIDMixin",
-          "__unk_Q2081332355": "",
+          "modifierName": "ExtraAttack_StaminaCost",
           "stateIDs": [
             "ExtraAttack"
           ],
-          "modifierName": "ExtraAttack_StaminaCost"
+          "__unk_Q2081332355": ""
         }
       ],
       "abilityName": "Avatar_TestXXX_ExtraAttack",
       "abilitySpecials": {
         "ExtraAttack_Sword_Stamina_Cost": 0,
         "Flexible_Stamina": -2
+      },
+      "modifiers": {
+        "ExtraAttack_StaminaCost": {
+          "elementDurability": 100,
+          "modifierName": "",
+          "onAdded": [
+            {
+              "$type": "AvatarSkillStart",
+              "cdRatio": 1,
+              "costStaminaRatio": "ExtraAttack_Sword_Stamina_Cost",
+              "skillID": 10001,
+              "NKOFINBNOOK": 1
+            }
+          ],
+          "__unk_Q3323398612": 0
+        },
+        "ExtraAttack_AS_Effect": {
+          "elementDurability": 100,
+          "modifierName": "",
+          "onAdded": [
+            {
+              "$type": "AttachEffect",
+              "effectPattern": "Eff_Avatar_Male_Sword_Kaeya_ExtraAttack_SwordAS",
+              "scale": 1,
+              "JHAGIJGAKMK": ""
+            }
+          ],
+          "stacking": "Unique",
+          "__unk_Q3323398612": 0
+        }
       }
     }
   },
   {
     "Default": {
+      "abilityMixins": [
+        {
+          "$type": "AttachToStateIDMixin",
+          "modifierName": "GenerateElemBall_IceShield",
+          "stateIDs": [
+            "Attack05"
+          ],
+          "__unk_Q2081332355": ""
+        }
+      ],
+      "abilityName": "Avatar_TestXXX_Normalattackball",
+      "abilitySpecials": {
+        "damage": 0,
+        "GetElementRatio": 1,
+        "TasteOfCold": 0.15
+      },
       "modifiers": {
         "GenerateElemBall_IceShield": {
+          "elementDurability": 100,
+          "modifierName": "",
           "onAttackLanded": [
             {
               "$type": "Predicated",
@@ -181,6 +199,7 @@
                   "modifierName": "ElementBall_Extra"
                 }
               ],
+              "target": "Target",
               "targetPredicates": [
                 {
                   "$type": "ByEntityTypes",
@@ -188,20 +207,19 @@
                     "Monster"
                   ]
                 }
-              ],
-              "target": "Target"
+              ]
             }
           ],
-          "elementDurability": 100,
-          "modifierName": "",
           "__unk_Q3323398612": 0
         },
         "ElementBall": {
           "duration": 1,
+          "elementDurability": 100,
+          "modifierName": "",
           "onAdded": [
             {
               "$type": "GenerateElemBall",
-              "ratio": "GetElementRatio",
+              "baseEnergy": 6,
               "born": {
                 "$type": "ConfigBornByTarget",
                 "offset": {
@@ -209,16 +227,16 @@
                 }
               },
               "configID": 2020,
-              "baseEnergy": 6
+              "ratio": "GetElementRatio"
             }
           ],
           "stacking": "Unique",
-          "elementDurability": 100,
-          "modifierName": "",
           "__unk_Q3323398612": 0
         },
         "ElementBall_Extra": {
           "duration": 1,
+          "elementDurability": 100,
+          "modifierName": "",
           "onAdded": [
             {
               "$type": "Randomed",
@@ -226,7 +244,7 @@
               "successActions": [
                 {
                   "$type": "GenerateElemBall",
-                  "ratio": "GetElementRatio",
+                  "baseEnergy": 3,
                   "born": {
                     "$type": "ConfigBornByTarget",
                     "offset": {
@@ -234,7 +252,7 @@
                     }
                   },
                   "configID": 2020,
-                  "baseEnergy": 3
+                  "ratio": "GetElementRatio"
                 }
               ]
             }
@@ -244,53 +262,17 @@
             "abilitySpecialName": "",
             "maxModifierNumForMultipleType": 3
           },
-          "elementDurability": 100,
-          "modifierName": "",
           "__unk_Q3323398612": 0
         }
-      },
-      "abilityMixins": [
-        {
-          "$type": "AttachToStateIDMixin",
-          "__unk_Q2081332355": "",
-          "stateIDs": [
-            "Attack05"
-          ],
-          "modifierName": "GenerateElemBall_IceShield"
-        }
-      ],
-      "abilityName": "Avatar_TestXXX_Normalattackball",
-      "abilitySpecials": {
-        "damage": 0,
-        "GetElementRatio": 1,
-        "TasteOfCold": 0.15
       }
     }
   },
   {
     "Default": {
-      "modifiers": {
-        "Fire_Enhancement_Weapon": {
-          "duration": 10,
-          "onAdded": [
-            {
-              "$type": "AttachEffect",
-              "ILLLPEOODKP": "",
-              "scale": 1,
-              "effectPattern": "Eff_Diluc_FireCross_Weapon_02"
-            }
-          ],
-          "stacking": "Unique",
-          "elementDurability": 30,
-          "elementType": "Fire",
-          "modifierName": "",
-          "overrideWeaponElement": true,
-          "__unk_Q3323398612": 0
-        }
-      },
       "abilityMixins": [
         {
           "$type": "OnAvatarUseSkillMixin",
+          "clearSkillIdDelay": 0.2,
           "onTriggerSkill": [
             {
               "$type": "ApplyModifier",
@@ -303,37 +285,86 @@
                 ]
               }
             }
-          ],
-          "clearSkillIdDelay": 0.2
+          ]
         }
       ],
-      "abilityName": "Avatar_TestXXX_NormalattackElement"
+      "abilityName": "Avatar_TestXXX_NormalattackElement",
+      "modifiers": {
+        "Fire_Enhancement_Weapon": {
+          "duration": 10,
+          "elementDurability": 30,
+          "elementType": "Fire",
+          "modifierName": "",
+          "onAdded": [
+            {
+              "$type": "AttachEffect",
+              "effectPattern": "Eff_Diluc_FireCross_Weapon_02",
+              "scale": 1,
+              "JHAGIJGAKMK": ""
+            }
+          ],
+          "overrideWeaponElement": true,
+          "stacking": "Unique",
+          "__unk_Q3323398612": 0
+        }
+      }
     }
   },
   {
     "Default": {
+      "abilityMixins": [
+        {
+          "$type": "AttachToNormalizedTimeMixin",
+          "modifierName": "IceShield_AS_Effect",
+          "normalizeStart": 0.14,
+          "stateID": "IceShield_AS",
+          "__unk_Q2081332355": ""
+        },
+        {
+          "$type": "AttachToStateIDMixin",
+          "modifierName": "TasteOfCold",
+          "predicates": [
+            {
+              "$type": "ByUnlockTalentParam",
+              "talentParam": "TasteOfCold"
+            }
+          ],
+          "stateIDs": [
+            "IceShield"
+          ],
+          "__unk_Q2081332355": ""
+        }
+      ],
+      "abilityName": "Avatar_TestXXX_IceShield_Impact",
+      "abilitySpecials": {
+        "damage": 0,
+        "GetElementRatio": 1,
+        "TasteOfCold": 0.15
+      },
       "modifiers": {
         "IceShield_AS_Effect": {
+          "elementDurability": 100,
+          "modifierName": "",
           "onAdded": [
             {
               "$type": "AttachEffect",
-              "ILLLPEOODKP": "",
+              "effectPattern": "Eff_Kaeya_IceShield_Impact_SwordAS",
               "scale": 1,
-              "effectPattern": "Eff_Kaeya_IceShield_Impact_SwordAS"
+              "JHAGIJGAKMK": ""
             },
             {
               "$type": "AttachEffect",
-              "ILLLPEOODKP": "",
+              "effectPattern": "Eff_Kaeya_IceShield_Impact_SwordAS1",
               "scale": 1,
-              "effectPattern": "Eff_Kaeya_IceShield_Impact_SwordAS1"
+              "JHAGIJGAKMK": ""
             }
           ],
           "stacking": "Unique",
-          "elementDurability": 100,
-          "modifierName": "",
           "__unk_Q3323398612": 0
         },
         "TasteOfCold": {
+          "elementDurability": 100,
+          "modifierName": "",
           "onAttackLanded": [
             {
               "$type": "Predicated",
@@ -344,6 +375,7 @@
                   "__exp_healTag": ""
                 }
               ],
+              "target": "Target",
               "targetPredicates": [
                 {
                   "$type": "ByEntityTypes",
@@ -357,15 +389,14 @@
                     "Elemental_Art"
                   ]
                 }
-              ],
-              "target": "Target"
+              ]
             }
           ],
-          "elementDurability": 100,
-          "modifierName": "",
           "__unk_Q3323398612": 0
         },
         "GenerateElemBall_IceShield": {
+          "elementDurability": 100,
+          "modifierName": "",
           "onAttackLanded": [
             {
               "$type": "Predicated",
@@ -381,15 +412,16 @@
                 {
                   "$type": "ApplyModifier",
                   "modifierName": "FrozenStar",
-                  "target": "Target",
                   "predicates": [
                     {
                       "$type": "ByUnlockTalentParam",
                       "talentParam": "FrozenStar"
                     }
-                  ]
+                  ],
+                  "target": "Target"
                 }
               ],
+              "target": "Target",
               "targetPredicates": [
                 {
                   "$type": "ByAttackTags",
@@ -403,21 +435,19 @@
                     "Monster"
                   ]
                 }
-              ],
-              "target": "Target"
+              ]
             }
           ],
-          "elementDurability": 100,
-          "modifierName": "",
           "__unk_Q3323398612": 0
         },
         "FrozenStar": {
           "duration": 0.1,
+          "elementDurability": 100,
+          "modifierName": "",
           "onAdded": [
             {
               "$type": "ApplyModifier",
               "modifierName": "FrozenStar_ElementBall",
-              "target": "Caster",
               "predicates": [
                 {
                   "$type": "ByAny",
@@ -434,20 +464,21 @@
                     }
                   ]
                 }
-              ]
+              ],
+              "target": "Caster"
             }
           ],
           "stacking": "Unique",
-          "elementDurability": 100,
-          "modifierName": "",
           "__unk_Q3323398612": 0
         },
         "FrozenStar_ElementBall": {
           "duration": 1,
+          "elementDurability": 100,
+          "modifierName": "",
           "onAdded": [
             {
               "$type": "GenerateElemBall",
-              "ratio": 1,
+              "baseEnergy": 3,
               "born": {
                 "$type": "ConfigBornByTarget",
                 "offset": {
@@ -455,7 +486,7 @@
                 }
               },
               "configID": 2022,
-              "baseEnergy": 3
+              "ratio": 1
             }
           ],
           "stacking": "Multiple",
@@ -463,16 +494,16 @@
             "abilitySpecialName": "",
             "maxModifierNumForMultipleType": 2
           },
-          "elementDurability": 100,
-          "modifierName": "",
           "__unk_Q3323398612": 0
         },
         "ElementBall": {
           "duration": 1,
+          "elementDurability": 100,
+          "modifierName": "",
           "onAdded": [
             {
               "$type": "GenerateElemBall",
-              "ratio": "GetElementRatio",
+              "baseEnergy": 6,
               "born": {
                 "$type": "ConfigBornByTarget",
                 "offset": {
@@ -480,16 +511,16 @@
                 }
               },
               "configID": 2022,
-              "baseEnergy": 6
+              "ratio": "GetElementRatio"
             }
           ],
           "stacking": "Unique",
-          "elementDurability": 100,
-          "modifierName": "",
           "__unk_Q3323398612": 0
         },
         "ElementBall_Extra": {
           "duration": 1,
+          "elementDurability": 100,
+          "modifierName": "",
           "onAdded": [
             {
               "$type": "Randomed",
@@ -497,7 +528,7 @@
               "successActions": [
                 {
                   "$type": "GenerateElemBall",
-                  "ratio": "GetElementRatio",
+                  "baseEnergy": 3,
                   "born": {
                     "$type": "ConfigBornByTarget",
                     "offset": {
@@ -505,7 +536,7 @@
                     }
                   },
                   "configID": 2022,
-                  "baseEnergy": 3
+                  "ratio": "GetElementRatio"
                 }
               ]
             }
@@ -515,108 +546,77 @@
             "abilitySpecialName": "",
             "maxModifierNumForMultipleType": 3
           },
-          "elementDurability": 100,
-          "modifierName": "",
           "__unk_Q3323398612": 0
         }
       },
       "onAbilityStart": [
         {
           "$type": "AvatarSkillStart",
-          "skillID": 10462,
           "cdRatio": 1,
           "costStaminaRatio": 1,
-          "cdRatio": 1
+          "skillID": 10462,
+          "NKOFINBNOOK": 1
         },
         {
           "$type": "FireEffect",
           "effectPattern": "Eff_TestXXX_IceShield_Impact_Breath",
           "scale": 1,
-          "ILLLPEOODKP": ""
+          "JHAGIJGAKMK": ""
         },
         {
           "$type": "TriggerAttackEvent",
-          "targetType": "Enemy",
           "attackEvent": {
             "attackInfo": {
               "attackProperty": {
-                "elementType": "Electric",
                 "attackType": "Melee",
-                "damagePercentageRatio": 0,
-                "strikeType": "Default",
-                "enBreak": 140,
                 "damagePercentage": "damage",
+                "damagePercentageRatio": 0,
                 "elementDurability": 50,
                 "elementRank": 1.5,
+                "elementType": "Electric",
+                "enBreak": 140,
+                "strikeType": "Default",
                 "__exp_arkhe": 0
               },
-              "cameraShake": {
-                "shakeTime": 0.12,
-                "shakeDistance": 30,
-                "MNKFEFOKFKP": "",
-                "shakeRange": 0.36
-              },
-              "hitPattern": {
-                "__unk_Q3893899620": "",
-                "hitLevel": "Heavy",
-                "hitImpulseY": 0,
-                "onHitEffectName": "default",
-                "hitHaltTimeScale": 0.02,
-                "hitImpulseType": "",
-                "hitImpulseX": 800
-              },
+              "attackTag": "Elemental_Art",
               "attenuationGroup": "default",
               "attenuationTag": "",
-              "attackTag": "Elemental_Art"
+              "cameraShake": {
+                "shakeDistance": 30,
+                "shakeRange": 0.36,
+                "shakeTime": 0.12,
+                "OFGBHFBAEKK": ""
+              },
+              "hitPattern": {
+                "hitHaltTimeScale": 0.02,
+                "hitImpulseType": "",
+                "hitImpulseX": 800,
+                "hitImpulseY": 0,
+                "hitLevel": "Heavy",
+                "onHitEffectName": "default",
+                "__unk_Q3893899620": ""
+              }
             },
             "attackPattern": {
               "$type": "ConfigAttackBox",
-              "size": {
-                "x": 4,
-                "z": 8,
-                "y": 1.8
-              },
-              "triggerType": "TriggerNoRepeat",
               "born": {
                 "$type": "ConfigBornBySelf",
                 "offset": {
                   "z": -0.2,
                   "y": 1
                 }
-              }
+              },
+              "size": {
+                "z": 8,
+                "y": 1.8,
+                "x": 4
+              },
+              "triggerType": "TriggerNoRepeat"
             }
-          }
+          },
+          "targetType": "Enemy"
         }
-      ],
-      "abilityMixins": [
-        {
-          "$type": "AttachToNormalizedTimeMixin",
-          "modifierName": "IceShield_AS_Effect",
-          "__unk_Q2081332355": "",
-          "stateID": "IceShield_AS",
-          "normalizeStart": 0.14
-        },
-        {
-          "$type": "AttachToStateIDMixin",
-          "__unk_Q2081332355": "",
-          "predicates": [
-            {
-              "$type": "ByUnlockTalentParam",
-              "talentParam": "TasteOfCold"
-            }
-          ],
-          "stateIDs": [
-            "IceShield"
-          ],
-          "modifierName": "TasteOfCold"
-        }
-      ],
-      "abilityName": "Avatar_TestXXX_IceShield_Impact",
-      "abilitySpecials": {
-        "damage": 0,
-        "GetElementRatio": 1,
-        "TasteOfCold": 0.15
-      }
+      ]
     }
   }
 ]

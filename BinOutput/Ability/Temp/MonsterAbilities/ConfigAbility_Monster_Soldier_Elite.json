@@ -1,31 +1,207 @@
 [
   {
     "Default": {
+      "abilityMixins": [
+        {
+          "$type": "AttachToAnimatorStateIDMixin",
+          "modifierName": "Monster_Rifle_ShootSkill_Shoot_Water",
+          "stateIDs": [
+            "ShootSkillAdditve"
+          ],
+          "GJHGMFEADDF": 1,
+          "__unk_Q2081332355": ""
+        },
+        {
+          "$type": "AttachToAnimatorStateIDMixin",
+          "modifierName": "Monster_Rifle_ShootSkill_StayDuration_Water",
+          "stateIDs": [
+            "ShootSkillStay"
+          ],
+          "GJHGMFEADDF": 1,
+          "__unk_Q2081332355": ""
+        },
+        {
+          "$type": "AttachToAnimatorStateIDMixin",
+          "modifierName": "Monster_Rifle_ShootSkill_Handle_Water",
+          "stateIDs": [
+            "ShootSkillAdditve",
+            "ShootSkillStay"
+          ],
+          "GJHGMFEADDF": 1,
+          "__unk_Q2081332355": ""
+        },
+        {
+          "$type": "AttachToAnimatorStateIDMixin",
+          "modifierName": "Monster_Rifle_Reload_Handle",
+          "stateIDs": [
+            "Rifle_Reload"
+          ],
+          "GJHGMFEADDF": 2,
+          "__unk_Q2081332355": ""
+        },
+        {
+          "$type": "AttachToAnimatorStateIDMixin",
+          "modifierName": "Monster_Rifle_Reload_Handle",
+          "stateIDs": [
+            "Crouch_Reload"
+          ],
+          "GJHGMFEADDF": 0,
+          "__unk_Q2081332355": ""
+        },
+        {
+          "$type": "AttachToAnimatorStateIDMixin",
+          "modifierName": "Modifier_State_Ready_Cover_Shoot_Water",
+          "stateIDs": [
+            "CrouchIdle",
+            "Cover_Stand_Idle"
+          ],
+          "__unk_Q2081332355": ""
+        },
+        {
+          "$type": "AttachToAnimatorStateIDMixin",
+          "modifierName": "Modifier_State_Cover_Shooting_Water",
+          "stateIDs": [
+            "Cover_Crouch_Shoot_Loop",
+            "Cover_Stand_Shoot_Loop"
+          ],
+          "__unk_Q2081332355": ""
+        },
+        {
+          "$type": "AttachToAbilityStateMixin",
+          "abilityStates": [
+            "ElementFreeze",
+            "ElementPetrifaction"
+          ],
+          "modifierName": "Modifier_ElementState_ShootInterrupt_Water"
+        },
+        {
+          "$type": "TPSMonsterAimModifyMixin",
+          "GKDPEJPNOIO": 0,
+          "KABMJGEGALB": 0,
+          "LAHPEFEMPPD": 0,
+          "OPNCGOGHHMG": 0,
+          "JIDGGGGAICG": 0.13
+        }
+      ],
+      "abilityName": "MonsterAbility_Soldier_Shoot_Rifle_ShootingManager_Water",
       "modifiers": {
         "Monster_Soldier_RifleDoReloadAction": {
-          "thinkInterval": 0.1,
           "duration": 0.19,
+          "elementDurability": 100,
+          "modifierName": "",
           "onAdded": [
             {
               "$type": "SetAnimatorTrigger",
               "triggerID": "ShootStop"
             }
           ],
-          "elementDurability": 100,
-          "modifierName": "",
           "onThinkInterval": [
             {
               "$type": "SetGlobalValue",
+              "doOffStage": true,
               "key": "_Skill_Reload_Request",
-              "minValue": 0,
               "maxValue": 0,
-              "value": 1,
-              "doOffStage": true
+              "minValue": 0,
+              "value": 1
             }
           ],
+          "thinkInterval": 0.1,
           "__unk_Q3323398612": 0
         },
         "Monster_Rifle_Reload_Handle": {
+          "elementDurability": 100,
+          "modifierName": "",
+          "onAdded": [
+            {
+              "$type": "SetGlobalValueV2",
+              "key": "GV_Bullet_Magazine_CurrentCount",
+              "maxValue": 0,
+              "minValue": 0,
+              "value": 30
+            },
+            {
+              "$type": "SetAnimatorBool",
+              "boolID": "Reloading",
+              "doOffStage": true,
+              "value": true
+            },
+            {
+              "$type": "SetAnimatorBool",
+              "boolID": "CanShoot",
+              "doOffStage": true
+            },
+            {
+              "$type": "Predicated",
+              "failActions": [
+                {
+                  "$type": "SetAnimatorTrigger",
+                  "otherTargets": {
+                    "$type": "SelectTargetsByEquipParts",
+                    "equipPartNames": [
+                      "equip01"
+                    ]
+                  }
+                }
+              ],
+              "successActions": [
+                {
+                  "$type": "SetAnimatorTrigger",
+                  "otherTargets": {
+                    "$type": "SelectTargetsByEquipParts",
+                    "equipPartNames": [
+                      "equip01"
+                    ]
+                  },
+                  "triggerID": "Crouch_Reload"
+                }
+              ],
+              "targetPredicates": [
+                {
+                  "$type": "ByTargetGlobalValue",
+                  "key": "_Skill_IsCrouch",
+                  "value": 1
+                }
+              ]
+            },
+            {
+              "$type": "Predicated",
+              "failActions": [
+                {
+                  "$type": "SetAnimatorFloat",
+                  "floatID": "FightAnimType",
+                  "value": 0
+                },
+                {
+                  "$type": "SetGlobalValueV2",
+                  "key": "GV_HipFire_Applied",
+                  "maxValue": 0,
+                  "minValue": 0,
+                  "value": 0
+                }
+              ],
+              "successActions": [
+                {
+                  "$type": "SetAnimatorFloat",
+                  "floatID": "FightAnimType",
+                  "value": 1
+                },
+                {
+                  "$type": "SetGlobalValueV2",
+                  "key": "GV_HipFire_Applied",
+                  "maxValue": 0,
+                  "minValue": 0,
+                  "value": 1
+                }
+              ],
+              "targetPredicates": [
+                {
+                  "$type": "ByTargetGlobalValue",
+                  "key": "GV_HipFire_Enabled",
+                  "value": 1
+                }
+              ]
+            }
+          ],
           "onRemoved": [
             {
               "$type": "SetAnimatorBool",
@@ -35,124 +211,56 @@
             {
               "$type": "SetGlobalValue",
               "key": "_Skill_Reload_Request",
-              "minValue": 0,
               "maxValue": 0,
+              "minValue": 0,
               "value": 0
             }
           ],
-          "onAdded": [
-            {
-              "$type": "SetGlobalValueV2",
-              "minValue": 0,
-              "key": "GV_Bullet_Magazine_CurrentCount",
-              "maxValue": 0,
-              "value": 30
-            },
-            {
-              "$type": "SetAnimatorBool",
-              "value": true,
-              "boolID": "Reloading",
-              "doOffStage": true
-            },
-            {
-              "$type": "SetAnimatorBool",
-              "boolID": "CanShoot",
-              "doOffStage": true
-            },
-            {
-              "$type": "Predicated",
-              "successActions": [
-                {
-                  "$type": "SetAnimatorTrigger",
-                  "triggerID": "Crouch_Reload",
-                  "otherTargets": {
-                    "$type": "SelectTargetsByEquipParts",
-                    "equipPartNames": [
-                      "equip01"
-                    ]
-                  }
-                }
-              ],
-              "failActions": [
-                {
-                  "$type": "SetAnimatorTrigger",
-                  "otherTargets": {
-                    "$type": "SelectTargetsByEquipParts",
-                    "equipPartNames": [
-                      "equip01"
-                    ]
-                  }
-                }
-              ],
-              "targetPredicates": [
-                {
-                  "$type": "ByTargetGlobalValue",
-                  "value": 1,
-                  "key": "_Skill_IsCrouch"
-                }
-              ]
-            },
-            {
-              "$type": "Predicated",
-              "successActions": [
-                {
-                  "$type": "SetAnimatorFloat",
-                  "floatID": "FightAnimType",
-                  "value": 1
-                },
-                {
-                  "$type": "SetGlobalValueV2",
-                  "minValue": 0,
-                  "key": "GV_HipFire_Applied",
-                  "maxValue": 0,
-                  "value": 1
-                }
-              ],
-              "failActions": [
-                {
-                  "$type": "SetAnimatorFloat",
-                  "floatID": "FightAnimType",
-                  "value": 0
-                },
-                {
-                  "$type": "SetGlobalValueV2",
-                  "minValue": 0,
-                  "key": "GV_HipFire_Applied",
-                  "maxValue": 0,
-                  "value": 0
-                }
-              ],
-              "targetPredicates": [
-                {
-                  "$type": "ByTargetGlobalValue",
-                  "value": 1,
-                  "key": "GV_HipFire_Enabled"
-                }
-              ]
-            }
-          ],
-          "elementDurability": 100,
-          "modifierName": "",
           "__unk_Q3323398612": 0
         },
         "Monster_Rifle_ShootSkill_Shoot_Water": {
-          "thinkInterval": 0.125,
+          "elementDurability": 100,
+          "modifierMixins": [
+            {
+              "$type": "DoActionOnGlobalValueChangeMixin",
+              "actions": [
+                {
+                  "$type": "SetAnimatorBool",
+                  "boolID": "ShootSkillRest",
+                  "doOffStage": true,
+                  "predicates": [
+                    {
+                      "$type": "ByTargetGlobalValue",
+                      "compareType": "LessAndEqual",
+                      "key": "GV_Bullet_CurretCount",
+                      "target": "Self",
+                      "value": 0
+                    }
+                  ],
+                  "value": true
+                }
+              ],
+              "globalValueKey": "GV_Bullet_CurretCount",
+              "DHKOKKHJMHC": true
+            }
+          ],
+          "modifierName": "",
           "onAdded": [
             {
               "$type": "SetGlobalValueV2",
-              "minValue": 5,
               "key": "GV_Bullet_CurretCount",
-              "randomInRange": true,
               "maxValue": 15,
+              "minValue": 5,
+              "randomInRange": true,
               "useLimitRange": true,
               "value": 0
             },
             {
               "$type": "SetGlobalValueV2",
-              "minValue": 0.3,
               "key": "GV_ShootSkill_Duration_Stay",
-              "randomInRange": true,
               "maxValue": 0.8,
+              "minValue": 0.3,
+              "randomInRange": true,
               "useLimitRange": true,
               "value": 0
             },
@@ -162,44 +270,18 @@
               "predicates": [
                 {
                   "$type": "ByTargetGlobalValue",
+                  "compareType": "MoreThan",
+                  "key": "GV_Bullet_CurretCount",
+                  "target": "Self",
                   "value": [
                     "GV_Bullet_Magazine_CurrentCount",
                     4,
                     "SUB"
-                  ],
-                  "compareType": "MoreThan",
-                  "key": "GV_Bullet_CurretCount",
-                  "target": "Self"
+                  ]
                 }
               ]
             }
           ],
-          "elementDurability": 100,
-          "modifierMixins": [
-            {
-              "$type": "DoActionOnGlobalValueChangeMixin",
-              "actions": [
-                {
-                  "$type": "SetAnimatorBool",
-                  "value": true,
-                  "boolID": "ShootSkillRest",
-                  "doOffStage": true,
-                  "predicates": [
-                    {
-                      "$type": "ByTargetGlobalValue",
-                      "value": 0,
-                      "compareType": "LessAndEqual",
-                      "key": "GV_Bullet_CurretCount",
-                      "target": "Self"
-                    }
-                  ]
-                }
-              ],
-              "NBOEEIHGCPD": true,
-              "globalValueKey": "GV_Bullet_CurretCount"
-            }
-          ],
-          "modifierName": "",
           "onThinkInterval": [
             {
               "$type": "TriggerAbility",
@@ -207,10 +289,10 @@
               "predicates": [
                 {
                   "$type": "ByTargetGlobalValue",
-                  "value": 0,
                   "compareType": "MoreThan",
                   "key": "GV_Bullet_CurretCount",
-                  "target": "Self"
+                  "target": "Self",
+                  "value": 0
                 }
               ]
             },
@@ -231,34 +313,36 @@
             {
               "$type": "FireEffect",
               "effectPattern": "Eff_Monster_Soldier_Rifle_Base_MuzzleVFX_Water_01",
-              "scale": 1,
-              "ILLLPEOODKP": "",
               "predicates": [
                 {
                   "$type": "ByTargetGlobalValue",
-                  "value": 0,
-                  "key": "GV_CoverDir_Right"
+                  "key": "GV_CoverDir_Right",
+                  "value": 0
                 }
-              ]
+              ],
+              "scale": 1,
+              "JHAGIJGAKMK": ""
             },
             {
               "$type": "FireEffect",
               "effectPattern": "Eff_Monster_Soldier_Rifle_Base_MuzzleVFX_Water_02",
-              "scale": 1,
-              "ILLLPEOODKP": "",
               "predicates": [
                 {
                   "$type": "ByTargetGlobalValue",
-                  "value": 1,
-                  "key": "GV_CoverDir_Right"
+                  "key": "GV_CoverDir_Right",
+                  "value": 1
                 }
-              ]
+              ],
+              "scale": 1,
+              "JHAGIJGAKMK": ""
             }
           ],
+          "thinkInterval": 0.125,
           "__unk_Q3323398612": 0
         },
         "Monster_Rifle_ShootSkill_StayDuration_Water": {
-          "thinkInterval": "GV_ShootSkill_Duration_Stay",
+          "elementDurability": 100,
+          "modifierName": "",
           "onAdded": [
             {
               "$type": "RemoveModifier",
@@ -266,20 +350,18 @@
             },
             {
               "$type": "SetAnimatorTrigger",
-              "triggerID": "ShootStop",
               "predicates": [
                 {
                   "$type": "ByTargetGlobalValue",
-                  "value": 0,
                   "compareType": "MoreThan",
                   "key": "GV_Shoot_Stop_Trigger",
-                  "target": "Self"
+                  "target": "Self",
+                  "value": 0
                 }
-              ]
+              ],
+              "triggerID": "ShootStop"
             }
           ],
-          "elementDurability": 100,
-          "modifierName": "",
           "onThinkInterval": [
             {
               "$type": "SetAnimatorBool",
@@ -287,24 +369,12 @@
               "doOffStage": true
             }
           ],
+          "thinkInterval": "GV_ShootSkill_Duration_Stay",
           "__unk_Q3323398612": 0
         },
         "Monster_Rifle_ShootSkill_Handle_Water": {
-          "onRemoved": [
-            {
-              "$type": "SetGlobalValueV2",
-              "minValue": 0,
-              "key": "GV_Shoot_Stop_Trigger",
-              "maxValue": 0,
-              "value": 0
-            },
-            {
-              "$type": "SetAnimatorBool",
-              "value": true,
-              "boolID": "AimObserve",
-              "doOffStage": true
-            }
-          ],
+          "elementDurability": 100,
+          "modifierName": "",
           "onAdded": [
             {
               "$type": "ApplyModifier",
@@ -312,42 +382,42 @@
             },
             {
               "$type": "SetGlobalValueV2",
-              "minValue": 0,
               "key": "GV_Shoot_Stop_Trigger",
               "maxValue": 0,
+              "minValue": 0,
               "value": 0
             },
             {
               "$type": "SetGlobalValueV2",
-              "minValue": 8,
               "key": "GV_ShootSkill_Duration_Skill",
-              "randomInRange": true,
               "maxValue": 14,
-              "useLimitRange": true,
-              "value": 0,
+              "minValue": 8,
               "predicates": [
                 {
                   "$type": "ByTargetGlobalValue",
-                  "value": 0,
-                  "key": "GV_InCover_Type"
+                  "key": "GV_InCover_Type",
+                  "value": 0
                 }
-              ]
+              ],
+              "randomInRange": true,
+              "useLimitRange": true,
+              "value": 0
             },
             {
               "$type": "SetGlobalValueV2",
-              "minValue": 9,
               "key": "GV_ShootSkill_Duration_Skill",
-              "randomInRange": true,
               "maxValue": 15,
-              "useLimitRange": true,
-              "value": 0,
+              "minValue": 9,
               "predicates": [
                 {
                   "$type": "ByTargetGlobalValue",
-                  "value": 1,
-                  "key": "GV_InCover_Type"
+                  "key": "GV_InCover_Type",
+                  "value": 1
                 }
-              ]
+              ],
+              "randomInRange": true,
+              "useLimitRange": true,
+              "value": 0
             },
             {
               "$type": "SetAnimatorBool",
@@ -355,162 +425,159 @@
               "doOffStage": true
             }
           ],
-          "elementDurability": 100,
-          "modifierName": "",
+          "onRemoved": [
+            {
+              "$type": "SetGlobalValueV2",
+              "key": "GV_Shoot_Stop_Trigger",
+              "maxValue": 0,
+              "minValue": 0,
+              "value": 0
+            },
+            {
+              "$type": "SetAnimatorBool",
+              "boolID": "AimObserve",
+              "doOffStage": true,
+              "value": true
+            }
+          ],
           "__unk_Q3323398612": 0
         },
         "Monster_Rifle_ShootSkill_SkillDuration_Water": {
           "duration": "GV_ShootSkill_Duration_Skill",
+          "elementDurability": 100,
+          "modifierName": "",
           "onRemoved": [
             {
               "$type": "SetGlobalValueV2",
-              "minValue": 0,
               "key": "GV_Shoot_Stop_Trigger",
               "maxValue": 0,
+              "minValue": 0,
               "value": 1
             }
           ],
-          "elementDurability": 100,
-          "modifierName": "",
           "__unk_Q3323398612": 0
         },
         "Modifier_State_Ready_Cover_Shoot_Water": {
-          "onRemoved": [
-            {
-              "$type": "SetGlobalValueV2",
-              "minValue": 0,
-              "key": "_Skill_CoverShoot_Ready",
-              "maxValue": 0,
-              "value": 0,
-              "doOffStage": true
-            }
-          ],
+          "elementDurability": 100,
+          "modifierName": "",
           "onAdded": [
             {
               "$type": "SetGlobalValueV2",
-              "minValue": 0,
               "key": "_Skill_CoverShoot_Ready",
               "maxValue": 0,
+              "minValue": 0,
               "value": 1
             },
             {
               "$type": "SetGlobalValue",
+              "doOffStage": true,
               "key": "_Skill_Reload_Ready",
-              "minValue": 0,
               "maxValue": 0,
-              "value": 1,
-              "doOffStage": true
+              "minValue": 0,
+              "value": 1
             },
             {
               "$type": "SetGlobalValueV2",
-              "minValue": 0.8,
               "key": "GV_ShootSkill_Duration_Stay",
-              "randomInRange": true,
               "maxValue": 2,
-              "useLimitRange": true,
-              "value": 0,
+              "minValue": 0.8,
               "predicates": [
                 {
                   "$type": "ByTargetGlobalValue",
-                  "value": 1,
                   "compareType": "LessAndEqual",
-                  "key": "GV_SameCoverShoot_Count"
+                  "key": "GV_SameCoverShoot_Count",
+                  "value": 1
                 }
-              ]
+              ],
+              "randomInRange": true,
+              "useLimitRange": true,
+              "value": 0
             }
           ],
-          "elementDurability": 100,
-          "modifierName": "",
-          "__unk_Q3323398612": 0
-        },
-        "Modifier_State_Cover_Shooting_Water": {
           "onRemoved": [
             {
               "$type": "SetGlobalValueV2",
-              "minValue": 0,
+              "doOffStage": true,
               "key": "_Skill_CoverShoot_Ready",
               "maxValue": 0,
-              "value": 0,
-              "doOffStage": true
-            },
-            {
-              "$type": "SetGlobalValue",
-              "key": "_Skill_Reload_Ready",
               "minValue": 0,
-              "maxValue": 0,
-              "value": 1,
-              "doOffStage": true
+              "value": 0
             }
           ],
+          "__unk_Q3323398612": 0
+        },
+        "Modifier_State_Cover_Shooting_Water": {
+          "elementDurability": 100,
+          "modifierName": "",
           "onAdded": [
             {
               "$type": "SetGlobalValue",
+              "doOffStage": true,
               "key": "_Skill_Reload_Ready",
-              "minValue": 0,
               "maxValue": 0,
-              "value": 0,
-              "doOffStage": true
+              "minValue": 0,
+              "value": 0
             },
             {
               "$type": "AddGlobalValueV2",
-              "minValue": 0,
               "key": "GV_SameCoverShoot_Count",
-              "value": 1,
-              "maxValue": 0
+              "maxValue": 0,
+              "minValue": 0,
+              "value": 1
             },
             {
               "$type": "ApplyModifier",
               "modifierName": "CoverShoot_Trigger_Water"
             }
           ],
-          "elementDurability": 100,
-          "modifierName": "",
+          "onRemoved": [
+            {
+              "$type": "SetGlobalValueV2",
+              "doOffStage": true,
+              "key": "_Skill_CoverShoot_Ready",
+              "maxValue": 0,
+              "minValue": 0,
+              "value": 0
+            },
+            {
+              "$type": "SetGlobalValue",
+              "doOffStage": true,
+              "key": "_Skill_Reload_Ready",
+              "maxValue": 0,
+              "minValue": 0,
+              "value": 1
+            }
+          ],
           "__unk_Q3323398612": 0
         },
         "CoverShoot_Trigger_Water": {
-          "thinkInterval": 0.1,
           "duration": 1,
+          "elementDurability": 100,
+          "modifierName": "",
           "onAdded": [
             {
               "$type": "SetAnimatorTrigger",
               "triggerID": "ShootStart"
             }
           ],
-          "elementDurability": 100,
-          "modifierName": "",
           "onThinkInterval": [
             {
               "$type": "SetAnimatorTrigger",
               "triggerID": "ShootStart"
             }
           ],
+          "thinkInterval": 0.1,
           "__unk_Q3323398612": 0
         },
         "Modifier_ElementState_ShootInterrupt_Water": {
-          "onRemoved": [
-            {
-              "$type": "SetAnimatorTrigger",
-              "triggerID": "ShootStop"
-            },
-            {
-              "$type": "SetAnimatorBool",
-              "boolID": "ShootInterrupt",
-              "doOffStage": true
-            },
-            {
-              "$type": "SetGlobalValueV2",
-              "minValue": 0,
-              "key": "GV_Soldier_Rifle_ElementState",
-              "maxValue": 0,
-              "value": 0
-            }
-          ],
+          "elementDurability": 100,
+          "modifierName": "",
           "onAdded": [
             {
               "$type": "SetAnimatorBool",
-              "value": true,
               "boolID": "ShootInterrupt",
-              "doOffStage": true
+              "doOffStage": true,
+              "value": true
             },
             {
               "$type": "RemoveModifier",
@@ -518,156 +585,47 @@
             },
             {
               "$type": "SetGlobalValueV2",
-              "minValue": 0,
               "key": "GV_Soldier_Rifle_ElementState",
               "maxValue": 0,
+              "minValue": 0,
               "value": 1
             }
           ],
-          "elementDurability": 100,
-          "modifierName": "",
+          "onRemoved": [
+            {
+              "$type": "SetAnimatorTrigger",
+              "triggerID": "ShootStop"
+            },
+            {
+              "$type": "SetAnimatorBool",
+              "boolID": "ShootInterrupt",
+              "doOffStage": true
+            },
+            {
+              "$type": "SetGlobalValueV2",
+              "key": "GV_Soldier_Rifle_ElementState",
+              "maxValue": 0,
+              "minValue": 0,
+              "value": 0
+            }
+          ],
           "__unk_Q3323398612": 0
         }
       },
       "onAbilityStart": [
         {
           "$type": "SetRandomOverrideMapValue",
-          "valueRangeMin": -0.45,
           "overrideMapKey": "ShootPosOffset",
-          "valueRangeMax": 0.45
+          "valueRangeMax": 0.45,
+          "valueRangeMin": -0.45
         },
         {
           "$type": "Predicated",
-          "successActions": [
-            {
-              "$type": "TPSMonsterRefreshAim",
-              "IIJEEKCLGMH": 0.3,
-              "ELIKFMGPHOC": {
-                "$type": "ConfigBornByAttachPoint",
-                "attachPointName": "Muzzle",
-                "attachPointTargetType": "Self",
-                "useRotation": true
-              }
-            },
-            {
-              "$type": "TriggerAttackEvent",
-              "targetType": "Enemy",
-              "attackEvent": {
-                "attackInfo": {
-                  "attackProperty": {
-                    "elementType": "Water",
-                    "attackType": "Range",
-                    "damagePercentageRatio": 0,
-                    "strikeType": "Default",
-                    "enBreak": 20,
-                    "damagePercentage": 0.22,
-                    "damageExtra": 0,
-                    "elementDurability": 25,
-                    "__exp_arkhe": 0
-                  },
-                  "hitPattern": {
-                    "__unk_Q3893899620": "",
-                    "onHitEffectName": "Eff_Monster_Soldier_Rifle_Base_Hit_Water_01",
-                    "hitHaltTimeScale": 0.01,
-                    "hitImpulseType": "LV0"
-                  },
-                  "attenuationGroup": "default",
-                  "attenuationTag": "342",
-                  "attackTag": "Elemental_Art",
-                  "canBeModifiedBy": "OriginOwner"
-                },
-                "attackPattern": {
-                  "$type": "OPHIMIHJCEM",
-                  "FGLJONOKGPO": [
-                    {
-                      "LGBDNEOBPFK": 100
-                    }
-                  ],
-                  "ECCBDFKNEOI": "",
-                  "LODCGFMONNO": 1,
-                  "triggerType": "TriggerNoRepeat",
-                  "hitScene": {
-                    "defaultEffect": "Eff_Monster_Soldier_Rifle_Base_Hit_Water_01"
-                  },
-                  "born": {
-                    "$type": "ConfigBornByAttachPoint",
-                    "attachPointName": "Muzzle",
-                    "attachPointTargetType": "Self",
-                    "useRotation": true,
-                    "offset": {
-                      "z": -0.5
-                    },
-                    "direction": {
-                      "$type": "OKCHKHNIFLE",
-                      "useCorrectDir": true
-                    }
-                  },
-                  "checkHitLayerType": "Both"
-                }
-              }
-            },
-            {
-              "$type": "SetCollisionPointToGlobalPos",
-              "LANEADNAMOA": {
-                "$type": "ConfigBornByAttachPoint",
-                "attachPointName": "Muzzle",
-                "attachPointTargetType": "Self",
-                "useRotation": true,
-                "direction": {
-                  "$type": "OKCHKHNIFLE",
-                  "useCorrectDir": true
-                }
-              },
-              "GIIKFCBIECE": 100,
-              "key": "_ABILITY_Raycast_ShootPoint",
-              "IFAGEOOENNG": "BulletHit"
-            },
-            {
-              "$type": "TriggerTPSMonsterShootAudio",
-              "AMNHFHAEOIJ": {
-                "$type": "ConfigBornByGlobalValue",
-                "positionKey": "_ABILITY_Raycast_ShootPoint",
-                "directionKey": ""
-              },
-              "ELIKFMGPHOC": {
-                "$type": "ConfigBornByAttachPoint",
-                "attachPointName": "Muzzle",
-                "attachPointTargetType": "Self",
-                "useRotation": true,
-                "direction": {
-                  "$type": "OKCHKHNIFLE",
-                  "useCorrectDir": true
-                }
-              },
-              "LNCOFJPLODO": 6
-            },
-            {
-              "$type": "FireLineEffect",
-              "LAMIHJFLBMA": {
-                "$type": "ConfigBornByGlobalValue",
-                "positionKey": "_ABILITY_Raycast_ShootPoint",
-                "directionKey": ""
-              },
-              "effectPattern": "Eff_Monster_Soldier_Rifle_Base_Bullet_Water_01",
-              "scale": 1,
-              "born": {
-                "$type": "ConfigBornByAttachPoint",
-                "attachPointName": "Muzzle",
-                "attachPointTargetType": "Self",
-                "useRotation": true,
-                "direction": {
-                  "$type": "OKCHKHNIFLE",
-                  "useCorrectDir": true
-                }
-              },
-              "ILLLPEOODKP": ""
-            }
-          ],
           "failActions": [
             {
               "$type": "TPSMonsterRefreshAim",
-              "IIJEEKCLGMH": 0.3,
-              "ELIKFMGPHOC": {
+              "EECPHEDHOAN": 0.3,
+              "CIKEKCJCGIP": {
                 "$type": "ConfigBornByAttachPoint",
                 "attachPointName": "Muzzle_Mirror",
                 "attachPointTargetType": "Self",
@@ -676,125 +634,336 @@
             },
             {
               "$type": "TriggerAttackEvent",
-              "targetType": "Enemy",
               "attackEvent": {
                 "attackInfo": {
                   "attackProperty": {
-                    "elementType": "Water",
                     "attackType": "Range",
-                    "damagePercentageRatio": 0,
-                    "strikeType": "Default",
-                    "enBreak": 20,
-                    "damagePercentage": 0.22,
                     "damageExtra": 0,
+                    "damagePercentage": 0.22,
+                    "damagePercentageRatio": 0,
                     "elementDurability": 25,
+                    "elementType": "Water",
+                    "enBreak": 20,
+                    "strikeType": "Default",
                     "__exp_arkhe": 0
                   },
-                  "hitPattern": {
-                    "__unk_Q3893899620": "",
-                    "onHitEffectName": "Eff_Monster_Soldier_Rifle_Base_Hit_Water_01",
-                    "hitHaltTimeScale": 0.01,
-                    "hitImpulseType": "LV0"
-                  },
+                  "attackTag": "Elemental_Art",
                   "attenuationGroup": "default",
                   "attenuationTag": "342",
-                  "attackTag": "Elemental_Art",
-                  "canBeModifiedBy": "OriginOwner"
+                  "canBeModifiedBy": "OriginOwner",
+                  "hitPattern": {
+                    "hitHaltTimeScale": 0.01,
+                    "hitImpulseType": "LV0",
+                    "onHitEffectName": "Eff_Monster_Soldier_Rifle_Base_Hit_Water_01",
+                    "__unk_Q3893899620": ""
+                  }
                 },
                 "attackPattern": {
-                  "$type": "OPHIMIHJCEM",
-                  "FGLJONOKGPO": [
-                    {
-                      "LGBDNEOBPFK": 100
-                    }
-                  ],
-                  "ECCBDFKNEOI": "",
-                  "LODCGFMONNO": 1,
-                  "triggerType": "TriggerNoRepeat",
-                  "hitScene": {
-                    "defaultEffect": "Eff_Monster_Soldier_Rifle_Base_Hit_Water_01"
-                  },
+                  "$type": "OPBMGELHHAK",
                   "born": {
                     "$type": "ConfigBornByAttachPoint",
                     "attachPointName": "Muzzle_Mirror",
                     "attachPointTargetType": "Self",
-                    "useRotation": true,
+                    "direction": {
+                      "$type": "GFMNJNKIDFL",
+                      "useCorrectDir": true
+                    },
                     "offset": {
                       "z": -0.5
                     },
-                    "direction": {
-                      "$type": "OKCHKHNIFLE",
-                      "useCorrectDir": true
-                    }
+                    "useRotation": true
                   },
-                  "checkHitLayerType": "Both"
+                  "checkHitLayerType": "Both",
+                  "hitScene": {
+                    "defaultEffect": "Eff_Monster_Soldier_Rifle_Base_Hit_Water_01"
+                  },
+                  "triggerType": "TriggerNoRepeat",
+                  "APKDOHBIELE": 1,
+                  "NDIPOLBFDFB": "",
+                  "ODLAAMJBOJE": "",
+                  "HJHHKNKLKCI": [
+                    {
+                      "maxDistance": 100
+                    }
+                  ]
                 }
-              }
+              },
+              "targetType": "Enemy"
             },
             {
               "$type": "SetCollisionPointToGlobalPos",
-              "LANEADNAMOA": {
+              "key": "_ABILITY_Raycast_ShootPoint",
+              "origin": {
                 "$type": "ConfigBornByAttachPoint",
                 "attachPointName": "Muzzle_Mirror",
                 "attachPointTargetType": "Self",
-                "useRotation": true,
                 "direction": {
-                  "$type": "OKCHKHNIFLE",
+                  "$type": "GFMNJNKIDFL",
                   "useCorrectDir": true
-                }
+                },
+                "useRotation": true
               },
-              "GIIKFCBIECE": 100,
-              "key": "_ABILITY_Raycast_ShootPoint",
-              "IFAGEOOENNG": "BulletHit"
+              "raycastLength": 100,
+              "LLHCJOAPNML": "BulletHit"
             },
             {
               "$type": "TriggerTPSMonsterShootAudio",
-              "AMNHFHAEOIJ": {
+              "DMMDBFJGIBI": 6,
+              "JCNHKPOJEBM": {
                 "$type": "ConfigBornByGlobalValue",
-                "positionKey": "_ABILITY_Raycast_ShootPoint",
-                "directionKey": ""
+                "directionKey": "",
+                "positionKey": "_ABILITY_Raycast_ShootPoint"
               },
-              "ELIKFMGPHOC": {
+              "CIKEKCJCGIP": {
                 "$type": "ConfigBornByAttachPoint",
                 "attachPointName": "Muzzle_Mirror",
                 "attachPointTargetType": "Self",
-                "useRotation": true,
                 "direction": {
-                  "$type": "OKCHKHNIFLE",
+                  "$type": "GFMNJNKIDFL",
                   "useCorrectDir": true
-                }
-              },
-              "LNCOFJPLODO": 6
+                },
+                "useRotation": true
+              }
             },
             {
               "$type": "FireLineEffect",
-              "LAMIHJFLBMA": {
-                "$type": "ConfigBornByGlobalValue",
-                "positionKey": "_ABILITY_Raycast_ShootPoint",
-                "directionKey": ""
-              },
-              "effectPattern": "Eff_Monster_Soldier_Rifle_Base_Bullet_Water_01",
-              "scale": 1,
               "born": {
                 "$type": "ConfigBornByAttachPoint",
                 "attachPointName": "Muzzle_Mirror",
                 "attachPointTargetType": "Self",
-                "useRotation": true,
                 "direction": {
-                  "$type": "OKCHKHNIFLE",
+                  "$type": "GFMNJNKIDFL",
                   "useCorrectDir": true
+                },
+                "useRotation": true
+              },
+              "effectPattern": "Eff_Monster_Soldier_Rifle_Base_Bullet_Water_01",
+              "scale": 1,
+              "JHAGIJGAKMK": "",
+              "HCLLCENKKJA": {
+                "$type": "ConfigBornByGlobalValue",
+                "directionKey": "",
+                "positionKey": "_ABILITY_Raycast_ShootPoint"
+              }
+            }
+          ],
+          "successActions": [
+            {
+              "$type": "TPSMonsterRefreshAim",
+              "EECPHEDHOAN": 0.3,
+              "CIKEKCJCGIP": {
+                "$type": "ConfigBornByAttachPoint",
+                "attachPointName": "Muzzle",
+                "attachPointTargetType": "Self",
+                "useRotation": true
+              }
+            },
+            {
+              "$type": "TriggerAttackEvent",
+              "attackEvent": {
+                "attackInfo": {
+                  "attackProperty": {
+                    "attackType": "Range",
+                    "damageExtra": 0,
+                    "damagePercentage": 0.22,
+                    "damagePercentageRatio": 0,
+                    "elementDurability": 25,
+                    "elementType": "Water",
+                    "enBreak": 20,
+                    "strikeType": "Default",
+                    "__exp_arkhe": 0
+                  },
+                  "attackTag": "Elemental_Art",
+                  "attenuationGroup": "default",
+                  "attenuationTag": "342",
+                  "canBeModifiedBy": "OriginOwner",
+                  "hitPattern": {
+                    "hitHaltTimeScale": 0.01,
+                    "hitImpulseType": "LV0",
+                    "onHitEffectName": "Eff_Monster_Soldier_Rifle_Base_Hit_Water_01",
+                    "__unk_Q3893899620": ""
+                  }
+                },
+                "attackPattern": {
+                  "$type": "OPBMGELHHAK",
+                  "born": {
+                    "$type": "ConfigBornByAttachPoint",
+                    "attachPointName": "Muzzle",
+                    "attachPointTargetType": "Self",
+                    "direction": {
+                      "$type": "GFMNJNKIDFL",
+                      "useCorrectDir": true
+                    },
+                    "offset": {
+                      "z": -0.5
+                    },
+                    "useRotation": true
+                  },
+                  "checkHitLayerType": "Both",
+                  "hitScene": {
+                    "defaultEffect": "Eff_Monster_Soldier_Rifle_Base_Hit_Water_01"
+                  },
+                  "triggerType": "TriggerNoRepeat",
+                  "APKDOHBIELE": 1,
+                  "NDIPOLBFDFB": "",
+                  "ODLAAMJBOJE": "",
+                  "HJHHKNKLKCI": [
+                    {
+                      "maxDistance": 100
+                    }
+                  ]
                 }
               },
-              "ILLLPEOODKP": ""
+              "targetType": "Enemy"
+            },
+            {
+              "$type": "SetCollisionPointToGlobalPos",
+              "key": "_ABILITY_Raycast_ShootPoint",
+              "origin": {
+                "$type": "ConfigBornByAttachPoint",
+                "attachPointName": "Muzzle",
+                "attachPointTargetType": "Self",
+                "direction": {
+                  "$type": "GFMNJNKIDFL",
+                  "useCorrectDir": true
+                },
+                "useRotation": true
+              },
+              "raycastLength": 100,
+              "LLHCJOAPNML": "BulletHit"
+            },
+            {
+              "$type": "TriggerTPSMonsterShootAudio",
+              "DMMDBFJGIBI": 6,
+              "JCNHKPOJEBM": {
+                "$type": "ConfigBornByGlobalValue",
+                "directionKey": "",
+                "positionKey": "_ABILITY_Raycast_ShootPoint"
+              },
+              "CIKEKCJCGIP": {
+                "$type": "ConfigBornByAttachPoint",
+                "attachPointName": "Muzzle",
+                "attachPointTargetType": "Self",
+                "direction": {
+                  "$type": "GFMNJNKIDFL",
+                  "useCorrectDir": true
+                },
+                "useRotation": true
+              }
+            },
+            {
+              "$type": "FireLineEffect",
+              "born": {
+                "$type": "ConfigBornByAttachPoint",
+                "attachPointName": "Muzzle",
+                "attachPointTargetType": "Self",
+                "direction": {
+                  "$type": "GFMNJNKIDFL",
+                  "useCorrectDir": true
+                },
+                "useRotation": true
+              },
+              "effectPattern": "Eff_Monster_Soldier_Rifle_Base_Bullet_Water_01",
+              "scale": 1,
+              "JHAGIJGAKMK": "",
+              "HCLLCENKKJA": {
+                "$type": "ConfigBornByGlobalValue",
+                "directionKey": "",
+                "positionKey": "_ABILITY_Raycast_ShootPoint"
+              }
             }
           ],
           "targetPredicates": [
             {
               "$type": "ByTargetGlobalValue",
-              "value": 0,
-              "key": "GV_CoverDir_Right"
+              "key": "GV_CoverDir_Right",
+              "value": 0
             }
           ]
+        }
+      ],
+      "onAdded": [
+        {
+          "$type": "SetGlobalValueListV2",
+          "JNBAOPKJKFM": [
+            {
+              "key": "GV_Bullet_Magazine_CurrentCount",
+              "maxValue": 0,
+              "minValue": 0,
+              "value": 30
+            },
+            {
+              "key": "GV_Bullet_CurretCount",
+              "maxValue": 0,
+              "minValue": 0,
+              "value": 0
+            },
+            {
+              "key": "GV_ShootSection_Random",
+              "maxValue": 0,
+              "minValue": 0,
+              "value": 0
+            },
+            {
+              "key": "GV_Shoot_Stop_Trigger",
+              "maxValue": 0,
+              "minValue": 0,
+              "value": 0
+            },
+            {
+              "key": "_Skill_Reload_Ready",
+              "maxValue": 0,
+              "minValue": 0,
+              "value": 1
+            },
+            {
+              "key": "TEST_Shoot999",
+              "maxValue": 0,
+              "minValue": 0,
+              "value": 0
+            },
+            {
+              "key": "_Skill_IsStand",
+              "maxValue": 0,
+              "minValue": 0,
+              "value": 1
+            },
+            {
+              "key": "_Skill_IsCrouch",
+              "maxValue": 0,
+              "minValue": 0,
+              "value": 0
+            },
+            {
+              "key": "GV_CoverDir_Right",
+              "maxValue": 0,
+              "minValue": 0,
+              "value": 0
+            },
+            {
+              "key": "GV_HipFire_EnterDist",
+              "maxValue": 0,
+              "minValue": 0,
+              "value": 8
+            }
+          ]
+        },
+        {
+          "$type": "SetGlobalValueV2",
+          "key": "GV_ShootSkill_Duration_Stay",
+          "maxValue": 2,
+          "minValue": 0.8,
+          "predicates": [
+            {
+              "$type": "ByTargetGlobalValue",
+              "compareType": "LessAndEqual",
+              "key": "GV_SameCoverShoot_Count",
+              "value": 1
+            }
+          ],
+          "randomInRange": true,
+          "useLimitRange": true,
+          "value": 0
         }
       ],
       "__unk_Q2830497089": [
@@ -802,230 +971,134 @@
         "GV_Bullet_CurretCount",
         "GV_ShootSkill_Duration_Stay",
         "GV_ShootSkill_Duration_Skill"
-      ],
-      "abilityMixins": [
-        {
-          "$type": "AttachToAnimatorStateIDMixin",
-          "__unk_Q2081332355": "",
-          "NJLGIMNGPFN": 1,
-          "stateIDs": [
-            "ShootSkillAdditve"
-          ],
-          "modifierName": "Monster_Rifle_ShootSkill_Shoot_Water"
-        },
-        {
-          "$type": "AttachToAnimatorStateIDMixin",
-          "__unk_Q2081332355": "",
-          "NJLGIMNGPFN": 1,
-          "stateIDs": [
-            "ShootSkillStay"
-          ],
-          "modifierName": "Monster_Rifle_ShootSkill_StayDuration_Water"
-        },
-        {
-          "$type": "AttachToAnimatorStateIDMixin",
-          "__unk_Q2081332355": "",
-          "NJLGIMNGPFN": 1,
-          "stateIDs": [
-            "ShootSkillAdditve",
-            "ShootSkillStay"
-          ],
-          "modifierName": "Monster_Rifle_ShootSkill_Handle_Water"
-        },
-        {
-          "$type": "AttachToAnimatorStateIDMixin",
-          "__unk_Q2081332355": "",
-          "NJLGIMNGPFN": 2,
-          "stateIDs": [
-            "Rifle_Reload"
-          ],
-          "modifierName": "Monster_Rifle_Reload_Handle"
-        },
-        {
-          "$type": "AttachToAnimatorStateIDMixin",
-          "__unk_Q2081332355": "",
-          "NJLGIMNGPFN": 0,
-          "stateIDs": [
-            "Crouch_Reload"
-          ],
-          "modifierName": "Monster_Rifle_Reload_Handle"
-        },
-        {
-          "$type": "AttachToAnimatorStateIDMixin",
-          "__unk_Q2081332355": "",
-          "stateIDs": [
-            "CrouchIdle",
-            "Cover_Stand_Idle"
-          ],
-          "modifierName": "Modifier_State_Ready_Cover_Shoot_Water"
-        },
-        {
-          "$type": "AttachToAnimatorStateIDMixin",
-          "__unk_Q2081332355": "",
-          "stateIDs": [
-            "Cover_Crouch_Shoot_Loop",
-            "Cover_Stand_Shoot_Loop"
-          ],
-          "modifierName": "Modifier_State_Cover_Shooting_Water"
-        },
-        {
-          "$type": "AttachToAbilityStateMixin",
-          "modifierName": "Modifier_ElementState_ShootInterrupt_Water",
-          "abilityStates": [
-            "ElementFreeze",
-            "ElementPetrifaction"
-          ]
-        },
-        {
-          "$type": "TPSMonsterAimModifyMixin",
-          "FEHGIMIKAAO": 0,
-          "FDMIKLMGFCP": 0,
-          "CNPEIDJFCNC": 0.13,
-          "LNFDAFELBJO": 0,
-          "ODFPOIABCBG": 0
-        }
-      ],
-      "abilityName": "MonsterAbility_Soldier_Shoot_Rifle_ShootingManager_Water",
-      "onAdded": [
-        {
-          "$type": "SetGlobalValueListV2",
-          "BGGHGEAHCGN": [
-            {
-              "maxValue": 0,
-              "value": 30,
-              "key": "GV_Bullet_Magazine_CurrentCount",
-              "minValue": 0
-            },
-            {
-              "maxValue": 0,
-              "value": 0,
-              "key": "GV_Bullet_CurretCount",
-              "minValue": 0
-            },
-            {
-              "maxValue": 0,
-              "value": 0,
-              "key": "GV_ShootSection_Random",
-              "minValue": 0
-            },
-            {
-              "maxValue": 0,
-              "value": 0,
-              "key": "GV_Shoot_Stop_Trigger",
-              "minValue": 0
-            },
-            {
-              "maxValue": 0,
-              "value": 1,
-              "key": "_Skill_Reload_Ready",
-              "minValue": 0
-            },
-            {
-              "maxValue": 0,
-              "value": 0,
-              "key": "TEST_Shoot999",
-              "minValue": 0
-            },
-            {
-              "maxValue": 0,
-              "value": 1,
-              "key": "_Skill_IsStand",
-              "minValue": 0
-            },
-            {
-              "maxValue": 0,
-              "value": 0,
-              "key": "_Skill_IsCrouch",
-              "minValue": 0
-            },
-            {
-              "maxValue": 0,
-              "value": 0,
-              "key": "GV_CoverDir_Right",
-              "minValue": 0
-            },
-            {
-              "maxValue": 0,
-              "value": 8,
-              "key": "GV_HipFire_EnterDist",
-              "minValue": 0
-            }
-          ]
-        },
-        {
-          "$type": "SetGlobalValueV2",
-          "minValue": 0.8,
-          "key": "GV_ShootSkill_Duration_Stay",
-          "randomInRange": true,
-          "maxValue": 2,
-          "useLimitRange": true,
-          "value": 0,
-          "predicates": [
-            {
-              "$type": "ByTargetGlobalValue",
-              "value": 1,
-              "compareType": "LessAndEqual",
-              "key": "GV_SameCoverShoot_Count"
-            }
-          ]
-        }
       ]
     }
   },
   {
     "Default": {
+      "abilityMixins": [
+        {
+          "$type": "AttachToAnimatorStateIDMixin",
+          "modifierName": "Monster_Rifle_ShootSkill_Shoot_Fire",
+          "stateIDs": [
+            "ShootSkillAdditve"
+          ],
+          "GJHGMFEADDF": 1,
+          "__unk_Q2081332355": ""
+        },
+        {
+          "$type": "AttachToAnimatorStateIDMixin",
+          "modifierName": "Monster_Rifle_ShootSkill_StayDuration_Fire",
+          "stateIDs": [
+            "ShootSkillStay"
+          ],
+          "GJHGMFEADDF": 1,
+          "__unk_Q2081332355": ""
+        },
+        {
+          "$type": "AttachToAnimatorStateIDMixin",
+          "modifierName": "Monster_Rifle_ShootSkill_Handle_Fire",
+          "stateIDs": [
+            "ShootSkillAdditve",
+            "ShootSkillStay"
+          ],
+          "GJHGMFEADDF": 1,
+          "__unk_Q2081332355": ""
+        },
+        {
+          "$type": "AttachToAnimatorStateIDMixin",
+          "modifierName": "Monster_Rifle_Reload_Handle",
+          "stateIDs": [
+            "Rifle_Reload"
+          ],
+          "GJHGMFEADDF": 2,
+          "__unk_Q2081332355": ""
+        },
+        {
+          "$type": "AttachToAnimatorStateIDMixin",
+          "modifierName": "Monster_Rifle_Reload_Handle",
+          "stateIDs": [
+            "Crouch_Reload"
+          ],
+          "GJHGMFEADDF": 0,
+          "__unk_Q2081332355": ""
+        },
+        {
+          "$type": "AttachToAnimatorStateIDMixin",
+          "modifierName": "Modifier_State_Ready_Cover_Shoot_Fire",
+          "stateIDs": [
+            "CrouchIdle",
+            "Cover_Stand_Idle"
+          ],
+          "__unk_Q2081332355": ""
+        },
+        {
+          "$type": "AttachToAnimatorStateIDMixin",
+          "modifierName": "Modifier_State_Cover_Shooting_Fire",
+          "stateIDs": [
+            "Cover_Crouch_Shoot_Loop",
+            "Cover_Stand_Shoot_Loop"
+          ],
+          "__unk_Q2081332355": ""
+        },
+        {
+          "$type": "AttachToAbilityStateMixin",
+          "abilityStates": [
+            "ElementFreeze",
+            "ElementPetrifaction"
+          ],
+          "modifierName": "Modifier_ElementState_ShootInterrupt_Fire"
+        },
+        {
+          "$type": "TPSMonsterAimModifyMixin",
+          "GKDPEJPNOIO": 0,
+          "KABMJGEGALB": 0,
+          "LAHPEFEMPPD": 0,
+          "OPNCGOGHHMG": 0,
+          "JIDGGGGAICG": 0.13
+        }
+      ],
+      "abilityName": "MonsterAbility_Soldier_Shoot_Rifle_ShootingManager_Fire",
       "modifiers": {
         "Monster_Soldier_RifleDoReloadAction": {
-          "thinkInterval": 0.1,
           "duration": 0.19,
+          "elementDurability": 100,
+          "modifierName": "",
           "onAdded": [
             {
               "$type": "SetAnimatorTrigger",
               "triggerID": "ShootStop"
             }
           ],
-          "elementDurability": 100,
-          "modifierName": "",
           "onThinkInterval": [
             {
               "$type": "SetGlobalValue",
+              "doOffStage": true,
               "key": "_Skill_Reload_Request",
-              "minValue": 0,
               "maxValue": 0,
-              "value": 1,
-              "doOffStage": true
+              "minValue": 0,
+              "value": 1
             }
           ],
+          "thinkInterval": 0.1,
           "__unk_Q3323398612": 0
         },
         "Monster_Rifle_Reload_Handle": {
-          "onRemoved": [
-            {
-              "$type": "SetAnimatorBool",
-              "boolID": "Reloading",
-              "doOffStage": true
-            },
-            {
-              "$type": "SetGlobalValue",
-              "key": "_Skill_Reload_Request",
-              "minValue": 0,
-              "maxValue": 0,
-              "value": 0
-            }
-          ],
+          "elementDurability": 100,
+          "modifierName": "",
           "onAdded": [
             {
               "$type": "SetGlobalValueV2",
-              "minValue": 0,
               "key": "GV_Bullet_Magazine_CurrentCount",
               "maxValue": 0,
+              "minValue": 0,
               "value": 30
             },
             {
               "$type": "SetAnimatorBool",
-              "value": true,
               "boolID": "Reloading",
-              "doOffStage": true
+              "doOffStage": true,
+              "value": true
             },
             {
               "$type": "SetAnimatorBool",
@@ -1034,18 +1107,6 @@
             },
             {
               "$type": "Predicated",
-              "successActions": [
-                {
-                  "$type": "SetAnimatorTrigger",
-                  "triggerID": "Crouch_Reload",
-                  "otherTargets": {
-                    "$type": "SelectTargetsByEquipParts",
-                    "equipPartNames": [
-                      "equip01"
-                    ]
-                  }
-                }
-              ],
               "failActions": [
                 {
                   "$type": "SetAnimatorTrigger",
@@ -1057,30 +1118,28 @@
                   }
                 }
               ],
+              "successActions": [
+                {
+                  "$type": "SetAnimatorTrigger",
+                  "otherTargets": {
+                    "$type": "SelectTargetsByEquipParts",
+                    "equipPartNames": [
+                      "equip01"
+                    ]
+                  },
+                  "triggerID": "Crouch_Reload"
+                }
+              ],
               "targetPredicates": [
                 {
                   "$type": "ByTargetGlobalValue",
-                  "value": 1,
-                  "key": "_Skill_IsCrouch"
+                  "key": "_Skill_IsCrouch",
+                  "value": 1
                 }
               ]
             },
             {
               "$type": "Predicated",
-              "successActions": [
-                {
-                  "$type": "SetAnimatorFloat",
-                  "floatID": "FightAnimType",
-                  "value": 1
-                },
-                {
-                  "$type": "SetGlobalValueV2",
-                  "minValue": 0,
-                  "key": "GV_HipFire_Applied",
-                  "maxValue": 0,
-                  "value": 1
-                }
-              ],
               "failActions": [
                 {
                   "$type": "SetAnimatorFloat",
@@ -1089,43 +1148,94 @@
                 },
                 {
                   "$type": "SetGlobalValueV2",
-                  "minValue": 0,
                   "key": "GV_HipFire_Applied",
                   "maxValue": 0,
+                  "minValue": 0,
                   "value": 0
+                }
+              ],
+              "successActions": [
+                {
+                  "$type": "SetAnimatorFloat",
+                  "floatID": "FightAnimType",
+                  "value": 1
+                },
+                {
+                  "$type": "SetGlobalValueV2",
+                  "key": "GV_HipFire_Applied",
+                  "maxValue": 0,
+                  "minValue": 0,
+                  "value": 1
                 }
               ],
               "targetPredicates": [
                 {
                   "$type": "ByTargetGlobalValue",
-                  "value": 1,
-                  "key": "GV_HipFire_Enabled"
+                  "key": "GV_HipFire_Enabled",
+                  "value": 1
                 }
               ]
             }
           ],
-          "elementDurability": 100,
-          "modifierName": "",
+          "onRemoved": [
+            {
+              "$type": "SetAnimatorBool",
+              "boolID": "Reloading",
+              "doOffStage": true
+            },
+            {
+              "$type": "SetGlobalValue",
+              "key": "_Skill_Reload_Request",
+              "maxValue": 0,
+              "minValue": 0,
+              "value": 0
+            }
+          ],
           "__unk_Q3323398612": 0
         },
         "Monster_Rifle_ShootSkill_Shoot_Fire": {
-          "thinkInterval": 0.125,
+          "elementDurability": 100,
+          "modifierMixins": [
+            {
+              "$type": "DoActionOnGlobalValueChangeMixin",
+              "actions": [
+                {
+                  "$type": "SetAnimatorBool",
+                  "boolID": "ShootSkillRest",
+                  "doOffStage": true,
+                  "predicates": [
+                    {
+                      "$type": "ByTargetGlobalValue",
+                      "compareType": "LessAndEqual",
+                      "key": "GV_Bullet_CurretCount",
+                      "target": "Self",
+                      "value": 0
+                    }
+                  ],
+                  "value": true
+                }
+              ],
+              "globalValueKey": "GV_Bullet_CurretCount",
+              "DHKOKKHJMHC": true
+            }
+          ],
+          "modifierName": "",
           "onAdded": [
             {
               "$type": "SetGlobalValueV2",
-              "minValue": 5,
               "key": "GV_Bullet_CurretCount",
-              "randomInRange": true,
               "maxValue": 15,
+              "minValue": 5,
+              "randomInRange": true,
               "useLimitRange": true,
               "value": 0
             },
             {
               "$type": "SetGlobalValueV2",
-              "minValue": 0.3,
               "key": "GV_ShootSkill_Duration_Stay",
-              "randomInRange": true,
               "maxValue": 0.8,
+              "minValue": 0.3,
+              "randomInRange": true,
               "useLimitRange": true,
               "value": 0
             },
@@ -1135,44 +1245,18 @@
               "predicates": [
                 {
                   "$type": "ByTargetGlobalValue",
+                  "compareType": "MoreThan",
+                  "key": "GV_Bullet_CurretCount",
+                  "target": "Self",
                   "value": [
                     "GV_Bullet_Magazine_CurrentCount",
                     4,
                     "SUB"
-                  ],
-                  "compareType": "MoreThan",
-                  "key": "GV_Bullet_CurretCount",
-                  "target": "Self"
+                  ]
                 }
               ]
             }
           ],
-          "elementDurability": 100,
-          "modifierMixins": [
-            {
-              "$type": "DoActionOnGlobalValueChangeMixin",
-              "actions": [
-                {
-                  "$type": "SetAnimatorBool",
-                  "value": true,
-                  "boolID": "ShootSkillRest",
-                  "doOffStage": true,
-                  "predicates": [
-                    {
-                      "$type": "ByTargetGlobalValue",
-                      "value": 0,
-                      "compareType": "LessAndEqual",
-                      "key": "GV_Bullet_CurretCount",
-                      "target": "Self"
-                    }
-                  ]
-                }
-              ],
-              "NBOEEIHGCPD": true,
-              "globalValueKey": "GV_Bullet_CurretCount"
-            }
-          ],
-          "modifierName": "",
           "onThinkInterval": [
             {
               "$type": "TriggerAbility",
@@ -1180,10 +1264,10 @@
               "predicates": [
                 {
                   "$type": "ByTargetGlobalValue",
-                  "value": 0,
                   "compareType": "MoreThan",
                   "key": "GV_Bullet_CurretCount",
-                  "target": "Self"
+                  "target": "Self",
+                  "value": 0
                 }
               ]
             },
@@ -1204,34 +1288,36 @@
             {
               "$type": "FireEffect",
               "effectPattern": "Eff_Monster_Soldier_Rifle_Base_MuzzleVFX_Fire_01",
-              "scale": 1,
-              "ILLLPEOODKP": "",
               "predicates": [
                 {
                   "$type": "ByTargetGlobalValue",
-                  "value": 0,
-                  "key": "GV_CoverDir_Right"
+                  "key": "GV_CoverDir_Right",
+                  "value": 0
                 }
-              ]
+              ],
+              "scale": 1,
+              "JHAGIJGAKMK": ""
             },
             {
               "$type": "FireEffect",
               "effectPattern": "Eff_Monster_Soldier_Rifle_Base_MuzzleVFX_Fire_02",
-              "scale": 1,
-              "ILLLPEOODKP": "",
               "predicates": [
                 {
                   "$type": "ByTargetGlobalValue",
-                  "value": 1,
-                  "key": "GV_CoverDir_Right"
+                  "key": "GV_CoverDir_Right",
+                  "value": 1
                 }
-              ]
+              ],
+              "scale": 1,
+              "JHAGIJGAKMK": ""
             }
           ],
+          "thinkInterval": 0.125,
           "__unk_Q3323398612": 0
         },
         "Monster_Rifle_ShootSkill_StayDuration_Fire": {
-          "thinkInterval": "GV_ShootSkill_Duration_Stay",
+          "elementDurability": 100,
+          "modifierName": "",
           "onAdded": [
             {
               "$type": "RemoveModifier",
@@ -1239,20 +1325,18 @@
             },
             {
               "$type": "SetAnimatorTrigger",
-              "triggerID": "ShootStop",
               "predicates": [
                 {
                   "$type": "ByTargetGlobalValue",
-                  "value": 0,
                   "compareType": "MoreThan",
                   "key": "GV_Shoot_Stop_Trigger",
-                  "target": "Self"
+                  "target": "Self",
+                  "value": 0
                 }
-              ]
+              ],
+              "triggerID": "ShootStop"
             }
           ],
-          "elementDurability": 100,
-          "modifierName": "",
           "onThinkInterval": [
             {
               "$type": "SetAnimatorBool",
@@ -1260,24 +1344,12 @@
               "doOffStage": true
             }
           ],
+          "thinkInterval": "GV_ShootSkill_Duration_Stay",
           "__unk_Q3323398612": 0
         },
         "Monster_Rifle_ShootSkill_Handle_Fire": {
-          "onRemoved": [
-            {
-              "$type": "SetGlobalValueV2",
-              "minValue": 0,
-              "key": "GV_Shoot_Stop_Trigger",
-              "maxValue": 0,
-              "value": 0
-            },
-            {
-              "$type": "SetAnimatorBool",
-              "value": true,
-              "boolID": "AimObserve",
-              "doOffStage": true
-            }
-          ],
+          "elementDurability": 100,
+          "modifierName": "",
           "onAdded": [
             {
               "$type": "ApplyModifier",
@@ -1285,42 +1357,42 @@
             },
             {
               "$type": "SetGlobalValueV2",
-              "minValue": 0,
               "key": "GV_Shoot_Stop_Trigger",
               "maxValue": 0,
+              "minValue": 0,
               "value": 0
             },
             {
               "$type": "SetGlobalValueV2",
-              "minValue": 8,
               "key": "GV_ShootSkill_Duration_Skill",
-              "randomInRange": true,
               "maxValue": 14,
-              "useLimitRange": true,
-              "value": 0,
+              "minValue": 8,
               "predicates": [
                 {
                   "$type": "ByTargetGlobalValue",
-                  "value": 0,
-                  "key": "GV_InCover_Type"
+                  "key": "GV_InCover_Type",
+                  "value": 0
                 }
-              ]
+              ],
+              "randomInRange": true,
+              "useLimitRange": true,
+              "value": 0
             },
             {
               "$type": "SetGlobalValueV2",
-              "minValue": 9,
               "key": "GV_ShootSkill_Duration_Skill",
-              "randomInRange": true,
               "maxValue": 15,
-              "useLimitRange": true,
-              "value": 0,
+              "minValue": 9,
               "predicates": [
                 {
                   "$type": "ByTargetGlobalValue",
-                  "value": 1,
-                  "key": "GV_InCover_Type"
+                  "key": "GV_InCover_Type",
+                  "value": 1
                 }
-              ]
+              ],
+              "randomInRange": true,
+              "useLimitRange": true,
+              "value": 0
             },
             {
               "$type": "SetAnimatorBool",
@@ -1328,138 +1400,172 @@
               "doOffStage": true
             }
           ],
-          "elementDurability": 100,
-          "modifierName": "",
+          "onRemoved": [
+            {
+              "$type": "SetGlobalValueV2",
+              "key": "GV_Shoot_Stop_Trigger",
+              "maxValue": 0,
+              "minValue": 0,
+              "value": 0
+            },
+            {
+              "$type": "SetAnimatorBool",
+              "boolID": "AimObserve",
+              "doOffStage": true,
+              "value": true
+            }
+          ],
           "__unk_Q3323398612": 0
         },
         "Monster_Rifle_ShootSkill_SkillDuration_Fire": {
           "duration": "GV_ShootSkill_Duration_Skill",
+          "elementDurability": 100,
+          "modifierName": "",
           "onRemoved": [
             {
               "$type": "SetGlobalValueV2",
-              "minValue": 0,
               "key": "GV_Shoot_Stop_Trigger",
               "maxValue": 0,
+              "minValue": 0,
               "value": 1
             }
           ],
-          "elementDurability": 100,
-          "modifierName": "",
           "__unk_Q3323398612": 0
         },
         "Modifier_State_Ready_Cover_Shoot_Fire": {
-          "onRemoved": [
-            {
-              "$type": "SetGlobalValueV2",
-              "minValue": 0,
-              "key": "_Skill_CoverShoot_Ready",
-              "maxValue": 0,
-              "value": 0,
-              "doOffStage": true
-            }
-          ],
+          "elementDurability": 100,
+          "modifierName": "",
           "onAdded": [
             {
               "$type": "SetGlobalValueV2",
-              "minValue": 0,
               "key": "_Skill_CoverShoot_Ready",
               "maxValue": 0,
+              "minValue": 0,
               "value": 1
             },
             {
               "$type": "SetGlobalValue",
+              "doOffStage": true,
               "key": "_Skill_Reload_Ready",
-              "minValue": 0,
               "maxValue": 0,
-              "value": 1,
-              "doOffStage": true
+              "minValue": 0,
+              "value": 1
             },
             {
               "$type": "SetGlobalValueV2",
-              "minValue": 0.8,
               "key": "GV_ShootSkill_Duration_Stay",
-              "randomInRange": true,
               "maxValue": 2,
-              "useLimitRange": true,
-              "value": 0,
+              "minValue": 0.8,
               "predicates": [
                 {
                   "$type": "ByTargetGlobalValue",
-                  "value": 1,
                   "compareType": "LessAndEqual",
-                  "key": "GV_SameCoverShoot_Count"
+                  "key": "GV_SameCoverShoot_Count",
+                  "value": 1
                 }
-              ]
+              ],
+              "randomInRange": true,
+              "useLimitRange": true,
+              "value": 0
             }
           ],
-          "elementDurability": 100,
-          "modifierName": "",
-          "__unk_Q3323398612": 0
-        },
-        "Modifier_State_Cover_Shooting_Fire": {
           "onRemoved": [
             {
               "$type": "SetGlobalValueV2",
-              "minValue": 0,
+              "doOffStage": true,
               "key": "_Skill_CoverShoot_Ready",
               "maxValue": 0,
-              "value": 0,
-              "doOffStage": true
-            },
-            {
-              "$type": "SetGlobalValue",
-              "key": "_Skill_Reload_Ready",
               "minValue": 0,
-              "maxValue": 0,
-              "value": 1,
-              "doOffStage": true
+              "value": 0
             }
           ],
+          "__unk_Q3323398612": 0
+        },
+        "Modifier_State_Cover_Shooting_Fire": {
+          "elementDurability": 100,
+          "modifierName": "",
           "onAdded": [
             {
               "$type": "SetGlobalValue",
+              "doOffStage": true,
               "key": "_Skill_Reload_Ready",
-              "minValue": 0,
               "maxValue": 0,
-              "value": 0,
-              "doOffStage": true
+              "minValue": 0,
+              "value": 0
             },
             {
               "$type": "AddGlobalValueV2",
-              "minValue": 0,
               "key": "GV_SameCoverShoot_Count",
-              "value": 1,
-              "maxValue": 0
+              "maxValue": 0,
+              "minValue": 0,
+              "value": 1
             },
             {
               "$type": "ApplyModifier",
               "modifierName": "CoverShoot_Trigger_Fire"
             }
           ],
-          "elementDurability": 100,
-          "modifierName": "",
+          "onRemoved": [
+            {
+              "$type": "SetGlobalValueV2",
+              "doOffStage": true,
+              "key": "_Skill_CoverShoot_Ready",
+              "maxValue": 0,
+              "minValue": 0,
+              "value": 0
+            },
+            {
+              "$type": "SetGlobalValue",
+              "doOffStage": true,
+              "key": "_Skill_Reload_Ready",
+              "maxValue": 0,
+              "minValue": 0,
+              "value": 1
+            }
+          ],
           "__unk_Q3323398612": 0
         },
         "CoverShoot_Trigger_Fire": {
-          "thinkInterval": 0.1,
           "duration": 1,
+          "elementDurability": 100,
+          "modifierName": "",
           "onAdded": [
             {
               "$type": "SetAnimatorTrigger",
               "triggerID": "ShootStart"
             }
           ],
-          "elementDurability": 100,
-          "modifierName": "",
           "onThinkInterval": [
             {
               "$type": "SetAnimatorTrigger",
               "triggerID": "ShootStart"
             }
           ],
+          "thinkInterval": 0.1,
           "__unk_Q3323398612": 0
         },
         "Modifier_ElementState_ShootInterrupt_Fire": {
+          "elementDurability": 100,
+          "modifierName": "",
+          "onAdded": [
+            {
+              "$type": "SetAnimatorBool",
+              "boolID": "ShootInterrupt",
+              "doOffStage": true,
+              "value": true
+            },
+            {
+              "$type": "RemoveModifier",
+              "modifierName": "CoverShoot_Trigger_Fire"
+            },
+            {
+              "$type": "SetGlobalValueV2",
+              "key": "GV_Soldier_Rifle_ElementState",
+              "maxValue": 0,
+              "minValue": 0,
+              "value": 1
+            }
+          ],
           "onRemoved": [
             {
               "$type": "SetAnimatorTrigger",
@@ -1472,175 +1578,29 @@
             },
             {
               "$type": "SetGlobalValueV2",
-              "minValue": 0,
               "key": "GV_Soldier_Rifle_ElementState",
               "maxValue": 0,
+              "minValue": 0,
               "value": 0
             }
           ],
-          "onAdded": [
-            {
-              "$type": "SetAnimatorBool",
-              "value": true,
-              "boolID": "ShootInterrupt",
-              "doOffStage": true
-            },
-            {
-              "$type": "RemoveModifier",
-              "modifierName": "CoverShoot_Trigger_Fire"
-            },
-            {
-              "$type": "SetGlobalValueV2",
-              "minValue": 0,
-              "key": "GV_Soldier_Rifle_ElementState",
-              "maxValue": 0,
-              "value": 1
-            }
-          ],
-          "elementDurability": 100,
-          "modifierName": "",
           "__unk_Q3323398612": 0
         }
       },
       "onAbilityStart": [
         {
           "$type": "SetRandomOverrideMapValue",
-          "valueRangeMin": -0.45,
           "overrideMapKey": "ShootPosOffset",
-          "valueRangeMax": 0.45
+          "valueRangeMax": 0.45,
+          "valueRangeMin": -0.45
         },
         {
           "$type": "Predicated",
-          "successActions": [
-            {
-              "$type": "TPSMonsterRefreshAim",
-              "IIJEEKCLGMH": 0.3,
-              "ELIKFMGPHOC": {
-                "$type": "ConfigBornByAttachPoint",
-                "attachPointName": "Muzzle",
-                "attachPointTargetType": "Self",
-                "useRotation": true
-              }
-            },
-            {
-              "$type": "TriggerAttackEvent",
-              "targetType": "Enemy",
-              "attackEvent": {
-                "attackInfo": {
-                  "attackProperty": {
-                    "elementType": "Fire",
-                    "attackType": "Range",
-                    "damagePercentageRatio": 0,
-                    "strikeType": "Default",
-                    "enBreak": 20,
-                    "damagePercentage": 0.22,
-                    "damageExtra": 0,
-                    "elementDurability": 25,
-                    "__exp_arkhe": 0
-                  },
-                  "hitPattern": {
-                    "__unk_Q3893899620": "",
-                    "onHitEffectName": "Eff_Monster_Soldier_Rifle_Base_Hit_Fire_01",
-                    "hitHaltTimeScale": 0.01,
-                    "hitImpulseType": "LV0"
-                  },
-                  "attenuationGroup": "default",
-                  "attenuationTag": "342",
-                  "attackTag": "Elemental_Art",
-                  "canBeModifiedBy": "OriginOwner"
-                },
-                "attackPattern": {
-                  "$type": "OPHIMIHJCEM",
-                  "FGLJONOKGPO": [
-                    {
-                      "LGBDNEOBPFK": 100
-                    }
-                  ],
-                  "ECCBDFKNEOI": "",
-                  "LODCGFMONNO": 1,
-                  "triggerType": "TriggerNoRepeat",
-                  "hitScene": {
-                    "defaultEffect": "Eff_Monster_Soldier_Rifle_Base_Hit_Fire_01"
-                  },
-                  "born": {
-                    "$type": "ConfigBornByAttachPoint",
-                    "attachPointName": "Muzzle",
-                    "attachPointTargetType": "Self",
-                    "useRotation": true,
-                    "offset": {
-                      "z": -0.5
-                    },
-                    "direction": {
-                      "$type": "OKCHKHNIFLE",
-                      "useCorrectDir": true
-                    }
-                  },
-                  "checkHitLayerType": "Both"
-                }
-              }
-            },
-            {
-              "$type": "SetCollisionPointToGlobalPos",
-              "LANEADNAMOA": {
-                "$type": "ConfigBornByAttachPoint",
-                "attachPointName": "Muzzle",
-                "attachPointTargetType": "Self",
-                "useRotation": true,
-                "direction": {
-                  "$type": "OKCHKHNIFLE",
-                  "useCorrectDir": true
-                }
-              },
-              "GIIKFCBIECE": 100,
-              "key": "_ABILITY_Raycast_ShootPoint",
-              "IFAGEOOENNG": "BulletHit"
-            },
-            {
-              "$type": "TriggerTPSMonsterShootAudio",
-              "AMNHFHAEOIJ": {
-                "$type": "ConfigBornByGlobalValue",
-                "positionKey": "_ABILITY_Raycast_ShootPoint",
-                "directionKey": ""
-              },
-              "ELIKFMGPHOC": {
-                "$type": "ConfigBornByAttachPoint",
-                "attachPointName": "Muzzle",
-                "attachPointTargetType": "Self",
-                "useRotation": true,
-                "direction": {
-                  "$type": "OKCHKHNIFLE",
-                  "useCorrectDir": true
-                }
-              },
-              "LNCOFJPLODO": 6
-            },
-            {
-              "$type": "FireLineEffect",
-              "LAMIHJFLBMA": {
-                "$type": "ConfigBornByGlobalValue",
-                "positionKey": "_ABILITY_Raycast_ShootPoint",
-                "directionKey": ""
-              },
-              "effectPattern": "Eff_Monster_Soldier_Rifle_Base_Bullet_Fire_01",
-              "scale": 1,
-              "born": {
-                "$type": "ConfigBornByAttachPoint",
-                "attachPointName": "Muzzle",
-                "attachPointTargetType": "Self",
-                "useRotation": true,
-                "direction": {
-                  "$type": "OKCHKHNIFLE",
-                  "useCorrectDir": true
-                }
-              },
-              "ILLLPEOODKP": ""
-            }
-          ],
           "failActions": [
             {
               "$type": "TPSMonsterRefreshAim",
-              "IIJEEKCLGMH": 0.3,
-              "ELIKFMGPHOC": {
+              "EECPHEDHOAN": 0.3,
+              "CIKEKCJCGIP": {
                 "$type": "ConfigBornByAttachPoint",
                 "attachPointName": "Muzzle_Mirror",
                 "attachPointTargetType": "Self",
@@ -1649,125 +1609,336 @@
             },
             {
               "$type": "TriggerAttackEvent",
-              "targetType": "Enemy",
               "attackEvent": {
                 "attackInfo": {
                   "attackProperty": {
-                    "elementType": "Fire",
                     "attackType": "Range",
-                    "damagePercentageRatio": 0,
-                    "strikeType": "Default",
-                    "enBreak": 20,
-                    "damagePercentage": 0.22,
                     "damageExtra": 0,
+                    "damagePercentage": 0.22,
+                    "damagePercentageRatio": 0,
                     "elementDurability": 25,
+                    "elementType": "Fire",
+                    "enBreak": 20,
+                    "strikeType": "Default",
                     "__exp_arkhe": 0
                   },
-                  "hitPattern": {
-                    "__unk_Q3893899620": "",
-                    "onHitEffectName": "Eff_Monster_Soldier_Rifle_Base_Hit_Fire_01",
-                    "hitHaltTimeScale": 0.01,
-                    "hitImpulseType": "LV0"
-                  },
+                  "attackTag": "Elemental_Art",
                   "attenuationGroup": "default",
                   "attenuationTag": "342",
-                  "attackTag": "Elemental_Art",
-                  "canBeModifiedBy": "OriginOwner"
+                  "canBeModifiedBy": "OriginOwner",
+                  "hitPattern": {
+                    "hitHaltTimeScale": 0.01,
+                    "hitImpulseType": "LV0",
+                    "onHitEffectName": "Eff_Monster_Soldier_Rifle_Base_Hit_Fire_01",
+                    "__unk_Q3893899620": ""
+                  }
                 },
                 "attackPattern": {
-                  "$type": "OPHIMIHJCEM",
-                  "FGLJONOKGPO": [
-                    {
-                      "LGBDNEOBPFK": 100
-                    }
-                  ],
-                  "ECCBDFKNEOI": "",
-                  "LODCGFMONNO": 1,
-                  "triggerType": "TriggerNoRepeat",
-                  "hitScene": {
-                    "defaultEffect": "Eff_Monster_Soldier_Rifle_Base_Hit_Fire_01"
-                  },
+                  "$type": "OPBMGELHHAK",
                   "born": {
                     "$type": "ConfigBornByAttachPoint",
                     "attachPointName": "Muzzle_Mirror",
                     "attachPointTargetType": "Self",
-                    "useRotation": true,
+                    "direction": {
+                      "$type": "GFMNJNKIDFL",
+                      "useCorrectDir": true
+                    },
                     "offset": {
                       "z": -0.5
                     },
-                    "direction": {
-                      "$type": "OKCHKHNIFLE",
-                      "useCorrectDir": true
-                    }
+                    "useRotation": true
                   },
-                  "checkHitLayerType": "Both"
+                  "checkHitLayerType": "Both",
+                  "hitScene": {
+                    "defaultEffect": "Eff_Monster_Soldier_Rifle_Base_Hit_Fire_01"
+                  },
+                  "triggerType": "TriggerNoRepeat",
+                  "APKDOHBIELE": 1,
+                  "NDIPOLBFDFB": "",
+                  "ODLAAMJBOJE": "",
+                  "HJHHKNKLKCI": [
+                    {
+                      "maxDistance": 100
+                    }
+                  ]
                 }
-              }
+              },
+              "targetType": "Enemy"
             },
             {
               "$type": "SetCollisionPointToGlobalPos",
-              "LANEADNAMOA": {
+              "key": "_ABILITY_Raycast_ShootPoint",
+              "origin": {
                 "$type": "ConfigBornByAttachPoint",
                 "attachPointName": "Muzzle_Mirror",
                 "attachPointTargetType": "Self",
-                "useRotation": true,
                 "direction": {
-                  "$type": "OKCHKHNIFLE",
+                  "$type": "GFMNJNKIDFL",
                   "useCorrectDir": true
-                }
+                },
+                "useRotation": true
               },
-              "GIIKFCBIECE": 100,
-              "key": "_ABILITY_Raycast_ShootPoint",
-              "IFAGEOOENNG": "BulletHit"
+              "raycastLength": 100,
+              "LLHCJOAPNML": "BulletHit"
             },
             {
               "$type": "TriggerTPSMonsterShootAudio",
-              "AMNHFHAEOIJ": {
+              "DMMDBFJGIBI": 6,
+              "JCNHKPOJEBM": {
                 "$type": "ConfigBornByGlobalValue",
-                "positionKey": "_ABILITY_Raycast_ShootPoint",
-                "directionKey": ""
+                "directionKey": "",
+                "positionKey": "_ABILITY_Raycast_ShootPoint"
               },
-              "ELIKFMGPHOC": {
+              "CIKEKCJCGIP": {
                 "$type": "ConfigBornByAttachPoint",
                 "attachPointName": "Muzzle_Mirror",
                 "attachPointTargetType": "Self",
-                "useRotation": true,
                 "direction": {
-                  "$type": "OKCHKHNIFLE",
+                  "$type": "GFMNJNKIDFL",
                   "useCorrectDir": true
-                }
-              },
-              "LNCOFJPLODO": 6
+                },
+                "useRotation": true
+              }
             },
             {
               "$type": "FireLineEffect",
-              "LAMIHJFLBMA": {
-                "$type": "ConfigBornByGlobalValue",
-                "positionKey": "_ABILITY_Raycast_ShootPoint",
-                "directionKey": ""
-              },
-              "effectPattern": "Eff_Monster_Soldier_Rifle_Base_Bullet_Fire_01",
-              "scale": 1,
               "born": {
                 "$type": "ConfigBornByAttachPoint",
                 "attachPointName": "Muzzle_Mirror",
                 "attachPointTargetType": "Self",
-                "useRotation": true,
                 "direction": {
-                  "$type": "OKCHKHNIFLE",
+                  "$type": "GFMNJNKIDFL",
                   "useCorrectDir": true
+                },
+                "useRotation": true
+              },
+              "effectPattern": "Eff_Monster_Soldier_Rifle_Base_Bullet_Fire_01",
+              "scale": 1,
+              "JHAGIJGAKMK": "",
+              "HCLLCENKKJA": {
+                "$type": "ConfigBornByGlobalValue",
+                "directionKey": "",
+                "positionKey": "_ABILITY_Raycast_ShootPoint"
+              }
+            }
+          ],
+          "successActions": [
+            {
+              "$type": "TPSMonsterRefreshAim",
+              "EECPHEDHOAN": 0.3,
+              "CIKEKCJCGIP": {
+                "$type": "ConfigBornByAttachPoint",
+                "attachPointName": "Muzzle",
+                "attachPointTargetType": "Self",
+                "useRotation": true
+              }
+            },
+            {
+              "$type": "TriggerAttackEvent",
+              "attackEvent": {
+                "attackInfo": {
+                  "attackProperty": {
+                    "attackType": "Range",
+                    "damageExtra": 0,
+                    "damagePercentage": 0.22,
+                    "damagePercentageRatio": 0,
+                    "elementDurability": 25,
+                    "elementType": "Fire",
+                    "enBreak": 20,
+                    "strikeType": "Default",
+                    "__exp_arkhe": 0
+                  },
+                  "attackTag": "Elemental_Art",
+                  "attenuationGroup": "default",
+                  "attenuationTag": "342",
+                  "canBeModifiedBy": "OriginOwner",
+                  "hitPattern": {
+                    "hitHaltTimeScale": 0.01,
+                    "hitImpulseType": "LV0",
+                    "onHitEffectName": "Eff_Monster_Soldier_Rifle_Base_Hit_Fire_01",
+                    "__unk_Q3893899620": ""
+                  }
+                },
+                "attackPattern": {
+                  "$type": "OPBMGELHHAK",
+                  "born": {
+                    "$type": "ConfigBornByAttachPoint",
+                    "attachPointName": "Muzzle",
+                    "attachPointTargetType": "Self",
+                    "direction": {
+                      "$type": "GFMNJNKIDFL",
+                      "useCorrectDir": true
+                    },
+                    "offset": {
+                      "z": -0.5
+                    },
+                    "useRotation": true
+                  },
+                  "checkHitLayerType": "Both",
+                  "hitScene": {
+                    "defaultEffect": "Eff_Monster_Soldier_Rifle_Base_Hit_Fire_01"
+                  },
+                  "triggerType": "TriggerNoRepeat",
+                  "APKDOHBIELE": 1,
+                  "NDIPOLBFDFB": "",
+                  "ODLAAMJBOJE": "",
+                  "HJHHKNKLKCI": [
+                    {
+                      "maxDistance": 100
+                    }
+                  ]
                 }
               },
-              "ILLLPEOODKP": ""
+              "targetType": "Enemy"
+            },
+            {
+              "$type": "SetCollisionPointToGlobalPos",
+              "key": "_ABILITY_Raycast_ShootPoint",
+              "origin": {
+                "$type": "ConfigBornByAttachPoint",
+                "attachPointName": "Muzzle",
+                "attachPointTargetType": "Self",
+                "direction": {
+                  "$type": "GFMNJNKIDFL",
+                  "useCorrectDir": true
+                },
+                "useRotation": true
+              },
+              "raycastLength": 100,
+              "LLHCJOAPNML": "BulletHit"
+            },
+            {
+              "$type": "TriggerTPSMonsterShootAudio",
+              "DMMDBFJGIBI": 6,
+              "JCNHKPOJEBM": {
+                "$type": "ConfigBornByGlobalValue",
+                "directionKey": "",
+                "positionKey": "_ABILITY_Raycast_ShootPoint"
+              },
+              "CIKEKCJCGIP": {
+                "$type": "ConfigBornByAttachPoint",
+                "attachPointName": "Muzzle",
+                "attachPointTargetType": "Self",
+                "direction": {
+                  "$type": "GFMNJNKIDFL",
+                  "useCorrectDir": true
+                },
+                "useRotation": true
+              }
+            },
+            {
+              "$type": "FireLineEffect",
+              "born": {
+                "$type": "ConfigBornByAttachPoint",
+                "attachPointName": "Muzzle",
+                "attachPointTargetType": "Self",
+                "direction": {
+                  "$type": "GFMNJNKIDFL",
+                  "useCorrectDir": true
+                },
+                "useRotation": true
+              },
+              "effectPattern": "Eff_Monster_Soldier_Rifle_Base_Bullet_Fire_01",
+              "scale": 1,
+              "JHAGIJGAKMK": "",
+              "HCLLCENKKJA": {
+                "$type": "ConfigBornByGlobalValue",
+                "directionKey": "",
+                "positionKey": "_ABILITY_Raycast_ShootPoint"
+              }
             }
           ],
           "targetPredicates": [
             {
               "$type": "ByTargetGlobalValue",
-              "value": 0,
-              "key": "GV_CoverDir_Right"
+              "key": "GV_CoverDir_Right",
+              "value": 0
             }
           ]
+        }
+      ],
+      "onAdded": [
+        {
+          "$type": "SetGlobalValueListV2",
+          "JNBAOPKJKFM": [
+            {
+              "key": "GV_Bullet_Magazine_CurrentCount",
+              "maxValue": 0,
+              "minValue": 0,
+              "value": 30
+            },
+            {
+              "key": "GV_Bullet_CurretCount",
+              "maxValue": 0,
+              "minValue": 0,
+              "value": 0
+            },
+            {
+              "key": "GV_ShootSection_Random",
+              "maxValue": 0,
+              "minValue": 0,
+              "value": 0
+            },
+            {
+              "key": "GV_Shoot_Stop_Trigger",
+              "maxValue": 0,
+              "minValue": 0,
+              "value": 0
+            },
+            {
+              "key": "_Skill_Reload_Ready",
+              "maxValue": 0,
+              "minValue": 0,
+              "value": 1
+            },
+            {
+              "key": "TEST_Shoot999",
+              "maxValue": 0,
+              "minValue": 0,
+              "value": 0
+            },
+            {
+              "key": "_Skill_IsStand",
+              "maxValue": 0,
+              "minValue": 0,
+              "value": 1
+            },
+            {
+              "key": "_Skill_IsCrouch",
+              "maxValue": 0,
+              "minValue": 0,
+              "value": 0
+            },
+            {
+              "key": "GV_CoverDir_Right",
+              "maxValue": 0,
+              "minValue": 0,
+              "value": 0
+            },
+            {
+              "key": "GV_HipFire_EnterDist",
+              "maxValue": 0,
+              "minValue": 0,
+              "value": 8
+            }
+          ]
+        },
+        {
+          "$type": "SetGlobalValueV2",
+          "key": "GV_ShootSkill_Duration_Stay",
+          "maxValue": 2,
+          "minValue": 0.8,
+          "predicates": [
+            {
+              "$type": "ByTargetGlobalValue",
+              "compareType": "LessAndEqual",
+              "key": "GV_SameCoverShoot_Count",
+              "value": 1
+            }
+          ],
+          "randomInRange": true,
+          "useLimitRange": true,
+          "value": 0
         }
       ],
       "__unk_Q2830497089": [
@@ -1775,178 +1946,12 @@
         "GV_Bullet_CurretCount",
         "GV_ShootSkill_Duration_Stay",
         "GV_ShootSkill_Duration_Skill"
-      ],
-      "abilityMixins": [
-        {
-          "$type": "AttachToAnimatorStateIDMixin",
-          "__unk_Q2081332355": "",
-          "NJLGIMNGPFN": 1,
-          "stateIDs": [
-            "ShootSkillAdditve"
-          ],
-          "modifierName": "Monster_Rifle_ShootSkill_Shoot_Fire"
-        },
-        {
-          "$type": "AttachToAnimatorStateIDMixin",
-          "__unk_Q2081332355": "",
-          "NJLGIMNGPFN": 1,
-          "stateIDs": [
-            "ShootSkillStay"
-          ],
-          "modifierName": "Monster_Rifle_ShootSkill_StayDuration_Fire"
-        },
-        {
-          "$type": "AttachToAnimatorStateIDMixin",
-          "__unk_Q2081332355": "",
-          "NJLGIMNGPFN": 1,
-          "stateIDs": [
-            "ShootSkillAdditve",
-            "ShootSkillStay"
-          ],
-          "modifierName": "Monster_Rifle_ShootSkill_Handle_Fire"
-        },
-        {
-          "$type": "AttachToAnimatorStateIDMixin",
-          "__unk_Q2081332355": "",
-          "NJLGIMNGPFN": 2,
-          "stateIDs": [
-            "Rifle_Reload"
-          ],
-          "modifierName": "Monster_Rifle_Reload_Handle"
-        },
-        {
-          "$type": "AttachToAnimatorStateIDMixin",
-          "__unk_Q2081332355": "",
-          "NJLGIMNGPFN": 0,
-          "stateIDs": [
-            "Crouch_Reload"
-          ],
-          "modifierName": "Monster_Rifle_Reload_Handle"
-        },
-        {
-          "$type": "AttachToAnimatorStateIDMixin",
-          "__unk_Q2081332355": "",
-          "stateIDs": [
-            "CrouchIdle",
-            "Cover_Stand_Idle"
-          ],
-          "modifierName": "Modifier_State_Ready_Cover_Shoot_Fire"
-        },
-        {
-          "$type": "AttachToAnimatorStateIDMixin",
-          "__unk_Q2081332355": "",
-          "stateIDs": [
-            "Cover_Crouch_Shoot_Loop",
-            "Cover_Stand_Shoot_Loop"
-          ],
-          "modifierName": "Modifier_State_Cover_Shooting_Fire"
-        },
-        {
-          "$type": "AttachToAbilityStateMixin",
-          "modifierName": "Modifier_ElementState_ShootInterrupt_Fire",
-          "abilityStates": [
-            "ElementFreeze",
-            "ElementPetrifaction"
-          ]
-        },
-        {
-          "$type": "TPSMonsterAimModifyMixin",
-          "FEHGIMIKAAO": 0,
-          "FDMIKLMGFCP": 0,
-          "CNPEIDJFCNC": 0.13,
-          "LNFDAFELBJO": 0,
-          "ODFPOIABCBG": 0
-        }
-      ],
-      "abilityName": "MonsterAbility_Soldier_Shoot_Rifle_ShootingManager_Fire",
-      "onAdded": [
-        {
-          "$type": "SetGlobalValueListV2",
-          "BGGHGEAHCGN": [
-            {
-              "maxValue": 0,
-              "value": 30,
-              "key": "GV_Bullet_Magazine_CurrentCount",
-              "minValue": 0
-            },
-            {
-              "maxValue": 0,
-              "value": 0,
-              "key": "GV_Bullet_CurretCount",
-              "minValue": 0
-            },
-            {
-              "maxValue": 0,
-              "value": 0,
-              "key": "GV_ShootSection_Random",
-              "minValue": 0
-            },
-            {
-              "maxValue": 0,
-              "value": 0,
-              "key": "GV_Shoot_Stop_Trigger",
-              "minValue": 0
-            },
-            {
-              "maxValue": 0,
-              "value": 1,
-              "key": "_Skill_Reload_Ready",
-              "minValue": 0
-            },
-            {
-              "maxValue": 0,
-              "value": 0,
-              "key": "TEST_Shoot999",
-              "minValue": 0
-            },
-            {
-              "maxValue": 0,
-              "value": 1,
-              "key": "_Skill_IsStand",
-              "minValue": 0
-            },
-            {
-              "maxValue": 0,
-              "value": 0,
-              "key": "_Skill_IsCrouch",
-              "minValue": 0
-            },
-            {
-              "maxValue": 0,
-              "value": 0,
-              "key": "GV_CoverDir_Right",
-              "minValue": 0
-            },
-            {
-              "maxValue": 0,
-              "value": 8,
-              "key": "GV_HipFire_EnterDist",
-              "minValue": 0
-            }
-          ]
-        },
-        {
-          "$type": "SetGlobalValueV2",
-          "minValue": 0.8,
-          "key": "GV_ShootSkill_Duration_Stay",
-          "randomInRange": true,
-          "maxValue": 2,
-          "useLimitRange": true,
-          "value": 0,
-          "predicates": [
-            {
-              "$type": "ByTargetGlobalValue",
-              "value": 1,
-              "compareType": "LessAndEqual",
-              "key": "GV_SameCoverShoot_Count"
-            }
-          ]
-        }
       ]
     }
   },
   {
     "Default": {
+      "abilityName": "MonsterAbility_Soldier_Rifle_Water_DeathWave",
       "modifiers": {
         "DeathRattle_FrogDeathExplode_Water": {
           "elementDurability": 100,
@@ -1954,24 +1959,23 @@
             {
               "$type": "ServerCreateGadgetOnKillMixin",
               "campID": 4001,
-              "AOLAJLKEKOJ": [
+              "campTargetType": "Enemy",
+              "gadgetIDList": [
                 42301060
-              ],
-              "campTargetType": "Enemy"
+              ]
             }
           ],
           "modifierName": "",
           "__unk_Q3323398612": 0
         }
       },
-      "abilityName": "MonsterAbility_Soldier_Rifle_Water_DeathWave",
       "onAdded": [
         {
           "$type": "CopyGlobalValue",
-          "srcKey": "SGV_TPSMercenaries_Debuff_AquaDeathWord",
+          "dstKey": "GV_TPSMercenaries_AquaDeathWord_Enable",
           "dstTarget": "Self",
-          "srcTarget": "Team",
-          "dstKey": "GV_TPSMercenaries_AquaDeathWord_Enable"
+          "srcKey": "SGV_TPSMercenaries_Debuff_AquaDeathWord",
+          "srcTarget": "Team"
         },
         {
           "$type": "Predicated",
@@ -1984,9 +1988,9 @@
           "targetPredicates": [
             {
               "$type": "ByTargetGlobalValue",
-              "value": 1,
               "key": "GV_TPSMercenaries_AquaDeathWord_Enable",
-              "target": "Self"
+              "target": "Self",
+              "value": 1
             }
           ]
         }
@@ -1995,60 +1999,71 @@
   },
   {
     "Default": {
+      "abilityName": "Soldier_Rifle_Water_FrogDeathExplode_Damage",
       "modifiers": {
         "LifeTimer": {
           "duration": 4,
+          "elementDurability": 100,
+          "modifierName": "",
+          "onAdded": [
+            {
+              "$type": "AttachEffect",
+              "effectPattern": "Eff_Monster_Oceanid_Frog_DeathWaterBall",
+              "scale": 1,
+              "JHAGIJGAKMK": ""
+            }
+          ],
           "onRemoved": [
             {
               "$type": "FireEffect",
               "effectPattern": "Eff_Monster_Oceanid_Frog_DeathWaterBallExplode",
               "scale": 1,
-              "ILLLPEOODKP": ""
+              "JHAGIJGAKMK": ""
             },
             {
               "$type": "TriggerAttackEvent",
-              "targetType": "Enemy",
               "attackEvent": {
                 "attackInfo": {
                   "attackProperty": {
-                    "elementType": "Water",
                     "attackType": "Range",
-                    "damagePercentageRatio": 0,
-                    "strikeType": "Default",
-                    "enBreak": 100,
                     "damagePercentage": 1.5,
+                    "damagePercentageRatio": 0,
                     "elementDurability": 50,
+                    "elementType": "Water",
+                    "enBreak": 100,
+                    "strikeType": "Default",
                     "__exp_arkhe": 0
                   },
-                  "cameraShake": {
-                    "shakeTime": 0.3,
-                    "shakeType": "CustomVector",
-                    "shakeDistance": 50,
-                    "MNKFEFOKFKP": "",
-                    "shakeRange": 1
-                  },
-                  "hitPattern": {
-                    "__unk_Q3893899620": "",
-                    "onHitEffectName": "default",
-                    "hitImpulseType": "LV1"
-                  },
-                  "forceCameraShake": true,
+                  "attackTag": "Oceanid_Frog_Explode",
                   "attenuationGroup": "default",
                   "attenuationTag": "",
-                  "attackTag": "Oceanid_Frog_Explode"
+                  "cameraShake": {
+                    "shakeDistance": 50,
+                    "shakeRange": 1,
+                    "shakeTime": 0.3,
+                    "shakeType": "CustomVector",
+                    "OFGBHFBAEKK": ""
+                  },
+                  "forceCameraShake": true,
+                  "hitPattern": {
+                    "hitImpulseType": "LV1",
+                    "onHitEffectName": "default",
+                    "__unk_Q3893899620": ""
+                  }
                 },
                 "attackPattern": {
                   "$type": "ConfigAttackCircle",
-                  "radius": 20,
-                  "height": 3,
-                  "triggerType": "TriggerNoRepeat",
                   "born": {
                     "$type": "ConfigBornBySelf",
                     "useRotation": true
                   },
-                  "KCDEMFCFEDB": true
+                  "height": 3,
+                  "radius": 20,
+                  "triggerType": "TriggerNoRepeat",
+                  "EBAKOIEIHKH": true
                 }
-              }
+              },
+              "targetType": "Enemy"
             },
             {
               "$type": "KillSelf",
@@ -2058,21 +2073,10 @@
               "duration": 2
             }
           ],
-          "onAdded": [
-            {
-              "$type": "AttachEffect",
-              "ILLLPEOODKP": "",
-              "scale": 1,
-              "effectPattern": "Eff_Monster_Oceanid_Frog_DeathWaterBall"
-            }
-          ],
           "stacking": "Unique",
-          "elementDurability": 100,
-          "modifierName": "",
           "__unk_Q3323398612": 0
         }
       },
-      "abilityName": "Soldier_Rifle_Water_FrogDeathExplode_Damage",
       "onAdded": [
         {
           "$type": "ApplyModifier",

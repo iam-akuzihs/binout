@@ -1,26 +1,95 @@
 [
   {
     "Default": {
-      "modifiers": {
-        "ExtraAttack_StaminaCost": {
-          "onAdded": [
-            {
-              "$type": "AvatarSkillStart",
-              "skillID": 10001,
-              "cdRatio": 1,
-              "costStaminaRatio": "ExtraAttack_Sword_Stamina_Cost",
-              "cdRatio": 1
-            }
-          ],
-          "elementDurability": 100,
-          "modifierName": "",
-          "__unk_Q3323398612": 0
-        }
-      },
       "abilityMixins": [
         {
           "$type": "ButtonHoldChargeMixin",
-          "skillID": 100545,
+          "chargeStateIDs": [
+            "Attack01",
+            "Attack02",
+            "Attack03",
+            "Attack04",
+            "Run"
+          ],
+          "chargeTime": 0.12,
+          "onBeginCharged": [
+            {
+              "$type": "SetAnimatorBool",
+              "boolID": "IsCharging",
+              "value": true
+            }
+          ],
+          "onBeginSecondCharged": [
+            {
+              "$type": "SetAnimatorTrigger",
+              "predicates": [
+                {
+                  "$type": "ByLocalAvatarStamina",
+                  "logic": "GreaterOrEqual",
+                  "stamina": [
+                    "ExtraAttack_Sword_Stamina_Cost",
+                    "Flexible_Stamina",
+                    "ADD"
+                  ]
+                }
+              ],
+              "triggerID": "DoSkill"
+            },
+            {
+              "$type": "SetAnimatorInt",
+              "intID": "SkillID",
+              "predicates": [
+                {
+                  "$type": "ByLocalAvatarStamina",
+                  "logic": "GreaterOrEqual",
+                  "stamina": [
+                    "ExtraAttack_Sword_Stamina_Cost",
+                    "Flexible_Stamina",
+                    "ADD"
+                  ]
+                }
+              ],
+              "value": 6
+            },
+            {
+              "$type": "SetAnimatorBool",
+              "boolID": "IsCharging"
+            }
+          ],
+          "onBeginUncharged": [
+            {
+              "$type": "SetAnimatorTrigger",
+              "triggerID": "DoSkill"
+            },
+            {
+              "$type": "SetAnimatorInt",
+              "intID": "SkillID",
+              "predicates": [
+                {
+                  "$type": "ByAny",
+                  "predicates": [
+                    {
+                      "$type": "ByAnimatorInt",
+                      "logic": "Equal",
+                      "parameter": "ComboCount",
+                      "value": 0
+                    },
+                    {
+                      "$type": "ByAnimatorInt",
+                      "logic": "Equal",
+                      "parameter": "ComboCount",
+                      "value": 5
+                    }
+                  ]
+                }
+              ],
+              "value": 99
+            },
+            {
+              "$type": "SetAnimatorBool",
+              "boolID": "IsCharging"
+            }
+          ],
           "onReleaseCharged": [
             {
               "$type": "SetAnimatorBool",
@@ -32,140 +101,140 @@
               "value": 1
             }
           ],
-          "onBeginUncharged": [
-            {
-              "$type": "SetAnimatorTrigger",
-              "triggerID": "DoSkill"
-            },
-            {
-              "$type": "SetAnimatorInt",
-              "intID": "SkillID",
-              "value": 99,
-              "predicates": [
-                {
-                  "$type": "ByAny",
-                  "predicates": [
-                    {
-                      "$type": "ByAnimatorInt",
-                      "value": 0,
-                      "parameter": "ComboCount",
-                      "logic": "Equal"
-                    },
-                    {
-                      "$type": "ByAnimatorInt",
-                      "value": 5,
-                      "parameter": "ComboCount",
-                      "logic": "Equal"
-                    }
-                  ]
-                }
-              ]
-            },
-            {
-              "$type": "SetAnimatorBool",
-              "boolID": "IsCharging"
-            }
-          ],
-          "secondChargeTime": 0.2,
-          "chargeTime": 0.12,
-          "onBeginCharged": [
-            {
-              "$type": "SetAnimatorBool",
-              "value": true,
-              "boolID": "IsCharging"
-            }
-          ],
-          "onBeginSecondCharged": [
-            {
-              "$type": "SetAnimatorTrigger",
-              "triggerID": "DoSkill",
-              "predicates": [
-                {
-                  "$type": "ByLocalAvatarStamina",
-                  "stamina": [
-                    "ExtraAttack_Sword_Stamina_Cost",
-                    "Flexible_Stamina",
-                    "ADD"
-                  ],
-                  "logic": "GreaterOrEqual"
-                }
-              ]
-            },
-            {
-              "$type": "SetAnimatorInt",
-              "intID": "SkillID",
-              "value": 6,
-              "predicates": [
-                {
-                  "$type": "ByLocalAvatarStamina",
-                  "stamina": [
-                    "ExtraAttack_Sword_Stamina_Cost",
-                    "Flexible_Stamina",
-                    "ADD"
-                  ],
-                  "logic": "GreaterOrEqual"
-                }
-              ]
-            },
-            {
-              "$type": "SetAnimatorBool",
-              "boolID": "IsCharging"
-            }
-          ],
-          "chargeStateIDs": [
-            "Attack01",
-            "Attack02",
-            "Attack03",
-            "Attack04",
-            "Run"
-          ],
           "onReleaseUncharged": [
             {
               "$type": "SetAnimatorInt",
               "intID": "SkillID",
               "value": 1
             }
-          ]
+          ],
+          "secondChargeTime": 0.2,
+          "skillID": 100545
         },
         {
           "$type": "AttachToStateIDMixin",
-          "__unk_Q2081332355": "",
+          "modifierName": "ExtraAttack_StaminaCost",
           "stateIDs": [
             "ExtraAttack"
           ],
-          "modifierName": "ExtraAttack_StaminaCost"
+          "__unk_Q2081332355": ""
         }
       ],
       "abilityName": "Avatar_PlayerBoy_ExtraAttack_Rock",
-      "isDynamicAbility": true,
       "abilitySpecials": {
         "ExtraAttack_Sword_Stamina_Cost": 0,
         "Flexible_Stamina": -2
+      },
+      "isDynamicAbility": true,
+      "modifiers": {
+        "ExtraAttack_StaminaCost": {
+          "elementDurability": 100,
+          "modifierName": "",
+          "onAdded": [
+            {
+              "$type": "AvatarSkillStart",
+              "cdRatio": 1,
+              "costStaminaRatio": "ExtraAttack_Sword_Stamina_Cost",
+              "skillID": 10001,
+              "NKOFINBNOOK": 1
+            }
+          ],
+          "__unk_Q3323398612": 0
+        }
       }
     }
   },
   {
     "Default": {
-      "modifiers": {
-        "ExtraAttack_StaminaCost": {
-          "onAdded": [
-            {
-              "$type": "AvatarSkillStart",
-              "skillID": 10001,
-              "cdRatio": 1,
-              "costStaminaRatio": "ExtraAttack_Sword_Stamina_Cost",
-              "cdRatio": 1
-            }
-          ],
-          "elementDurability": 100,
-          "modifierName": "",
-          "__unk_Q3323398612": 0
-        }
-      },
       "abilityMixins": [
         {
           "$type": "ButtonHoldChargeMixin",
-          "skillID": 100555,
+          "chargeStateIDs": [
+            "Attack01",
+            "Attack02",
+            "Attack03",
+            "Attack04",
+            "Run"
+          ],
+          "chargeTime": 0.12,
+          "onBeginCharged": [
+            {
+              "$type": "SetAnimatorBool",
+              "boolID": "IsCharging",
+              "value": true
+            }
+          ],
+          "onBeginSecondCharged": [
+            {
+              "$type": "SetAnimatorTrigger",
+              "predicates": [
+                {
+                  "$type": "ByLocalAvatarStamina",
+                  "logic": "GreaterOrEqual",
+                  "stamina": [
+                    "ExtraAttack_Sword_Stamina_Cost",
+                    "Flexible_Stamina",
+                    "ADD"
+                  ]
+                }
+              ],
+              "triggerID": "DoSkill"
+            },
+            {
+              "$type": "SetAnimatorInt",
+              "intID": "SkillID",
+              "predicates": [
+                {
+                  "$type": "ByLocalAvatarStamina",
+                  "logic": "GreaterOrEqual",
+                  "stamina": [
+                    "ExtraAttack_Sword_Stamina_Cost",
+                    "Flexible_Stamina",
+                    "ADD"
+                  ]
+                }
+              ],
+              "value": 6
+            },
+            {
+              "$type": "SetAnimatorBool",
+              "boolID": "IsCharging"
+            }
+          ],
+          "onBeginUncharged": [
+            {
+              "$type": "SetAnimatorTrigger",
+              "triggerID": "DoSkill"
+            },
+            {
+              "$type": "SetAnimatorInt",
+              "intID": "SkillID",
+              "predicates": [
+                {
+                  "$type": "ByAny",
+                  "predicates": [
+                    {
+                      "$type": "ByAnimatorInt",
+                      "logic": "Equal",
+                      "parameter": "ComboCount",
+                      "value": 0
+                    },
+                    {
+                      "$type": "ByAnimatorInt",
+                      "logic": "Equal",
+                      "parameter": "ComboCount",
+                      "value": 5
+                    }
+                  ]
+                }
+              ],
+              "value": 99
+            },
+            {
+              "$type": "SetAnimatorBool",
+              "boolID": "IsCharging"
+            }
+          ],
           "onReleaseCharged": [
             {
               "$type": "SetAnimatorBool",
@@ -177,218 +246,185 @@
               "value": 1
             }
           ],
-          "onBeginUncharged": [
-            {
-              "$type": "SetAnimatorTrigger",
-              "triggerID": "DoSkill"
-            },
-            {
-              "$type": "SetAnimatorInt",
-              "intID": "SkillID",
-              "value": 99,
-              "predicates": [
-                {
-                  "$type": "ByAny",
-                  "predicates": [
-                    {
-                      "$type": "ByAnimatorInt",
-                      "value": 0,
-                      "parameter": "ComboCount",
-                      "logic": "Equal"
-                    },
-                    {
-                      "$type": "ByAnimatorInt",
-                      "value": 5,
-                      "parameter": "ComboCount",
-                      "logic": "Equal"
-                    }
-                  ]
-                }
-              ]
-            },
-            {
-              "$type": "SetAnimatorBool",
-              "boolID": "IsCharging"
-            }
-          ],
-          "secondChargeTime": 0.2,
-          "chargeTime": 0.12,
-          "onBeginCharged": [
-            {
-              "$type": "SetAnimatorBool",
-              "value": true,
-              "boolID": "IsCharging"
-            }
-          ],
-          "onBeginSecondCharged": [
-            {
-              "$type": "SetAnimatorTrigger",
-              "triggerID": "DoSkill",
-              "predicates": [
-                {
-                  "$type": "ByLocalAvatarStamina",
-                  "stamina": [
-                    "ExtraAttack_Sword_Stamina_Cost",
-                    "Flexible_Stamina",
-                    "ADD"
-                  ],
-                  "logic": "GreaterOrEqual"
-                }
-              ]
-            },
-            {
-              "$type": "SetAnimatorInt",
-              "intID": "SkillID",
-              "value": 6,
-              "predicates": [
-                {
-                  "$type": "ByLocalAvatarStamina",
-                  "stamina": [
-                    "ExtraAttack_Sword_Stamina_Cost",
-                    "Flexible_Stamina",
-                    "ADD"
-                  ],
-                  "logic": "GreaterOrEqual"
-                }
-              ]
-            },
-            {
-              "$type": "SetAnimatorBool",
-              "boolID": "IsCharging"
-            }
-          ],
-          "chargeStateIDs": [
-            "Attack01",
-            "Attack02",
-            "Attack03",
-            "Attack04",
-            "Run"
-          ],
           "onReleaseUncharged": [
             {
               "$type": "SetAnimatorInt",
               "intID": "SkillID",
               "value": 1
             }
-          ]
+          ],
+          "secondChargeTime": 0.2,
+          "skillID": 100555
         },
         {
           "$type": "AttachToStateIDMixin",
-          "__unk_Q2081332355": "",
+          "modifierName": "ExtraAttack_StaminaCost",
           "stateIDs": [
             "ExtraAttack"
           ],
-          "modifierName": "ExtraAttack_StaminaCost"
+          "__unk_Q2081332355": ""
         }
       ],
       "abilityName": "Avatar_PlayerGirl_ExtraAttack_Rock",
-      "isDynamicAbility": true,
       "abilitySpecials": {
         "ExtraAttack_Sword_Stamina_Cost": 0,
         "Flexible_Stamina": -2
+      },
+      "isDynamicAbility": true,
+      "modifiers": {
+        "ExtraAttack_StaminaCost": {
+          "elementDurability": 100,
+          "modifierName": "",
+          "onAdded": [
+            {
+              "$type": "AvatarSkillStart",
+              "cdRatio": 1,
+              "costStaminaRatio": "ExtraAttack_Sword_Stamina_Cost",
+              "skillID": 10001,
+              "NKOFINBNOOK": 1
+            }
+          ],
+          "__unk_Q3323398612": 0
+        }
       }
     }
   },
   {
     "Default": {
+      "abilityName": "Avatar_Player_Hogyoku",
+      "isDynamicAbility": true,
       "onAbilityStart": [
         {
           "$type": "CreateGadget",
-          "gadgetID": 41005003,
-          "campID": 1001,
-          "campTargetType": "Enemy",
           "born": {
             "$type": "ConfigBornByTarget",
-            "FLFGOALBFIC": true,
             "alongGround": true,
-            "onGround": true,
             "offset": {
               "z": 2
-            }
-          }
+            },
+            "onGround": true,
+            "onGroundIgnoreWater": true
+          },
+          "campID": 1001,
+          "campTargetType": "Enemy",
+          "gadgetID": 41005003
         },
         {
           "$type": "AvatarSkillStart",
-          "skillID": 10077,
           "cdRatio": 1,
           "costStaminaRatio": 1,
-          "cdRatio": 1
+          "skillID": 10077,
+          "NKOFINBNOOK": 1
         }
-      ],
-      "abilityName": "Avatar_Player_Hogyoku",
-      "isDynamicAbility": true
+      ]
     }
   },
   {
     "Default": {
+      "abilityMixins": [
+        {
+          "$type": "SkillButtonHoldChargeMixin",
+          "beforeStateIDs": [
+            "Hogyoku_BS"
+          ],
+          "chargeLoopDurations": [
+            10
+          ],
+          "chargeLoopStateIDs": [
+            "Hogyoku_Charge"
+          ],
+          "endHoldTrigger": "EndHoldTrigger",
+          "nextLoopTriggerID": "NextLoopTrigger",
+          "skillID": 10077
+        },
+        {
+          "$type": "AttachToStateIDMixin",
+          "modifierName": "Focus",
+          "stateIDs": [
+            "Hogyoku_Charge",
+            "Hogyoku_Charge_2"
+          ],
+          "__unk_Q2081332355": ""
+        },
+        {
+          "$type": "AttachToStateIDMixin",
+          "modifierName": "Charge",
+          "stateIDs": [
+            "Hogyoku_Charge"
+          ],
+          "__unk_Q2081332355": ""
+        }
+      ],
+      "abilityName": "Avatar_Player_Hogyoku_ChargeStrike",
+      "isDynamicAbility": true,
       "modifiers": {
         "Focus": {
+          "elementDurability": 100,
+          "modifierName": "",
+          "onAdded": [
+            {
+              "$type": "AvatarEnterFocus",
+              "assistance": {
+                "other": {
+                  "useGyro": true
+                }
+              },
+              "cameraFastFocusMode": true,
+              "cameraFollowLower": {
+                "z": 0.8,
+                "y": 0.2,
+                "x": -2.5
+              },
+              "cameraFollowUpper": {
+                "z": 0.5,
+                "y": -0.2
+              },
+              "canMove": false,
+              "dragButtonName": "Skill2",
+              "focusAnchorVerAngle": 5,
+              "showCrosshair": false,
+              "APEJECEFMAJ": "",
+              "JEFFFDCPEDH": "",
+              "JILNABGHIJA": ""
+            }
+          ],
           "onRemoved": [
             {
               "$type": "AvatarExitFocus",
               "keepRotation": true
             }
           ],
-          "onAdded": [
-            {
-              "$type": "AvatarEnterFocus",
-              "dragButtonName": "Skill2",
-              "cameraFastFocusMode": true,
-              "canMove": false,
-              "assistance": {
-                "KFIOILLKPCF": {
-                  "GMHNBMJHEGP": true
-                }
-              },
-              "showCrosshair": false,
-              "cameraFollowUpper": {
-                "y": -0.2,
-                "x": 0.5
-              },
-              "OINODICCCCO": "",
-              "focusAnchorVerAngle": 5,
-              "GPNAODGIDCF": "",
-              "FDEONAODDDM": "",
-              "cameraFollowLower": {
-                "y": 0.2,
-                "z": -2.5,
-                "x": 0.8
-              }
-            }
-          ],
-          "elementDurability": 100,
-          "modifierName": "",
           "__unk_Q3323398612": 0
         },
         "Charge": {
+          "elementDurability": 100,
+          "modifierName": "",
           "onAdded": [
             {
               "$type": "AddGlobalValue",
-              "useLimitRange": true,
               "key": "_HOGYOKU_THROW_RANGE",
               "maxValue": 10,
               "minValue": 10,
+              "useLimitRange": true,
               "value": 10
             },
             {
               "$type": "AttachEffect",
-              "ILLLPEOODKP": "",
+              "effectPattern": "Eff_Avatar_Hogyoku_Aim_Line",
               "scale": 1,
-              "effectPattern": "Eff_Avatar_Hogyoku_Aim_Line"
+              "JHAGIJGAKMK": ""
             }
           ],
-          "elementDurability": 100,
-          "modifierName": "",
           "__unk_Q3323398612": 0
         }
       },
       "onAbilityStart": [
         {
           "$type": "AvatarSkillStart",
-          "skillID": 10077,
           "cdRatio": 1,
           "costStaminaRatio": 1,
-          "cdRatio": 1
+          "skillID": 10077,
+          "NKOFINBNOOK": 1
         },
         {
           "$type": "TriggerBullet",
@@ -396,134 +432,98 @@
             "$type": "ConfigBornByAttachPoint",
             "attachPointName": "FocusAnchor",
             "offset": {
-              "x": 0.2,
-              "z": 0.6
+              "z": 0.6,
+              "x": 0.2
             }
           },
           "bulletID": 41005008
         }
-      ],
-      "abilityMixins": [
-        {
-          "$type": "SkillButtonHoldChargeMixin",
-          "beforeStateIDs": [
-            "Hogyoku_BS"
-          ],
-          "endHoldTrigger": "EndHoldTrigger",
-          "chargeLoopStateIDs": [
-            "Hogyoku_Charge"
-          ],
-          "chargeLoopDurations": [
-            10
-          ],
-          "skillID": 10077,
-          "nextLoopTriggerID": "NextLoopTrigger"
-        },
-        {
-          "$type": "AttachToStateIDMixin",
-          "__unk_Q2081332355": "",
-          "stateIDs": [
-            "Hogyoku_Charge",
-            "Hogyoku_Charge_2"
-          ],
-          "modifierName": "Focus"
-        },
-        {
-          "$type": "AttachToStateIDMixin",
-          "__unk_Q2081332355": "",
-          "stateIDs": [
-            "Hogyoku_Charge"
-          ],
-          "modifierName": "Charge"
-        }
-      ],
-      "abilityName": "Avatar_Player_Hogyoku_ChargeStrike",
-      "isDynamicAbility": true
+      ]
     }
   },
   {
     "Default": {
+      "abilityName": "Avatar_Player_HogyokuBullet",
       "onAbilityStart": [
         {
           "$type": "CreateGadget",
-          "gadgetID": 41005004,
-          "campID": 1001,
-          "campTargetType": "Enemy",
           "born": {
             "$type": "ConfigBornByCollisionPoint",
-            "FLFGOALBFIC": true,
             "alongGround": true,
-            "onGround": true
-          }
+            "onGround": true,
+            "onGroundIgnoreWater": true
+          },
+          "campID": 1001,
+          "campTargetType": "Enemy",
+          "gadgetID": 41005004
         }
-      ],
-      "abilityName": "Avatar_Player_HogyokuBullet"
+      ]
     }
   },
   {
     "Default": {
+      "abilityName": "Avatar_Player_HogyokuBullet_LifeOver",
       "onAbilityStart": [
         {
           "$type": "CreateGadget",
-          "gadgetID": 41005004,
-          "campID": 1001,
-          "campTargetType": "Enemy",
           "born": {
             "$type": "ConfigBornByTarget",
-            "FLFGOALBFIC": true,
             "alongGround": true,
-            "onGround": true
-          }
+            "onGround": true,
+            "onGroundIgnoreWater": true
+          },
+          "campID": 1001,
+          "campTargetType": "Enemy",
+          "gadgetID": 41005004
         }
-      ],
-      "abilityName": "Avatar_Player_HogyokuBullet_LifeOver"
+      ]
     }
   },
   {
     "Default": {
+      "abilityName": "Avatar_Player_Hogyoku_Base",
       "modifiers": {
         "Hogyoku_Base_Appear": {
           "duration": 0.6,
-          "onRemoved": [
-            {
-              "$type": "CreateGadget",
-              "gadgetID": 41005004,
-              "campID": 1001,
-              "campTargetType": "Enemy",
-              "born": {
-                "$type": "ConfigBornByTarget",
-                "FLFGOALBFIC": true,
-                "alongGround": true,
-                "onGround": true,
-                "onGroundRaycastUpDist": 4,
-                "offset": {
-                  "z": 1
-                }
-              }
-            }
-          ],
+          "elementDurability": 100,
+          "modifierName": "",
           "onAdded": [
             {
               "$type": "FireEffect",
-              "effectPattern": "Eff_Avatar_Hogyoku_Bullet",
-              "scale": 1,
               "born": {
                 "$type": "ConfigBornByTarget",
                 "alongGround": true,
-                "onGround": true,
                 "offset": {
                   "z": 1
-                }
+                },
+                "onGround": true
               },
-              "ILLLPEOODKP": ""
+              "effectPattern": "Eff_Avatar_Hogyoku_Bullet",
+              "scale": 1,
+              "JHAGIJGAKMK": ""
             }
           ],
-          "elementDurability": 100,
-          "modifierName": "",
+          "onRemoved": [
+            {
+              "$type": "CreateGadget",
+              "born": {
+                "$type": "ConfigBornByTarget",
+                "alongGround": true,
+                "offset": {
+                  "z": 1
+                },
+                "onGround": true,
+                "onGroundIgnoreWater": true,
+                "onGroundRaycastUpDist": 4
+              },
+              "campID": 1001,
+              "campTargetType": "Enemy",
+              "gadgetID": 41005004
+            }
+          ],
           "__unk_Q3323398612": 0
         }
       },
-      "abilityName": "Avatar_Player_Hogyoku_Base",
       "onAdded": [
         {
           "$type": "ApplyModifier",
@@ -534,59 +534,67 @@
   },
   {
     "Default": {
+      "abilityName": "Avatar_Player_Hogyoku_Barrier",
+      "abilitySpecials": {
+        "GetElementRatio": 1,
+        "BarrierLifeTimeDelta": 0,
+        "Damage_Explode": 0
+      },
       "modifiers": {
         "Hogyoku_AttackHandler": {
           "duration": 5,
+          "elementDurability": 100,
+          "modifierName": "",
           "onAdded": [
             {
               "$type": "TriggerAttackEvent",
-              "targetType": "Enemy",
               "attackEvent": {
                 "attackInfo": {
                   "attackProperty": {
-                    "elementType": "Rock",
-                    "damagePercentageRatio": 0,
-                    "strikeType": "Blunt",
-                    "enBreak": 133.2,
                     "damagePercentage": "Damage_Explode",
+                    "damagePercentageRatio": 0,
                     "elementDurability": 50,
                     "elementRank": 1.5,
+                    "elementType": "Rock",
+                    "enBreak": 133.2,
+                    "strikeType": "Blunt",
                     "__exp_arkhe": 0
                   },
-                  "cameraShake": {
-                    "shakeTime": 0.15,
-                    "MNKFEFOKFKP": "",
-                    "shakeRange": 0.3
-                  },
-                  "hitPattern": {
-                    "__unk_Q3893899620": "",
-                    "retreatType": "ByHitDirection",
-                    "onHitEffectName": "default",
-                    "hitHaltTimeScale": 0.05,
-                    "hitHaltTime": 0.05,
-                    "canBeDefenceHalt": true,
-                    "hitImpulseType": "LV5"
-                  },
-                  "forceCameraShake": true,
+                  "attackTag": "Elemental_Art",
                   "attenuationGroup": "default",
                   "attenuationTag": "Elemental_Art",
-                  "attackTag": "Elemental_Art",
-                  "canBeModifiedBy": "OriginOwner"
+                  "cameraShake": {
+                    "shakeRange": 0.3,
+                    "shakeTime": 0.15,
+                    "OFGBHFBAEKK": ""
+                  },
+                  "canBeModifiedBy": "OriginOwner",
+                  "forceCameraShake": true,
+                  "hitPattern": {
+                    "canBeDefenceHalt": true,
+                    "hitHaltTime": 0.05,
+                    "hitHaltTimeScale": 0.05,
+                    "hitImpulseType": "LV5",
+                    "onHitEffectName": "default",
+                    "retreatType": "ByHitDirection",
+                    "__unk_Q3893899620": ""
+                  }
                 },
                 "attackPattern": {
                   "$type": "ConfigAttackCircle",
-                  "radius": 3,
-                  "height": 2,
-                  "triggerType": "TriggerNoRepeat",
                   "born": {
                     "$type": "ConfigBornBySelf",
-                    "useRotation": true,
                     "offset": {
                       "y": -0.5
-                    }
-                  }
+                    },
+                    "useRotation": true
+                  },
+                  "height": 2,
+                  "radius": 3,
+                  "triggerType": "TriggerNoRepeat"
                 }
-              }
+              },
+              "targetType": "Enemy"
             }
           ],
           "onAttackLanded": [
@@ -595,12 +603,12 @@
               "successActions": [
                 {
                   "$type": "GenerateElemBall",
-                  "ratio": "GetElementRatio",
+                  "baseEnergy": 9,
                   "born": {
                     "$type": "ConfigBornByTarget"
                   },
                   "configID": 2023,
-                  "baseEnergy": 9
+                  "ratio": "GetElementRatio"
                 },
                 {
                   "$type": "Randomed",
@@ -608,24 +616,25 @@
                   "successActions": [
                     {
                       "$type": "GenerateElemBall",
-                      "ratio": "GetElementRatio",
+                      "baseEnergy": 3,
                       "born": {
                         "$type": "ConfigBornByTarget"
                       },
                       "configID": 2023,
-                      "baseEnergy": 3
+                      "ratio": "GetElementRatio"
                     }
                   ]
                 },
                 {
                   "$type": "AddGlobalValue",
-                  "useLimitRange": true,
                   "key": "_ABILITY_Hogyoku_Barrier_ElemBallMark",
                   "maxValue": 1,
                   "minValue": 1,
+                  "useLimitRange": true,
                   "value": 1
                 }
               ],
+              "target": "Target",
               "targetPredicates": [
                 {
                   "$type": "ByAttackTags",
@@ -641,9 +650,9 @@
                 },
                 {
                   "$type": "ByTargetGlobalValue",
-                  "value": 0,
                   "compareType": "NoneOrEqual",
-                  "key": "_ANIMAL_ENTITY_TYPE"
+                  "key": "_ANIMAL_ENTITY_TYPE",
+                  "value": 0
                 },
                 {
                   "$type": "ByAvatarElementType",
@@ -652,23 +661,20 @@
                 },
                 {
                   "$type": "ByTargetGlobalValue",
-                  "value": 1,
                   "key": "_ABILITY_Hogyoku_Barrier_Limitation",
-                  "target": "Self"
+                  "target": "Self",
+                  "value": 1
                 },
                 {
                   "$type": "ByTargetGlobalValue",
-                  "value": 0,
                   "compareType": "NoneOrEqual",
                   "key": "_ABILITY_Hogyoku_Barrier_ElemBallMark",
-                  "target": "Self"
+                  "target": "Self",
+                  "value": 0
                 }
-              ],
-              "target": "Target"
+              ]
             }
           ],
-          "elementDurability": 100,
-          "modifierName": "",
           "__unk_Q3323398612": 0
         },
         "Hogyoku_Barrier_HP": {
@@ -677,24 +683,36 @@
             30,
             "ADD"
           ],
+          "elementDurability": 100,
+          "modifierName": "",
           "onRemoved": [
             {
               "$type": "KillSelf"
             }
           ],
-          "elementDurability": 100,
-          "modifierName": "",
           "__unk_Q3323398612": 0
         },
         "Hogyoku_Barrier_Explode_Timer": {
           "duration": 0.9,
-          "onRemoved": [
+          "elementDurability": 100,
+          "modifierName": "",
+          "onAdded": [
             {
               "$type": "AddGlobalValue",
-              "useLimitRange": true,
               "key": "_ABILITY_Hogyoku_Barrier_Limitation",
               "maxValue": 1,
               "minValue": 0,
+              "useLimitRange": true,
+              "value": 1
+            }
+          ],
+          "onRemoved": [
+            {
+              "$type": "AddGlobalValue",
+              "key": "_ABILITY_Hogyoku_Barrier_Limitation",
+              "maxValue": 1,
+              "minValue": 0,
+              "useLimitRange": true,
               "value": -1
             },
             {
@@ -708,82 +726,69 @@
               ]
             }
           ],
-          "onAdded": [
-            {
-              "$type": "AddGlobalValue",
-              "useLimitRange": true,
-              "key": "_ABILITY_Hogyoku_Barrier_Limitation",
-              "maxValue": 1,
-              "minValue": 0,
-              "value": 1
-            }
-          ],
-          "elementDurability": 100,
-          "modifierName": "",
           "__unk_Q3323398612": 0
         },
         "Hogyoku_Barrier_Explode": {
+          "elementDurability": 100,
+          "modifierName": "",
           "onKill": [
             {
               "$type": "TriggerAttackEvent",
-              "targetType": "Enemy",
               "attackEvent": {
                 "attackInfo": {
                   "attackProperty": {
-                    "elementType": "Rock",
-                    "damagePercentageRatio": 0,
-                    "strikeType": "Blunt",
-                    "enBreak": 133.2,
                     "damagePercentage": "Damage_Explode",
+                    "damagePercentageRatio": 0,
                     "elementDurability": 25,
                     "elementRank": 1.5,
+                    "elementType": "Rock",
+                    "enBreak": 133.2,
+                    "strikeType": "Blunt",
                     "__exp_arkhe": 0
                   },
-                  "cameraShake": {
-                    "shakeTime": 0.15,
-                    "MNKFEFOKFKP": "",
-                    "shakeRange": 0.3
-                  },
-                  "hitPattern": {
-                    "__unk_Q3893899620": "",
-                    "retreatType": "ByHitDirection",
-                    "onHitEffectName": "default",
-                    "hitHaltTimeScale": 0.05,
-                    "hitHaltTime": 0.05,
-                    "canBeDefenceHalt": true,
-                    "hitImpulseType": "LV5"
-                  },
-                  "forceCameraShake": true,
+                  "attackTag": "Elemental_Art",
                   "attenuationGroup": "default",
                   "attenuationTag": "Elemental_Art",
-                  "attackTag": "Elemental_Art",
-                  "canBeModifiedBy": "OriginOwner"
+                  "cameraShake": {
+                    "shakeRange": 0.3,
+                    "shakeTime": 0.15,
+                    "OFGBHFBAEKK": ""
+                  },
+                  "canBeModifiedBy": "OriginOwner",
+                  "forceCameraShake": true,
+                  "hitPattern": {
+                    "canBeDefenceHalt": true,
+                    "hitHaltTime": 0.05,
+                    "hitHaltTimeScale": 0.05,
+                    "hitImpulseType": "LV5",
+                    "onHitEffectName": "default",
+                    "retreatType": "ByHitDirection",
+                    "__unk_Q3893899620": ""
+                  }
                 },
                 "attackPattern": {
                   "$type": "ConfigAttackCircle",
-                  "radius": 3,
-                  "height": 1.5,
-                  "triggerType": "TriggerNoRepeat",
                   "born": {
                     "$type": "ConfigBornBySelf",
                     "useRotation": true
-                  }
+                  },
+                  "height": 1.5,
+                  "radius": 3,
+                  "triggerType": "TriggerNoRepeat"
                 }
-              }
+              },
+              "targetType": "Enemy"
             },
             {
               "$type": "FireEffect",
               "effectPattern": "Eff_Avatar_Hogyoku_Crystal_Explode",
               "scale": 1,
-              "ILLLPEOODKP": ""
+              "JHAGIJGAKMK": ""
             }
           ],
-          "elementDurability": 100,
-          "modifierName": "",
           "__unk_Q3323398612": 0
         }
       },
-      "abilityName": "Avatar_Player_Hogyoku_Barrier",
       "onAdded": [
         {
           "$type": "ApplyModifier",
@@ -797,99 +802,97 @@
           "$type": "ApplyModifier",
           "modifierName": "Hogyoku_Barrier_HP"
         }
-      ],
-      "abilitySpecials": {
-        "GetElementRatio": 1,
-        "BarrierLifeTimeDelta": 0,
-        "Damage_Explode": 0
-      }
+      ]
     }
   },
   {
     "Default": {
+      "abilityName": "Avatar_Player_Hogyoku_Barrier_EndBoom",
+      "abilitySpecials": {
+        "Damage_Explode": 0
+      },
       "modifiers": {
         "Life_Timer": {
           "duration": 2,
+          "elementDurability": 100,
+          "modifierName": "",
           "onRemoved": [
             {
               "$type": "KillSelf"
             }
           ],
-          "elementDurability": 100,
-          "modifierName": "",
           "__unk_Q3323398612": 0
         }
       },
-      "abilityName": "Avatar_Player_Hogyoku_Barrier_EndBoom",
       "onAdded": [
         {
           "$type": "TriggerAttackEvent",
-          "targetType": "Enemy",
           "attackEvent": {
             "attackInfo": {
               "attackProperty": {
-                "elementType": "Rock",
-                "damagePercentageRatio": 0,
-                "strikeType": "Blunt",
-                "enBreak": 133.2,
                 "damagePercentage": "Damage_Explode",
+                "damagePercentageRatio": 0,
                 "elementDurability": 25,
                 "elementRank": 1.5,
+                "elementType": "Rock",
+                "enBreak": 133.2,
+                "strikeType": "Blunt",
                 "__exp_arkhe": 0
               },
-              "cameraShake": {
-                "shakeTime": 0.15,
-                "MNKFEFOKFKP": "",
-                "shakeRange": 0.3
-              },
-              "hitPattern": {
-                "__unk_Q3893899620": "",
-                "retreatType": "ByHitDirection",
-                "onHitEffectName": "default",
-                "hitHaltTimeScale": 0.05,
-                "hitHaltTime": 0.05,
-                "canBeDefenceHalt": true,
-                "hitImpulseType": "LV5"
-              },
-              "forceCameraShake": true,
+              "attackTag": "Elemental_Art",
               "attenuationGroup": "default",
               "attenuationTag": "Elemental_Art",
-              "attackTag": "Elemental_Art",
-              "canBeModifiedBy": "OriginOwner"
+              "cameraShake": {
+                "shakeRange": 0.3,
+                "shakeTime": 0.15,
+                "OFGBHFBAEKK": ""
+              },
+              "canBeModifiedBy": "OriginOwner",
+              "forceCameraShake": true,
+              "hitPattern": {
+                "canBeDefenceHalt": true,
+                "hitHaltTime": 0.05,
+                "hitHaltTimeScale": 0.05,
+                "hitImpulseType": "LV5",
+                "onHitEffectName": "default",
+                "retreatType": "ByHitDirection",
+                "__unk_Q3893899620": ""
+              }
             },
             "attackPattern": {
               "$type": "ConfigAttackCircle",
-              "radius": 3,
-              "height": 1.5,
-              "triggerType": "TriggerNoRepeat",
               "born": {
                 "$type": "ConfigBornBySelf",
                 "useRotation": true
-              }
+              },
+              "height": 1.5,
+              "radius": 3,
+              "triggerType": "TriggerNoRepeat"
             }
-          }
+          },
+          "targetType": "Enemy"
         },
         {
           "$type": "FireEffect",
           "effectPattern": "Eff_Avatar_Hogyoku_Crystal_Explode",
           "scale": 1,
-          "ILLLPEOODKP": ""
+          "JHAGIJGAKMK": ""
         },
         {
           "$type": "ApplyModifier",
           "modifierName": "Life_Timer"
         }
-      ],
-      "abilitySpecials": {
-        "Damage_Explode": 0
-      }
+      ]
     }
   },
   {
     "Default": {
+      "abilityName": "Avatar_Player_Hogyoku_Barrier_Material",
       "modifiers": {
         "Hogyoku_Barrier_Material_Timer": {
           "duration": 0.05,
+          "elementDurability": 100,
+          "modifierName": "",
           "onRemoved": [
             {
               "$type": "ApplyModifier",
@@ -900,30 +903,28 @@
               "triggerID": "Start"
             }
           ],
-          "elementDurability": 100,
-          "modifierName": "",
           "__unk_Q3323398612": 0
         },
         "Hogyoku_Barrier_Material": {
+          "elementDurability": 100,
+          "modifierName": "",
           "onAdded": [
             {
               "$type": "AttachEffect",
-              "ILLLPEOODKP": "",
+              "effectPattern": "Eff_Avatar_Hogyoku_Crystal",
               "scale": 1,
-              "effectPattern": "Eff_Avatar_Hogyoku_Crystal"
+              "JHAGIJGAKMK": ""
             }
           ],
-          "elementDurability": 100,
-          "modifierName": "",
           "__unk_Q3323398612": 0
         },
         "Hogyoku_Barrier_Disappear": {
+          "elementDurability": 100,
+          "modifierName": "",
           "onKill": [
             {
               "$type": "FireEffect",
               "effectPattern": "Eff_Avatar_Hogyoku_Crystal_Disappear",
-              "scale": 1,
-              "ILLLPEOODKP": "",
               "predicates": [
                 {
                   "$type": "ByNot",
@@ -934,25 +935,24 @@
                     }
                   ]
                 }
-              ]
+              ],
+              "scale": 1,
+              "JHAGIJGAKMK": ""
             },
             {
               "$type": "RemoveModifier",
               "modifierName": "Hogyoku_Barrier_Material"
             }
           ],
-          "elementDurability": 100,
-          "modifierName": "",
           "__unk_Q3323398612": 0
         }
       },
-      "abilityName": "Avatar_Player_Hogyoku_Barrier_Material",
       "onAdded": [
         {
           "$type": "FireEffect",
           "effectPattern": "Eff_Avatar_Hogyoku_Crystal_Impact",
           "scale": 1,
-          "ILLLPEOODKP": ""
+          "JHAGIJGAKMK": ""
         },
         {
           "$type": "ApplyModifier",
@@ -967,22 +967,42 @@
   },
   {
     "Default": {
+      "abilityMixins": [
+        {
+          "$type": "AttachToStateIDMixin",
+          "modifierName": "RockTide_Camera_Protection_Ghost",
+          "stateIDs": [
+            "RockTide"
+          ],
+          "__unk_Q2081332355": ""
+        },
+        {
+          "$type": "AttachToStateIDMixin",
+          "modifierName": "RockTide_Camera_Protection_Invincible",
+          "stateIDs": [
+            "RockTide"
+          ],
+          "__unk_Q2081332355": ""
+        }
+      ],
+      "abilityName": "Avatar_Player_RockTide",
+      "isDynamicAbility": true,
       "modifiers": {
         "RockTide_Camera_Protection_Ghost": {
+          "elementDurability": 100,
+          "modifierName": "",
           "onAdded": [
             {
               "$type": "AttachAbilityStateResistance",
               "resistanceListID": 11002
             }
           ],
-          "elementDurability": 100,
-          "modifierName": "",
           "__unk_Q3323398612": 0
         },
         "RockTide_Camera_Protection_Invincible": {
           "elementDurability": 100,
-          "state": "Invincible",
           "modifierName": "",
+          "state": "Invincible",
           "__unk_Q3323398612": 0
         }
       },
@@ -995,45 +1015,33 @@
         },
         {
           "$type": "CreateGadget",
-          "gadgetID": 41005005,
-          "campID": 1001,
-          "campTargetType": "Enemy",
           "born": {
             "$type": "ConfigBornByTarget"
-          }
+          },
+          "campID": 1001,
+          "campTargetType": "Enemy",
+          "gadgetID": 41005005
         },
         {
           "$type": "AvatarSkillStart",
-          "skillID": 10078,
           "cdRatio": 1,
           "costStaminaRatio": 1,
-          "cdRatio": 1
+          "skillID": 10078,
+          "NKOFINBNOOK": 1
         }
-      ],
-      "abilityMixins": [
-        {
-          "$type": "AttachToStateIDMixin",
-          "__unk_Q2081332355": "",
-          "stateIDs": [
-            "RockTide"
-          ],
-          "modifierName": "RockTide_Camera_Protection_Ghost"
-        },
-        {
-          "$type": "AttachToStateIDMixin",
-          "__unk_Q2081332355": "",
-          "stateIDs": [
-            "RockTide"
-          ],
-          "modifierName": "RockTide_Camera_Protection_Invincible"
-        }
-      ],
-      "abilityName": "Avatar_Player_RockTide",
-      "isDynamicAbility": true
+      ]
     }
   },
   {
     "Default": {
+      "abilityName": "Avatar_Player_RockTide_AttackWave",
+      "abilitySpecials": {
+        "ReviveElemEnergyRatio": 5,
+        "GaeaAnthem_TimeDelta": 0,
+        "GaeaAnthem_EndureDelta": 0.7,
+        "GaeaAnthem_CriticalDelta": 0.1,
+        "AttackWaveDamage": 0
+      },
       "modifiers": {
         "RockTide_Push": {
           "duration": 1.2,
@@ -1041,15 +1049,12 @@
           "modifierMixins": [
             {
               "$type": "WindZoneMixin",
-              "targetType": "All",
-              "modifierName": "",
-              "innerRadius": 0,
-              "strength": -2,
               "attenuation": 4,
               "born": {
                 "$type": "ConfigBornByTarget"
               },
-              "shapeName": "CircleR6",
+              "innerRadius": 0,
+              "modifierName": "",
               "predicates": [
                 {
                   "$type": "ByEntityTypes",
@@ -1060,72 +1065,75 @@
                 },
                 {
                   "$type": "ByTargetWeight",
-                  "weight": 100,
-                  "logic": "LesserOrEqual"
+                  "logic": "LesserOrEqual",
+                  "weight": 100
                 }
-              ]
+              ],
+              "shapeName": "CircleR6",
+              "strength": -2,
+              "targetType": "All"
             }
           ],
           "modifierName": "",
           "__unk_Q3323398612": 0
         },
         "RockTide_Attack_Start": {
-          "thinkInterval": 0.25,
           "duration": 1.1,
+          "elementDurability": 100,
+          "modifierName": "",
           "onRemoved": [
             {
               "$type": "TriggerAbility",
               "abilityName": "Avatar_Player_RockTide_Barrier_Appear"
             }
           ],
-          "elementDurability": 100,
-          "modifierName": "",
           "onThinkInterval": [
             {
               "$type": "TriggerAttackEvent",
-              "targetType": "Enemy",
               "attackEvent": {
                 "attackInfo": {
                   "attackProperty": {
-                    "elementType": "Rock",
-                    "damagePercentageRatio": 0,
-                    "strikeType": "Blunt",
-                    "enBreak": 100,
                     "damagePercentage": "AttackWaveDamage",
+                    "damagePercentageRatio": 0,
                     "elementDurability": 50,
                     "elementRank": 3,
+                    "elementType": "Rock",
+                    "enBreak": 100,
+                    "strikeType": "Blunt",
                     "__exp_arkhe": 0
                   },
-                  "cameraShake": {
-                    "shakeTime": 0.2,
-                    "MNKFEFOKFKP": "",
-                    "shakeRange": 0.04
-                  },
-                  "hitPattern": {
-                    "__unk_Q3893899620": "",
-                    "retreatType": "ByHitDirection",
-                    "onHitEffectName": "default",
-                    "hitHaltTimeScale": 0.05,
-                    "hitImpulseType": "LV4"
-                  },
-                  "forceCameraShake": true,
+                  "attackTag": "Elemental_Burst",
                   "attenuationGroup": "default",
                   "attenuationTag": "Player_RockTide",
-                  "attackTag": "Elemental_Burst",
-                  "canBeModifiedBy": "OriginOwner"
+                  "cameraShake": {
+                    "shakeRange": 0.04,
+                    "shakeTime": 0.2,
+                    "OFGBHFBAEKK": ""
+                  },
+                  "canBeModifiedBy": "OriginOwner",
+                  "forceCameraShake": true,
+                  "hitPattern": {
+                    "hitHaltTimeScale": 0.05,
+                    "hitImpulseType": "LV4",
+                    "onHitEffectName": "default",
+                    "retreatType": "ByHitDirection",
+                    "__unk_Q3893899620": ""
+                  }
                 },
                 "attackPattern": {
                   "$type": "ConfigAttackCircle",
-                  "radius": 6,
-                  "height": 1.5,
-                  "triggerType": "TriggerNoRepeat",
                   "born": {
                     "$type": "ConfigBornBySelf"
-                  }
+                  },
+                  "height": 1.5,
+                  "radius": 6,
+                  "triggerType": "TriggerNoRepeat"
                 }
-              }
+              },
+              "targetType": "Enemy"
             }
           ],
+          "thinkInterval": 0.25,
           "__unk_Q3323398612": 0
         },
         "RockTide_AttackWave_Material": {
@@ -1134,24 +1142,26 @@
             18,
             "ADD"
           ],
-          "onRemoved": [
-            {
-              "$type": "KillSelf"
-            }
-          ],
+          "elementDurability": 100,
+          "modifierName": "",
           "onAdded": [
             {
               "$type": "FireEffect",
               "effectPattern": "Eff_Avatar_RockTide_Crest_Move",
               "scale": 1,
-              "ILLLPEOODKP": ""
+              "JHAGIJGAKMK": ""
             }
           ],
-          "elementDurability": 100,
-          "modifierName": "",
+          "onRemoved": [
+            {
+              "$type": "KillSelf"
+            }
+          ],
           "__unk_Q3323398612": 0
         },
         "RockTide_AttackWave_StarDustReturn": {
+          "elementDurability": 100,
+          "modifierName": "",
           "onAttackLanded": [
             {
               "$type": "Predicated",
@@ -1159,16 +1169,17 @@
                 {
                   "$type": "ApplyModifier",
                   "modifierName": "StarDustReturn_Mark",
-                  "target": "Target",
                   "predicates": [
                     {
                       "$type": "ByAvatarElementType",
                       "elementType": "Rock",
                       "target": "Owner"
                     }
-                  ]
+                  ],
+                  "target": "Target"
                 }
               ],
+              "target": "Target",
               "targetPredicates": [
                 {
                   "$type": "ByAttackTags",
@@ -1182,16 +1193,15 @@
                     "Monster"
                   ]
                 }
-              ],
-              "target": "Target"
+              ]
             }
           ],
-          "elementDurability": 100,
-          "modifierName": "",
           "__unk_Q3323398612": 0
         },
         "StarDustReturn_Mark": {
           "duration": 2,
+          "elementDurability": 100,
+          "modifierName": "",
           "onAdded": [
             {
               "$type": "ApplyModifier",
@@ -1199,17 +1209,17 @@
               "target": "CasterOriginOwner"
             }
           ],
-          "elementDurability": 100,
-          "modifierName": "",
           "__unk_Q3323398612": 0
         },
         "StarDustReturn_Restore": {
           "duration": 1.5,
+          "elementDurability": 100,
+          "modifierName": "",
           "onAdded": [
             {
               "$type": "ReviveElemEnergy",
-              "value": "ReviveElemEnergyRatio",
-              "doOffStage": true
+              "doOffStage": true,
+              "value": "ReviveElemEnergyRatio"
             }
           ],
           "stacking": "Multiple",
@@ -1217,29 +1227,26 @@
             "abilitySpecialName": "",
             "maxModifierNumForMultipleType": 5
           },
-          "elementDurability": 100,
-          "modifierName": "",
           "__unk_Q3323398612": 0
         },
         "UNIQUE_RockTide_GaeaAnthem": {
-          "thinkInterval": 1,
           "duration": [
             "GaeaAnthem_TimeDelta",
             15,
             "ADD"
           ],
           "elementDurability": 100,
-          "modifierName": "",
           "isUnique": true,
+          "modifierName": "",
           "onThinkInterval": [
             {
               "$type": "ApplyModifier",
               "modifierName": "UNIQUE_GaeaAnthem_PowerUp",
               "otherTargets": {
                 "$type": "SelectTargetsByShape",
-                "sizeRatio": 1,
                 "campTargetType": "Alliance",
-                "shapeName": "CircleR7"
+                "shapeName": "CircleR7",
+                "sizeRatio": 1
               },
               "predicates": [
                 {
@@ -1251,22 +1258,22 @@
               ]
             }
           ],
+          "thinkInterval": 1,
           "__unk_Q3323398612": 0
         },
         "UNIQUE_GaeaAnthem_PowerUp": {
           "duration": 2,
+          "elementDurability": 100,
           "isLimitedProperties": true,
+          "isUnique": true,
+          "modifierName": "",
           "properties": {
             "Actor_EndureDelta": "GaeaAnthem_EndureDelta",
             "Actor_CriticalDelta": "GaeaAnthem_CriticalDelta"
           },
-          "elementDurability": 100,
-          "modifierName": "",
-          "isUnique": true,
           "__unk_Q3323398612": 0
         }
       },
-      "abilityName": "Avatar_Player_RockTide_AttackWave",
       "onAdded": [
         {
           "$type": "ApplyModifier",
@@ -1330,105 +1337,103 @@
             }
           ]
         }
-      ],
-      "abilitySpecials": {
-        "ReviveElemEnergyRatio": 5,
-        "GaeaAnthem_TimeDelta": 0,
-        "GaeaAnthem_EndureDelta": 0.7,
-        "GaeaAnthem_CriticalDelta": 0.1,
-        "AttackWaveDamage": 0
-      }
+      ]
     }
   },
   {
     "Default": {
+      "abilityName": "Avatar_Player_RockTide_Barrier_Appear",
       "onAbilityStart": [
         {
           "$type": "CreateGadget",
-          "gadgetID": 41005006,
-          "campID": 1001,
-          "campTargetType": "Enemy",
           "born": {
             "$type": "ConfigBornByTarget",
-            "FLFGOALBFIC": true,
             "alongGround": true,
-            "onGround": true,
-            "offset": {
-              "x": 2.75,
-              "z": 6.67
-            },
             "direction": {
               "$type": "ConfigDirectionByLookAtEntity",
-              "KFAOLPBMANI": ""
-            }
-          }
+              "namedTransform": ""
+            },
+            "offset": {
+              "z": 6.67,
+              "x": 2.75
+            },
+            "onGround": true,
+            "onGroundIgnoreWater": true
+          },
+          "campID": 1001,
+          "campTargetType": "Enemy",
+          "gadgetID": 41005006
         },
         {
           "$type": "CreateGadget",
-          "gadgetID": 41005006,
-          "campID": 1001,
-          "campTargetType": "Enemy",
           "born": {
             "$type": "ConfigBornByTarget",
-            "FLFGOALBFIC": true,
             "alongGround": true,
-            "onGround": true,
-            "offset": {
-              "x": -2.75,
-              "z": -6.67
-            },
             "direction": {
               "$type": "ConfigDirectionByLookAtEntity",
-              "KFAOLPBMANI": ""
-            }
-          }
+              "namedTransform": ""
+            },
+            "offset": {
+              "z": -6.67,
+              "x": -2.75
+            },
+            "onGround": true,
+            "onGroundIgnoreWater": true
+          },
+          "campID": 1001,
+          "campTargetType": "Enemy",
+          "gadgetID": 41005006
         },
         {
           "$type": "CreateGadget",
-          "gadgetID": 41005006,
-          "campID": 1001,
-          "campTargetType": "Enemy",
           "born": {
             "$type": "ConfigBornByTarget",
-            "FLFGOALBFIC": true,
             "alongGround": true,
-            "onGround": true,
-            "offset": {
-              "x": 6.67,
-              "z": -2.75
-            },
             "direction": {
               "$type": "ConfigDirectionByLookAtEntity",
-              "KFAOLPBMANI": ""
-            }
-          }
+              "namedTransform": ""
+            },
+            "offset": {
+              "z": -2.75,
+              "x": 6.67
+            },
+            "onGround": true,
+            "onGroundIgnoreWater": true
+          },
+          "campID": 1001,
+          "campTargetType": "Enemy",
+          "gadgetID": 41005006
         },
         {
           "$type": "CreateGadget",
-          "gadgetID": 41005006,
-          "campID": 1001,
-          "campTargetType": "Enemy",
           "born": {
             "$type": "ConfigBornByTarget",
-            "FLFGOALBFIC": true,
             "alongGround": true,
-            "onGround": true,
-            "offset": {
-              "x": -6.67,
-              "z": 2.75
-            },
             "direction": {
               "$type": "ConfigDirectionByLookAtEntity",
-              "KFAOLPBMANI": ""
-            }
-          }
+              "namedTransform": ""
+            },
+            "offset": {
+              "z": 2.75,
+              "x": -6.67
+            },
+            "onGround": true,
+            "onGroundIgnoreWater": true
+          },
+          "campID": 1001,
+          "campTargetType": "Enemy",
+          "gadgetID": 41005006
         }
-      ],
-      "abilityName": "Avatar_Player_RockTide_Barrier_Appear"
+      ]
     }
   },
   {
     "Default": {
+      "abilityName": "Avatar_Player_RockTide_Barrier",
+      "abilitySpecials": {
+        "BarrierHP": 0.25,
+        "BarrierLifeTimeDelta": 0
+      },
       "modifiers": {
         "Barrier_Stat": {
           "duration": [
@@ -1436,6 +1441,8 @@
             15,
             "ADD"
           ],
+          "elementDurability": 100,
+          "modifierName": "",
           "onRemoved": [
             {
               "$type": "KillSelf"
@@ -1444,12 +1451,12 @@
           "properties": {
             "Actor_MaxHPRatio": "BarrierHP"
           },
-          "elementDurability": 100,
-          "modifierName": "",
           "__unk_Q3323398612": 0
         },
         "Barrier_Material_Timer": {
           "duration": 0.05,
+          "elementDurability": 100,
+          "modifierName": "",
           "onRemoved": [
             {
               "$type": "ApplyModifier",
@@ -1460,17 +1467,17 @@
               "triggerID": "Start"
             }
           ],
-          "elementDurability": 100,
-          "modifierName": "",
           "__unk_Q3323398612": 0
         },
         "Barrier_Material": {
+          "elementDurability": 100,
+          "modifierName": "",
           "onAdded": [
             {
               "$type": "AttachEffect",
-              "ILLLPEOODKP": "",
+              "effectPattern": "Eff_Avatar_RockTide_RockWall",
               "scale": 1,
-              "effectPattern": "Eff_Avatar_RockTide_RockWall"
+              "JHAGIJGAKMK": ""
             }
           ],
           "onKill": [
@@ -1478,11 +1485,9 @@
               "$type": "FireEffect",
               "effectPattern": "Eff_Avatar_RockTide_RockWall_Disappear",
               "scale": 1,
-              "ILLLPEOODKP": ""
+              "JHAGIJGAKMK": ""
             }
           ],
-          "elementDurability": 100,
-          "modifierName": "",
           "__unk_Q3323398612": 0
         },
         "Barrier_Damage": {
@@ -1492,50 +1497,49 @@
         },
         "Barrier_Damage_Modifier": {
           "duration": 0.1,
+          "elementDurability": 100,
+          "modifierName": "",
           "onAdded": [
             {
               "$type": "TriggerAttackEvent",
-              "targetType": "Enemy",
               "attackEvent": {
                 "attackInfo": {
                   "attackProperty": {
-                    "elementType": "Rock",
-                    "damagePercentageRatio": 0,
-                    "strikeType": "Default",
-                    "enBreak": 10.59,
                     "damagePercentage": 0.1,
+                    "damagePercentageRatio": 0,
                     "elementDurability": 25,
                     "elementRank": 1.5,
+                    "elementType": "Rock",
+                    "enBreak": 10.59,
+                    "strikeType": "Default",
                     "__exp_arkhe": 0
                   },
-                  "hitPattern": {
-                    "__unk_Q3893899620": "",
-                    "onHitEffectName": "",
-                    "hitHaltTimeScale": 0.05,
-                    "hitImpulseType": "LV3"
-                  },
+                  "attackTag": "",
                   "attenuationGroup": "default",
                   "attenuationTag": "",
-                  "attackTag": ""
+                  "hitPattern": {
+                    "hitHaltTimeScale": 0.05,
+                    "hitImpulseType": "LV3",
+                    "onHitEffectName": "",
+                    "__unk_Q3893899620": ""
+                  }
                 },
                 "attackPattern": {
                   "$type": "ConfigAttackSphere",
-                  "radius": 1,
-                  "triggerType": "TriggerNoRepeat",
                   "born": {
                     "$type": "ConfigBornBySelf"
-                  }
+                  },
+                  "radius": 1,
+                  "triggerType": "TriggerNoRepeat"
                 }
               },
-              "target": "Caster"
+              "target": "Caster",
+              "targetType": "Enemy"
             }
           ],
-          "elementDurability": 100,
-          "modifierName": "",
           "__unk_Q3323398612": 0
         }
       },
-      "abilityName": "Avatar_Player_RockTide_Barrier",
       "onAdded": [
         {
           "$type": "ApplyModifier",
@@ -1545,63 +1549,63 @@
           "$type": "FireEffect",
           "effectPattern": "Eff_Avatar_RockTide_RockWall_Impact",
           "scale": 1,
-          "ILLLPEOODKP": ""
+          "JHAGIJGAKMK": ""
         },
         {
           "$type": "ApplyModifier",
           "modifierName": "Barrier_Material_Timer"
         }
-      ],
-      "abilitySpecials": {
-        "BarrierHP": 0.25,
-        "BarrierLifeTimeDelta": 0
-      }
+      ]
     }
   },
   {
     "Default": {
+      "abilityName": "Avatar_Player_Rock_Avalanche",
+      "abilitySpecials": {
+        "Avalanche_Damage": 0.6
+      },
+      "isDynamicAbility": true,
       "onAbilityStart": [
         {
           "$type": "TriggerAttackEvent",
-          "targetType": "Enemy",
           "attackEvent": {
             "attackInfo": {
               "attackProperty": {
-                "elementType": "Rock",
                 "attackType": "Melee",
-                "damagePercentageRatio": 0,
-                "strikeType": "Blunt",
-                "enBreak": 13.5,
                 "damagePercentage": "Avalanche_Damage",
+                "damagePercentageRatio": 0,
                 "elementDurability": 25,
+                "elementType": "Rock",
+                "enBreak": 13.5,
+                "strikeType": "Blunt",
                 "__exp_arkhe": 0
               },
-              "cameraShake": {
-                "shakeTime": 0.04,
-                "MNKFEFOKFKP": "",
-                "shakeRange": 0.08
-              },
-              "hitPattern": {
-                "__unk_Q3893899620": "",
-                "onHitEffectName": "default",
-                "hitHaltTimeScale": 0.05,
-                "hitImpulseType": "LV2"
-              },
+              "attackTag": "NormalAttack_05",
               "attenuationGroup": "default",
               "attenuationTag": "",
-              "attackTag": "NormalAttack_05"
+              "cameraShake": {
+                "shakeRange": 0.08,
+                "shakeTime": 0.04,
+                "OFGBHFBAEKK": ""
+              },
+              "hitPattern": {
+                "hitHaltTimeScale": 0.05,
+                "hitImpulseType": "LV2",
+                "onHitEffectName": "default",
+                "__unk_Q3893899620": ""
+              }
             },
             "attackPattern": {
               "$type": "ConfigAttackSphere",
-              "radius": 2.4,
-              "triggerType": "TriggerNoRepeat",
               "born": {
                 "$type": "ConfigBornBySelf",
                 "offset": {
                   "z": 1.2,
                   "y": 1
                 }
-              }
+              },
+              "radius": 2.4,
+              "triggerType": "TriggerNoRepeat"
             }
           },
           "predicates": [
@@ -1609,149 +1613,156 @@
               "$type": "ByUnlockTalentParam",
               "talentParam": "Player_Rock_Avalanche"
             }
-          ]
+          ],
+          "targetType": "Enemy"
         },
         {
           "$type": "FireEffect",
           "effectPattern": "Eff_Avatar_RockBlade_Explode",
-          "scale": 1,
-          "ILLLPEOODKP": "",
           "predicates": [
             {
               "$type": "ByUnlockTalentParam",
               "talentParam": "Player_Rock_Avalanche"
             }
-          ]
+          ],
+          "scale": 1,
+          "JHAGIJGAKMK": ""
         }
-      ],
-      "abilityName": "Avatar_Player_Rock_Avalanche",
-      "isDynamicAbility": true,
-      "abilitySpecials": {
-        "Avalanche_Damage": 0.6
-      }
+      ]
     }
   },
   {
     "Default": {
-      "modifiers": {
-        "Player_Rock_Climber": {
-          "isLimitedProperties": true,
-          "properties": {
-            "Actor_CostStaminaRatio": "Climber_CostStaminaRatio"
-          },
-          "elementDurability": 100,
-          "modifierName": "",
-          "__unk_Q3323398612": 0
-        }
-      },
       "abilityMixins": [
         {
           "$type": "AttachToStateIDMixin",
-          "__unk_Q2081332355": "",
+          "modifierName": "Player_Rock_Climber",
           "stateIDs": [
             "Climb"
           ],
-          "modifierName": "Player_Rock_Climber"
+          "__unk_Q2081332355": ""
         }
       ],
       "abilityName": "Avatar_Player_Rock_Climber",
-      "isDynamicAbility": true,
       "abilitySpecials": {
         "Climber_CostStaminaRatio": -0.08
+      },
+      "isDynamicAbility": true,
+      "modifiers": {
+        "Player_Rock_Climber": {
+          "elementDurability": 100,
+          "isLimitedProperties": true,
+          "modifierName": "",
+          "properties": {
+            "Actor_CostStaminaRatio": "Climber_CostStaminaRatio"
+          },
+          "__unk_Q3323398612": 0
+        }
       }
     }
   },
   {
     "Default": {
+      "abilityName": "Avatar_Player_Rock_EnhancedExtraAttack",
+      "abilitySpecials": {
+        "ExtraAttack_Enhanced_ratio": 0,
+        "ExtraAttack_Enhanced_CD": 0,
+        "ExtraAttack_Enhanced_Stack_CD": 0,
+        "ExtraAttack_Enhanced_TeamBuffRatio": 0,
+        "ExtraAttack_Enhanced_TeamBuffDuration": 0,
+        "ExtraAttack_Enhanced_1_BaseDamagePercentage": 0,
+        "ExtraAttack_Enhanced_2_BaseDamagePercentage": 0
+      },
+      "isDynamicAbility": true,
       "modifiers": {
         "UNIQUE_Player_Rock_EnhancedExtraAttack_Main": {
-          "thinkInterval": 1,
-          "onAdded": [
-            {
-              "$type": "SetGlobalValue",
-              "key": "_ABILITY_Player_Rock_EnhancedExtraAttack_Stack",
-              "minValue": 0,
-              "maxValue": 0,
-              "value": 0,
-              "doOffStage": true
-            },
-            {
-              "$type": "SetGlobalValue",
-              "key": "_ABILITY_MODIFIER_UNIQUE_Player_Rock_EnhancedExtraAttack_CD",
-              "minValue": 0,
-              "maxValue": 0,
-              "value": 0,
-              "doOffStage": true
-            },
-            {
-              "$type": "AttachModifier",
-              "modifierName": "Player_Rock_EnhancedExtraAttack_ShieldListener",
-              "target": "AllPlayerAvatars",
-              "doOffStage": true,
-              "predicates": [
-                {
-                  "$type": "ByTargetPositionToSelfPosition",
-                  "NJICAELBCCB": "",
-                  "JBOGOHPICML": "",
-                  "value": 40,
-                  "logic": "LesserOrEqual"
-                }
-              ]
-            }
-          ],
           "elementDurability": 100,
+          "isUnique": true,
           "modifierMixins": [
             {
               "$type": "DoActionByTeamStatusMixin",
-              "DBLNHBMOHNA": true,
-              "MNLPBOJDABO": true,
-              "OFLOBFOHCEJ": true,
               "actions": [
                 {
                   "$type": "AttachModifier",
-                  "modifierName": "Player_Rock_EnhancedExtraAttack_ShieldListener",
-                  "target": "AllPlayerAvatars",
                   "doOffStage": true,
+                  "modifierName": "Player_Rock_EnhancedExtraAttack_ShieldListener",
                   "predicates": [
                     {
                       "$type": "ByTargetPositionToSelfPosition",
-                      "NJICAELBCCB": "",
-                      "JBOGOHPICML": "",
+                      "logic": "LesserOrEqual",
                       "value": 40,
-                      "logic": "LesserOrEqual"
+                      "FPDDDGMBDKP": "",
+                      "GCDNHEEGIPE": ""
                     }
-                  ]
+                  ],
+                  "target": "AllPlayerAvatars"
                 }
-              ]
+              ],
+              "APKEHPBLPEE": true,
+              "EENCHCHMDBI": true,
+              "NFLOPKBJNGH": true
             },
             {
               "$type": "AttachToStateIDMixin",
-              "__unk_Q2081332355": "",
+              "modifierName": "UNIQUE_Player_Rock_EnhancedExtraAttack_Handler",
               "stateIDs": [
                 "ExtraAttack"
               ],
-              "modifierName": "UNIQUE_Player_Rock_EnhancedExtraAttack_Handler"
+              "__unk_Q2081332355": ""
             }
           ],
           "modifierName": "",
-          "isUnique": true,
-          "onThinkInterval": [
+          "onAdded": [
+            {
+              "$type": "SetGlobalValue",
+              "doOffStage": true,
+              "key": "_ABILITY_Player_Rock_EnhancedExtraAttack_Stack",
+              "maxValue": 0,
+              "minValue": 0,
+              "value": 0
+            },
+            {
+              "$type": "SetGlobalValue",
+              "doOffStage": true,
+              "key": "_ABILITY_MODIFIER_UNIQUE_Player_Rock_EnhancedExtraAttack_CD",
+              "maxValue": 0,
+              "minValue": 0,
+              "value": 0
+            },
             {
               "$type": "AttachModifier",
-              "modifierName": "Player_Rock_EnhancedExtraAttack_ShieldListener",
-              "target": "AllPlayerAvatars",
               "doOffStage": true,
+              "modifierName": "Player_Rock_EnhancedExtraAttack_ShieldListener",
               "predicates": [
                 {
                   "$type": "ByTargetPositionToSelfPosition",
-                  "NJICAELBCCB": "",
-                  "JBOGOHPICML": "",
+                  "logic": "LesserOrEqual",
                   "value": 40,
-                  "logic": "LesserOrEqual"
+                  "FPDDDGMBDKP": "",
+                  "GCDNHEEGIPE": ""
                 }
-              ]
+              ],
+              "target": "AllPlayerAvatars"
             }
           ],
+          "onThinkInterval": [
+            {
+              "$type": "AttachModifier",
+              "doOffStage": true,
+              "modifierName": "Player_Rock_EnhancedExtraAttack_ShieldListener",
+              "predicates": [
+                {
+                  "$type": "ByTargetPositionToSelfPosition",
+                  "logic": "LesserOrEqual",
+                  "value": 40,
+                  "FPDDDGMBDKP": "",
+                  "GCDNHEEGIPE": ""
+                }
+              ],
+              "target": "AllPlayerAvatars"
+            }
+          ],
+          "thinkInterval": 1,
           "__unk_Q3323398612": 0
         },
         "Player_Rock_EnhancedExtraAttack_ShieldListener": {
@@ -1765,35 +1776,35 @@
                   "successActions": [
                     {
                       "$type": "ApplyModifier",
-                      "modifierName": "_ABILITY_Player_Rock_EnhancedExtraAttack_Stack_Agent",
-                      "target": "Caster",
                       "doOffStage": true,
+                      "modifierName": "_ABILITY_Player_Rock_EnhancedExtraAttack_Stack_Agent",
                       "predicates": [
                         {
                           "$type": "ByNot",
                           "predicates": [
                             {
                               "$type": "ByTargetGlobalValue",
-                              "value": 1,
                               "key": "_ABILITY_MODIFIER_UNIQUE_Player_Rock_EnhancedExtraAttack_ShieldListener_CD",
-                              "target": "Caster"
+                              "target": "Caster",
+                              "value": 1
                             }
                           ]
                         }
-                      ]
-                    }
-                  ],
-                  "targetPredicates": [
-                    {
-                      "$type": "ByTargetPositionToSelfPosition",
-                      "NJICAELBCCB": "",
-                      "JBOGOHPICML": "",
-                      "value": 40,
-                      "logic": "LesserOrEqual",
+                      ],
                       "target": "Caster"
                     }
                   ],
-                  "target": "Caster"
+                  "target": "Caster",
+                  "targetPredicates": [
+                    {
+                      "$type": "ByTargetPositionToSelfPosition",
+                      "logic": "LesserOrEqual",
+                      "target": "Caster",
+                      "value": 40,
+                      "FPDDDGMBDKP": "",
+                      "GCDNHEEGIPE": ""
+                    }
+                  ]
                 }
               ]
             },
@@ -1802,27 +1813,29 @@
               "actionQueue": [
                 {
                   "$type": "Predicated",
+                  "doOffStage": true,
                   "successActions": [
                     {
                       "$type": "ApplyModifier",
-                      "modifierName": "_ABILITY_Player_Rock_EnhancedExtraAttack_Stack_Agent",
-                      "target": "Caster",
                       "doOffStage": true,
+                      "modifierName": "_ABILITY_Player_Rock_EnhancedExtraAttack_Stack_Agent",
                       "predicates": [
                         {
                           "$type": "ByNot",
                           "predicates": [
                             {
                               "$type": "ByTargetGlobalValue",
-                              "value": 1,
                               "key": "_ABILITY_MODIFIER_UNIQUE_Player_Rock_EnhancedExtraAttack_ShieldListener_CD",
-                              "target": "Caster"
+                              "target": "Caster",
+                              "value": 1
                             }
                           ]
                         }
-                      ]
+                      ],
+                      "target": "Caster"
                     }
                   ],
+                  "target": "Other",
                   "targetPredicates": [
                     {
                       "$type": "ByEntityTypes",
@@ -1834,14 +1847,14 @@
                     },
                     {
                       "$type": "ByTargetGlobalValue",
-                      "value": 1,
-                      "key": "_COMMON_GADGET_ISSUMMON"
+                      "key": "_COMMON_GADGET_ISSUMMON",
+                      "value": 1
                     },
                     {
                       "$type": "ByTargetGlobalValue",
-                      "value": 0,
                       "compareType": "NoneOrEqual",
-                      "key": "_COMMON_GADGET_ISSUMMON_NOT_ROCK"
+                      "key": "_COMMON_GADGET_ISSUMMON_NOT_ROCK",
+                      "value": 0
                     },
                     {
                       "$type": "ByEntityTypes",
@@ -1853,18 +1866,16 @@
                     },
                     {
                       "$type": "ByTargetPositionToSelfPosition",
-                      "NJICAELBCCB": "",
-                      "JBOGOHPICML": "",
-                      "value": 40,
                       "logic": "LesserOrEqual",
-                      "target": "Caster"
+                      "target": "Caster",
+                      "value": 40,
+                      "FPDDDGMBDKP": "",
+                      "GCDNHEEGIPE": ""
                     }
-                  ],
-                  "target": "Other",
-                  "doOffStage": true
+                  ]
                 }
               ],
-              "NIGGOJGEKCP": true
+              "IMNINOAOEOO": true
             }
           ],
           "modifierName": "",
@@ -1872,46 +1883,48 @@
         },
         "UNIQUE_Player_Rock_EnhancedExtraAttack_ShieldListener_CD": {
           "duration": "ExtraAttack_Enhanced_Stack_CD",
-          "onRemoved": [
-            {
-              "$type": "SetGlobalValue",
-              "key": "_ABILITY_MODIFIER_UNIQUE_Player_Rock_EnhancedExtraAttack_ShieldListener_CD",
-              "minValue": 0,
-              "maxValue": 0,
-              "value": 0,
-              "doOffStage": true
-            }
-          ],
+          "elementDurability": 100,
+          "isUnique": true,
+          "modifierName": "",
           "onAdded": [
             {
               "$type": "SetGlobalValue",
+              "doOffStage": true,
               "key": "_ABILITY_MODIFIER_UNIQUE_Player_Rock_EnhancedExtraAttack_ShieldListener_CD",
-              "minValue": 0,
               "maxValue": 0,
-              "value": 1,
-              "doOffStage": true
+              "minValue": 0,
+              "value": 1
             }
           ],
-          "elementDurability": 100,
-          "modifierName": "",
-          "isUnique": true,
+          "onRemoved": [
+            {
+              "$type": "SetGlobalValue",
+              "doOffStage": true,
+              "key": "_ABILITY_MODIFIER_UNIQUE_Player_Rock_EnhancedExtraAttack_ShieldListener_CD",
+              "maxValue": 0,
+              "minValue": 0,
+              "value": 0
+            }
+          ],
           "__unk_Q3323398612": 0
         },
         "_ABILITY_Player_Rock_EnhancedExtraAttack_Stack_Agent": {
           "duration": 1,
+          "elementDurability": 100,
+          "modifierName": "",
           "onAdded": [
             {
               "$type": "ApplyModifier",
-              "modifierName": "_ABILITY_Player_Rock_EnhancedExtraAttack_Stack",
               "doOffStage": true,
+              "modifierName": "_ABILITY_Player_Rock_EnhancedExtraAttack_Stack",
               "predicates": [
                 {
                   "$type": "ByNot",
                   "predicates": [
                     {
                       "$type": "ByTargetGlobalValue",
-                      "value": 1,
-                      "key": "_ABILITY_MODIFIER_UNIQUE_Player_Rock_EnhancedExtraAttack_ShieldListener_CD"
+                      "key": "_ABILITY_MODIFIER_UNIQUE_Player_Rock_EnhancedExtraAttack_ShieldListener_CD",
+                      "value": 1
                     }
                   ]
                 }
@@ -1919,16 +1932,16 @@
             },
             {
               "$type": "ApplyModifier",
-              "modifierName": "UNIQUE_Player_Rock_EnhancedExtraAttack_ShieldListener_CD",
               "doOffStage": true,
+              "modifierName": "UNIQUE_Player_Rock_EnhancedExtraAttack_ShieldListener_CD",
               "predicates": [
                 {
                   "$type": "ByNot",
                   "predicates": [
                     {
                       "$type": "ByTargetGlobalValue",
-                      "value": 1,
-                      "key": "_ABILITY_MODIFIER_UNIQUE_Player_Rock_EnhancedExtraAttack_ShieldListener_CD"
+                      "key": "_ABILITY_MODIFIER_UNIQUE_Player_Rock_EnhancedExtraAttack_ShieldListener_CD",
+                      "value": 1
                     }
                   ]
                 }
@@ -1940,45 +1953,46 @@
             "abilitySpecialName": "",
             "maxModifierNumForMultipleType": 3
           },
-          "elementDurability": 100,
-          "modifierName": "",
           "__unk_Q3323398612": 0
         },
         "_ABILITY_Player_Rock_EnhancedExtraAttack_Stack": {
+          "buffID": 10012,
+          "elementDurability": 100,
+          "modifierName": "",
           "onAdded": [
             {
               "$type": "AddGlobalValue",
-              "useLimitRange": true,
+              "doOffStage": true,
               "key": "_ABILITY_Player_Rock_EnhancedExtraAttack_Stack",
               "maxValue": 3,
               "minValue": 0,
-              "value": 1,
-              "doOffStage": true
+              "useLimitRange": true,
+              "value": 1
             },
             {
               "$type": "Predicated",
+              "doOffStage": true,
               "successActions": [
                 {
                   "$type": "ApplyModifier",
-                  "modifierName": "UNIQUE_Player_Rock_EnhancedExtraAttack_Ready",
-                  "doOffStage": true
+                  "doOffStage": true,
+                  "modifierName": "UNIQUE_Player_Rock_EnhancedExtraAttack_Ready"
                 }
               ],
               "targetPredicates": [
                 {
                   "$type": "ByTargetGlobalValue",
-                  "value": 3,
                   "compareType": "MoreThanAndEqual",
-                  "key": "_ABILITY_Player_Rock_EnhancedExtraAttack_Stack"
+                  "key": "_ABILITY_Player_Rock_EnhancedExtraAttack_Stack",
+                  "value": 3
                 },
                 {
                   "$type": "ByTargetGlobalValue",
-                  "value": 0,
                   "compareType": "NoneOrEqual",
-                  "key": "_ABILITY_MODIFIER_UNIQUE_Player_Rock_EnhancedExtraAttack_CD"
+                  "key": "_ABILITY_MODIFIER_UNIQUE_Player_Rock_EnhancedExtraAttack_CD",
+                  "value": 0
                 }
-              ],
-              "doOffStage": true
+              ]
             }
           ],
           "stacking": "Multiple",
@@ -1986,31 +2000,27 @@
             "abilitySpecialName": "",
             "maxModifierNumForMultipleType": 3
           },
-          "elementDurability": 100,
-          "modifierName": "",
-          "buffID": 10012,
           "__unk_Q3323398612": 1
         },
         "UNIQUE_Player_Rock_EnhancedExtraAttack_Ready": {
-          "onRemoved": [
-            {
-              "$type": "SetGlobalValue",
-              "key": "_ABILITY_MODIFIER_UNIQUE_Player_Rock_EnhancedExtraAttack_Ready",
-              "minValue": 0,
-              "maxValue": 0,
-              "value": 0,
-              "doOffStage": true
-            }
-          ],
+          "elementDurability": 100,
+          "isUnique": true,
+          "modifierName": "",
           "onAdded": [
             {
               "$type": "SetGlobalValue",
+              "doOffStage": true,
               "key": "_ABILITY_MODIFIER_UNIQUE_Player_Rock_EnhancedExtraAttack_Ready",
-              "minValue": 0,
               "maxValue": 0,
-              "value": 1,
-              "doOffStage": true
+              "minValue": 0,
+              "value": 1
             },
+            {
+              "$type": "AttachModifier",
+              "modifierName": "UNIQUE_Player_Rock_EnhancedExtraAttack_Ready_Effect"
+            }
+          ],
+          "onAvatarIn": [
             {
               "$type": "AttachModifier",
               "modifierName": "UNIQUE_Player_Rock_EnhancedExtraAttack_Ready_Effect"
@@ -2019,100 +2029,25 @@
           "onAvatarOut": [
             {
               "$type": "RemoveModifier",
-              "modifierName": "UNIQUE_Player_Rock_EnhancedExtraAttack_Ready_Effect",
-              "doOffStage": true
-            }
-          ],
-          "elementDurability": 100,
-          "onAvatarIn": [
-            {
-              "$type": "AttachModifier",
+              "doOffStage": true,
               "modifierName": "UNIQUE_Player_Rock_EnhancedExtraAttack_Ready_Effect"
             }
           ],
-          "modifierName": "",
-          "isUnique": true,
+          "onRemoved": [
+            {
+              "$type": "SetGlobalValue",
+              "doOffStage": true,
+              "key": "_ABILITY_MODIFIER_UNIQUE_Player_Rock_EnhancedExtraAttack_Ready",
+              "maxValue": 0,
+              "minValue": 0,
+              "value": 0
+            }
+          ],
           "__unk_Q3323398612": 0
         },
         "UNIQUE_Player_Rock_EnhancedExtraAttack_Handler": {
-          "onAdded": [
-            {
-              "$type": "Predicated",
-              "failActions": [
-                {
-                  "$type": "RemoveModifier",
-                  "modifierName": "UNIQUE_Player_Rock_EnhancedExtraAttack_Ready"
-                },
-                {
-                  "$type": "RemoveModifier",
-                  "modifierName": "UNIQUE_Player_Rock_EnhancedExtraAttack_Handler"
-                }
-              ],
-              "targetPredicates": [
-                {
-                  "$type": "ByTargetGlobalValue",
-                  "value": 1,
-                  "key": "_ABILITY_MODIFIER_UNIQUE_Player_Rock_EnhancedExtraAttack_Ready"
-                },
-                {
-                  "$type": "ByTargetGlobalValue",
-                  "value": 3,
-                  "compareType": "MoreThanAndEqual",
-                  "key": "_ABILITY_Player_Rock_EnhancedExtraAttack_Stack"
-                },
-                {
-                  "$type": "ByTargetGlobalValue",
-                  "value": 0,
-                  "compareType": "NoneOrEqual",
-                  "key": "_ABILITY_MODIFIER_UNIQUE_Player_Rock_EnhancedExtraAttack_CD"
-                }
-              ]
-            }
-          ],
-          "onAttackLanded": [
-            {
-              "$type": "Predicated",
-              "successActions": [
-                {
-                  "$type": "ApplyModifier",
-                  "modifierName": "UNIQUE_Player_Rock_EnhancedExtraAttack_TeamBuff",
-                  "target": "AllPlayerAvatars",
-                  "doOffStage": true,
-                  "predicates": [
-                    {
-                      "$type": "ByTargetPositionToSelfPosition",
-                      "NJICAELBCCB": "",
-                      "JBOGOHPICML": "",
-                      "value": 40,
-                      "logic": "LesserOrEqual"
-                    }
-                  ]
-                }
-              ],
-              "targetPredicates": [
-                {
-                  "$type": "ByEntityTypes",
-                  "entityTypes": [
-                    "Monster"
-                  ]
-                },
-                {
-                  "$type": "ByAttackTags",
-                  "attackTags": [
-                    "Player_Rock_TeambuffAdder"
-                  ]
-                },
-                {
-                  "$type": "ByTargetGlobalValue",
-                  "value": 0,
-                  "compareType": "NoneOrEqual",
-                  "key": "_ANIMAL_ENTITY_TYPE"
-                }
-              ],
-              "target": "Target"
-            }
-          ],
           "elementDurability": 100,
+          "isUnique": true,
           "modifierMixins": [
             {
               "$type": "ReplaceEventPatternMixin",
@@ -2135,331 +2070,413 @@
             {
               "$type": "AttachToNormalizedTimeMixin",
               "modifierName": "Player_Rock_EnhancedExtraAttack_Effect_1",
-              "__unk_Q2081332355": "",
+              "normalizeStart": 0.315,
               "stateID": "ExtraAttack",
-              "normalizeStart": 0.315
+              "__unk_Q2081332355": ""
             },
             {
               "$type": "AttachToNormalizedTimeMixin",
               "modifierName": "Player_Rock_EnhancedExtraAttack_Effect_2",
-              "__unk_Q2081332355": "",
+              "normalizeStart": 0.6236,
               "stateID": "ExtraAttack",
-              "normalizeStart": 0.6236
+              "__unk_Q2081332355": ""
             },
             {
               "$type": "AttachToNormalizedTimeMixin",
               "modifierName": "Player_Rock_EnhancedExtraAttack_Hit_1",
-              "__unk_Q2081332355": "",
+              "normalizeStart": 0.315,
               "stateID": "ExtraAttack",
-              "normalizeStart": 0.315
+              "__unk_Q2081332355": ""
             },
             {
               "$type": "AttachToNormalizedTimeMixin",
               "modifierName": "Player_Rock_EnhancedExtraAttack_Hit_2",
-              "__unk_Q2081332355": "",
+              "normalizeStart": 0.6236,
               "stateID": "ExtraAttack",
-              "normalizeStart": 0.6236
+              "__unk_Q2081332355": ""
             }
           ],
           "modifierName": "",
-          "isUnique": true,
-          "__unk_Q3323398612": 0
-        },
-        "Player_Rock_EnhancedExtraAttack_Effect_1": {
           "onAdded": [
             {
               "$type": "Predicated",
-              "successActions": [
-                {
-                  "$type": "FireEffect",
-                  "effectPattern": "Eff_Player_Rock_EnhancedExtraAttack_Hit_1_Girl",
-                  "scale": 1,
-                  "ILLLPEOODKP": ""
-                }
-              ],
               "failActions": [
                 {
-                  "$type": "FireEffect",
-                  "effectPattern": "Eff_Player_Rock_EnhancedExtraAttack_Hit_1",
-                  "scale": 1,
-                  "ILLLPEOODKP": ""
-                }
-              ],
-              "targetPredicates": [
-                {
-                  "$type": "ByHasFeatureTag",
-                  "featureTagIDs": [
-                    1044
-                  ]
-                }
-              ]
-            }
-          ],
-          "elementDurability": 100,
-          "modifierName": "",
-          "__unk_Q3323398612": 0
-        },
-        "Player_Rock_EnhancedExtraAttack_Effect_2": {
-          "onAdded": [
-            {
-              "$type": "Predicated",
-              "successActions": [
-                {
-                  "$type": "FireEffect",
-                  "effectPattern": "Eff_Player_Rock_EnhancedExtraAttack_Hit_2_Girl",
-                  "scale": 1,
-                  "ILLLPEOODKP": ""
-                }
-              ],
-              "failActions": [
-                {
-                  "$type": "FireEffect",
-                  "effectPattern": "Eff_Player_Rock_EnhancedExtraAttack_Hit_2",
-                  "scale": 1,
-                  "ILLLPEOODKP": ""
-                }
-              ],
-              "targetPredicates": [
-                {
-                  "$type": "ByHasFeatureTag",
-                  "featureTagIDs": [
-                    1044
-                  ]
-                }
-              ]
-            }
-          ],
-          "elementDurability": 100,
-          "modifierName": "",
-          "__unk_Q3323398612": 0
-        },
-        "Player_Rock_EnhancedExtraAttack_Hit_1": {
-          "onAdded": [
-            {
-              "$type": "TriggerAttackEvent",
-              "targetType": "Enemy",
-              "attackEvent": {
-                "attackInfo": {
-                  "attackProperty": {
-                    "elementType": "Rock",
-                    "attackType": "Melee",
-                    "damagePercentageRatio": 0,
-                    "strikeType": "Slash",
-                    "enBreak": 50.6,
-                    "damagePercentage": [
-                      "ExtraAttack_Enhanced_1_BaseDamagePercentage",
-                      "ExtraAttack_Enhanced_ratio",
-                      "ADD"
-                    ],
-                    "elementDurability": 25,
-                    "elementRank": 1.5,
-                    "__exp_arkhe": 0
-                  },
-                  "cameraShake": {
-                    "shakeTime": 0.15,
-                    "MNKFEFOKFKP": "",
-                    "shakeRange": 0.3
-                  },
-                  "hitPattern": {
-                    "__unk_Q3893899620": "",
-                    "retreatType": "ByHitDirection",
-                    "onHitEffectName": "default",
-                    "hitHaltTimeScale": 0.05,
-                    "hitHaltTime": 0.05,
-                    "canBeDefenceHalt": true,
-                    "hitImpulseType": "LV2"
-                  },
-                  "forceCameraShake": true,
-                  "attenuationGroup": "default",
-                  "attenuationTag": "EnhancedExtraAttack",
-                  "__exp_additionalAttackTag": [
-                    "Player_Rock_TeambuffAdder"
-                  ],
-                  "attackTag": "ExtraAttack",
-                  "canBeModifiedBy": "OriginOwner"
+                  "$type": "RemoveModifier",
+                  "modifierName": "UNIQUE_Player_Rock_EnhancedExtraAttack_Ready"
                 },
-                "attackPattern": {
-                  "$type": "ConfigAttackCircle",
-                  "radius": 3.2,
-                  "height": 2,
-                  "triggerType": "TriggerNoRepeat",
-                  "born": {
-                    "$type": "ConfigBornBySelf",
-                    "useRotation": true,
-                    "offset": {
-                      "z": 1,
-                      "y": -0.5
-                    }
-                  }
-                }
-              }
-            },
-            {
-              "$type": "SetGlobalValue",
-              "key": "_ABILITY_Player_Rock_EnhancedExtraAttack_Stack",
-              "minValue": 0,
-              "maxValue": 0,
-              "value": 0,
-              "doOffStage": true
-            },
-            {
-              "$type": "RemoveModifier",
-              "modifierName": "_ABILITY_Player_Rock_EnhancedExtraAttack_Stack",
-              "doOffStage": true
-            },
-            {
-              "$type": "ApplyModifier",
-              "modifierName": "UNIQUE_Player_Rock_EnhancedExtraAttack_CD",
-              "doOffStage": true
-            },
-            {
-              "$type": "RemoveModifier",
-              "modifierName": "UNIQUE_Player_Rock_EnhancedExtraAttack_Ready",
-              "doOffStage": true
-            }
-          ],
-          "elementDurability": 100,
-          "modifierName": "",
-          "__unk_Q3323398612": 0
-        },
-        "Player_Rock_EnhancedExtraAttack_Hit_2": {
-          "onAdded": [
-            {
-              "$type": "TriggerAttackEvent",
-              "targetType": "Enemy",
-              "attackEvent": {
-                "attackInfo": {
-                  "attackProperty": {
-                    "elementType": "Rock",
-                    "attackType": "Melee",
-                    "damagePercentageRatio": 0,
-                    "strikeType": "Slash",
-                    "enBreak": 50.6,
-                    "damagePercentage": [
-                      "ExtraAttack_Enhanced_2_BaseDamagePercentage",
-                      "ExtraAttack_Enhanced_ratio",
-                      "ADD"
-                    ],
-                    "elementDurability": 25,
-                    "elementRank": 1.5,
-                    "__exp_arkhe": 0
-                  },
-                  "cameraShake": {
-                    "shakeTime": 0.15,
-                    "MNKFEFOKFKP": "",
-                    "shakeRange": 0.3
-                  },
-                  "hitPattern": {
-                    "__unk_Q3893899620": "",
-                    "retreatType": "ByHitDirection",
-                    "onHitEffectName": "default",
-                    "hitHaltTimeScale": 0.05,
-                    "hitHaltTime": 0.05,
-                    "canBeDefenceHalt": true,
-                    "hitImpulseType": "LV2"
-                  },
-                  "forceCameraShake": true,
-                  "attenuationGroup": "default",
-                  "attenuationTag": "EnhancedExtraAttack",
-                  "__exp_additionalAttackTag": [
-                    "Player_Rock_TeambuffAdder"
-                  ],
-                  "attackTag": "ExtraAttack",
-                  "canBeModifiedBy": "OriginOwner"
-                },
-                "attackPattern": {
-                  "$type": "ConfigAttackCircle",
-                  "radius": 3.2,
-                  "height": 2,
-                  "triggerType": "TriggerNoRepeat",
-                  "born": {
-                    "$type": "ConfigBornBySelf",
-                    "useRotation": true,
-                    "offset": {
-                      "z": 1,
-                      "y": -0.5
-                    }
-                  }
-                }
-              }
-            }
-          ],
-          "elementDurability": 100,
-          "modifierName": "",
-          "__unk_Q3323398612": 0
-        },
-        "UNIQUE_Player_Rock_EnhancedExtraAttack_CD": {
-          "duration": "ExtraAttack_Enhanced_CD",
-          "onRemoved": [
-            {
-              "$type": "SetGlobalValue",
-              "key": "_ABILITY_MODIFIER_UNIQUE_Player_Rock_EnhancedExtraAttack_CD",
-              "minValue": 0,
-              "maxValue": 0,
-              "value": 0,
-              "doOffStage": true
-            },
-            {
-              "$type": "Predicated",
-              "successActions": [
                 {
-                  "$type": "ApplyModifier",
-                  "modifierName": "UNIQUE_Player_Rock_EnhancedExtraAttack_Ready",
-                  "doOffStage": true
+                  "$type": "RemoveModifier",
+                  "modifierName": "UNIQUE_Player_Rock_EnhancedExtraAttack_Handler"
                 }
               ],
               "targetPredicates": [
                 {
                   "$type": "ByTargetGlobalValue",
-                  "value": 3,
+                  "key": "_ABILITY_MODIFIER_UNIQUE_Player_Rock_EnhancedExtraAttack_Ready",
+                  "value": 1
+                },
+                {
+                  "$type": "ByTargetGlobalValue",
                   "compareType": "MoreThanAndEqual",
-                  "key": "_ABILITY_Player_Rock_EnhancedExtraAttack_Stack"
+                  "key": "_ABILITY_Player_Rock_EnhancedExtraAttack_Stack",
+                  "value": 3
+                },
+                {
+                  "$type": "ByTargetGlobalValue",
+                  "compareType": "NoneOrEqual",
+                  "key": "_ABILITY_MODIFIER_UNIQUE_Player_Rock_EnhancedExtraAttack_CD",
+                  "value": 0
                 }
-              ],
-              "doOffStage": true
+              ]
             }
           ],
+          "onAttackLanded": [
+            {
+              "$type": "Predicated",
+              "successActions": [
+                {
+                  "$type": "ApplyModifier",
+                  "doOffStage": true,
+                  "modifierName": "UNIQUE_Player_Rock_EnhancedExtraAttack_TeamBuff",
+                  "predicates": [
+                    {
+                      "$type": "ByTargetPositionToSelfPosition",
+                      "logic": "LesserOrEqual",
+                      "value": 40,
+                      "FPDDDGMBDKP": "",
+                      "GCDNHEEGIPE": ""
+                    }
+                  ],
+                  "target": "AllPlayerAvatars"
+                }
+              ],
+              "target": "Target",
+              "targetPredicates": [
+                {
+                  "$type": "ByEntityTypes",
+                  "entityTypes": [
+                    "Monster"
+                  ]
+                },
+                {
+                  "$type": "ByAttackTags",
+                  "attackTags": [
+                    "Player_Rock_TeambuffAdder"
+                  ]
+                },
+                {
+                  "$type": "ByTargetGlobalValue",
+                  "compareType": "NoneOrEqual",
+                  "key": "_ANIMAL_ENTITY_TYPE",
+                  "value": 0
+                }
+              ]
+            }
+          ],
+          "__unk_Q3323398612": 0
+        },
+        "Player_Rock_EnhancedExtraAttack_Effect_1": {
+          "elementDurability": 100,
+          "modifierName": "",
+          "onAdded": [
+            {
+              "$type": "Predicated",
+              "failActions": [
+                {
+                  "$type": "FireEffect",
+                  "effectPattern": "Eff_Player_Rock_EnhancedExtraAttack_Hit_1",
+                  "scale": 1,
+                  "JHAGIJGAKMK": ""
+                }
+              ],
+              "successActions": [
+                {
+                  "$type": "FireEffect",
+                  "effectPattern": "Eff_Player_Rock_EnhancedExtraAttack_Hit_1_Girl",
+                  "scale": 1,
+                  "JHAGIJGAKMK": ""
+                }
+              ],
+              "targetPredicates": [
+                {
+                  "$type": "ByHasFeatureTag",
+                  "featureTagIDs": [
+                    1044
+                  ]
+                }
+              ]
+            }
+          ],
+          "__unk_Q3323398612": 0
+        },
+        "Player_Rock_EnhancedExtraAttack_Effect_2": {
+          "elementDurability": 100,
+          "modifierName": "",
+          "onAdded": [
+            {
+              "$type": "Predicated",
+              "failActions": [
+                {
+                  "$type": "FireEffect",
+                  "effectPattern": "Eff_Player_Rock_EnhancedExtraAttack_Hit_2",
+                  "scale": 1,
+                  "JHAGIJGAKMK": ""
+                }
+              ],
+              "successActions": [
+                {
+                  "$type": "FireEffect",
+                  "effectPattern": "Eff_Player_Rock_EnhancedExtraAttack_Hit_2_Girl",
+                  "scale": 1,
+                  "JHAGIJGAKMK": ""
+                }
+              ],
+              "targetPredicates": [
+                {
+                  "$type": "ByHasFeatureTag",
+                  "featureTagIDs": [
+                    1044
+                  ]
+                }
+              ]
+            }
+          ],
+          "__unk_Q3323398612": 0
+        },
+        "Player_Rock_EnhancedExtraAttack_Hit_1": {
+          "elementDurability": 100,
+          "modifierName": "",
+          "onAdded": [
+            {
+              "$type": "TriggerAttackEvent",
+              "attackEvent": {
+                "attackInfo": {
+                  "attackProperty": {
+                    "attackType": "Melee",
+                    "damagePercentage": [
+                      "ExtraAttack_Enhanced_1_BaseDamagePercentage",
+                      "ExtraAttack_Enhanced_ratio",
+                      "ADD"
+                    ],
+                    "damagePercentageRatio": 0,
+                    "elementDurability": 25,
+                    "elementRank": 1.5,
+                    "elementType": "Rock",
+                    "enBreak": 50.6,
+                    "strikeType": "Slash",
+                    "__exp_arkhe": 0
+                  },
+                  "attackTag": "ExtraAttack",
+                  "attenuationGroup": "default",
+                  "attenuationTag": "EnhancedExtraAttack",
+                  "cameraShake": {
+                    "shakeRange": 0.3,
+                    "shakeTime": 0.15,
+                    "OFGBHFBAEKK": ""
+                  },
+                  "canBeModifiedBy": "OriginOwner",
+                  "forceCameraShake": true,
+                  "hitPattern": {
+                    "canBeDefenceHalt": true,
+                    "hitHaltTime": 0.05,
+                    "hitHaltTimeScale": 0.05,
+                    "hitImpulseType": "LV2",
+                    "onHitEffectName": "default",
+                    "retreatType": "ByHitDirection",
+                    "__unk_Q3893899620": ""
+                  },
+                  "__exp_additionalAttackTag": [
+                    "Player_Rock_TeambuffAdder"
+                  ]
+                },
+                "attackPattern": {
+                  "$type": "ConfigAttackCircle",
+                  "born": {
+                    "$type": "ConfigBornBySelf",
+                    "offset": {
+                      "z": 1,
+                      "y": -0.5
+                    },
+                    "useRotation": true
+                  },
+                  "height": 2,
+                  "radius": 3.2,
+                  "triggerType": "TriggerNoRepeat"
+                }
+              },
+              "targetType": "Enemy"
+            },
+            {
+              "$type": "SetGlobalValue",
+              "doOffStage": true,
+              "key": "_ABILITY_Player_Rock_EnhancedExtraAttack_Stack",
+              "maxValue": 0,
+              "minValue": 0,
+              "value": 0
+            },
+            {
+              "$type": "RemoveModifier",
+              "doOffStage": true,
+              "modifierName": "_ABILITY_Player_Rock_EnhancedExtraAttack_Stack"
+            },
+            {
+              "$type": "ApplyModifier",
+              "doOffStage": true,
+              "modifierName": "UNIQUE_Player_Rock_EnhancedExtraAttack_CD"
+            },
+            {
+              "$type": "RemoveModifier",
+              "doOffStage": true,
+              "modifierName": "UNIQUE_Player_Rock_EnhancedExtraAttack_Ready"
+            }
+          ],
+          "__unk_Q3323398612": 0
+        },
+        "Player_Rock_EnhancedExtraAttack_Hit_2": {
+          "elementDurability": 100,
+          "modifierName": "",
+          "onAdded": [
+            {
+              "$type": "TriggerAttackEvent",
+              "attackEvent": {
+                "attackInfo": {
+                  "attackProperty": {
+                    "attackType": "Melee",
+                    "damagePercentage": [
+                      "ExtraAttack_Enhanced_2_BaseDamagePercentage",
+                      "ExtraAttack_Enhanced_ratio",
+                      "ADD"
+                    ],
+                    "damagePercentageRatio": 0,
+                    "elementDurability": 25,
+                    "elementRank": 1.5,
+                    "elementType": "Rock",
+                    "enBreak": 50.6,
+                    "strikeType": "Slash",
+                    "__exp_arkhe": 0
+                  },
+                  "attackTag": "ExtraAttack",
+                  "attenuationGroup": "default",
+                  "attenuationTag": "EnhancedExtraAttack",
+                  "cameraShake": {
+                    "shakeRange": 0.3,
+                    "shakeTime": 0.15,
+                    "OFGBHFBAEKK": ""
+                  },
+                  "canBeModifiedBy": "OriginOwner",
+                  "forceCameraShake": true,
+                  "hitPattern": {
+                    "canBeDefenceHalt": true,
+                    "hitHaltTime": 0.05,
+                    "hitHaltTimeScale": 0.05,
+                    "hitImpulseType": "LV2",
+                    "onHitEffectName": "default",
+                    "retreatType": "ByHitDirection",
+                    "__unk_Q3893899620": ""
+                  },
+                  "__exp_additionalAttackTag": [
+                    "Player_Rock_TeambuffAdder"
+                  ]
+                },
+                "attackPattern": {
+                  "$type": "ConfigAttackCircle",
+                  "born": {
+                    "$type": "ConfigBornBySelf",
+                    "offset": {
+                      "z": 1,
+                      "y": -0.5
+                    },
+                    "useRotation": true
+                  },
+                  "height": 2,
+                  "radius": 3.2,
+                  "triggerType": "TriggerNoRepeat"
+                }
+              },
+              "targetType": "Enemy"
+            }
+          ],
+          "__unk_Q3323398612": 0
+        },
+        "UNIQUE_Player_Rock_EnhancedExtraAttack_CD": {
+          "duration": "ExtraAttack_Enhanced_CD",
+          "elementDurability": 100,
+          "isUnique": true,
+          "modifierName": "",
           "onAdded": [
             {
               "$type": "SetGlobalValue",
+              "doOffStage": true,
               "key": "_ABILITY_MODIFIER_UNIQUE_Player_Rock_EnhancedExtraAttack_CD",
-              "minValue": 0,
               "maxValue": 0,
-              "value": 1,
-              "doOffStage": true
+              "minValue": 0,
+              "value": 1
             }
           ],
-          "elementDurability": 100,
-          "modifierName": "",
-          "isUnique": true,
+          "onRemoved": [
+            {
+              "$type": "SetGlobalValue",
+              "doOffStage": true,
+              "key": "_ABILITY_MODIFIER_UNIQUE_Player_Rock_EnhancedExtraAttack_CD",
+              "maxValue": 0,
+              "minValue": 0,
+              "value": 0
+            },
+            {
+              "$type": "Predicated",
+              "doOffStage": true,
+              "successActions": [
+                {
+                  "$type": "ApplyModifier",
+                  "doOffStage": true,
+                  "modifierName": "UNIQUE_Player_Rock_EnhancedExtraAttack_Ready"
+                }
+              ],
+              "targetPredicates": [
+                {
+                  "$type": "ByTargetGlobalValue",
+                  "compareType": "MoreThanAndEqual",
+                  "key": "_ABILITY_Player_Rock_EnhancedExtraAttack_Stack",
+                  "value": 3
+                }
+              ]
+            }
+          ],
           "__unk_Q3323398612": 0
         },
         "UNIQUE_Player_Rock_EnhancedExtraAttack_TeamBuff": {
+          "buffID": 10002,
           "duration": "ExtraAttack_Enhanced_TeamBuffDuration",
+          "elementDurability": 100,
+          "isUnique": true,
+          "modifierName": "",
           "properties": {
             "Actor_ShieldCostMinusRatio": "ExtraAttack_Enhanced_TeamBuffRatio"
           },
-          "elementDurability": 100,
-          "modifierName": "",
-          "isUnique": true,
-          "buffID": 10002,
           "__unk_Q3323398612": 0
         },
         "UNIQUE_Player_Rock_EnhancedExtraAttack_Ready_Effect": {
+          "elementDurability": 100,
+          "isUnique": true,
+          "modifierName": "",
           "onAdded": [
             {
               "$type": "AttachEffect",
-              "ILLLPEOODKP": "",
+              "effectPattern": "Eff_Player_Rock_EnhancedExtraAttack_Ready",
               "scale": 1,
-              "effectPattern": "Eff_Player_Rock_EnhancedExtraAttack_Ready"
+              "JHAGIJGAKMK": ""
             }
           ],
-          "elementDurability": 100,
-          "modifierName": "",
-          "isUnique": true,
           "__unk_Q3323398612": 0
         }
       },
+      "onAdded": [
+        {
+          "$type": "AttachModifier",
+          "modifierName": "UNIQUE_Player_Rock_EnhancedExtraAttack_Main"
+        }
+      ],
       "onRemoved": [
         {
           "$type": "RemoveModifier",
@@ -2477,24 +2494,7 @@
           "$type": "RemoveModifier",
           "modifierName": "_ABILITY_Player_Rock_EnhancedExtraAttack_Stack"
         }
-      ],
-      "abilityName": "Avatar_Player_Rock_EnhancedExtraAttack",
-      "isDynamicAbility": true,
-      "onAdded": [
-        {
-          "$type": "AttachModifier",
-          "modifierName": "UNIQUE_Player_Rock_EnhancedExtraAttack_Main"
-        }
-      ],
-      "abilitySpecials": {
-        "ExtraAttack_Enhanced_ratio": 0,
-        "ExtraAttack_Enhanced_CD": 0,
-        "ExtraAttack_Enhanced_Stack_CD": 0,
-        "ExtraAttack_Enhanced_TeamBuffRatio": 0,
-        "ExtraAttack_Enhanced_TeamBuffDuration": 0,
-        "ExtraAttack_Enhanced_1_BaseDamagePercentage": 0,
-        "ExtraAttack_Enhanced_2_BaseDamagePercentage": 0
-      }
+      ]
     }
   }
 ]

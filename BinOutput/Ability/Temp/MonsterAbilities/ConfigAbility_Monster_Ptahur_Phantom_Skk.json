@@ -4,28 +4,28 @@
       "abilityMixins": [
         {
           "$type": "SteerAttackMixin",
-          "__unk_Q2081332355": "",
           "angularSpeed": 240,
-          "endNormalizedTime": 0.2,
-          "AAPNADMFCNO": true,
           "attackDistance": 1.5,
-          "HDLABDJANFN": [
+          "attackTrigger": "",
+          "endNormalizedTime": 0.2,
+          "steerStateIDs": [
             "BladeSlash03_Skk"
           ],
-          "EOHCONFEGPO": ""
+          "LEGDILBDLCB": true,
+          "__unk_Q2081332355": ""
         },
         {
           "$type": "SteerAttackMixin",
-          "__unk_Q2081332355": "",
           "angularSpeed": 240,
-          "endNormalizedTime": 0.42,
-          "AAPNADMFCNO": true,
           "attackDistance": 1.5,
-          "HDLABDJANFN": [
+          "attackTrigger": "",
+          "endNormalizedTime": 0.42,
+          "startNormalizedTime": 0.24,
+          "steerStateIDs": [
             "PhaseStrike_Skk"
           ],
-          "startNormalizedTime": 0.24,
-          "EOHCONFEGPO": ""
+          "LEGDILBDLCB": true,
+          "__unk_Q2081332355": ""
         }
       ],
       "abilityName": "Monster_Ptahur_Phantom_01_Skk_SteerAttack"
@@ -33,14 +33,15 @@
   },
   {
     "Default": {
+      "abilityName": "Monster_Ptahur_Phantom_Skk_PhaseMoveToTarget",
       "onAbilityStart": [
         {
           "$type": "TryFindBlinkPoint",
-          "GBINFPFKLHL": true,
-          "ignoreWater": true,
-          "minRange": 9.5,
-          "maxRange": 15.5,
+          "checkInCamera": true,
           "forwardAngle": 180,
+          "ignoreWater": true,
+          "maxRange": 15.5,
+          "minRange": 9.5,
           "target": "SelfAttackTarget"
         },
         {
@@ -48,31 +49,92 @@
         },
         {
           "$type": "TurnDirectionToPos",
+          "target": "SelfAttackTarget",
           "toPos": {
             "$type": "ConfigBornByTarget"
-          },
-          "target": "SelfAttackTarget"
+          }
         },
         {
           "$type": "FireEffect",
-          "effectPattern": "Eff_Monster_Ptahur_Phantom_01_PhaseStrike_PhaseDoor",
-          "scale": 1,
           "born": {
-            "$type": "CAGGGLCIFFN",
-            "useRotation": true,
+            "$type": "ConfigBornByTeleportToPoint",
             "direction": {
               "$type": "ConfigDirectionByAttackTarget",
-              "MJDDIMNCNAL": ""
-            }
+              "startPoint": ""
+            },
+            "useRotation": true
           },
-          "ILLLPEOODKP": ""
+          "effectPattern": "Eff_Monster_Ptahur_Phantom_01_PhaseStrike_PhaseDoor",
+          "scale": 1,
+          "JHAGIJGAKMK": ""
         }
-      ],
-      "abilityName": "Monster_Ptahur_Phantom_Skk_PhaseMoveToTarget"
+      ]
     }
   },
   {
     "Default": {
+      "abilityMixins": [
+        {
+          "$type": "AttachModifierToHPPercentMixin",
+          "modifierNameSteps": [
+            "Empty",
+            "Monster_Ptahur_Phantom_CreateGadget_State_01",
+            "Monster_Ptahur_Phantom_CreateGadget_State_02",
+            "Monster_Ptahur_Phantom_CreateGadget_State_03"
+          ],
+          "valueSteps": [
+            0.75,
+            0.5,
+            0.25
+          ]
+        },
+        {
+          "$type": "AttachToAIAlertnessMixin",
+          "alertness": [
+            2,
+            3
+          ],
+          "modifierName": "Monster_Phantom_Skk_GoBattle"
+        },
+        {
+          "$type": "AttachToMultiNormalizedTimeMixin",
+          "modifierName": "Modifier_GV_Hittable",
+          "normalizedStateIDList": [
+            {
+              "normalizeStart": 0.8,
+              "stateID": "VertexAttack_Skk_BS"
+            },
+            {
+              "normalizeEnd": 99,
+              "stateID": "VertexAttack01_Skk_Wait"
+            },
+            {
+              "normalizeEnd": 0.3,
+              "stateID": "PhaseStrike_Skk"
+            }
+          ],
+          "__unk_Q2081332355": ""
+        },
+        {
+          "$type": "AttachToMultiNormalizedTimeMixin",
+          "modifierName": "Modifier_GV_Remove_CanSkill",
+          "normalizedStateIDList": [
+            {
+              "stateID": "Break_Skk_BS"
+            },
+            {
+              "normalizeEnd": 99,
+              "stateID": "Break_Skk_Loop"
+            },
+            {
+              "normalizeEnd": 0.8,
+              "stateID": "Break_Skk_AS"
+            }
+          ],
+          "__unk_Q2081332355": ""
+        }
+      ],
+      "abilityName": "Monster_Ptahur_Phantom_CreateGadget_Skk",
       "modifiers": {
         "Empty": {
           "elementDurability": 100,
@@ -80,24 +142,14 @@
           "__unk_Q3323398612": 0
         },
         "Modifier_GV_Hittable": {
-          "onRemoved": [
-            {
-              "$type": "SetGlobalValue",
-              "key": "_MONSTER_PTAHUR_PHANTOM_HITTABLE",
-              "minValue": 0,
-              "maxValue": 0,
-              "value": 1
-            },
-            {
-              "$type": "EnableAIStealthy"
-            }
-          ],
+          "elementDurability": 100,
+          "modifierName": "",
           "onAdded": [
             {
               "$type": "SetGlobalValue",
               "key": "_MONSTER_PTAHUR_PHANTOM_HITTABLE",
-              "minValue": 0,
               "maxValue": 0,
+              "minValue": 0,
               "value": 0
             },
             {
@@ -105,77 +157,100 @@
               "enable": true
             }
           ],
-          "elementDurability": 100,
-          "modifierName": "",
+          "onRemoved": [
+            {
+              "$type": "SetGlobalValue",
+              "key": "_MONSTER_PTAHUR_PHANTOM_HITTABLE",
+              "maxValue": 0,
+              "minValue": 0,
+              "value": 1
+            },
+            {
+              "$type": "EnableAIStealthy"
+            }
+          ],
           "__unk_Q3323398612": 0
         },
         "Modifier_GV_Remove_CanSkill": {
-          "onRemoved": [
-            {
-              "$type": "SetGlobalValue",
-              "key": "_CanSkill",
-              "minValue": 0,
-              "maxValue": 0,
-              "value": 1,
-              "doOffStage": true
-            }
-          ],
+          "elementDurability": 100,
+          "modifierName": "",
           "onAdded": [
             {
               "$type": "SetGlobalValue",
+              "doOffStage": true,
               "key": "_CanSkill",
-              "minValue": 0,
               "maxValue": 0,
-              "value": 0,
-              "doOffStage": true
+              "minValue": 0,
+              "value": 0
             }
           ],
-          "elementDurability": 100,
-          "modifierName": "",
+          "onRemoved": [
+            {
+              "$type": "SetGlobalValue",
+              "doOffStage": true,
+              "key": "_CanSkill",
+              "maxValue": 0,
+              "minValue": 0,
+              "value": 1
+            }
+          ],
           "__unk_Q3323398612": 0
         },
         "Monster_limbo_list_51": {
+          "elementDurability": 100,
+          "modifierName": "",
           "onRemoved": [
             {
               "$type": "ApplyModifier",
-              "modifierName": "Monster_limbo_list_26",
-              "doOffStage": true
+              "doOffStage": true,
+              "modifierName": "Monster_limbo_list_26"
             }
           ],
           "properties": {
             "Actor_HpThresholdRatio": 0.51
           },
-          "elementDurability": 100,
           "state": "Limbo",
-          "modifierName": "",
           "__unk_Q3323398612": 0
         },
         "Monster_limbo_list_26": {
+          "elementDurability": 100,
+          "modifierName": "",
           "onRemoved": [
             {
               "$type": "ApplyModifier",
-              "modifierName": "Monster_limbo_list_02",
-              "doOffStage": true
+              "doOffStage": true,
+              "modifierName": "Monster_limbo_list_02"
             }
           ],
           "properties": {
             "Actor_HpThresholdRatio": 0.26
           },
-          "elementDurability": 100,
           "state": "Limbo",
-          "modifierName": "",
           "__unk_Q3323398612": 0
         },
         "Monster_limbo_list_02": {
+          "elementDurability": 100,
+          "modifierName": "",
           "properties": {
             "Actor_HpThresholdRatio": 0.02
           },
-          "elementDurability": 100,
           "state": "Limbo",
-          "modifierName": "",
           "__unk_Q3323398612": 0
         },
         "Monster_Phantom_Skk_GoBattle": {
+          "elementDurability": 100,
+          "modifierName": "",
+          "onAdded": [
+            {
+              "$type": "TriggerAudio",
+              "operation": {
+                "$type": "ConfigAudioEventOp",
+                "operation": {
+                  "text": "Play_vo_SKKLQ005_2_skofnungr_01"
+                }
+              }
+            }
+          ],
           "onReconnect": [
             {
               "$type": "RemoveModifier",
@@ -218,28 +293,17 @@
               "modifierName": "Phantom_Skk_CreateGadget_03_5"
             }
           ],
-          "onAdded": [
-            {
-              "$type": "TriggerAudio",
-              "operation": {
-                "$type": "ConfigAudioEventOp",
-                "operation": {
-                  "text": "Play_vo_SKKLQ005_2_skofnungr_01"
-                }
-              }
-            }
-          ],
-          "elementDurability": 100,
-          "modifierName": "",
           "__unk_Q3323398612": 0
         },
         "BreakTrigger": {
+          "elementDurability": 100,
+          "modifierName": "",
           "onAdded": [
             {
               "$type": "TryFindBlinkPoint",
-              "GBINFPFKLHL": true,
-              "maxRange": 8,
+              "checkInCamera": true,
               "forwardAngle": 90,
+              "maxRange": 8,
               "target": "SelfAttackTarget"
             },
             {
@@ -247,20 +311,20 @@
             },
             {
               "$type": "SetAnimatorTrigger",
-              "triggerID": "BreakLoop",
-              "doOffStage": true
+              "doOffStage": true,
+              "triggerID": "BreakLoop"
             },
             {
               "$type": "SetGlobalValueV2",
-              "minValue": 0,
               "key": "GV_VertexCrystal",
               "maxValue": 0,
+              "minValue": 0,
               "value": 0
             },
             {
               "$type": "RemoveModifier",
-              "modifierName": "Monster_limbo_list_02",
               "doOffStage": true,
+              "modifierName": "Monster_limbo_list_02",
               "predicates": [
                 {
                   "$type": "ByHasModifier",
@@ -276,8 +340,8 @@
             },
             {
               "$type": "RemoveModifier",
-              "modifierName": "Monster_limbo_list_26",
               "doOffStage": true,
+              "modifierName": "Monster_limbo_list_26",
               "predicates": [
                 {
                   "$type": "ByHasModifier",
@@ -293,8 +357,8 @@
             },
             {
               "$type": "RemoveModifier",
-              "modifierName": "Monster_limbo_list_51",
               "doOffStage": true,
+              "modifierName": "Monster_limbo_list_51",
               "predicates": [
                 {
                   "$type": "ByHasModifier",
@@ -303,33 +367,57 @@
               ]
             }
           ],
-          "elementDurability": 100,
-          "modifierName": "",
           "__unk_Q3323398612": 0
         },
         "TriggerCD2023": {
-          "thinkInterval": 0.2,
           "elementDurability": 100,
           "modifierName": "",
           "onThinkInterval": [
             {
               "$type": "SetAISkillCDAvailableNow",
-              "BKAONOKDMLG": [
+              "doOffStage": true,
+              "skillIDs": [
                 2023
-              ],
-              "doOffStage": true
+              ]
             }
           ],
+          "thinkInterval": 0.2,
           "__unk_Q3323398612": 0
         },
         "Monster_Ptahur_Phantom_CreateGadget_State_01": {
+          "elementDurability": 100,
+          "modifierMixins": [
+            {
+              "$type": "AttachToAnimatorStateIDMixin",
+              "modifierName": "UNIQUE_CreateGadget_handler_01",
+              "stateIDs": [
+                "VertexAttack_Skk_BS",
+                "VertexAttack01_Skk_Wait"
+              ],
+              "__unk_Q2081332355": ""
+            },
+            {
+              "$type": "AttachModifierToGlobalValueMixin",
+              "globalValueKey": "GV_VertexCrystal",
+              "modifierNameSteps": [
+                "Empty",
+                "BreakTrigger"
+              ],
+              "valueSteps": [
+                -0.5,
+                11.5,
+                15.5
+              ]
+            }
+          ],
+          "modifierName": "",
           "onAdded": [
             {
               "$type": "SetAISkillCDAvailableNow",
-              "BKAONOKDMLG": [
+              "doOffStage": true,
+              "skillIDs": [
                 2023
-              ],
-              "doOffStage": true
+              ]
             },
             {
               "$type": "ApplyModifier",
@@ -337,9 +425,9 @@
             },
             {
               "$type": "SetGlobalValueV2",
-              "minValue": 0,
               "key": "GV_VertexCrystal",
               "maxValue": 0,
+              "minValue": 0,
               "value": 0
             },
             {
@@ -351,54 +439,13 @@
               "modifierName": "Phantom_Skk_CreateGadget_01_2"
             }
           ],
-          "elementDurability": 100,
-          "modifierMixins": [
-            {
-              "$type": "AttachToAnimatorStateIDMixin",
-              "__unk_Q2081332355": "",
-              "stateIDs": [
-                "VertexAttack_Skk_BS",
-                "VertexAttack01_Skk_Wait"
-              ],
-              "modifierName": "UNIQUE_CreateGadget_handler_01"
-            },
-            {
-              "$type": "AttachModifierToGlobalValueMixin",
-              "modifierNameSteps": [
-                "Empty",
-                "BreakTrigger"
-              ],
-              "globalValueKey": "GV_VertexCrystal",
-              "valueSteps": [
-                -0.5,
-                11.5,
-                15.5
-              ]
-            }
-          ],
-          "modifierName": "",
           "__unk_Q3323398612": 0
         },
         "UNIQUE_CreateGadget_handler_01": {
           "duration": 18,
-          "onRemoved": [
-            {
-              "$type": "SetAnimatorTrigger",
-              "triggerID": "VertexRecover"
-            },
-            {
-              "$type": "SetGlobalValueV2",
-              "minValue": 0,
-              "key": "GV_VertexCrystal",
-              "maxValue": 0,
-              "value": 0
-            },
-            {
-              "$type": "RemoveModifier",
-              "modifierName": "Monster_limbo_list_51",
-              "doOffStage": true
-            }
-          ],
+          "elementDurability": 100,
+          "isUnique": true,
+          "modifierName": "",
           "onAdded": [
             {
               "$type": "ApplyModifier",
@@ -413,30 +460,43 @@
               "modifierName": "ShowReminder_Phantom_Skk_01"
             }
           ],
+          "onRemoved": [
+            {
+              "$type": "SetAnimatorTrigger",
+              "triggerID": "VertexRecover"
+            },
+            {
+              "$type": "SetGlobalValueV2",
+              "key": "GV_VertexCrystal",
+              "maxValue": 0,
+              "minValue": 0,
+              "value": 0
+            },
+            {
+              "$type": "RemoveModifier",
+              "doOffStage": true,
+              "modifierName": "Monster_limbo_list_51"
+            }
+          ],
           "stacking": "Unique",
-          "elementDurability": 100,
-          "modifierName": "",
-          "isUnique": true,
           "__unk_Q3323398612": 0
         },
         "Wait_For_CreateGadget_01_1": {
-          "thinkInterval": 1.5,
           "duration": 1.8,
           "elementDurability": 100,
           "modifierName": "",
-          "onThinkIntervalIsFixedUpdate": true,
           "onThinkInterval": [
             {
               "$type": "DoBlinkByGlobalPos",
-              "positionKey": "_Phantom_Skk_InitialPos_",
-              "directionKey": ""
+              "directionKey": "",
+              "positionKey": "_Phantom_Skk_InitialPos_"
             },
             {
               "$type": "TurnDirectionToPos",
+              "target": "SelfAttackTarget",
               "toPos": {
                 "$type": "ConfigBornByTarget"
-              },
-              "target": "SelfAttackTarget"
+              }
             },
             {
               "$type": "TriggerAudio",
@@ -449,14 +509,14 @@
             },
             {
               "$type": "CreateGadget",
-              "gadgetID": 42909103,
               "born": {
                 "$type": "ConfigBornBySelf",
-                "useRotation": true,
                 "offset": {
                   "z": 4.5
-                }
-              }
+                },
+                "useRotation": true
+              },
+              "gadgetID": 42909103
             },
             {
               "$type": "ApplyModifier",
@@ -467,57 +527,85 @@
               "modifierName": "ShowReminder_Phantom_Skk_01"
             }
           ],
+          "onThinkIntervalIsFixedUpdate": true,
+          "thinkInterval": 1.5,
           "__unk_Q3323398612": 0
         },
         "Phantom_Skk_CreateGadget_01_2": {
-          "thinkInterval": 0.6,
           "duration": 0.8,
           "elementDurability": 100,
           "modifierName": "",
-          "onThinkIntervalIsFixedUpdate": true,
           "onThinkInterval": [
             {
               "$type": "CreateGadget",
-              "gadgetID": 42909103,
               "born": {
                 "$type": "ConfigBornBySelf",
-                "useRotation": true,
                 "offset": {
                   "z": -4.5
-                }
-              }
+                },
+                "useRotation": true
+              },
+              "gadgetID": 42909103
             },
             {
               "$type": "ShowReminder",
-              "id": 1003030033,
-              "doOffStage": true
+              "doOffStage": true,
+              "id": 1003030033
             }
           ],
+          "onThinkIntervalIsFixedUpdate": true,
+          "thinkInterval": 0.6,
           "__unk_Q3323398612": 0
         },
         "ShowReminder_Phantom_Skk_01": {
-          "thinkInterval": 3,
           "duration": 3.5,
           "elementDurability": 100,
           "modifierName": "",
-          "onThinkIntervalIsFixedUpdate": true,
           "onThinkInterval": [
             {
               "$type": "ShowReminder",
-              "id": 1003030032,
-              "doOffStage": true
+              "doOffStage": true,
+              "id": 1003030032
             }
           ],
+          "onThinkIntervalIsFixedUpdate": true,
+          "thinkInterval": 3,
           "__unk_Q3323398612": 0
         },
         "Monster_Ptahur_Phantom_CreateGadget_State_02": {
+          "elementDurability": 100,
+          "modifierMixins": [
+            {
+              "$type": "AttachToAnimatorStateIDMixin",
+              "modifierName": "UNIQUE_CreateGadget_handler_02",
+              "stateIDs": [
+                "VertexAttack_Skk_BS",
+                "VertexAttack01_Skk_Wait"
+              ],
+              "__unk_Q2081332355": ""
+            },
+            {
+              "$type": "AttachModifierToGlobalValueMixin",
+              "globalValueKey": "GV_VertexCrystal",
+              "modifierNameSteps": [
+                "Empty",
+                "BreakTrigger"
+              ],
+              "valueSteps": [
+                -0.5,
+                2.5,
+                3.5
+              ]
+            }
+          ],
+          "modifierName": "",
           "onAdded": [
             {
               "$type": "SetAISkillCDAvailableNow",
-              "BKAONOKDMLG": [
+              "doOffStage": true,
+              "skillIDs": [
                 2023
-              ],
-              "doOffStage": true
+              ]
             },
             {
               "$type": "ApplyModifier",
@@ -525,9 +613,9 @@
             },
             {
               "$type": "SetGlobalValueV2",
-              "minValue": 0,
               "key": "GV_VertexCrystal",
               "maxValue": 0,
+              "minValue": 0,
               "value": 0
             },
             {
@@ -543,54 +631,13 @@
               "modifierName": "Phantom_Skk_CreateGadget_02_3"
             }
           ],
-          "elementDurability": 100,
-          "modifierMixins": [
-            {
-              "$type": "AttachToAnimatorStateIDMixin",
-              "__unk_Q2081332355": "",
-              "stateIDs": [
-                "VertexAttack_Skk_BS",
-                "VertexAttack01_Skk_Wait"
-              ],
-              "modifierName": "UNIQUE_CreateGadget_handler_02"
-            },
-            {
-              "$type": "AttachModifierToGlobalValueMixin",
-              "modifierNameSteps": [
-                "Empty",
-                "BreakTrigger"
-              ],
-              "globalValueKey": "GV_VertexCrystal",
-              "valueSteps": [
-                -0.5,
-                2.5,
-                3.5
-              ]
-            }
-          ],
-          "modifierName": "",
           "__unk_Q3323398612": 0
         },
         "UNIQUE_CreateGadget_handler_02": {
           "duration": 11,
-          "onRemoved": [
-            {
-              "$type": "SetAnimatorTrigger",
-              "triggerID": "VertexRecover"
-            },
-            {
-              "$type": "SetGlobalValueV2",
-              "minValue": 0,
-              "key": "GV_VertexCrystal",
-              "maxValue": 0,
-              "value": 0
-            },
-            {
-              "$type": "RemoveModifier",
-              "modifierName": "Monster_limbo_list_26",
-              "doOffStage": true
-            }
-          ],
+          "elementDurability": 100,
+          "isUnique": true,
+          "modifierName": "",
           "onAdded": [
             {
               "$type": "ApplyModifier",
@@ -610,104 +657,117 @@
               }
             }
           ],
+          "onRemoved": [
+            {
+              "$type": "SetAnimatorTrigger",
+              "triggerID": "VertexRecover"
+            },
+            {
+              "$type": "SetGlobalValueV2",
+              "key": "GV_VertexCrystal",
+              "maxValue": 0,
+              "minValue": 0,
+              "value": 0
+            },
+            {
+              "$type": "RemoveModifier",
+              "doOffStage": true,
+              "modifierName": "Monster_limbo_list_26"
+            }
+          ],
           "stacking": "Unique",
-          "elementDurability": 100,
-          "modifierName": "",
-          "isUnique": true,
           "__unk_Q3323398612": 0
         },
         "Wait_For_CreateGadget_02_1": {
-          "thinkInterval": 1.5,
           "duration": 1.8,
           "elementDurability": 100,
           "modifierName": "",
-          "onThinkIntervalIsFixedUpdate": true,
           "onThinkInterval": [
             {
               "$type": "DoBlinkByGlobalPos",
-              "positionKey": "_Phantom_Skk_InitialPos_",
-              "directionKey": ""
+              "directionKey": "",
+              "positionKey": "_Phantom_Skk_InitialPos_"
             },
             {
               "$type": "TurnDirectionToPos",
+              "target": "SelfAttackTarget",
               "toPos": {
                 "$type": "ConfigBornByTarget"
-              },
-              "target": "SelfAttackTarget"
+              }
             },
             {
               "$type": "SetGlobalPos",
-              "setTarget": false,
+              "born": {
+                "$type": "GGFLLMBKNFC",
+                "offset": {
+                  "z": 9,
+                  "y": 3.5
+                }
+              },
               "key": "Needle_CreateGadget_Pos_1",
-              "born": {
-                "$type": "CPOBHCODBBO",
-                "offset": {
-                  "z": 9,
-                  "y": 3.5
-                }
-              },
+              "setTarget": false,
               "target": "SelfAttackTarget"
             },
             {
               "$type": "SetGlobalPos",
-              "setTarget": false,
+              "born": {
+                "$type": "GGFLLMBKNFC",
+                "offset": {
+                  "z": 9,
+                  "y": 4,
+                  "x": 3.5
+                }
+              },
               "key": "Needle_CreateGadget_Pos_2",
-              "born": {
-                "$type": "CPOBHCODBBO",
-                "offset": {
-                  "x": 3.5,
-                  "z": 9,
-                  "y": 4
-                }
-              },
+              "setTarget": false,
               "target": "SelfAttackTarget"
             },
             {
               "$type": "SetGlobalPos",
-              "setTarget": false,
-              "key": "Needle_CreateGadget_Pos_3",
               "born": {
-                "$type": "CPOBHCODBBO",
+                "$type": "GGFLLMBKNFC",
                 "offset": {
-                  "x": 7,
                   "z": 9,
-                  "y": 3.5
+                  "y": 3.5,
+                  "x": 7
                 }
               },
+              "key": "Needle_CreateGadget_Pos_3",
+              "setTarget": false,
               "target": "SelfAttackTarget"
             },
             {
               "$type": "CreateGadget",
-              "gadgetID": 73054008,
               "born": {
                 "$type": "ConfigBornByGlobalValue",
-                "positionKey": "Needle_CreateGadget_Pos_1",
                 "directionKey": "",
+                "positionKey": "Needle_CreateGadget_Pos_1",
                 "useRotation": true
-              }
+              },
+              "gadgetID": 73054008
             },
             {
               "$type": "ApplyModifier",
               "modifierName": "Phantom_Skk_CreateGadget_02_2"
             }
           ],
+          "onThinkIntervalIsFixedUpdate": true,
+          "thinkInterval": 1.5,
           "__unk_Q3323398612": 0
         },
         "Phantom_Skk_CreateGadget_02_2": {
-          "thinkInterval": 0.2,
           "duration": 0.38,
+          "elementDurability": 100,
+          "modifierName": "",
           "onAdded": [
             {
               "$type": "SetGlobalValueV2",
-              "minValue": 0,
               "key": "GV_CreateGadget_02_2",
               "maxValue": 0,
+              "minValue": 0,
               "value": 0
             }
           ],
-          "elementDurability": 100,
-          "modifierName": "",
-          "onThinkIntervalIsFixedUpdate": true,
           "onThinkInterval": [
             {
               "$type": "ApplyModifier",
@@ -715,97 +775,125 @@
               "predicates": [
                 {
                   "$type": "ByTargetGlobalValue",
-                  "value": 0,
                   "compareType": "NoneOrEqual",
                   "key": "GV_CreateGadget_02_2",
-                  "target": "Self"
+                  "target": "Self",
+                  "value": 0
                 }
               ]
             },
             {
               "$type": "CreateGadget",
-              "gadgetID": 73054008,
               "born": {
                 "$type": "ConfigBornByGlobalValue",
-                "positionKey": "Needle_CreateGadget_Pos_2",
                 "directionKey": "",
+                "positionKey": "Needle_CreateGadget_Pos_2",
                 "useRotation": true
               },
+              "gadgetID": 73054008,
               "predicates": [
                 {
                   "$type": "ByTargetGlobalValue",
-                  "value": 0,
                   "compareType": "NoneOrEqual",
                   "key": "GV_CreateGadget_02_2",
-                  "target": "Self"
+                  "target": "Self",
+                  "value": 0
                 }
               ]
             },
             {
               "$type": "SetGlobalValueV2",
-              "minValue": 0,
               "key": "GV_CreateGadget_02_2",
               "maxValue": 0,
+              "minValue": 0,
               "value": 1
             }
           ],
+          "onThinkIntervalIsFixedUpdate": true,
+          "thinkInterval": 0.2,
           "__unk_Q3323398612": 0
         },
         "Phantom_Skk_CreateGadget_02_3": {
-          "thinkInterval": 0.2,
           "duration": 0.38,
+          "elementDurability": 100,
+          "modifierName": "",
           "onAdded": [
             {
               "$type": "SetGlobalValueV2",
-              "minValue": 0,
               "key": "GV_CreateGadget_02_3",
               "maxValue": 0,
+              "minValue": 0,
               "value": 0
             }
           ],
-          "elementDurability": 100,
-          "modifierName": "",
-          "onThinkIntervalIsFixedUpdate": true,
           "onThinkInterval": [
             {
               "$type": "CreateGadget",
-              "gadgetID": 73054008,
-              "campID": 4001,
-              "campTargetType": "Enemy",
               "born": {
                 "$type": "ConfigBornByGlobalValue",
-                "positionKey": "Needle_CreateGadget_Pos_3",
                 "directionKey": "",
+                "positionKey": "Needle_CreateGadget_Pos_3",
                 "useRotation": true
               },
+              "campID": 4001,
+              "campTargetType": "Enemy",
+              "gadgetID": 73054008,
               "predicates": [
                 {
                   "$type": "ByTargetGlobalValue",
-                  "value": 0,
                   "compareType": "NoneOrEqual",
                   "key": "GV_CreateGadget_02_3",
-                  "target": "Self"
+                  "target": "Self",
+                  "value": 0
                 }
               ]
             },
             {
               "$type": "SetGlobalValueV2",
-              "minValue": 0,
               "key": "GV_CreateGadget_02_3",
               "maxValue": 0,
+              "minValue": 0,
               "value": 1
             }
           ],
+          "onThinkIntervalIsFixedUpdate": true,
+          "thinkInterval": 0.2,
           "__unk_Q3323398612": 0
         },
         "Monster_Ptahur_Phantom_CreateGadget_State_03": {
+          "elementDurability": 100,
+          "modifierMixins": [
+            {
+              "$type": "AttachToAnimatorStateIDMixin",
+              "modifierName": "UNIQUE_CreateGadget_handler_03",
+              "stateIDs": [
+                "VertexAttack_Skk_BS",
+                "VertexAttack01_Skk_Wait"
+              ],
+              "__unk_Q2081332355": ""
+            },
+            {
+              "$type": "AttachModifierToGlobalValueMixin",
+              "globalValueKey": "GV_VertexCrystal",
+              "modifierNameSteps": [
+                "Empty",
+                "BreakTrigger"
+              ],
+              "valueSteps": [
+                -0.5,
+                11.5,
+                20.5
+              ]
+            }
+          ],
+          "modifierName": "",
           "onAdded": [
             {
               "$type": "SetAISkillCDAvailableNow",
-              "BKAONOKDMLG": [
+              "doOffStage": true,
+              "skillIDs": [
                 2023
-              ],
-              "doOffStage": true
+              ]
             },
             {
               "$type": "ApplyModifier",
@@ -813,9 +901,9 @@
             },
             {
               "$type": "SetGlobalValueV2",
-              "minValue": 0,
               "key": "GV_VertexCrystal",
               "maxValue": 0,
+              "minValue": 0,
               "value": 0
             },
             {
@@ -839,54 +927,13 @@
               "modifierName": "Phantom_Skk_CreateGadget_03_5"
             }
           ],
-          "elementDurability": 100,
-          "modifierMixins": [
-            {
-              "$type": "AttachToAnimatorStateIDMixin",
-              "__unk_Q2081332355": "",
-              "stateIDs": [
-                "VertexAttack_Skk_BS",
-                "VertexAttack01_Skk_Wait"
-              ],
-              "modifierName": "UNIQUE_CreateGadget_handler_03"
-            },
-            {
-              "$type": "AttachModifierToGlobalValueMixin",
-              "modifierNameSteps": [
-                "Empty",
-                "BreakTrigger"
-              ],
-              "globalValueKey": "GV_VertexCrystal",
-              "valueSteps": [
-                -0.5,
-                11.5,
-                20.5
-              ]
-            }
-          ],
-          "modifierName": "",
           "__unk_Q3323398612": 0
         },
         "UNIQUE_CreateGadget_handler_03": {
           "duration": 24.5,
-          "onRemoved": [
-            {
-              "$type": "SetAnimatorTrigger",
-              "triggerID": "VertexRecover"
-            },
-            {
-              "$type": "SetGlobalValueV2",
-              "minValue": 0,
-              "key": "GV_VertexCrystal",
-              "maxValue": 0,
-              "value": 0
-            },
-            {
-              "$type": "RemoveModifier",
-              "modifierName": "Monster_limbo_list_02",
-              "doOffStage": true
-            }
-          ],
+          "elementDurability": 100,
+          "isUnique": true,
+          "modifierName": "",
           "onAdded": [
             {
               "$type": "ApplyModifier",
@@ -906,132 +953,145 @@
               }
             }
           ],
+          "onRemoved": [
+            {
+              "$type": "SetAnimatorTrigger",
+              "triggerID": "VertexRecover"
+            },
+            {
+              "$type": "SetGlobalValueV2",
+              "key": "GV_VertexCrystal",
+              "maxValue": 0,
+              "minValue": 0,
+              "value": 0
+            },
+            {
+              "$type": "RemoveModifier",
+              "doOffStage": true,
+              "modifierName": "Monster_limbo_list_02"
+            }
+          ],
           "stacking": "Unique",
-          "elementDurability": 100,
-          "modifierName": "",
-          "isUnique": true,
           "__unk_Q3323398612": 0
         },
         "Wait_For_CreateGadget_03_1": {
-          "thinkInterval": 1.5,
           "duration": 1.8,
           "elementDurability": 100,
           "modifierName": "",
-          "onThinkIntervalIsFixedUpdate": true,
           "onThinkInterval": [
             {
               "$type": "DoBlinkByGlobalPos",
-              "positionKey": "_Phantom_Skk_InitialPos_",
-              "directionKey": ""
+              "directionKey": "",
+              "positionKey": "_Phantom_Skk_InitialPos_"
             },
             {
               "$type": "TurnDirectionToPos",
+              "target": "SelfAttackTarget",
               "toPos": {
                 "$type": "ConfigBornByTarget"
-              },
-              "target": "SelfAttackTarget"
+              }
             },
             {
               "$type": "SetGlobalPos",
-              "setTarget": false,
+              "born": {
+                "$type": "GGFLLMBKNFC",
+                "offset": {
+                  "z": 9,
+                  "y": 3.5
+                }
+              },
               "key": "Needle_CreateGadget_Pos_1",
-              "born": {
-                "$type": "CPOBHCODBBO",
-                "offset": {
-                  "z": 9,
-                  "y": 3.5
-                }
-              },
+              "setTarget": false,
               "target": "SelfAttackTarget"
             },
             {
               "$type": "SetGlobalPos",
-              "setTarget": false,
+              "born": {
+                "$type": "GGFLLMBKNFC",
+                "offset": {
+                  "z": 9,
+                  "y": 4,
+                  "x": 3.5
+                }
+              },
               "key": "Needle_CreateGadget_Pos_2",
-              "born": {
-                "$type": "CPOBHCODBBO",
-                "offset": {
-                  "x": 3.5,
-                  "z": 9,
-                  "y": 4
-                }
-              },
+              "setTarget": false,
               "target": "SelfAttackTarget"
             },
             {
               "$type": "SetGlobalPos",
-              "setTarget": false,
+              "born": {
+                "$type": "GGFLLMBKNFC",
+                "offset": {
+                  "z": 9,
+                  "y": 3.5,
+                  "x": 7
+                }
+              },
               "key": "Needle_CreateGadget_Pos_3",
-              "born": {
-                "$type": "CPOBHCODBBO",
-                "offset": {
-                  "x": 7,
-                  "z": 9,
-                  "y": 3.5
-                }
-              },
+              "setTarget": false,
               "target": "SelfAttackTarget"
             },
             {
               "$type": "SetGlobalPos",
-              "setTarget": false,
+              "born": {
+                "$type": "GGFLLMBKNFC",
+                "offset": {
+                  "z": 9,
+                  "y": 4,
+                  "x": 10.5
+                }
+              },
               "key": "Needle_CreateGadget_Pos_4",
-              "born": {
-                "$type": "CPOBHCODBBO",
-                "offset": {
-                  "x": 10.5,
-                  "z": 9,
-                  "y": 4
-                }
-              },
+              "setTarget": false,
               "target": "SelfAttackTarget"
             },
             {
               "$type": "SetGlobalPos",
-              "setTarget": false,
-              "key": "Needle_CreateGadget_Pos_5",
               "born": {
-                "$type": "CPOBHCODBBO",
+                "$type": "GGFLLMBKNFC",
                 "offset": {
-                  "x": 14,
                   "z": 9,
-                  "y": 3.5
+                  "y": 3.5,
+                  "x": 14
                 }
               },
+              "key": "Needle_CreateGadget_Pos_5",
+              "setTarget": false,
               "target": "SelfAttackTarget"
             },
             {
               "$type": "CreateGadget",
-              "gadgetID": 73054008,
               "born": {
                 "$type": "ConfigBornByGlobalValue",
-                "positionKey": "Needle_CreateGadget_Pos_1",
                 "directionKey": "",
+                "positionKey": "Needle_CreateGadget_Pos_1",
                 "useRotation": true
-              }
+              },
+              "gadgetID": 73054008
             },
             {
               "$type": "ApplyModifier",
               "modifierName": "Phantom_Skk_CreateGadget_03_2"
             }
           ],
+          "onThinkIntervalIsFixedUpdate": true,
+          "thinkInterval": 1.5,
           "__unk_Q3323398612": 0
         },
         "Phantom_Skk_CreateGadget_03_2": {
-          "thinkInterval": 0.15,
           "duration": 0.28,
+          "elementDurability": 100,
+          "modifierName": "",
           "onAdded": [
             {
               "$type": "SetGlobalValueV2",
-              "minValue": 0,
               "key": "GV_CreateGadget_03_2",
               "maxValue": 0,
+              "minValue": 0,
               "value": 0
             }
           ],
-          "elementDurability": 100,
-          "modifierName": "",
-          "onThinkIntervalIsFixedUpdate": true,
           "onThinkInterval": [
             {
               "$type": "ApplyModifier",
@@ -1039,57 +1099,57 @@
               "predicates": [
                 {
                   "$type": "ByTargetGlobalValue",
-                  "value": 0,
                   "compareType": "NoneOrEqual",
                   "key": "GV_CreateGadget_03_2",
-                  "target": "Self"
+                  "target": "Self",
+                  "value": 0
                 }
               ]
             },
             {
               "$type": "CreateGadget",
-              "gadgetID": 73054008,
               "born": {
                 "$type": "ConfigBornByGlobalValue",
-                "positionKey": "Needle_CreateGadget_Pos_2",
                 "directionKey": "",
+                "positionKey": "Needle_CreateGadget_Pos_2",
                 "useRotation": true
               },
+              "gadgetID": 73054008,
               "predicates": [
                 {
                   "$type": "ByTargetGlobalValue",
-                  "value": 0,
                   "compareType": "NoneOrEqual",
                   "key": "GV_CreateGadget_03_2",
-                  "target": "Self"
+                  "target": "Self",
+                  "value": 0
                 }
               ]
             },
             {
               "$type": "SetGlobalValueV2",
-              "minValue": 0,
               "key": "GV_CreateGadget_03_2",
               "maxValue": 0,
+              "minValue": 0,
               "value": 1
             }
           ],
+          "onThinkIntervalIsFixedUpdate": true,
+          "thinkInterval": 0.15,
           "__unk_Q3323398612": 0
         },
         "Phantom_Skk_CreateGadget_03_3": {
-          "thinkInterval": 0.15,
           "duration": 0.28,
+          "elementDurability": 100,
+          "modifierName": "",
           "onAdded": [
             {
               "$type": "SetGlobalValueV2",
-              "minValue": 0,
               "key": "GV_CreateGadget_03_3",
               "maxValue": 0,
+              "minValue": 0,
               "value": 0
             }
           ],
-          "elementDurability": 100,
-          "modifierName": "",
-          "onThinkIntervalIsFixedUpdate": true,
           "onThinkInterval": [
             {
               "$type": "ApplyModifier",
@@ -1097,59 +1157,59 @@
               "predicates": [
                 {
                   "$type": "ByTargetGlobalValue",
-                  "value": 0,
                   "compareType": "NoneOrEqual",
                   "key": "GV_CreateGadget_03_3",
-                  "target": "Self"
+                  "target": "Self",
+                  "value": 0
                 }
               ]
             },
             {
               "$type": "CreateGadget",
-              "gadgetID": 73054008,
-              "campID": 4001,
-              "campTargetType": "Enemy",
               "born": {
                 "$type": "ConfigBornByGlobalValue",
-                "positionKey": "Needle_CreateGadget_Pos_3",
                 "directionKey": "",
+                "positionKey": "Needle_CreateGadget_Pos_3",
                 "useRotation": true
               },
+              "campID": 4001,
+              "campTargetType": "Enemy",
+              "gadgetID": 73054008,
               "predicates": [
                 {
                   "$type": "ByTargetGlobalValue",
-                  "value": 0,
                   "compareType": "NoneOrEqual",
                   "key": "GV_CreateGadget_03_3",
-                  "target": "Self"
+                  "target": "Self",
+                  "value": 0
                 }
               ]
             },
             {
               "$type": "SetGlobalValueV2",
-              "minValue": 0,
               "key": "GV_CreateGadget_03_3",
               "maxValue": 0,
+              "minValue": 0,
               "value": 1
             }
           ],
+          "onThinkIntervalIsFixedUpdate": true,
+          "thinkInterval": 0.15,
           "__unk_Q3323398612": 0
         },
         "Phantom_Skk_CreateGadget_03_4": {
-          "thinkInterval": 0.15,
           "duration": 0.28,
+          "elementDurability": 100,
+          "modifierName": "",
           "onAdded": [
             {
               "$type": "SetGlobalValueV2",
-              "minValue": 0,
               "key": "GV_CreateGadget_03_4",
               "maxValue": 0,
+              "minValue": 0,
               "value": 0
             }
           ],
-          "elementDurability": 100,
-          "modifierName": "",
-          "onThinkIntervalIsFixedUpdate": true,
           "onThinkInterval": [
             {
               "$type": "ApplyModifier",
@@ -1157,176 +1217,119 @@
               "predicates": [
                 {
                   "$type": "ByTargetGlobalValue",
-                  "value": 0,
                   "compareType": "NoneOrEqual",
                   "key": "GV_CreateGadget_03_4",
-                  "target": "Self"
+                  "target": "Self",
+                  "value": 0
                 }
               ]
             },
             {
               "$type": "CreateGadget",
-              "gadgetID": 73054008,
               "born": {
                 "$type": "ConfigBornByGlobalValue",
-                "positionKey": "Needle_CreateGadget_Pos_4",
                 "directionKey": "",
+                "positionKey": "Needle_CreateGadget_Pos_4",
                 "useRotation": true
               },
+              "gadgetID": 73054008,
               "predicates": [
                 {
                   "$type": "ByTargetGlobalValue",
-                  "value": 0,
                   "compareType": "NoneOrEqual",
                   "key": "GV_CreateGadget_03_4",
-                  "target": "Self"
+                  "target": "Self",
+                  "value": 0
                 }
               ]
             },
             {
               "$type": "SetGlobalValueV2",
-              "minValue": 0,
               "key": "GV_CreateGadget_03_4",
               "maxValue": 0,
+              "minValue": 0,
               "value": 1
             }
           ],
+          "onThinkIntervalIsFixedUpdate": true,
+          "thinkInterval": 0.15,
           "__unk_Q3323398612": 0
         },
         "Phantom_Skk_CreateGadget_03_5": {
-          "thinkInterval": 5,
           "duration": 5.6,
           "elementDurability": 100,
           "modifierName": "",
-          "onThinkIntervalIsFixedUpdate": true,
           "onThinkInterval": [
             {
               "$type": "CreateGadget",
-              "gadgetID": 42909103,
               "born": {
                 "$type": "ConfigBornBySelf",
-                "useRotation": true,
                 "offset": {
                   "z": 4.5
-                }
-              }
+                },
+                "useRotation": true
+              },
+              "gadgetID": 42909103
             },
             {
               "$type": "ApplyModifier",
               "modifierName": "Phantom_Skk_CreateGadget_01_2"
             }
           ],
+          "onThinkIntervalIsFixedUpdate": true,
+          "thinkInterval": 5,
           "__unk_Q3323398612": 0
         }
       },
-      "abilityMixins": [
-        {
-          "$type": "AttachModifierToHPPercentMixin",
-          "valueSteps": [
-            0.75,
-            0.5,
-            0.25
-          ],
-          "modifierNameSteps": [
-            "Empty",
-            "Monster_Ptahur_Phantom_CreateGadget_State_01",
-            "Monster_Ptahur_Phantom_CreateGadget_State_02",
-            "Monster_Ptahur_Phantom_CreateGadget_State_03"
-          ]
-        },
-        {
-          "$type": "AttachToAIAlertnessMixin",
-          "MKDABMCENDB": [
-            2,
-            3
-          ],
-          "modifierName": "Monster_Phantom_Skk_GoBattle"
-        },
-        {
-          "$type": "AttachToMultiNormalizedTimeMixin",
-          "modifierName": "Modifier_GV_Hittable",
-          "__unk_Q2081332355": "",
-          "normalizedStateIDList": [
-            {
-              "stateID": "VertexAttack_Skk_BS",
-              "normalizeStart": 0.8
-            },
-            {
-              "stateID": "VertexAttack01_Skk_Wait",
-              "normalizeEnd": 99
-            },
-            {
-              "stateID": "PhaseStrike_Skk",
-              "normalizeEnd": 0.3
-            }
-          ]
-        },
-        {
-          "$type": "AttachToMultiNormalizedTimeMixin",
-          "modifierName": "Modifier_GV_Remove_CanSkill",
-          "__unk_Q2081332355": "",
-          "normalizedStateIDList": [
-            {
-              "stateID": "Break_Skk_BS"
-            },
-            {
-              "stateID": "Break_Skk_Loop",
-              "normalizeEnd": 99
-            },
-            {
-              "stateID": "Break_Skk_AS",
-              "normalizeEnd": 0.8
-            }
-          ]
-        }
-      ],
-      "abilityName": "Monster_Ptahur_Phantom_CreateGadget_Skk",
       "onAdded": [
         {
           "$type": "SetGlobalPos",
-          "key": "_Phantom_Skk_InitialPos_",
           "born": {
             "$type": "ConfigBornByTarget",
-            "onGround": true,
             "offset": {
               "z": 4
-            }
-          }
+            },
+            "onGround": true
+          },
+          "key": "_Phantom_Skk_InitialPos_"
         },
         {
           "$type": "SetGlobalValueV2",
-          "minValue": 0,
           "key": "GV_VertexCrystal",
           "maxValue": 0,
+          "minValue": 0,
           "value": 0
         },
         {
           "$type": "SetGlobalValue",
           "key": "_TestCrystal",
-          "minValue": 0,
           "maxValue": 0,
+          "minValue": 0,
           "value": 0
         },
         {
           "$type": "ApplyModifier",
-          "modifierName": "Monster_limbo_list_51",
-          "doOffStage": true
+          "doOffStage": true,
+          "modifierName": "Monster_limbo_list_51"
         },
         {
           "$type": "SetGlobalValue",
+          "doOffStage": true,
           "key": "_CanSkill",
-          "minValue": 0,
           "maxValue": 0,
-          "value": 1,
-          "doOffStage": true
+          "minValue": 0,
+          "value": 1
         }
       ]
     }
   },
   {
     "Default": {
+      "abilityName": "SceneObj_Area_Common_Property_Ani_Prop_SkirkTrainCrystal_02",
       "modifiers": {
         "Handler": {
+          "elementDurability": 100,
+          "modifierName": "",
           "onAdded": [
             {
               "$type": "HideUIBillBoard"
@@ -1337,15 +1340,15 @@
             },
             {
               "$type": "AttachEffect",
-              "ILLLPEOODKP": "",
+              "effectPattern": "Eff_Monster_Ptahur_Phantom_Skk_Gadget_SkirkTrainCrystal_SoloBorn",
               "scale": 1,
-              "effectPattern": "Eff_Monster_Ptahur_Phantom_Skk_Gadget_SkirkTrainCrystal_SoloBorn"
+              "JHAGIJGAKMK": ""
             },
             {
               "$type": "AttachEffect",
-              "ILLLPEOODKP": "",
+              "effectPattern": "Eff_Monster_Ptahur_Phantom_Skk_Gadget_SkirkTrainCrystal_SoloBorn_Decal",
               "scale": 1,
-              "effectPattern": "Eff_Monster_Ptahur_Phantom_Skk_Gadget_SkirkTrainCrystal_SoloBorn_Decal"
+              "JHAGIJGAKMK": ""
             }
           ],
           "onKill": [
@@ -1353,11 +1356,9 @@
               "$type": "FireEffect",
               "effectPattern": "Eff_Monster_Ptahur_Phantom_Skk_Gadget_SkirkTrainCrystal_SoloBreak",
               "scale": 1,
-              "ILLLPEOODKP": ""
+              "JHAGIJGAKMK": ""
             }
           ],
-          "elementDurability": 100,
-          "modifierName": "",
           "__unk_Q3323398612": 0
         },
         "WhiteShield": {
@@ -1380,30 +1381,30 @@
             }
           ],
           "modifierName": "",
-          "__unk_Q3323398612": 0,
           "onBeingHit": [
             {
               "$type": "Predicated",
-              "successActions": [
-                {
-                  "$type": "AddElementDurability",
-                  "value": -150,
-                  "useLimitRange": true,
-                  "minValue": 0,
-                  "maxValue": 100,
-                  "modifierName": "WhiteShield"
-                }
-              ],
               "failActions": [
                 {
                   "$type": "AddElementDurability",
-                  "value": -50,
-                  "useLimitRange": true,
-                  "minValue": 0,
                   "maxValue": 100,
-                  "modifierName": "WhiteShield"
+                  "minValue": 0,
+                  "modifierName": "WhiteShield",
+                  "useLimitRange": true,
+                  "value": -50
                 }
               ],
+              "successActions": [
+                {
+                  "$type": "AddElementDurability",
+                  "maxValue": 100,
+                  "minValue": 0,
+                  "modifierName": "WhiteShield",
+                  "useLimitRange": true,
+                  "value": -150
+                }
+              ],
+              "target": "Other",
               "targetPredicates": [
                 {
                   "$type": "ByHasFeatureTag",
@@ -1417,28 +1418,27 @@
                     "ExtraAttack"
                   ]
                 }
-              ],
-              "target": "Other"
+              ]
             }
-          ]
+          ],
+          "__unk_Q3323398612": 0
         },
         "SkirkTrainCrystal_Broken": {
           "duration": 1,
+          "elementDurability": 100,
+          "modifierName": "",
           "onAdded": [
             {
               "$type": "AddGlobalValueV2",
-              "minValue": 0,
               "key": "GV_CrystalCount",
-              "value": 1,
-              "maxValue": 0
+              "maxValue": 0,
+              "minValue": 0,
+              "value": 1
             }
           ],
-          "elementDurability": 100,
-          "modifierName": "",
           "__unk_Q3323398612": 0
         }
       },
-      "abilityName": "SceneObj_Area_Common_Property_Ani_Prop_SkirkTrainCrystal_02",
       "onAdded": [
         {
           "$type": "AttachModifier",
@@ -1455,15 +1455,16 @@
   },
   {
     "Default": {
+      "abilityName": "Monster_Ptahur_Devourer_Phantom_BladeSlash03_Skk_CastBullet",
       "onAbilityStart": [
         {
           "$type": "TriggerBullet",
           "born": {
             "$type": "ConfigBornBySelf",
-            "useRotation": true,
             "direction": {
               "$type": "ConfigDirectionByEntity"
-            }
+            },
+            "useRotation": true
           },
           "bulletID": 42909101
         },
@@ -1471,13 +1472,13 @@
           "$type": "TriggerBullet",
           "born": {
             "$type": "ConfigBornBySelf",
-            "useRotation": true,
             "direction": {
               "$type": "ConfigDirectionByEntity",
               "angleOffset": {
                 "y": 32
               }
-            }
+            },
+            "useRotation": true
           },
           "bulletID": 42909101
         },
@@ -1485,106 +1486,105 @@
           "$type": "TriggerBullet",
           "born": {
             "$type": "ConfigBornBySelf",
-            "useRotation": true,
             "direction": {
               "$type": "ConfigDirectionByEntity",
               "angleOffset": {
                 "y": -32
               }
-            }
+            },
+            "useRotation": true
           },
           "bulletID": 42909101
         }
-      ],
-      "abilityName": "Monster_Ptahur_Devourer_Phantom_BladeSlash03_Skk_CastBullet"
+      ]
     }
   },
   {
     "Default": {
+      "abilityName": "Monster_Ptahur_Devourer_Phantom_Attack02_Skk_Bullet",
       "onAbilityStart": [
         {
           "$type": "TriggerBullet",
           "born": {
             "$type": "ConfigBornBySelf",
-            "useRotation": true,
-            "offset": {
-              "x": -0.75,
-              "z": 3,
-              "y": 0.5
-            },
             "direction": {
               "$type": "ConfigDirectionByAttackTarget",
-              "MJDDIMNCNAL": "",
               "maxAngle": 20,
-              "useCorrectDir": true,
-              "maxAngleType": "Vertical"
-            }
+              "maxAngleType": "Vertical",
+              "startPoint": "",
+              "useCorrectDir": true
+            },
+            "offset": {
+              "z": 3,
+              "y": 0.5,
+              "x": -0.75
+            },
+            "useRotation": true
           },
           "bulletID": 42909102
         }
-      ],
-      "abilityName": "Monster_Ptahur_Devourer_Phantom_Attack02_Skk_Bullet"
+      ]
     }
   },
   {
     "Default": {
+      "abilityName": "Monster_Ptahur_Phantom_BladeSlash03_Skk_Bullet",
       "modifiers": {
         "Monster_BladeSlash03_Skk_HitSeq": {
-          "thinkInterval": 0.2,
           "duration": 1,
+          "elementDurability": 100,
+          "modifierName": "",
           "onAdded": [
             {
               "$type": "AttachEffect",
-              "ILLLPEOODKP": "",
+              "effectPattern": "Eff_Monster_Ptahur_Phantom_BladeSlash03_Skk_Bullet",
               "scale": 1,
-              "effectPattern": "Eff_Monster_Ptahur_Phantom_BladeSlash03_Skk_Bullet"
+              "JHAGIJGAKMK": ""
             }
           ],
-          "elementDurability": 100,
-          "modifierName": "",
           "onThinkInterval": [
             {
               "$type": "TriggerAttackEvent",
-              "targetType": "Enemy",
               "attackEvent": {
                 "attackInfo": {
                   "attackProperty": {
-                    "damagePercentageRatio": 0,
-                    "strikeType": "Pierce",
-                    "enBreak": 200,
                     "damagePercentage": 0.6,
+                    "damagePercentageRatio": 0,
                     "elementDurability": 30,
+                    "enBreak": 200,
+                    "strikeType": "Pierce",
                     "__exp_arkhe": 0
                   },
-                  "hitPattern": {
-                    "__unk_Q3893899620": "",
-                    "retreatType": "ByHitDirection",
-                    "onHitEffectName": "default",
-                    "hitHaltTimeScale": 0.01,
-                    "hitImpulseType": "LV3"
-                  },
+                  "attackTag": "",
                   "attenuationGroup": "Panther_Sacred_Attack03",
                   "attenuationTag": "Panther_Sacred_Attack03",
-                  "attackTag": "",
-                  "canBeModifiedBy": "OriginOwner"
+                  "canBeModifiedBy": "OriginOwner",
+                  "hitPattern": {
+                    "hitHaltTimeScale": 0.01,
+                    "hitImpulseType": "LV3",
+                    "onHitEffectName": "default",
+                    "retreatType": "ByHitDirection",
+                    "__unk_Q3893899620": ""
+                  }
                 },
                 "attackPattern": {
                   "$type": "ConfigAttackCircle",
-                  "radius": 2,
-                  "height": 2,
-                  "triggerType": "TriggerNoRepeat",
                   "born": {
                     "$type": "ConfigBornBySelf",
                     "useRotation": true
-                  }
+                  },
+                  "height": 2,
+                  "radius": 2,
+                  "triggerType": "TriggerNoRepeat"
                 }
-              }
+              },
+              "targetType": "Enemy"
             }
           ],
+          "thinkInterval": 0.2,
           "__unk_Q3323398612": 0
         }
       },
-      "abilityName": "Monster_Ptahur_Phantom_BladeSlash03_Skk_Bullet",
       "onAdded": [
         {
           "$type": "ApplyModifier",
@@ -1595,18 +1595,19 @@
   },
   {
     "Default": {
+      "abilityName": "Monster_Ptahur_Phantom_Attack02_Skk_BladeBullet",
       "modifiers": {
         "GrassBlade": {
+          "elementDurability": 100,
+          "modifierName": "",
           "onAdded": [
             {
               "$type": "AttachEffect",
-              "ILLLPEOODKP": "",
+              "effectPattern": "Eff_Monster_Ptahur_Phantom_PhaseStrike_Skk_Bullet",
               "scale": 1,
-              "effectPattern": "Eff_Monster_Ptahur_Phantom_PhaseStrike_Skk_Bullet"
+              "JHAGIJGAKMK": ""
             }
           ],
-          "elementDurability": 100,
-          "modifierName": "",
           "__unk_Q3323398612": 0
         }
       },
@@ -1616,53 +1617,54 @@
           "successActions": [
             {
               "$type": "TriggerAttackEvent",
-              "targetType": "Enemy",
               "attackEvent": {
                 "attackInfo": {
                   "attackProperty": {
-                    "elementType": "Electric",
-                    "damagePercentageRatio": 0,
-                    "strikeType": "Pierce",
-                    "enBreak": 200,
                     "damagePercentage": 0.8,
+                    "damagePercentageRatio": 0,
                     "elementDurability": 30,
+                    "elementType": "Electric",
+                    "enBreak": 200,
+                    "strikeType": "Pierce",
                     "__exp_arkhe": 0
                   },
-                  "cameraShake": {
-                    "extension": {
-                      "rangeAttenuation": 0,
-                      "baseOnCamera": true
-                    },
-                    "shakeDir": {
-                      "z": 2
-                    },
-                    "shakeTime": 2,
-                    "shakeType": "CustomVector",
-                    "shakeDistance": 35,
-                    "MNKFEFOKFKP": "",
-                    "shakeRange": 1
-                  },
-                  "hitPattern": {
-                    "__unk_Q3893899620": "",
-                    "onHitEffectName": "default",
-                    "hitImpulseType": "LV5"
-                  },
+                  "attackTag": "",
                   "attenuationGroup": "default",
                   "attenuationTag": "",
-                  "attackTag": "",
-                  "canBeModifiedBy": "OriginOwner"
+                  "cameraShake": {
+                    "extension": {
+                      "baseOnCamera": true,
+                      "rangeAttenuation": 0
+                    },
+                    "shakeDir": {
+                      "x": 2
+                    },
+                    "shakeDistance": 35,
+                    "shakeRange": 1,
+                    "shakeTime": 2,
+                    "shakeType": "CustomVector",
+                    "OFGBHFBAEKK": ""
+                  },
+                  "canBeModifiedBy": "OriginOwner",
+                  "hitPattern": {
+                    "hitImpulseType": "LV5",
+                    "onHitEffectName": "default",
+                    "__unk_Q3893899620": ""
+                  }
                 },
                 "attackPattern": {
                   "$type": "ConfigAttackSphere",
-                  "radius": 1,
-                  "triggerType": "TriggerNoRepeat",
                   "born": {
                     "$type": "ConfigBornByCollisionPoint"
-                  }
+                  },
+                  "radius": 1,
+                  "triggerType": "TriggerNoRepeat"
                 }
-              }
+              },
+              "targetType": "Enemy"
             }
           ],
+          "target": "Target",
           "targetPredicates": [
             {
               "$type": "ByEntityTypes",
@@ -1672,11 +1674,9 @@
                 "Partner"
               ]
             }
-          ],
-          "target": "Target"
+          ]
         }
       ],
-      "abilityName": "Monster_Ptahur_Phantom_Attack02_Skk_BladeBullet",
       "onAdded": [
         {
           "$type": "ApplyModifier",
@@ -1687,18 +1687,19 @@
   },
   {
     "Default": {
+      "abilityName": "Ptahur_Phantom_Panther_Attack_Skk_BladeBullet",
       "modifiers": {
         "PantherSkkBlade": {
+          "elementDurability": 100,
+          "modifierName": "",
           "onAdded": [
             {
               "$type": "AttachEffect",
-              "ILLLPEOODKP": "",
+              "effectPattern": "Eff_Monster_Ptahur_Phantom_PhaseStrike_Skk_Bullet",
               "scale": 1,
-              "effectPattern": "Eff_Monster_Ptahur_Phantom_PhaseStrike_Skk_Bullet"
+              "JHAGIJGAKMK": ""
             }
           ],
-          "elementDurability": 100,
-          "modifierName": "",
           "__unk_Q3323398612": 0
         }
       },
@@ -1708,53 +1709,54 @@
           "successActions": [
             {
               "$type": "TriggerAttackEvent",
-              "targetType": "Enemy",
               "attackEvent": {
                 "attackInfo": {
                   "attackProperty": {
-                    "elementType": "Electric",
-                    "damagePercentageRatio": 0,
-                    "strikeType": "Pierce",
-                    "enBreak": 200,
                     "damagePercentage": 1,
+                    "damagePercentageRatio": 0,
                     "elementDurability": 30,
+                    "elementType": "Electric",
+                    "enBreak": 200,
+                    "strikeType": "Pierce",
                     "__exp_arkhe": 0
                   },
-                  "cameraShake": {
-                    "extension": {
-                      "rangeAttenuation": 0,
-                      "baseOnCamera": true
-                    },
-                    "shakeDir": {
-                      "z": 2
-                    },
-                    "shakeTime": 2,
-                    "shakeType": "CustomVector",
-                    "shakeDistance": 35,
-                    "MNKFEFOKFKP": "",
-                    "shakeRange": 1
-                  },
-                  "hitPattern": {
-                    "__unk_Q3893899620": "",
-                    "onHitEffectName": "default",
-                    "hitImpulseType": "LV5"
-                  },
+                  "attackTag": "",
                   "attenuationGroup": "default",
                   "attenuationTag": "",
-                  "attackTag": "",
-                  "canBeModifiedBy": "OriginOwner"
+                  "cameraShake": {
+                    "extension": {
+                      "baseOnCamera": true,
+                      "rangeAttenuation": 0
+                    },
+                    "shakeDir": {
+                      "x": 2
+                    },
+                    "shakeDistance": 35,
+                    "shakeRange": 1,
+                    "shakeTime": 2,
+                    "shakeType": "CustomVector",
+                    "OFGBHFBAEKK": ""
+                  },
+                  "canBeModifiedBy": "OriginOwner",
+                  "hitPattern": {
+                    "hitImpulseType": "LV5",
+                    "onHitEffectName": "default",
+                    "__unk_Q3893899620": ""
+                  }
                 },
                 "attackPattern": {
                   "$type": "ConfigAttackSphere",
-                  "radius": 1,
-                  "triggerType": "TriggerNoRepeat",
                   "born": {
                     "$type": "ConfigBornByCollisionPoint"
-                  }
+                  },
+                  "radius": 1,
+                  "triggerType": "TriggerNoRepeat"
                 }
-              }
+              },
+              "targetType": "Enemy"
             }
           ],
+          "target": "Target",
           "targetPredicates": [
             {
               "$type": "ByEntityTypes",
@@ -1764,11 +1766,9 @@
                 "Partner"
               ]
             }
-          ],
-          "target": "Target"
+          ]
         }
       ],
-      "abilityName": "Ptahur_Phantom_Panther_Attack_Skk_BladeBullet",
       "onAdded": [
         {
           "$type": "ApplyModifier",
@@ -1779,127 +1779,152 @@
   },
   {
     "Default": {
+      "abilityName": "MonsterPtahur_Phantom_Panther_Skk_SacredAttack02_BulletHit",
       "onAbilityStart": [
         {
           "$type": "TriggerBullet",
           "born": {
             "$type": "ConfigBornBySelf",
-            "useRotation": true,
-            "offset": {
-              "x": -0.75,
-              "z": 3,
-              "y": 1
-            },
             "direction": {
               "$type": "ConfigDirectionByAttackTarget",
-              "MJDDIMNCNAL": "",
               "maxAngle": 20,
-              "useCorrectDir": true,
-              "maxAngleType": "Vertical"
-            }
+              "maxAngleType": "Vertical",
+              "startPoint": "",
+              "useCorrectDir": true
+            },
+            "offset": {
+              "z": 3,
+              "y": 1,
+              "x": -0.75
+            },
+            "useRotation": true
           },
           "bulletID": 42909105
         },
         {
           "$type": "TriggerAttackEvent",
-          "targetType": "Enemy",
           "attackEvent": {
             "attackInfo": {
               "attackProperty": {
-                "elementType": "Electric",
-                "damagePercentageRatio": 0,
-                "strikeType": "Default",
-                "enBreak": 200,
                 "damagePercentage": 1,
+                "damagePercentageRatio": 0,
                 "elementDurability": 25,
+                "elementType": "Electric",
+                "enBreak": 200,
+                "strikeType": "Default",
                 "__exp_arkhe": 0
               },
-              "hitPattern": {
-                "__unk_Q3893899620": "",
-                "onHitEffectName": "default",
-                "hitImpulseType": "LV5"
-              },
+              "attackTag": "",
               "attenuationGroup": "default",
               "attenuationTag": "",
-              "attackTag": "",
-              "canBeModifiedBy": "OriginOwner"
+              "canBeModifiedBy": "OriginOwner",
+              "hitPattern": {
+                "hitImpulseType": "LV5",
+                "onHitEffectName": "default",
+                "__unk_Q3893899620": ""
+              }
             },
             "attackPattern": {
               "$type": "ConfigAttackCircle",
-              "radius": 4.5,
-              "height": 2,
-              "triggerType": "TriggerNoRepeat",
               "born": {
                 "$type": "ConfigBornBySelf",
                 "alongGround": true,
-                "onGround": true,
-                "useRotation": true,
                 "offset": {
                   "z": 1.5
-                }
-              }
+                },
+                "onGround": true,
+                "useRotation": true
+              },
+              "height": 2,
+              "radius": 4.5,
+              "triggerType": "TriggerNoRepeat"
             }
-          }
+          },
+          "targetType": "Enemy"
         }
-      ],
-      "abilityName": "MonsterPtahur_Phantom_Panther_Skk_SacredAttack02_BulletHit"
+      ]
     }
   },
   {
     "Default": {
+      "abilityName": "MonsterPtahur_Phantom_Panther_Skk_SacredAttack02_PlayBladeEffect",
       "onAbilityStart": [
         {
           "$type": "FireEffect",
-          "effectPattern": "Eff_Monster_Ptahur_Phantom_Skk_Panther_SacredAttack02_Trail",
-          "scale": 1,
           "born": {
             "$type": "ConfigBornBySelf",
-            "useRotation": true,
             "direction": {
               "$type": "ConfigDirectionByAttackTarget",
-              "MJDDIMNCNAL": "",
               "maxAngle": 20,
-              "useCorrectDir": true,
-              "maxAngleType": "Vertical"
-            }
+              "maxAngleType": "Vertical",
+              "startPoint": "",
+              "useCorrectDir": true
+            },
+            "useRotation": true
           },
-          "ILLLPEOODKP": ""
+          "effectPattern": "Eff_Monster_Ptahur_Phantom_Skk_Panther_SacredAttack02_Trail",
+          "scale": 1,
+          "JHAGIJGAKMK": ""
         }
-      ],
-      "abilityName": "MonsterPtahur_Phantom_Panther_Skk_SacredAttack02_PlayBladeEffect"
+      ]
     }
   },
   {
     "Default": {
+      "abilityMixins": [
+        {
+          "$type": "AttachModifierToGlobalValueMixin",
+          "globalValueKey": "GV_CrystalCount",
+          "modifierNameSteps": [
+            "SummonHandler",
+            "GadgetKillSelf"
+          ],
+          "valueSteps": [
+            -0.5,
+            2.5,
+            3.5
+          ]
+        }
+      ],
+      "abilityName": "GadgetAbility_Ptahur_Phantom_PantherAttack_Skk_Vertex",
       "modifiers": {
         "ShakeCameraDelay": {
           "duration": 0.2,
+          "elementDurability": 100,
+          "modifierName": "",
           "onAdded": [
             {
               "$type": "ActCameraShake",
               "cameraShake": {
                 "extension": {
-                  "rangeAttenuation": 0.12,
-                  "baseCycle": 0.15
+                  "baseCycle": 0.15,
+                  "rangeAttenuation": 0.12
                 },
                 "shakeDir": {
                   "y": -1
                 },
+                "shakeDistance": 15,
+                "shakeRange": 0.6,
                 "shakeTime": 0.1,
                 "shakeType": "CustomVector",
-                "shakeDistance": 15,
-                "MNKFEFOKFKP": "",
-                "shakeRange": 0.6
+                "OFGBHFBAEKK": ""
               }
             }
           ],
-          "elementDurability": 100,
-          "modifierName": "",
           "__unk_Q3323398612": 0
         },
         "SummonHandler": {
-          "thinkInterval": 16,
           "duration": 16.5,
+          "elementDurability": 100,
+          "modifierName": "",
+          "onAdded": [
+            {
+              "$type": "AttachEffect",
+              "effectPattern": "Eff_Monster_Ptahur_Phantom_Skk_Gadget_SkirkTrainCrystal_AbyssOpen",
+              "scale": 1,
+              "JHAGIJGAKMK": ""
+            }
+          ],
           "onRemoved": [
             {
               "$type": "KillGadgetV2",
@@ -1909,10 +1934,10 @@
               "predicates": [
                 {
                   "$type": "ByTargetGlobalValue",
-                  "value": 2.5,
                   "compareType": "LessAndEqual",
                   "key": "GV_CrystalCount",
-                  "target": "Self"
+                  "target": "Self",
+                  "value": 2.5
                 }
               ]
             },
@@ -1921,58 +1946,59 @@
               "modifierName": "GadgetKillSelf"
             }
           ],
-          "onAdded": [
-            {
-              "$type": "AttachEffect",
-              "ILLLPEOODKP": "",
-              "scale": 1,
-              "effectPattern": "Eff_Monster_Ptahur_Phantom_Skk_Gadget_SkirkTrainCrystal_AbyssOpen"
-            }
-          ],
-          "elementDurability": 100,
-          "modifierName": "",
           "onThinkInterval": [
             {
               "$type": "CreateGadget",
-              "gadgetID": 42909104,
-              "ownerIs": "Owner",
               "born": {
                 "$type": "ConfigBornBySelf",
                 "alongGround": true,
                 "useRotation": true
-              }
+              },
+              "gadgetID": 42909104,
+              "ownerIs": "Owner"
             },
             {
               "$type": "FireEffect",
               "effectPattern": "Eff_Monster_Ptahur_Phantom_Skk_Gadget_SkirkTrainCrystal_AbyssBorn",
               "scale": 1,
-              "ILLLPEOODKP": ""
+              "JHAGIJGAKMK": ""
             },
             {
               "$type": "SendEffectTrigger",
-              "parameter": "End",
+              "attachPoint": "",
               "effectPattern": "Eff_Monster_Ptahur_Phantom_Skk_Gadget_SkirkTrainCrystal_AbyssOpen",
-              "attachPoint": ""
+              "parameter": "End"
             }
           ],
+          "thinkInterval": 16,
           "__unk_Q3323398612": 0
         },
         "GadgetKillSelf": {
           "duration": 0.5,
+          "elementDurability": 100,
+          "modifierName": "",
+          "onAdded": [
+            {
+              "$type": "SendEffectTrigger",
+              "attachPoint": "",
+              "effectPattern": "Eff_Monster_Ptahur_Phantom_Skk_Gadget_SkirkTrainCrystal_AbyssOpen",
+              "parameter": "End"
+            }
+          ],
           "onRemoved": [
             {
               "$type": "ApplyModifier",
               "modifierName": "VertexCrystal_Broken",
-              "target": "Owner",
               "predicates": [
                 {
                   "$type": "ByTargetGlobalValue",
-                  "value": 2.5,
                   "compareType": "MoreThan",
                   "key": "GV_CrystalCount",
-                  "target": "Self"
+                  "target": "Self",
+                  "value": 2.5
                 }
-              ]
+              ],
+              "target": "Owner"
             },
             {
               "$type": "KillSelf",
@@ -1981,120 +2007,94 @@
               ]
             }
           ],
-          "onAdded": [
-            {
-              "$type": "SendEffectTrigger",
-              "parameter": "End",
-              "effectPattern": "Eff_Monster_Ptahur_Phantom_Skk_Gadget_SkirkTrainCrystal_AbyssOpen",
-              "attachPoint": ""
-            }
-          ],
-          "elementDurability": 100,
-          "modifierName": "",
           "__unk_Q3323398612": 0
         },
         "VertexCrystal_Broken": {
+          "elementDurability": 100,
+          "modifierName": "",
           "onAdded": [
             {
               "$type": "AddGlobalValueV2",
-              "minValue": 0,
               "key": "GV_VertexCrystal",
-              "value": 6,
-              "maxValue": 0
+              "maxValue": 0,
+              "minValue": 0,
+              "value": 6
             }
           ],
-          "elementDurability": 100,
-          "modifierName": "",
           "__unk_Q3323398612": 0
         }
       },
-      "abilityMixins": [
-        {
-          "$type": "AttachModifierToGlobalValueMixin",
-          "modifierNameSteps": [
-            "SummonHandler",
-            "GadgetKillSelf"
-          ],
-          "globalValueKey": "GV_CrystalCount",
-          "valueSteps": [
-            -0.5,
-            2.5,
-            3.5
-          ]
-        }
-      ],
-      "abilityName": "GadgetAbility_Ptahur_Phantom_PantherAttack_Skk_Vertex",
       "onAdded": [
         {
           "$type": "SetGlobalPos",
-          "key": "_DummyPos",
           "born": {
             "$type": "ConfigBornBySelf",
             "useRotation": true
           },
-          "doOffStage": true
+          "doOffStage": true,
+          "key": "_DummyPos"
         },
         {
           "$type": "CreateGadget",
-          "gadgetID": 73054013,
-          "campID": 4001,
-          "campTargetType": "Enemy",
           "born": {
             "$type": "ConfigBornBySelf",
-            "useRotation": true,
+            "direction": {
+              "$type": "ICECMPNJJOJ",
+              "positionKey": "_DummyPos",
+              "useCorrectDir": true
+            },
             "offset": {
               "x": 3
             },
-            "direction": {
-              "$type": "AHMJKPBKKHA",
-              "positionKey": "_DummyPos",
-              "useCorrectDir": true
-            }
-          }
+            "useRotation": true
+          },
+          "campID": 4001,
+          "campTargetType": "Enemy",
+          "gadgetID": 73054013
         },
         {
           "$type": "CreateGadget",
-          "gadgetID": 73054013,
-          "campID": 4001,
-          "campTargetType": "Enemy",
           "born": {
             "$type": "ConfigBornBySelf",
-            "useRotation": true,
-            "offset": {
-              "x": -1.35,
-              "z": -2.631
-            },
             "direction": {
-              "$type": "AHMJKPBKKHA",
+              "$type": "ICECMPNJJOJ",
               "positionKey": "_DummyPos",
               "useCorrectDir": true
-            }
-          }
+            },
+            "offset": {
+              "z": -2.631,
+              "x": -1.35
+            },
+            "useRotation": true
+          },
+          "campID": 4001,
+          "campTargetType": "Enemy",
+          "gadgetID": 73054013
         },
         {
           "$type": "CreateGadget",
-          "gadgetID": 73054013,
-          "campID": 4001,
-          "campTargetType": "Enemy",
           "born": {
             "$type": "ConfigBornBySelf",
-            "useRotation": true,
-            "offset": {
-              "x": -1.35,
-              "z": 2.631
-            },
             "direction": {
-              "$type": "AHMJKPBKKHA",
+              "$type": "ICECMPNJJOJ",
               "positionKey": "_DummyPos",
               "useCorrectDir": true
-            }
-          }
+            },
+            "offset": {
+              "z": 2.631,
+              "x": -1.35
+            },
+            "useRotation": true
+          },
+          "campID": 4001,
+          "campTargetType": "Enemy",
+          "gadgetID": 73054013
         },
         {
           "$type": "SetGlobalValue",
           "key": "GV_CrystalCount",
-          "minValue": 0,
           "maxValue": 0,
+          "minValue": 0,
           "value": 0
         },
         {
@@ -2106,30 +2106,41 @@
   },
   {
     "Default": {
+      "abilityMixins": [
+        {
+          "$type": "AttachToAnimatorStateIDMixin",
+          "modifierName": "Ptahu_FixedMonsterRushMove",
+          "stateIDs": [
+            "SKK_Sacred_Attack02_BS"
+          ],
+          "__unk_Q2081332355": ""
+        }
+      ],
+      "abilityName": "MonsterPtahur_Phantom_Panther_Skk_Handler",
       "modifiers": {
         "Ptahu_FixedMonsterRushMove": {
+          "elementDurability": 100,
+          "modifierName": "",
           "onAdded": [
             {
               "$type": "FixedMonsterRushMove",
-              "overrideMoveCollider": "",
-              "PGLJIHAEIAD": 0.1,
-              "maxRange": -1,
               "animatorStateIDs": [
                 "SKK_Sacred_Attack02_BS"
               ],
+              "maxRange": -1,
+              "overrideMoveCollider": "",
+              "timeRange": 0.3,
               "toPos": {
                 "$type": "ConfigBornBySelf",
-                "useRotation": true,
                 "offset": {
                   "z": 0.5
-                }
+                },
+                "useRotation": true
               },
-              "GKOFKDIFIMA": 0.2,
-              "timeRange": 0.3
+              "KGGGGMIMKCI": 0.1,
+              "HLIBOLIMBNI": 0.2
             }
           ],
-          "elementDurability": 100,
-          "modifierName": "",
           "__unk_Q3323398612": 0
         }
       },
@@ -2140,45 +2151,34 @@
             42909104
           ]
         }
-      ],
-      "abilityMixins": [
-        {
-          "$type": "AttachToAnimatorStateIDMixin",
-          "__unk_Q2081332355": "",
-          "stateIDs": [
-            "SKK_Sacred_Attack02_BS"
-          ],
-          "modifierName": "Ptahu_FixedMonsterRushMove"
-        }
-      ],
-      "abilityName": "MonsterPtahur_Phantom_Panther_Skk_Handler"
+      ]
     }
   },
   {
     "Default": {
+      "abilityName": "GadgetAbility_Phantom_Skk_SkirkPreBossNeedle_02",
       "modifiers": {
         "Handler": {
+          "elementDurability": 100,
+          "modifierName": "",
           "onAdded": [
             {
               "$type": "AttachEffect",
-              "ILLLPEOODKP": "",
               "born": {
                 "$type": "ConfigBornByAttachPoint",
                 "attachPointName": "Model",
                 "attachPointTargetType": "Self",
                 "useRotation": true
               },
+              "effectPattern": "Eff_Monster_Ptahur_Phantom_Skk_Gadget_SkirkNeedle_Charge",
               "scale": 1,
-              "effectPattern": "Eff_Monster_Ptahur_Phantom_Skk_Gadget_SkirkNeedle_Charge"
+              "JHAGIJGAKMK": ""
             },
             {
               "$type": "ApplyModifier",
               "modifierName": "FireBulletEffect"
             }
           ],
-          "elementDurability": 100,
-          "modifierName": "",
-          "__unk_Q3323398612": 0,
           "onBeingHit": [
             {
               "$type": "KillSelf",
@@ -2186,37 +2186,50 @@
             },
             {
               "$type": "AddGlobalValueV2",
-              "minValue": 0,
               "key": "GV_VertexCrystal",
-              "value": 1,
               "maxValue": 0,
-              "target": "Owner"
+              "minValue": 0,
+              "target": "Owner",
+              "value": 1
             },
             {
               "$type": "FireEffect",
               "effectPattern": "Eff_Monster_Ptahur_Phantom_Skk_Gadget_SkirkNeedle_Break",
               "scale": 1,
-              "ILLLPEOODKP": ""
+              "JHAGIJGAKMK": ""
             },
             {
               "$type": "RemoveModifier",
               "modifierName": "Shoot"
             }
-          ]
+          ],
+          "__unk_Q3323398612": 0
         },
         "FireBulletEffect": {
           "duration": 0.086,
+          "elementDurability": 100,
+          "modifierName": "",
           "onRemoved": [
             {
               "$type": "ApplyModifier",
               "modifierName": "ActiveState"
             }
           ],
-          "elementDurability": 100,
-          "modifierName": "",
           "__unk_Q3323398612": 0
         },
         "ActiveState": {
+          "elementDurability": 100,
+          "modifierMixins": [
+            {
+              "$type": "ChangeControlledBulletMoveTypeMixin",
+              "CHMGDHPIFJO": {
+                "$type": "BDHJPDHHIDH",
+                "traceOnYAxis": true,
+                "EBENKDBJPPG": ""
+              }
+            }
+          ],
+          "modifierName": "",
           "onAdded": [
             {
               "$type": "SetBulletTrackTarget",
@@ -2224,31 +2237,18 @@
             },
             {
               "$type": "AttachEffect",
-              "ILLLPEOODKP": "",
+              "effectPattern": "Eff_Monster_Ptahur_Phantom_Skk_Gadget_SkirkNeedle_Bullet",
               "scale": 1,
-              "effectPattern": "Eff_Monster_Ptahur_Phantom_Skk_Gadget_SkirkNeedle_Bullet"
+              "JHAGIJGAKMK": ""
             },
             {
               "$type": "AttachModifier",
               "modifierName": "ShootDelay"
             }
           ],
-          "elementDurability": 100,
-          "modifierMixins": [
-            {
-              "$type": "ChangeControlledBulletMoveTypeMixin",
-              "BKDINFEHECB": {
-                "$type": "LKLPMAPMBJC",
-                "LIGJPHIIMPK": "",
-                "MJHLGKPMMOA": true
-              }
-            }
-          ],
-          "modifierName": "",
           "__unk_Q3323398612": 0
         },
         "ShootDelay": {
-          "thinkInterval": 5,
           "duration": 5.9,
           "elementDurability": 100,
           "modifierName": "",
@@ -2262,50 +2262,19 @@
               "modifierName": "ShootDelay"
             }
           ],
+          "thinkInterval": 5,
           "__unk_Q3323398612": 0
         },
         "Aim_Eff": {
-          "onRemoved": [
-            {
-              "$type": "AddGlobalValueV2",
-              "minValue": 0,
-              "key": "GV_Aim_Eff",
-              "value": -1,
-              "maxValue": 0
-            }
-          ],
-          "onAdded": [
-            {
-              "$type": "AttachEffect",
-              "ILLLPEOODKP": "",
-              "born": {
-                "$type": "ConfigBornByAttachPoint",
-                "attachPointName": "AimEff",
-                "useRotation": true
-              },
-              "HPKGBAOFHCO": true,
-              "scale": 1,
-              "effectPattern": "Eff_SceneObj_SkirkPreBossNeedle_01_Line",
-              "target": "Applier",
-              "muteRemoteAction": true
-            },
-            {
-              "$type": "AddGlobalValueV2",
-              "minValue": 0,
-              "key": "GV_Aim_Eff",
-              "value": 1,
-              "maxValue": 0
-            }
-          ],
           "elementDurability": 100,
           "modifierMixins": [
             {
               "$type": "AttachModifierToGlobalValueMixin",
+              "globalValueKey": "GV_Aim_Eff",
               "modifierNameSteps": [
                 "Empty",
                 "UNIQUE_Attach_Aim_Eff"
               ],
-              "globalValueKey": "GV_Aim_Eff",
               "valueSteps": [
                 -0.5,
                 0.5,
@@ -2314,6 +2283,38 @@
             }
           ],
           "modifierName": "",
+          "onAdded": [
+            {
+              "$type": "AttachEffect",
+              "born": {
+                "$type": "ConfigBornByAttachPoint",
+                "attachPointName": "AimEff",
+                "useRotation": true
+              },
+              "effectPattern": "Eff_SceneObj_SkirkPreBossNeedle_01_Line",
+              "muteRemoteAction": true,
+              "scale": 1,
+              "setSelfAsEffectPluginTarget": true,
+              "target": "Applier",
+              "JHAGIJGAKMK": ""
+            },
+            {
+              "$type": "AddGlobalValueV2",
+              "key": "GV_Aim_Eff",
+              "maxValue": 0,
+              "minValue": 0,
+              "value": 1
+            }
+          ],
+          "onRemoved": [
+            {
+              "$type": "AddGlobalValueV2",
+              "key": "GV_Aim_Eff",
+              "maxValue": 0,
+              "minValue": 0,
+              "value": -1
+            }
+          ],
           "__unk_Q3323398612": 0
         },
         "Empty": {
@@ -2323,21 +2324,23 @@
         },
         "UNIQUE_Attach_Aim_Eff": {
           "duration": 10,
+          "elementDurability": 100,
+          "isUnique": true,
+          "modifierName": "",
           "onAdded": [
             {
               "$type": "AttachEffect",
-              "ILLLPEOODKP": "",
+              "effectPattern": "Eff_SceneObj_SkirkPreBossNeedle_01_UI_Aiming",
               "scale": 1,
-              "effectPattern": "Eff_SceneObj_SkirkPreBossNeedle_01_UI_Aiming"
+              "JHAGIJGAKMK": ""
             }
           ],
-          "elementDurability": 100,
-          "modifierName": "",
-          "isUnique": true,
           "__unk_Q3323398612": 0
         },
         "Shoot": {
           "duration": 5.5,
+          "elementDurability": 100,
+          "modifierName": "",
           "onAdded": [
             {
               "$type": "AttachModifier",
@@ -2349,12 +2352,9 @@
               "target": "Team"
             }
           ],
-          "elementDurability": 100,
-          "modifierName": "",
           "__unk_Q3323398612": 0
         },
         "SpeedDelay": {
-          "thinkInterval": 2,
           "duration": 3,
           "elementDurability": 100,
           "modifierName": "",
@@ -2364,77 +2364,84 @@
               "modifierName": "ShootSpeed"
             }
           ],
+          "thinkInterval": 2,
           "__unk_Q3323398612": 0
         },
         "ShootSpeed": {
-          "onAdded": [
-            {
-              "$type": "SetGlobalValueV2",
-              "minValue": 0,
-              "key": "GV_Shoot",
-              "maxValue": 0,
-              "value": 1
-            },
-            {
-              "$type": "SendEffectTrigger",
-              "parameter": "End",
-              "effectPattern": "Eff_Monster_Ptahur_Phantom_Skk_Gadget_SkirkNeedle_Bullet",
-              "attachPoint": ""
-            },
-            {
-              "$type": "RemoveModifier",
-              "modifierName": "Shoot"
-            }
-          ],
           "elementDurability": 100,
           "modifierMixins": [
             {
               "$type": "BulletMoveParamOverrideMixin",
-              "JKHIHFMENHC": 50,
-              "CIFADBDOAFI": 60,
-              "PLGIPDCMDLG": [
+              "speed": 60,
+              "EILLOIAJDNA": 50,
+              "DNJILHJCMKM": [
                 "speed",
                 "acceleration"
               ]
             },
             {
               "$type": "ChangeControlledBulletMoveTypeMixin",
-              "BKDINFEHECB": {
-                "$type": "ENLOJMBIBEI"
+              "CHMGDHPIFJO": {
+                "$type": "IPBPFFNBEMC"
               }
             }
           ],
           "modifierName": "",
+          "onAdded": [
+            {
+              "$type": "SetGlobalValueV2",
+              "key": "GV_Shoot",
+              "maxValue": 0,
+              "minValue": 0,
+              "value": 1
+            },
+            {
+              "$type": "SendEffectTrigger",
+              "attachPoint": "",
+              "effectPattern": "Eff_Monster_Ptahur_Phantom_Skk_Gadget_SkirkNeedle_Bullet",
+              "parameter": "End"
+            },
+            {
+              "$type": "RemoveModifier",
+              "modifierName": "Shoot"
+            }
+          ],
           "__unk_Q3323398612": 0
         }
       },
       "onAbilityStart": [
         {
           "$type": "Predicated",
+          "otherTargets": {
+            "$type": "SelectTargetsByShape",
+            "campTargetType": "All",
+            "shapeName": "CircleR4H4",
+            "sizeRatio": 1
+          },
           "successActions": [
             {
               "$type": "DamageByAttackValue",
               "attackInfo": {
                 "attackProperty": {
-                  "elementType": "Electric",
                   "attackType": "Range",
-                  "damagePercentageRatio": 0,
-                  "strikeType": "Pierce",
-                  "enBreak": 300,
                   "damagePercentage": 1,
+                  "damagePercentageRatio": 0,
                   "elementDurability": 25,
+                  "elementType": "Electric",
+                  "enBreak": 300,
+                  "strikeType": "Pierce",
                   "__exp_arkhe": 0
                 },
-                "hitPattern": {
-                  "__unk_Q3893899620": "",
-                  "retreatType": "ByHitDirection",
-                  "onHitEffectName": "default",
-                  "hitHaltTimeScale": 0.05,
-                  "hitImpulseType": "LV4"
-                },
+                "attackTag": "",
                 "attenuationGroup": "default",
                 "attenuationTag": "",
-                "attackTag": ""
+                "hitPattern": {
+                  "hitHaltTimeScale": 0.05,
+                  "hitImpulseType": "LV4",
+                  "onHitEffectName": "default",
+                  "retreatType": "ByHitDirection",
+                  "__unk_Q3893899620": ""
+                }
               },
               "target": "Target"
             }
@@ -2447,25 +2454,19 @@
                 "Vehicle"
               ]
             }
-          ],
-          "otherTargets": {
-            "$type": "SelectTargetsByShape",
-            "sizeRatio": 1,
-            "campTargetType": "All",
-            "shapeName": "CircleR4H4"
-          }
+          ]
         },
         {
           "$type": "FireEffect",
-          "effectPattern": "Eff_Monster_Ptahur_Phantom_Skk_Gadget_SkirkNeedle_BulletExplode",
-          "scale": 1,
           "born": {
             "$type": "ConfigBornBySelf",
             "alongGround": true,
             "onGround": true,
             "useRotation": true
           },
-          "ILLLPEOODKP": ""
+          "effectPattern": "Eff_Monster_Ptahur_Phantom_Skk_Gadget_SkirkNeedle_BulletExplode",
+          "scale": 1,
+          "JHAGIJGAKMK": ""
         },
         {
           "$type": "ActCameraShake",
@@ -2473,11 +2474,11 @@
             "shakeDir": {
               "y": -1
             },
+            "shakeDistance": 24,
+            "shakeRange": 0.21,
             "shakeTime": 0.08,
             "shakeType": "CustomVector",
-            "shakeDistance": 24,
-            "MNKFEFOKFKP": "",
-            "shakeRange": 0.21
+            "OFGBHFBAEKK": ""
           }
         },
         {
@@ -2485,13 +2486,12 @@
           "target": "Caster"
         }
       ],
-      "abilityName": "GadgetAbility_Phantom_Skk_SkirkPreBossNeedle_02",
       "onAdded": [
         {
           "$type": "SetGlobalValueV2",
-          "minValue": 0,
           "key": "GV_Shoot",
           "maxValue": 0,
+          "minValue": 0,
           "value": 0
         },
         {
@@ -2503,26 +2503,28 @@
   },
   {
     "Default": {
+      "abilityName": "MonsterAbility_Ptahur_Phantom_Skk_AvatarRevive",
+      "isDynamicAbility": true,
       "modifiers": {
         "Monster_Phantom_Skk_AvatarLimbo": {
-          "properties": {
-            "Actor_HpThresholdRatio": 0.01
-          },
           "elementDurability": 100,
           "modifierMixins": [
             {
               "$type": "AttachModifierToHPPercentMixin",
-              "valueSteps": [
-                0.02
-              ],
               "modifierNameSteps": [
                 "Empty",
                 "HealHPandReminder"
+              ],
+              "valueSteps": [
+                0.02
               ]
             }
           ],
-          "state": "Limbo",
           "modifierName": "",
+          "properties": {
+            "Actor_HpThresholdRatio": 0.01
+          },
+          "state": "Limbo",
           "__unk_Q3323398612": 0
         },
         "Empty": {
@@ -2532,65 +2534,63 @@
         },
         "HealHPandReminder": {
           "duration": 1,
+          "elementDurability": 100,
+          "modifierName": "",
+          "onAdded": [
+            {
+              "$type": "ShowReminder",
+              "doOffStage": true,
+              "id": 1003030034
+            }
+          ],
           "onRemoved": [
             {
               "$type": "HealHP",
               "amountByTargetMaxHPRatio": 1,
-              "__exp_healTag": "",
-              "doOffStage": true
+              "doOffStage": true,
+              "__exp_healTag": ""
             }
           ],
-          "onAdded": [
-            {
-              "$type": "ShowReminder",
-              "id": 1003030034,
-              "doOffStage": true
-            }
-          ],
-          "elementDurability": 100,
-          "modifierName": "",
           "__unk_Q3323398612": 0
         },
         "CheckAvatarLimboExist": {
-          "thinkInterval": 1,
+          "elementDurability": 100,
+          "modifierName": "",
           "onAdded": [
             {
               "$type": "__exp_TriggerThinkInterval"
             }
           ],
-          "elementDurability": 100,
-          "modifierName": "",
           "onThinkInterval": [
             {
               "$type": "ApplyModifier",
-              "modifierName": "Monster_Phantom_Skk_AvatarLimbo",
-              "target": "AllPlayerAvatars",
               "doOffStage": true,
+              "modifierName": "Monster_Phantom_Skk_AvatarLimbo",
               "predicates": [
                 {
                   "$type": "ByHasModifier",
                   "modifierName": "Monster_Phantom_Skk_AvatarLimbo",
                   "target": "SelfAttackTarget"
                 }
-              ]
+              ],
+              "target": "AllPlayerAvatars"
             }
           ],
+          "thinkInterval": 1,
           "__unk_Q3323398612": 0
         }
       },
-      "abilityName": "MonsterAbility_Ptahur_Phantom_Skk_AvatarRevive",
-      "isDynamicAbility": true,
       "onAdded": [
         {
           "$type": "ApplyModifier",
+          "doOffStage": true,
           "modifierName": "Monster_Phantom_Skk_AvatarLimbo",
-          "target": "AllPlayerAvatars",
-          "doOffStage": true
+          "target": "AllPlayerAvatars"
         },
         {
           "$type": "ApplyModifier",
-          "modifierName": "CheckAvatarLimboExist",
-          "doOffStage": true
+          "doOffStage": true,
+          "modifierName": "CheckAvatarLimboExist"
         }
       ]
     }

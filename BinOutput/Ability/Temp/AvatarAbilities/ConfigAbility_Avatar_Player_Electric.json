@@ -1,26 +1,95 @@
 [
   {
     "Default": {
-      "modifiers": {
-        "ExtraAttack_StaminaCost": {
-          "onAdded": [
-            {
-              "$type": "AvatarSkillStart",
-              "skillID": 10001,
-              "cdRatio": 1,
-              "costStaminaRatio": "ExtraAttack_Sword_Stamina_Cost",
-              "cdRatio": 1
-            }
-          ],
-          "elementDurability": 100,
-          "modifierName": "",
-          "__unk_Q3323398612": 0
-        }
-      },
       "abilityMixins": [
         {
           "$type": "ButtonHoldChargeMixin",
-          "skillID": 100546,
+          "chargeStateIDs": [
+            "Attack01",
+            "Attack02",
+            "Attack03",
+            "Attack04",
+            "Run"
+          ],
+          "chargeTime": 0.12,
+          "onBeginCharged": [
+            {
+              "$type": "SetAnimatorBool",
+              "boolID": "IsCharging",
+              "value": true
+            }
+          ],
+          "onBeginSecondCharged": [
+            {
+              "$type": "SetAnimatorTrigger",
+              "predicates": [
+                {
+                  "$type": "ByLocalAvatarStamina",
+                  "logic": "GreaterOrEqual",
+                  "stamina": [
+                    "ExtraAttack_Sword_Stamina_Cost",
+                    "Flexible_Stamina",
+                    "ADD"
+                  ]
+                }
+              ],
+              "triggerID": "DoSkill"
+            },
+            {
+              "$type": "SetAnimatorInt",
+              "intID": "SkillID",
+              "predicates": [
+                {
+                  "$type": "ByLocalAvatarStamina",
+                  "logic": "GreaterOrEqual",
+                  "stamina": [
+                    "ExtraAttack_Sword_Stamina_Cost",
+                    "Flexible_Stamina",
+                    "ADD"
+                  ]
+                }
+              ],
+              "value": 6
+            },
+            {
+              "$type": "SetAnimatorBool",
+              "boolID": "IsCharging"
+            }
+          ],
+          "onBeginUncharged": [
+            {
+              "$type": "SetAnimatorTrigger",
+              "triggerID": "DoSkill"
+            },
+            {
+              "$type": "SetAnimatorInt",
+              "intID": "SkillID",
+              "predicates": [
+                {
+                  "$type": "ByAny",
+                  "predicates": [
+                    {
+                      "$type": "ByAnimatorInt",
+                      "logic": "Equal",
+                      "parameter": "ComboCount",
+                      "value": 0
+                    },
+                    {
+                      "$type": "ByAnimatorInt",
+                      "logic": "Equal",
+                      "parameter": "ComboCount",
+                      "value": 5
+                    }
+                  ]
+                }
+              ],
+              "value": 99
+            },
+            {
+              "$type": "SetAnimatorBool",
+              "boolID": "IsCharging"
+            }
+          ],
           "onReleaseCharged": [
             {
               "$type": "SetAnimatorBool",
@@ -32,140 +101,140 @@
               "value": 1
             }
           ],
-          "onBeginUncharged": [
-            {
-              "$type": "SetAnimatorTrigger",
-              "triggerID": "DoSkill"
-            },
-            {
-              "$type": "SetAnimatorInt",
-              "intID": "SkillID",
-              "value": 99,
-              "predicates": [
-                {
-                  "$type": "ByAny",
-                  "predicates": [
-                    {
-                      "$type": "ByAnimatorInt",
-                      "value": 0,
-                      "parameter": "ComboCount",
-                      "logic": "Equal"
-                    },
-                    {
-                      "$type": "ByAnimatorInt",
-                      "value": 5,
-                      "parameter": "ComboCount",
-                      "logic": "Equal"
-                    }
-                  ]
-                }
-              ]
-            },
-            {
-              "$type": "SetAnimatorBool",
-              "boolID": "IsCharging"
-            }
-          ],
-          "secondChargeTime": 0.2,
-          "chargeTime": 0.12,
-          "onBeginCharged": [
-            {
-              "$type": "SetAnimatorBool",
-              "value": true,
-              "boolID": "IsCharging"
-            }
-          ],
-          "onBeginSecondCharged": [
-            {
-              "$type": "SetAnimatorTrigger",
-              "triggerID": "DoSkill",
-              "predicates": [
-                {
-                  "$type": "ByLocalAvatarStamina",
-                  "stamina": [
-                    "ExtraAttack_Sword_Stamina_Cost",
-                    "Flexible_Stamina",
-                    "ADD"
-                  ],
-                  "logic": "GreaterOrEqual"
-                }
-              ]
-            },
-            {
-              "$type": "SetAnimatorInt",
-              "intID": "SkillID",
-              "value": 6,
-              "predicates": [
-                {
-                  "$type": "ByLocalAvatarStamina",
-                  "stamina": [
-                    "ExtraAttack_Sword_Stamina_Cost",
-                    "Flexible_Stamina",
-                    "ADD"
-                  ],
-                  "logic": "GreaterOrEqual"
-                }
-              ]
-            },
-            {
-              "$type": "SetAnimatorBool",
-              "boolID": "IsCharging"
-            }
-          ],
-          "chargeStateIDs": [
-            "Attack01",
-            "Attack02",
-            "Attack03",
-            "Attack04",
-            "Run"
-          ],
           "onReleaseUncharged": [
             {
               "$type": "SetAnimatorInt",
               "intID": "SkillID",
               "value": 1
             }
-          ]
+          ],
+          "secondChargeTime": 0.2,
+          "skillID": 100546
         },
         {
           "$type": "AttachToStateIDMixin",
-          "__unk_Q2081332355": "",
+          "modifierName": "ExtraAttack_StaminaCost",
           "stateIDs": [
             "ExtraAttack"
           ],
-          "modifierName": "ExtraAttack_StaminaCost"
+          "__unk_Q2081332355": ""
         }
       ],
       "abilityName": "Avatar_PlayerBoy_ExtraAttack_Electric",
-      "isDynamicAbility": true,
       "abilitySpecials": {
         "ExtraAttack_Sword_Stamina_Cost": 0,
         "Flexible_Stamina": -2
+      },
+      "isDynamicAbility": true,
+      "modifiers": {
+        "ExtraAttack_StaminaCost": {
+          "elementDurability": 100,
+          "modifierName": "",
+          "onAdded": [
+            {
+              "$type": "AvatarSkillStart",
+              "cdRatio": 1,
+              "costStaminaRatio": "ExtraAttack_Sword_Stamina_Cost",
+              "skillID": 10001,
+              "NKOFINBNOOK": 1
+            }
+          ],
+          "__unk_Q3323398612": 0
+        }
       }
     }
   },
   {
     "Default": {
-      "modifiers": {
-        "ExtraAttack_StaminaCost": {
-          "onAdded": [
-            {
-              "$type": "AvatarSkillStart",
-              "skillID": 10001,
-              "cdRatio": 1,
-              "costStaminaRatio": "ExtraAttack_Sword_Stamina_Cost",
-              "cdRatio": 1
-            }
-          ],
-          "elementDurability": 100,
-          "modifierName": "",
-          "__unk_Q3323398612": 0
-        }
-      },
       "abilityMixins": [
         {
           "$type": "ButtonHoldChargeMixin",
-          "skillID": 100556,
+          "chargeStateIDs": [
+            "Attack01",
+            "Attack02",
+            "Attack03",
+            "Attack04",
+            "Run"
+          ],
+          "chargeTime": 0.12,
+          "onBeginCharged": [
+            {
+              "$type": "SetAnimatorBool",
+              "boolID": "IsCharging",
+              "value": true
+            }
+          ],
+          "onBeginSecondCharged": [
+            {
+              "$type": "SetAnimatorTrigger",
+              "predicates": [
+                {
+                  "$type": "ByLocalAvatarStamina",
+                  "logic": "GreaterOrEqual",
+                  "stamina": [
+                    "ExtraAttack_Sword_Stamina_Cost",
+                    "Flexible_Stamina",
+                    "ADD"
+                  ]
+                }
+              ],
+              "triggerID": "DoSkill"
+            },
+            {
+              "$type": "SetAnimatorInt",
+              "intID": "SkillID",
+              "predicates": [
+                {
+                  "$type": "ByLocalAvatarStamina",
+                  "logic": "GreaterOrEqual",
+                  "stamina": [
+                    "ExtraAttack_Sword_Stamina_Cost",
+                    "Flexible_Stamina",
+                    "ADD"
+                  ]
+                }
+              ],
+              "value": 6
+            },
+            {
+              "$type": "SetAnimatorBool",
+              "boolID": "IsCharging"
+            }
+          ],
+          "onBeginUncharged": [
+            {
+              "$type": "SetAnimatorTrigger",
+              "triggerID": "DoSkill"
+            },
+            {
+              "$type": "SetAnimatorInt",
+              "intID": "SkillID",
+              "predicates": [
+                {
+                  "$type": "ByAny",
+                  "predicates": [
+                    {
+                      "$type": "ByAnimatorInt",
+                      "logic": "Equal",
+                      "parameter": "ComboCount",
+                      "value": 0
+                    },
+                    {
+                      "$type": "ByAnimatorInt",
+                      "logic": "Equal",
+                      "parameter": "ComboCount",
+                      "value": 5
+                    }
+                  ]
+                }
+              ],
+              "value": 99
+            },
+            {
+              "$type": "SetAnimatorBool",
+              "boolID": "IsCharging"
+            }
+          ],
           "onReleaseCharged": [
             {
               "$type": "SetAnimatorBool",
@@ -177,178 +246,66 @@
               "value": 1
             }
           ],
-          "onBeginUncharged": [
-            {
-              "$type": "SetAnimatorTrigger",
-              "triggerID": "DoSkill"
-            },
-            {
-              "$type": "SetAnimatorInt",
-              "intID": "SkillID",
-              "value": 99,
-              "predicates": [
-                {
-                  "$type": "ByAny",
-                  "predicates": [
-                    {
-                      "$type": "ByAnimatorInt",
-                      "value": 0,
-                      "parameter": "ComboCount",
-                      "logic": "Equal"
-                    },
-                    {
-                      "$type": "ByAnimatorInt",
-                      "value": 5,
-                      "parameter": "ComboCount",
-                      "logic": "Equal"
-                    }
-                  ]
-                }
-              ]
-            },
-            {
-              "$type": "SetAnimatorBool",
-              "boolID": "IsCharging"
-            }
-          ],
-          "secondChargeTime": 0.2,
-          "chargeTime": 0.12,
-          "onBeginCharged": [
-            {
-              "$type": "SetAnimatorBool",
-              "value": true,
-              "boolID": "IsCharging"
-            }
-          ],
-          "onBeginSecondCharged": [
-            {
-              "$type": "SetAnimatorTrigger",
-              "triggerID": "DoSkill",
-              "predicates": [
-                {
-                  "$type": "ByLocalAvatarStamina",
-                  "stamina": [
-                    "ExtraAttack_Sword_Stamina_Cost",
-                    "Flexible_Stamina",
-                    "ADD"
-                  ],
-                  "logic": "GreaterOrEqual"
-                }
-              ]
-            },
-            {
-              "$type": "SetAnimatorInt",
-              "intID": "SkillID",
-              "value": 6,
-              "predicates": [
-                {
-                  "$type": "ByLocalAvatarStamina",
-                  "stamina": [
-                    "ExtraAttack_Sword_Stamina_Cost",
-                    "Flexible_Stamina",
-                    "ADD"
-                  ],
-                  "logic": "GreaterOrEqual"
-                }
-              ]
-            },
-            {
-              "$type": "SetAnimatorBool",
-              "boolID": "IsCharging"
-            }
-          ],
-          "chargeStateIDs": [
-            "Attack01",
-            "Attack02",
-            "Attack03",
-            "Attack04",
-            "Run"
-          ],
           "onReleaseUncharged": [
             {
               "$type": "SetAnimatorInt",
               "intID": "SkillID",
               "value": 1
             }
-          ]
+          ],
+          "secondChargeTime": 0.2,
+          "skillID": 100556
         },
         {
           "$type": "AttachToStateIDMixin",
-          "__unk_Q2081332355": "",
+          "modifierName": "ExtraAttack_StaminaCost",
           "stateIDs": [
             "ExtraAttack"
           ],
-          "modifierName": "ExtraAttack_StaminaCost"
+          "__unk_Q2081332355": ""
         }
       ],
       "abilityName": "Avatar_PlayerGirl_ExtraAttack_Electric",
-      "isDynamicAbility": true,
       "abilitySpecials": {
         "ExtraAttack_Sword_Stamina_Cost": 0,
         "Flexible_Stamina": -2
+      },
+      "isDynamicAbility": true,
+      "modifiers": {
+        "ExtraAttack_StaminaCost": {
+          "elementDurability": 100,
+          "modifierName": "",
+          "onAdded": [
+            {
+              "$type": "AvatarSkillStart",
+              "cdRatio": 1,
+              "costStaminaRatio": "ExtraAttack_Sword_Stamina_Cost",
+              "skillID": 10001,
+              "NKOFINBNOOK": 1
+            }
+          ],
+          "__unk_Q3323398612": 0
+        }
       }
     }
   },
   {
     "Default": {
-      "modifiers": {
-        "Player_Electric_ElementalBurst_HideWeapon": {
-          "onRemoved": [
-            {
-              "$type": "TriggerHideWeapon",
-              "partNames": [
-                "equip01",
-                "equip02",
-                "sheathPoint"
-              ],
-              "visible": true,
-              "doOffStage": true
-            }
-          ],
-          "onAdded": [
-            {
-              "$type": "TriggerHideWeapon",
-              "partNames": [
-                "equip01",
-                "equip02",
-                "sheathPoint"
-              ]
-            }
-          ],
-          "elementDurability": 100,
-          "modifierName": "",
-          "__unk_Q3323398612": 0
-        }
-      },
       "abilityMixins": [
         {
           "$type": "AttachToNormalizedTimeMixin",
           "modifierName": "Player_Electric_ElementalBurst_HideWeapon",
-          "__unk_Q2081332355": "",
           "normalizeEnd": 0.22,
-          "stateID": "Player_Electric_ElementalBurst_AS"
+          "stateID": "Player_Electric_ElementalBurst_AS",
+          "__unk_Q2081332355": ""
         }
       ],
       "abilityName": "Avatar_PlayerGirl_Electric_ElementalBurst_WeaponDisplay",
-      "isDynamicAbility": true
-    }
-  },
-  {
-    "Default": {
+      "isDynamicAbility": true,
       "modifiers": {
         "Player_Electric_ElementalBurst_HideWeapon": {
-          "onRemoved": [
-            {
-              "$type": "TriggerHideWeapon",
-              "partNames": [
-                "equip01",
-                "equip02",
-                "sheathPoint"
-              ],
-              "visible": true,
-              "doOffStage": true
-            }
-          ],
+          "elementDurability": 100,
+          "modifierName": "",
           "onAdded": [
             {
               "$type": "TriggerHideWeapon",
@@ -359,57 +316,130 @@
               ]
             }
           ],
-          "elementDurability": 100,
-          "modifierName": "",
+          "onRemoved": [
+            {
+              "$type": "TriggerHideWeapon",
+              "doOffStage": true,
+              "partNames": [
+                "equip01",
+                "equip02",
+                "sheathPoint"
+              ],
+              "visible": true
+            }
+          ],
           "__unk_Q3323398612": 0
         }
-      },
-      "abilityMixins": [
-        {
-          "$type": "AttachToNormalizedTimeMixin",
-          "modifierName": "Player_Electric_ElementalBurst_HideWeapon",
-          "__unk_Q2081332355": "",
-          "normalizeEnd": 0.22,
-          "stateID": "Player_Electric_ElementalBurst_AS"
-        }
-      ],
-      "abilityName": "Avatar_PlayerBoy_Electric_ElementalBurst_WeaponDisplay",
-      "isDynamicAbility": true
+      }
     }
   },
   {
     "Default": {
+      "abilityMixins": [
+        {
+          "$type": "AttachToNormalizedTimeMixin",
+          "modifierName": "Player_Electric_ElementalBurst_HideWeapon",
+          "normalizeEnd": 0.22,
+          "stateID": "Player_Electric_ElementalBurst_AS",
+          "__unk_Q2081332355": ""
+        }
+      ],
+      "abilityName": "Avatar_PlayerBoy_Electric_ElementalBurst_WeaponDisplay",
+      "isDynamicAbility": true,
+      "modifiers": {
+        "Player_Electric_ElementalBurst_HideWeapon": {
+          "elementDurability": 100,
+          "modifierName": "",
+          "onAdded": [
+            {
+              "$type": "TriggerHideWeapon",
+              "partNames": [
+                "equip01",
+                "equip02",
+                "sheathPoint"
+              ]
+            }
+          ],
+          "onRemoved": [
+            {
+              "$type": "TriggerHideWeapon",
+              "doOffStage": true,
+              "partNames": [
+                "equip01",
+                "equip02",
+                "sheathPoint"
+              ],
+              "visible": true
+            }
+          ],
+          "__unk_Q3323398612": 0
+        }
+      }
+    }
+  },
+  {
+    "Default": {
+      "abilityMixins": [
+        {
+          "$type": "ServerUpdateGlobalValueMixin",
+          "key": "SGV_Mizuki_Quest",
+          "maxValue": 1,
+          "minValue": 0,
+          "useLimitRange": true
+        },
+        {
+          "$type": "AttachToNormalizedTimeMixin",
+          "modifierName": "Player_Electric_ElementalBurst_VFX",
+          "stateID": "Player_Electric_ElementalBurst",
+          "__unk_Q2081332355": ""
+        },
+        {
+          "$type": "AttachToStateIDMixin",
+          "modifierName": "Player_Electric_ElementalBurst_Weather",
+          "stateIDs": [
+            "Player_Electric_ElementalBurst"
+          ],
+          "__unk_Q2081332355": ""
+        },
+        {
+          "$type": "AttachToStateIDMixin",
+          "modifierName": "Player_Electric_ElementalBurst_Invincible",
+          "stateIDs": [
+            "Player_Electric_ElementalBurst"
+          ],
+          "__unk_Q2081332355": ""
+        }
+      ],
+      "abilityName": "Avatar_Player_Electric_ElementalBurst_Initiate",
+      "abilitySpecials": {
+        "ElementalBurst_InitiateDamage": 0
+      },
+      "isDynamicAbility": true,
       "modifiers": {
         "Player_Electric_ElementalBurst_Invincible": {
+          "elementDurability": 100,
+          "modifierName": "",
           "onAdded": [
             {
               "$type": "AttachAbilityStateResistance",
               "resistanceListID": 11002
             }
           ],
-          "elementDurability": 100,
           "state": "Invincible",
-          "modifierName": "",
           "__unk_Q3323398612": 0
         },
         "Player_Electric_ElementalBurst_VFX": {
+          "elementDurability": 100,
+          "modifierName": "",
           "onAdded": [
             {
               "$type": "FireEffect",
               "effectPattern": "Eff_Player_Electric_ElementalBurst_Initiate",
               "scale": 1,
-              "ILLLPEOODKP": ""
+              "JHAGIJGAKMK": ""
             },
             {
               "$type": "Predicated",
-              "successActions": [
-                {
-                  "$type": "KillGadget",
-                  "gadgetInfo": {
-                    "configID": 41044002
-                  }
-                }
-              ],
               "failActions": [
                 {
                   "$type": "KillGadget",
@@ -418,18 +448,24 @@
                   }
                 }
               ],
+              "successActions": [
+                {
+                  "$type": "KillGadget",
+                  "gadgetInfo": {
+                    "configID": 41044002
+                  }
+                }
+              ],
               "targetPredicates": [
                 {
                   "$type": "ByTargetGlobalValue",
-                  "value": 1,
                   "key": "SGV_Mizuki_Quest",
-                  "target": "Team"
+                  "target": "Team",
+                  "value": 1
                 }
               ]
             }
           ],
-          "elementDurability": 100,
-          "modifierName": "",
           "__unk_Q3323398612": 0
         },
         "Player_Electric_ElementalBurst_Weather": {
@@ -450,47 +486,47 @@
       "onAbilityStart": [
         {
           "$type": "TriggerAttackEvent",
-          "targetType": "Enemy",
           "attackEvent": {
             "attackInfo": {
               "attackProperty": {
-                "elementType": "Electric",
-                "damagePercentageRatio": 0,
-                "strikeType": "Blunt",
-                "enBreak": 150,
                 "damagePercentage": "ElementalBurst_InitiateDamage",
+                "damagePercentageRatio": 0,
                 "elementDurability": 25,
                 "elementRank": 3,
+                "elementType": "Electric",
+                "enBreak": 150,
+                "strikeType": "Blunt",
                 "__exp_arkhe": 0
               },
+              "attackTag": "Elemental_Burst",
+              "attenuationGroup": "default",
+              "attenuationTag": "",
               "cameraShake": {
                 "extension": {
                   "baseCycle": 0.08,
                   "cycleDamping": -0.04
                 },
-                "shakeTime": 0.36,
                 "shakeDistance": 30,
-                "MNKFEFOKFKP": "",
-                "shakeRange": 0.6
-              },
-              "hitPattern": {
-                "__unk_Q3893899620": "",
-                "retreatType": "ByHitDirection",
-                "onHitEffectName": "default",
-                "hitHaltTimeScale": 0.05,
-                "hitImpulseType": "LV3"
+                "shakeRange": 0.6,
+                "shakeTime": 0.36,
+                "OFGBHFBAEKK": ""
               },
               "forceCameraShake": true,
-              "attenuationGroup": "default",
-              "attenuationTag": "",
-              "attackTag": "Elemental_Burst"
+              "hitPattern": {
+                "hitHaltTimeScale": 0.05,
+                "hitImpulseType": "LV3",
+                "onHitEffectName": "default",
+                "retreatType": "ByHitDirection",
+                "__unk_Q3893899620": ""
+              }
             },
             "attackPattern": {
               "$type": "ConfigAttackSphere",
               "radius": 5,
               "triggerType": "TriggerNoRepeat"
             }
-          }
+          },
+          "targetType": "Enemy"
         },
         {
           "$type": "ActCameraRadialBlur",
@@ -502,96 +538,74 @@
         },
         {
           "$type": "AvatarSkillStart",
-          "skillID": 10605,
           "cdRatio": 1,
           "costStaminaRatio": 1,
-          "cdRatio": 1
+          "skillID": 10605,
+          "NKOFINBNOOK": 1
         },
         {
           "$type": "FireEffect",
           "effectPattern": "Eff_Player_Electric_ElementalBurst_Burst",
           "scale": 1,
-          "ILLLPEOODKP": ""
+          "JHAGIJGAKMK": ""
         },
         {
           "$type": "Predicated",
-          "successActions": [
-            {
-              "$type": "CreateGadget",
-              "gadgetID": 41044001,
-              "campID": 1001,
-              "campTargetType": "Enemy",
-              "lifeByOwnerIsAlive": true,
-              "born": {
-                "$type": "ConfigBornByTarget"
-              }
-            }
-          ],
           "failActions": [
             {
               "$type": "CreateGadget",
-              "gadgetID": 41044002,
-              "campID": 1001,
-              "campTargetType": "Enemy",
-              "lifeByOwnerIsAlive": true,
               "born": {
                 "$type": "ConfigBornByTarget"
-              }
+              },
+              "campID": 1001,
+              "campTargetType": "Enemy",
+              "gadgetID": 41044002,
+              "lifeByOwnerIsAlive": true
+            }
+          ],
+          "successActions": [
+            {
+              "$type": "CreateGadget",
+              "born": {
+                "$type": "ConfigBornByTarget"
+              },
+              "campID": 1001,
+              "campTargetType": "Enemy",
+              "gadgetID": 41044001,
+              "lifeByOwnerIsAlive": true
             }
           ],
           "targetPredicates": [
             {
               "$type": "ByTargetGlobalValue",
-              "value": 0,
               "compareType": "NoneOrEqual",
               "key": "SGV_Mizuki_Quest",
-              "target": "Team"
+              "target": "Team",
+              "value": 0
             }
           ]
         }
-      ],
-      "abilityMixins": [
-        {
-          "$type": "ServerUpdateGlobalValueMixin",
-          "maxValue": 1,
-          "useLimitRange": true,
-          "key": "SGV_Mizuki_Quest",
-          "minValue": 0
-        },
-        {
-          "$type": "AttachToNormalizedTimeMixin",
-          "modifierName": "Player_Electric_ElementalBurst_VFX",
-          "__unk_Q2081332355": "",
-          "stateID": "Player_Electric_ElementalBurst"
-        },
-        {
-          "$type": "AttachToStateIDMixin",
-          "__unk_Q2081332355": "",
-          "stateIDs": [
-            "Player_Electric_ElementalBurst"
-          ],
-          "modifierName": "Player_Electric_ElementalBurst_Weather"
-        },
-        {
-          "$type": "AttachToStateIDMixin",
-          "__unk_Q2081332355": "",
-          "stateIDs": [
-            "Player_Electric_ElementalBurst"
-          ],
-          "modifierName": "Player_Electric_ElementalBurst_Invincible"
-        }
-      ],
-      "abilityName": "Avatar_Player_Electric_ElementalBurst_Initiate",
-      "isDynamicAbility": true,
-      "abilitySpecials": {
-        "ElementalBurst_InitiateDamage": 0
-      }
+      ]
     }
   },
   {
     "Default": {
+      "abilityMixins": [
+        {
+          "$type": "AttachToStateIDMixin",
+          "modifierName": "ExitCamera",
+          "stateIDs": [
+            "Player_Electric_ElementalBurst"
+          ],
+          "__unk_Q2081332355": ""
+        }
+      ],
+      "abilityName": "Avatar_Player_Electric_ElementalBurst_CameraExit",
+      "isDynamicAbility": true,
       "modifiers": {
         "ExitCamera": {
+          "elementDurability": 100,
+          "modifierName": "",
           "onRemoved": [
             {
               "$type": "AvatarExitCameraShot",
@@ -600,40 +614,37 @@
             {
               "$type": "AvatarCameraParam",
               "cameraParam": {
-                "shouldKeepForceRadius": true,
+                "forceRadius": 6,
                 "forceRadiusDuration": 0,
-                "forceRadius": 6
+                "shouldKeepForceRadius": true
               },
               "doOffStage": true
             }
           ],
-          "elementDurability": 100,
-          "modifierName": "",
           "__unk_Q3323398612": 0
         }
-      },
-      "abilityMixins": [
-        {
-          "$type": "AttachToStateIDMixin",
-          "__unk_Q2081332355": "",
-          "stateIDs": [
-            "Player_Electric_ElementalBurst"
-          ],
-          "modifierName": "ExitCamera"
-        }
-      ],
-      "abilityName": "Avatar_Player_Electric_ElementalBurst_CameraExit",
-      "isDynamicAbility": true
+      }
     }
   },
   {
     "Default": {
+      "abilityName": "Avatar_Player_Electric_ElementalBurst_Bullet",
+      "abilitySpecials": {
+        "ElementalBurst_Duration": 0,
+        "ElementalBurst_ElecResDown_Duration": 0,
+        "ElementalBurst_ElecResDown_ElecSubHurtDelta": 0,
+        "ElementalBurst_ReviveEnergy_Default": 0,
+        "ElementalBurst_ReviveEnergy_Enhanced": 0,
+        "ElementalBurst_ThunderAttack_Default_Damage": 0,
+        "ElementalBurst_ThunderAttack_Enhanced_Damage_Percentage": 0
+      },
       "modifiers": {
         "Player_Electric_ElementalBurst_Bullet_1_VFX": {
+          "elementDurability": 100,
+          "modifierName": "",
           "onAdded": [
             {
               "$type": "AttachEffect",
-              "ILLLPEOODKP": "",
               "born": {
                 "$type": "ConfigBornByAttachPoint",
                 "attachPointName": "Ponit1",
@@ -641,19 +652,19 @@
                   "$type": "ConfigDirectionByDefault"
                 }
               },
+              "effectPattern": "Eff_Player_Electric_ElementalBurst_Magatama_1",
               "scale": 1,
-              "effectPattern": "Eff_Player_Electric_ElementalBurst_Magatama_1"
+              "JHAGIJGAKMK": ""
             }
           ],
-          "elementDurability": 100,
-          "modifierName": "",
           "__unk_Q3323398612": 0
         },
         "Player_Electric_ElementalBurst_Bullet_2_VFX": {
+          "elementDurability": 100,
+          "modifierName": "",
           "onAdded": [
             {
               "$type": "AttachEffect",
-              "ILLLPEOODKP": "",
               "born": {
                 "$type": "ConfigBornByAttachPoint",
                 "attachPointName": "Ponit2",
@@ -661,19 +672,19 @@
                   "$type": "ConfigDirectionByDefault"
                 }
               },
+              "effectPattern": "Eff_Player_Electric_ElementalBurst_Magatama_2",
               "scale": 1,
-              "effectPattern": "Eff_Player_Electric_ElementalBurst_Magatama_2"
+              "JHAGIJGAKMK": ""
             }
           ],
-          "elementDurability": 100,
-          "modifierName": "",
           "__unk_Q3323398612": 0
         },
         "Player_Electric_ElementalBurst_Bullet_3_VFX": {
+          "elementDurability": 100,
+          "modifierName": "",
           "onAdded": [
             {
               "$type": "AttachEffect",
-              "ILLLPEOODKP": "",
               "born": {
                 "$type": "ConfigBornByAttachPoint",
                 "attachPointName": "Ponit3",
@@ -681,48 +692,17 @@
                   "$type": "ConfigDirectionByDefault"
                 }
               },
+              "effectPattern": "Eff_Player_Electric_ElementalBurst_Magatama_3",
               "scale": 1,
-              "effectPattern": "Eff_Player_Electric_ElementalBurst_Magatama_3"
+              "JHAGIJGAKMK": ""
             }
           ],
-          "elementDurability": 100,
-          "modifierName": "",
           "__unk_Q3323398612": 0
         },
         "UNIQUE_Player_Electric_ElementalBurst_Handler": {
           "duration": "ElementalBurst_Duration",
-          "onRemoved": [
-            {
-              "$type": "SetGlobalValue",
-              "key": "_ABILITY_Player_Electric_ElementalBurst_Counter",
-              "minValue": 0,
-              "maxValue": 0,
-              "value": 0,
-              "doOffStage": true
-            }
-          ],
-          "onAdded": [
-            {
-              "$type": "AttachModifier",
-              "modifierName": "Player_Electric_ElementalBurst_ElecResDown",
-              "predicates": [
-                {
-                  "$type": "ByUnlockTalentParam",
-                  "talentParam": "Player_Electric_ElementalBurst_ElecResDown"
-                }
-              ]
-            },
-            {
-              "$type": "SetGlobalValue",
-              "key": "_ABILITY_Player_Electric_ElementalBurst_CD",
-              "minValue": 0,
-              "maxValue": 0,
-              "value": 1,
-              "target": "Caster",
-              "doOffStage": true
-            }
-          ],
           "elementDurability": 100,
+          "isUnique": true,
           "modifierMixins": [
             {
               "$type": "CurLocalAvatarMixin",
@@ -730,6 +710,45 @@
             },
             {
               "$type": "AttachModifierToSelfGlobalValueMixin",
+              "actionQueues": [
+                [],
+                [],
+                [
+                  {
+                    "$type": "Predicated",
+                    "doOffStage": true,
+                    "failActions": [
+                      {
+                        "$type": "SetGlobalValue",
+                        "doOffStage": true,
+                        "key": "_ABILITY_Player_Electric_ElementalBurst_Counter",
+                        "maxValue": 0,
+                        "minValue": 0,
+                        "value": 0
+                      }
+                    ],
+                    "targetPredicates": [
+                      {
+                        "$type": "ByUnlockTalentParam",
+                        "talentParam": "Player_Electric_ElementalBurst_ThunderAttack_Enhanced"
+                      }
+                    ]
+                  }
+                ],
+                [
+                  {
+                    "$type": "SetGlobalValue",
+                    "doOffStage": true,
+                    "key": "_ABILITY_Player_Electric_ElementalBurst_Counter",
+                    "maxValue": 0,
+                    "minValue": 0,
+                    "value": 0
+                  }
+                ],
+                []
+              ],
+              "defaultGlobalValueOnCreate": 0,
+              "globalValueKey": "_ABILITY_Player_Electric_ElementalBurst_Counter",
               "modifierNameSteps": [
                 "Blank",
                 "Blank",
@@ -744,50 +763,41 @@
                 2.5,
                 3.5,
                 4.5
-              ],
-              "globalValueKey": "_ABILITY_Player_Electric_ElementalBurst_Counter",
-              "actionQueues": [
-                [],
-                [],
-                [
-                  {
-                    "$type": "Predicated",
-                    "failActions": [
-                      {
-                        "$type": "SetGlobalValue",
-                        "key": "_ABILITY_Player_Electric_ElementalBurst_Counter",
-                        "minValue": 0,
-                        "maxValue": 0,
-                        "value": 0,
-                        "doOffStage": true
-                      }
-                    ],
-                    "targetPredicates": [
-                      {
-                        "$type": "ByUnlockTalentParam",
-                        "talentParam": "Player_Electric_ElementalBurst_ThunderAttack_Enhanced"
-                      }
-                    ],
-                    "doOffStage": true
-                  }
-                ],
-                [
-                  {
-                    "$type": "SetGlobalValue",
-                    "key": "_ABILITY_Player_Electric_ElementalBurst_Counter",
-                    "minValue": 0,
-                    "maxValue": 0,
-                    "value": 0,
-                    "doOffStage": true
-                  }
-                ],
-                []
-              ],
-              "defaultGlobalValueOnCreate": 0
+              ]
             }
           ],
           "modifierName": "",
-          "isUnique": true,
+          "onAdded": [
+            {
+              "$type": "AttachModifier",
+              "modifierName": "Player_Electric_ElementalBurst_ElecResDown",
+              "predicates": [
+                {
+                  "$type": "ByUnlockTalentParam",
+                  "talentParam": "Player_Electric_ElementalBurst_ElecResDown"
+                }
+              ]
+            },
+            {
+              "$type": "SetGlobalValue",
+              "doOffStage": true,
+              "key": "_ABILITY_Player_Electric_ElementalBurst_CD",
+              "maxValue": 0,
+              "minValue": 0,
+              "target": "Caster",
+              "value": 1
+            }
+          ],
+          "onRemoved": [
+            {
+              "$type": "SetGlobalValue",
+              "doOffStage": true,
+              "key": "_ABILITY_Player_Electric_ElementalBurst_Counter",
+              "maxValue": 0,
+              "minValue": 0,
+              "value": 0
+            }
+          ],
           "__unk_Q3323398612": 0
         },
         "Blank": {
@@ -796,23 +806,27 @@
           "__unk_Q3323398612": 0
         },
         "Player_Electric_ElementalBurst_ElecResDown": {
+          "elementDurability": 100,
+          "modifierName": "",
           "onAttackLanded": [
             {
               "$type": "Predicated",
+              "doOffStage": true,
               "successActions": [
                 {
                   "$type": "RemoveUniqueModifier",
+                  "doOffStage": true,
                   "modifierName": "UNIQUE_Player_Electric_ElementalBurst_ElecResDown",
-                  "target": "Target",
-                  "doOffStage": true
+                  "target": "Target"
                 },
                 {
                   "$type": "ApplyModifier",
+                  "doOffStage": true,
                   "modifierName": "UNIQUE_Player_Electric_ElementalBurst_ElecResDown",
-                  "target": "Target",
-                  "doOffStage": true
+                  "target": "Target"
                 }
               ],
+              "target": "Target",
               "targetPredicates": [
                 {
                   "$type": "ByEntityTypes",
@@ -822,9 +836,9 @@
                 },
                 {
                   "$type": "ByTargetGlobalValue",
-                  "value": 0,
                   "compareType": "NoneOrEqual",
-                  "key": "_ANIMAL_ENTITY_TYPE"
+                  "key": "_ANIMAL_ENTITY_TYPE",
+                  "value": 0
                 },
                 {
                   "$type": "ByAttackTags",
@@ -835,114 +849,114 @@
                 {
                   "$type": "ByHitStrikeType"
                 }
-              ],
-              "target": "Target",
-              "doOffStage": true
+              ]
             }
           ],
-          "elementDurability": 100,
-          "modifierName": "",
           "__unk_Q3323398612": 0
         },
         "UNIQUE_Player_Electric_ElementalBurst_ElecResDown": {
           "duration": "ElementalBurst_ElecResDown_Duration",
+          "elementDurability": 100,
           "isLimitedProperties": true,
+          "isUnique": true,
+          "modifierName": "",
           "properties": {
             "Actor_ElecSubHurtDelta": "ElementalBurst_ElecResDown_ElecSubHurtDelta"
           },
           "stacking": "Unique",
-          "elementDurability": 100,
           "state": "DefenseDown",
-          "modifierName": "",
-          "isUnique": true,
           "__unk_Q3323398612": 0
         },
         "UNIQUE_Player_Electric_ElementalBurst_Detect": {
+          "elementDurability": 100,
+          "isUnique": true,
+          "modifierName": "",
           "onAttackLanded": [
             {
               "$type": "Predicated",
               "successActions": [
                 {
                   "$type": "SetGlobalPos",
-                  "setTarget": false,
-                  "key": "_ABILITY_Player_Electric_ElementalBurst_Pos",
                   "born": {
                     "$type": "ConfigBornBySelectedPoint"
                   },
+                  "key": "_ABILITY_Player_Electric_ElementalBurst_Pos",
+                  "setTarget": false,
                   "target": "Other"
                 },
                 {
                   "$type": "ApplyModifier",
+                  "doOffStage": true,
                   "modifierName": "Player_Electric_ElementalBurst_ThunderAttack_Default",
-                  "target": "Caster",
-                  "doOffStage": true,
                   "predicates": [
                     {
                       "$type": "ByTargetGlobalValue",
-                      "value": 1,
                       "compareType": "LessAndEqual",
                       "key": "_ABILITY_Player_Electric_ElementalBurst_Counter",
-                      "target": "Caster"
+                      "target": "Caster",
+                      "value": 1
                     }
-                  ]
+                  ],
+                  "target": "Caster"
                 },
                 {
                   "$type": "ApplyModifier",
+                  "doOffStage": true,
                   "modifierName": "Player_Electric_ElementalBurst_Energy_Default",
-                  "doOffStage": true,
                   "predicates": [
                     {
                       "$type": "ByTargetGlobalValue",
-                      "value": 1,
                       "compareType": "LessAndEqual",
                       "key": "_ABILITY_Player_Electric_ElementalBurst_Counter",
-                      "target": "Caster"
+                      "target": "Caster",
+                      "value": 1
                     }
                   ]
                 },
                 {
                   "$type": "ApplyModifier",
+                  "doOffStage": true,
                   "modifierName": "Player_Electric_ElementalBurst_ThunderAttack_Enhanced",
-                  "target": "Caster",
-                  "doOffStage": true,
                   "predicates": [
                     {
                       "$type": "ByTargetGlobalValue",
-                      "value": 2,
                       "key": "_ABILITY_Player_Electric_ElementalBurst_Counter",
-                      "target": "Caster"
+                      "target": "Caster",
+                      "value": 2
                     }
-                  ]
+                  ],
+                  "target": "Caster"
                 },
                 {
                   "$type": "ApplyModifier",
+                  "doOffStage": true,
                   "modifierName": "Player_Electric_ElementalBurst_Energy_Extra",
-                  "doOffStage": true,
                   "predicates": [
                     {
                       "$type": "ByTargetGlobalValue",
-                      "value": 2,
                       "key": "_ABILITY_Player_Electric_ElementalBurst_Counter",
-                      "target": "Caster"
+                      "target": "Caster",
+                      "value": 2
                     }
                   ]
                 },
                 {
                   "$type": "ApplyModifier",
+                  "doOffStage": true,
                   "modifierName": "Player_Electric_ElementalBurst_Count",
-                  "target": "Caster",
-                  "doOffStage": true
+                  "target": "Caster"
                 },
                 {
                   "$type": "SetGlobalValue",
+                  "doOffStage": true,
                   "key": "_ABILITY_Player_Electric_ElementalBurst_CD",
-                  "minValue": 0,
                   "maxValue": 0,
-                  "value": 0,
+                  "minValue": 0,
                   "target": "Caster",
-                  "doOffStage": true
+                  "value": 0
                 }
               ],
+              "target": "Other",
               "targetPredicates": [
                 {
                   "$type": "ByEntityTypes",
@@ -953,9 +967,9 @@
                 },
                 {
                   "$type": "ByTargetGlobalValue",
-                  "value": 0,
                   "compareType": "NoneOrEqual",
-                  "key": "_ANIMAL_ENTITY_TYPE"
+                  "key": "_ANIMAL_ENTITY_TYPE",
+                  "value": 0
                 },
                 {
                   "$type": "ByAttackTags",
@@ -971,59 +985,57 @@
                 },
                 {
                   "$type": "ByTargetGlobalValue",
-                  "value": 1,
-                  "key": "_ABILITY_Player_Electric_ElementalBurst_CD",
                   "forceByCaster": true,
-                  "target": "Caster"
+                  "key": "_ABILITY_Player_Electric_ElementalBurst_CD",
+                  "target": "Caster",
+                  "value": 1
                 },
                 {
                   "$type": "ByTargetPositionToSelfPosition",
-                  "NJICAELBCCB": "",
-                  "JBOGOHPICML": "",
+                  "logic": "LesserOrEqual",
                   "value": 15,
-                  "logic": "LesserOrEqual"
+                  "FPDDDGMBDKP": "",
+                  "GCDNHEEGIPE": ""
                 }
-              ],
-              "target": "Other"
+              ]
             }
           ],
-          "elementDurability": 100,
-          "modifierName": "",
-          "isUnique": true,
           "__unk_Q3323398612": 0
         },
         "Player_Electric_ElementalBurst_Count": {
           "duration": 0.5,
-          "onRemoved": [
-            {
-              "$type": "SetGlobalValue",
-              "key": "_ABILITY_Player_Electric_ElementalBurst_CD",
-              "minValue": 0,
-              "maxValue": 0,
-              "value": 1,
-              "target": "Caster",
-              "doOffStage": true
-            }
-          ],
+          "elementDurability": 100,
+          "modifierName": "",
           "onAdded": [
             {
               "$type": "AddGlobalValue",
-              "useLimitRange": true,
+              "doOffStage": true,
               "key": "_ABILITY_Player_Electric_ElementalBurst_Counter",
               "maxValue": 3,
               "minValue": 0,
-              "value": 1,
               "target": "Caster",
-              "doOffStage": true
+              "useLimitRange": true,
+              "value": 1
+            }
+          ],
+          "onRemoved": [
+            {
+              "$type": "SetGlobalValue",
+              "doOffStage": true,
+              "key": "_ABILITY_Player_Electric_ElementalBurst_CD",
+              "maxValue": 0,
+              "minValue": 0,
+              "target": "Caster",
+              "value": 1
             }
           ],
           "stacking": "Unique",
-          "elementDurability": 100,
-          "modifierName": "",
           "__unk_Q3323398612": 0
         },
         "Player_Electric_ElementalBurst_Energy_Default": {
           "duration": 0.2,
+          "elementDurability": 100,
+          "modifierName": "",
           "onAdded": [
             {
               "$type": "ReviveElemEnergy",
@@ -1031,12 +1043,12 @@
             }
           ],
           "stacking": "Unique",
-          "elementDurability": 100,
-          "modifierName": "",
           "__unk_Q3323398612": 0
         },
         "Player_Electric_ElementalBurst_Energy_Extra": {
           "duration": 0.2,
+          "elementDurability": 100,
+          "modifierName": "",
           "onAdded": [
             {
               "$type": "ReviveElemEnergy",
@@ -1048,171 +1060,131 @@
             }
           ],
           "stacking": "Unique",
-          "elementDurability": 100,
-          "modifierName": "",
           "__unk_Q3323398612": 0
         },
         "Player_Electric_ElementalBurst_ThunderAttack_Default": {
           "duration": 0.2,
+          "elementDurability": 100,
+          "modifierName": "",
           "onAdded": [
             {
               "$type": "FireEffect",
-              "effectPattern": "Eff_Player_Electric_ElementalBurst_Thunder",
-              "scale": 1,
               "born": {
                 "$type": "ConfigBornByGlobalValue",
-                "positionKey": "_ABILITY_Player_Electric_ElementalBurst_Pos",
-                "directionKey": ""
+                "directionKey": "",
+                "positionKey": "_ABILITY_Player_Electric_ElementalBurst_Pos"
               },
-              "ILLLPEOODKP": ""
+              "effectPattern": "Eff_Player_Electric_ElementalBurst_Thunder",
+              "scale": 1,
+              "JHAGIJGAKMK": ""
             },
             {
               "$type": "TriggerAttackEvent",
-              "targetType": "Enemy",
               "attackEvent": {
                 "attackInfo": {
                   "attackProperty": {
-                    "elementType": "Electric",
-                    "damagePercentageRatio": 0,
-                    "strikeType": "Default",
-                    "enBreak": 50,
                     "damagePercentage": "ElementalBurst_ThunderAttack_Default_Damage",
+                    "damagePercentageRatio": 0,
                     "elementDurability": 25,
                     "elementRank": 1.5,
+                    "elementType": "Electric",
+                    "enBreak": 50,
+                    "strikeType": "Default",
                     "__exp_arkhe": 0
                   },
-                  "hitPattern": {
-                    "__unk_Q3893899620": "",
-                    "onHitEffectName": "default",
-                    "hitHaltTimeScale": 0.05,
-                    "hitImpulseType": "LV2"
-                  },
+                  "attackTag": "Elemental_Burst",
                   "attenuationGroup": "default",
                   "attenuationTag": "Elemental_Burst",
-                  "attackTag": "Elemental_Burst",
-                  "canBeModifiedBy": "OriginOwner"
+                  "canBeModifiedBy": "OriginOwner",
+                  "hitPattern": {
+                    "hitHaltTimeScale": 0.05,
+                    "hitImpulseType": "LV2",
+                    "onHitEffectName": "default",
+                    "__unk_Q3893899620": ""
+                  }
                 },
                 "attackPattern": {
                   "$type": "ConfigAttackSphere",
-                  "radius": 2,
-                  "triggerType": "TriggerNoRepeat",
-                  "ignoreMassive": true,
                   "born": {
                     "$type": "ConfigBornByGlobalValue",
-                    "positionKey": "_ABILITY_Player_Electric_ElementalBurst_Pos",
-                    "directionKey": ""
-                  }
+                    "directionKey": "",
+                    "positionKey": "_ABILITY_Player_Electric_ElementalBurst_Pos"
+                  },
+                  "ignoreMassive": true,
+                  "radius": 2,
+                  "triggerType": "TriggerNoRepeat"
                 }
               },
-              "target": "Caster"
+              "target": "Caster",
+              "targetType": "Enemy"
             }
           ],
-          "elementDurability": 100,
-          "modifierName": "",
           "__unk_Q3323398612": 0
         },
         "Player_Electric_ElementalBurst_ThunderAttack_Enhanced": {
           "duration": 0.2,
+          "elementDurability": 100,
+          "modifierName": "",
           "onAdded": [
             {
               "$type": "FireEffect",
-              "effectPattern": "Eff_Player_Electric_ElementalBurst_Thunder_Enhanced",
-              "scale": 1,
               "born": {
                 "$type": "ConfigBornByGlobalValue",
-                "positionKey": "_ABILITY_Player_Electric_ElementalBurst_Pos",
-                "directionKey": ""
+                "directionKey": "",
+                "positionKey": "_ABILITY_Player_Electric_ElementalBurst_Pos"
               },
-              "ILLLPEOODKP": ""
+              "effectPattern": "Eff_Player_Electric_ElementalBurst_Thunder_Enhanced",
+              "scale": 1,
+              "JHAGIJGAKMK": ""
             },
             {
               "$type": "TriggerAttackEvent",
-              "targetType": "Enemy",
               "attackEvent": {
                 "attackInfo": {
                   "attackProperty": {
-                    "elementType": "Electric",
-                    "damagePercentageRatio": 0,
-                    "strikeType": "Default",
-                    "enBreak": 50,
                     "damagePercentage": [
                       "ElementalBurst_ThunderAttack_Enhanced_Damage_Percentage",
                       "ElementalBurst_ThunderAttack_Default_Damage",
                       "MUL"
                     ],
+                    "damagePercentageRatio": 0,
                     "elementDurability": 25,
                     "elementRank": 1.5,
+                    "elementType": "Electric",
+                    "enBreak": 50,
+                    "strikeType": "Default",
                     "__exp_arkhe": 0
                   },
-                  "hitPattern": {
-                    "__unk_Q3893899620": "",
-                    "onHitEffectName": "default",
-                    "hitHaltTimeScale": 0.05,
-                    "hitImpulseType": "LV2"
-                  },
+                  "attackTag": "Elemental_Burst",
                   "attenuationGroup": "default",
                   "attenuationTag": "Elemental_Burst",
-                  "attackTag": "Elemental_Burst",
-                  "canBeModifiedBy": "OriginOwner"
+                  "canBeModifiedBy": "OriginOwner",
+                  "hitPattern": {
+                    "hitHaltTimeScale": 0.05,
+                    "hitImpulseType": "LV2",
+                    "onHitEffectName": "default",
+                    "__unk_Q3893899620": ""
+                  }
                 },
                 "attackPattern": {
                   "$type": "ConfigAttackSphere",
-                  "radius": 2.5,
-                  "triggerType": "TriggerNoRepeat",
-                  "ignoreMassive": true,
                   "born": {
                     "$type": "ConfigBornByGlobalValue",
-                    "positionKey": "_ABILITY_Player_Electric_ElementalBurst_Pos",
-                    "directionKey": ""
-                  }
+                    "directionKey": "",
+                    "positionKey": "_ABILITY_Player_Electric_ElementalBurst_Pos"
+                  },
+                  "ignoreMassive": true,
+                  "radius": 2.5,
+                  "triggerType": "TriggerNoRepeat"
                 }
               },
-              "target": "Caster"
+              "target": "Caster",
+              "targetType": "Enemy"
             }
           ],
-          "elementDurability": 100,
-          "modifierName": "",
           "__unk_Q3323398612": 0
         }
       },
-      "onKill": [
-        {
-          "$type": "RemoveUniqueModifier",
-          "modifierName": "UNIQUE_Player_Electric_ElementalBurst_Handler",
-          "doOffStage": true
-        },
-        {
-          "$type": "FireEffect",
-          "effectPattern": "Eff_Player_Electric_ElementalBurst_Magatama_Die",
-          "scale": 1,
-          "born": {
-            "$type": "ConfigBornByAttachPoint",
-            "attachPointName": "Ponit1"
-          },
-          "ILLLPEOODKP": ""
-        },
-        {
-          "$type": "FireEffect",
-          "effectPattern": "Eff_Player_Electric_ElementalBurst_Magatama_Die",
-          "scale": 1,
-          "born": {
-            "$type": "ConfigBornByAttachPoint",
-            "attachPointName": "Ponit2"
-          },
-          "ILLLPEOODKP": ""
-        },
-        {
-          "$type": "FireEffect",
-          "effectPattern": "Eff_Player_Electric_ElementalBurst_Magatama_Die",
-          "scale": 1,
-          "born": {
-            "$type": "ConfigBornByAttachPoint",
-            "attachPointName": "Ponit3"
-          },
-          "ILLLPEOODKP": ""
-        }
-      ],
-      "abilityName": "Avatar_Player_Electric_ElementalBurst_Bullet",
       "onAdded": [
         {
           "$type": "ApplyModifier",
@@ -1231,44 +1203,74 @@
           "modifierName": "UNIQUE_Player_Electric_ElementalBurst_Handler"
         }
       ],
-      "abilitySpecials": {
-        "ElementalBurst_Duration": 0,
-        "ElementalBurst_ElecResDown_Duration": 0,
-        "ElementalBurst_ElecResDown_ElecSubHurtDelta": 0,
-        "ElementalBurst_ReviveEnergy_Default": 0,
-        "ElementalBurst_ReviveEnergy_Enhanced": 0,
-        "ElementalBurst_ThunderAttack_Default_Damage": 0,
-        "ElementalBurst_ThunderAttack_Enhanced_Damage_Percentage": 0
-      }
+      "onKill": [
+        {
+          "$type": "RemoveUniqueModifier",
+          "doOffStage": true,
+          "modifierName": "UNIQUE_Player_Electric_ElementalBurst_Handler"
+        },
+        {
+          "$type": "FireEffect",
+          "born": {
+            "$type": "ConfigBornByAttachPoint",
+            "attachPointName": "Ponit1"
+          },
+          "effectPattern": "Eff_Player_Electric_ElementalBurst_Magatama_Die",
+          "scale": 1,
+          "JHAGIJGAKMK": ""
+        },
+        {
+          "$type": "FireEffect",
+          "born": {
+            "$type": "ConfigBornByAttachPoint",
+            "attachPointName": "Ponit2"
+          },
+          "effectPattern": "Eff_Player_Electric_ElementalBurst_Magatama_Die",
+          "scale": 1,
+          "JHAGIJGAKMK": ""
+        },
+        {
+          "$type": "FireEffect",
+          "born": {
+            "$type": "ConfigBornByAttachPoint",
+            "attachPointName": "Ponit3"
+          },
+          "effectPattern": "Eff_Player_Electric_ElementalBurst_Magatama_Die",
+          "scale": 1,
+          "JHAGIJGAKMK": ""
+        }
+      ]
     }
   },
   {
     "Default": {
+      "abilityName": "Avatar_Player_Electric_ElementalArt_Click",
+      "isDynamicAbility": true,
       "onAbilityStart": [
         {
           "$type": "AvatarSkillStart",
-          "skillID": 10602,
           "cdRatio": 1,
           "costStaminaRatio": 1,
-          "cdRatio": 1
+          "skillID": 10602,
+          "NKOFINBNOOK": 1
         },
         {
           "$type": "AddGlobalValue",
-          "useLimitRange": true,
+          "doOffStage": true,
           "key": "_Ability_Player_Electric_ElementBall_Mark",
           "maxValue": 1,
           "minValue": 0,
-          "value": -1,
-          "doOffStage": true
+          "useLimitRange": true,
+          "value": -1
         },
         {
           "$type": "FireEffect",
-          "effectPattern": "Eff_Player_Electric_ElementalArt_Cast",
-          "scale": 1,
           "born": {
             "$type": "ConfigBornBySelf"
           },
-          "ILLLPEOODKP": ""
+          "effectPattern": "Eff_Player_Electric_ElementalArt_Cast",
+          "scale": 1,
+          "JHAGIJGAKMK": ""
         },
         {
           "$type": "KillGadget",
@@ -1278,10 +1280,10 @@
         },
         {
           "$type": "AddGlobalValue",
-          "useLimitRange": true,
           "key": "_ABILITY_Player_Electric_ElementalArt_Counter",
           "maxValue": 0,
           "minValue": 0,
+          "useLimitRange": true,
           "value": -4
         },
         {
@@ -1299,16 +1301,16 @@
           "$type": "TriggerBullet",
           "born": {
             "$type": "ConfigBornBySelf",
-            "offset": {
-              "x": 0.2,
-              "z": 0.2,
-              "y": 0.8
-            },
             "direction": {
               "$type": "ConfigDirectionByDefault",
               "angleOffset": {
                 "y": 20
               }
+            },
+            "offset": {
+              "z": 0.2,
+              "y": 0.8,
+              "x": 0.2
             }
           },
           "bulletID": 41044102
@@ -1317,475 +1319,59 @@
           "$type": "TriggerBullet",
           "born": {
             "$type": "ConfigBornBySelf",
-            "offset": {
-              "x": -0.2,
-              "z": 0.2,
-              "y": 0.8
-            },
             "direction": {
               "$type": "ConfigDirectionByDefault",
               "angleOffset": {
                 "y": -20
               }
+            },
+            "offset": {
+              "z": 0.2,
+              "y": 0.8,
+              "x": -0.2
             }
           },
           "bulletID": 41044104
         }
-      ],
-      "abilityName": "Avatar_Player_Electric_ElementalArt_Click",
-      "isDynamicAbility": true
+      ]
     }
   },
   {
     "Default": {
-      "modifiers": {
-        "Player_Electric_ElementalArt_ElementBall_Handler": {
-          "onAttackLanded": [
-            {
-              "$type": "Predicated",
-              "successActions": [
-                {
-                  "$type": "GenerateElemBall",
-                  "ratio": 1,
-                  "born": {
-                    "$type": "ConfigBornByTarget"
-                  },
-                  "configID": 2020,
-                  "baseEnergy": 3
-                },
-                {
-                  "$type": "AddGlobalValue",
-                  "useLimitRange": true,
-                  "key": "_Ability_Player_Electric_ElementBall_Mark",
-                  "maxValue": 1,
-                  "minValue": 0,
-                  "value": 1,
-                  "target": "OriginOwner",
-                  "doOffStage": true
-                }
-              ],
-              "targetPredicates": [
-                {
-                  "$type": "ByAttackTags",
-                  "attackTags": [
-                    "Elemental_Art"
-                  ]
-                },
-                {
-                  "$type": "ByEntityTypes",
-                  "entityTypes": [
-                    "Monster"
-                  ]
-                },
-                {
-                  "$type": "ByTargetGlobalValue",
-                  "value": 0,
-                  "compareType": "NoneOrEqual",
-                  "key": "_ANIMAL_ENTITY_TYPE"
-                },
-                {
-                  "$type": "ByTargetGlobalValue",
-                  "value": 0,
-                  "compareType": "NoneOrEqual",
-                  "key": "_Ability_Player_Electric_ElementBall_Mark",
-                  "target": "OriginOwner"
-                },
-                {
-                  "$type": "ByAvatarElementType",
-                  "elementType": "Electric",
-                  "target": "OriginOwner"
-                }
-              ],
-              "target": "Target",
-              "doOffStage": true
-            }
-          ],
-          "elementDurability": 100,
-          "modifierName": "",
-          "__unk_Q3323398612": 0
-        },
-        "Player_Electric_ElementalArt_Bullet_Handler": {
-          "onHittingOther": [
-            {
-              "$type": "Predicated",
-              "successActions": [
-                {
-                  "$type": "SetGlobalPos",
-                  "key": "_ABILITY_Player_Electric_ElementalArt_BulletPos_1",
-                  "born": {
-                    "$type": "ConfigBornByCollisionPoint"
-                  },
-                  "target": "Owner"
-                },
-                {
-                  "$type": "SetGlobalDir",
-                  "key": "_ABILITY_Player_Electric_ElementalArt_BulletDir_1",
-                  "born": {
-                    "$type": "ConfigBornByCollisionPoint"
-                  },
-                  "target": "Owner"
-                }
-              ],
-              "targetPredicates": [
-                {
-                  "$type": "ByAttackTags",
-                  "attackTags": [
-                    "Elemental_Art"
-                  ]
-                },
-                {
-                  "$type": "ByEntityTypes",
-                  "entityTypes": [
-                    "Monster"
-                  ]
-                },
-                {
-                  "$type": "ByTargetGlobalValue",
-                  "value": 0,
-                  "compareType": "NoneOrEqual",
-                  "key": "_ANIMAL_ENTITY_TYPE"
-                },
-                {
-                  "$type": "ByTargetGlobalValue",
-                  "value": 1,
-                  "compareType": "LessAndEqual",
-                  "key": "_ABILITY_Player_Electric_ElementalArt_Counter",
-                  "target": "Owner"
-                }
-              ],
-              "target": "Target",
-              "doOffStage": true
-            }
-          ],
-          "onAttackLanded": [
-            {
-              "$type": "Predicated",
-              "successActions": [
-                {
-                  "$type": "AddGlobalValue",
-                  "useLimitRange": true,
-                  "key": "_ABILITY_Player_Electric_ElementalArt_Counter",
-                  "maxValue": 2,
-                  "minValue": 0,
-                  "value": 1,
-                  "target": "Owner"
-                },
-                {
-                  "$type": "TriggerAbility",
-                  "abilityName": "Avatar_Player_Electric_ElementalArt_SetGadget_1",
-                  "target": "Owner"
-                }
-              ],
-              "targetPredicates": [
-                {
-                  "$type": "ByAttackTags",
-                  "attackTags": [
-                    "Elemental_Art"
-                  ]
-                },
-                {
-                  "$type": "ByEntityTypes",
-                  "entityTypes": [
-                    "Monster"
-                  ]
-                },
-                {
-                  "$type": "ByTargetGlobalValue",
-                  "value": 0,
-                  "compareType": "NoneOrEqual",
-                  "key": "_ANIMAL_ENTITY_TYPE"
-                },
-                {
-                  "$type": "ByTargetGlobalValue",
-                  "value": 1,
-                  "compareType": "LessAndEqual",
-                  "key": "_ABILITY_Player_Electric_ElementalArt_Counter",
-                  "target": "Owner"
-                }
-              ],
-              "target": "Target",
-              "doOffStage": true
-            }
-          ],
-          "elementDurability": 100,
-          "modifierName": "",
-          "__unk_Q3323398612": 0
-        },
-        "Player_Electric_ElementalArt_Bullet_Extra_Handler": {
-          "onHittingOther": [
-            {
-              "$type": "Predicated",
-              "successActions": [
-                {
-                  "$type": "SetGlobalPos",
-                  "key": "_ABILITY_Player_Electric_ElementalArt_BulletPos_1",
-                  "born": {
-                    "$type": "ConfigBornByCollisionPoint"
-                  },
-                  "target": "Owner"
-                },
-                {
-                  "$type": "SetGlobalDir",
-                  "key": "_ABILITY_Player_Electric_ElementalArt_BulletDir_1",
-                  "born": {
-                    "$type": "ConfigBornByCollisionPoint"
-                  },
-                  "target": "Owner"
-                }
-              ],
-              "targetPredicates": [
-                {
-                  "$type": "ByAttackTags",
-                  "attackTags": [
-                    "Elemental_Art"
-                  ]
-                },
-                {
-                  "$type": "ByEntityTypes",
-                  "entityTypes": [
-                    "Monster"
-                  ]
-                },
-                {
-                  "$type": "ByTargetGlobalValue",
-                  "value": 0,
-                  "compareType": "NoneOrEqual",
-                  "key": "_ANIMAL_ENTITY_TYPE"
-                },
-                {
-                  "$type": "ByTargetGlobalValue",
-                  "value": 2,
-                  "compareType": "LessAndEqual",
-                  "key": "_ABILITY_Player_Electric_ElementalArt_Counter",
-                  "target": "Owner"
-                }
-              ],
-              "target": "Target",
-              "doOffStage": true
-            }
-          ],
-          "onAttackLanded": [
-            {
-              "$type": "Predicated",
-              "successActions": [
-                {
-                  "$type": "AddGlobalValue",
-                  "useLimitRange": true,
-                  "key": "_ABILITY_Player_Electric_ElementalArt_Counter",
-                  "maxValue": 3,
-                  "minValue": 0,
-                  "value": 1,
-                  "target": "Owner"
-                },
-                {
-                  "$type": "TriggerAbility",
-                  "abilityName": "Avatar_Player_Electric_ElementalArt_SetGadget_1",
-                  "target": "Owner"
-                }
-              ],
-              "targetPredicates": [
-                {
-                  "$type": "ByAttackTags",
-                  "attackTags": [
-                    "Elemental_Art"
-                  ]
-                },
-                {
-                  "$type": "ByEntityTypes",
-                  "entityTypes": [
-                    "Monster"
-                  ]
-                },
-                {
-                  "$type": "ByTargetGlobalValue",
-                  "value": 0,
-                  "compareType": "NoneOrEqual",
-                  "key": "_ANIMAL_ENTITY_TYPE"
-                },
-                {
-                  "$type": "ByTargetGlobalValue",
-                  "value": 2,
-                  "compareType": "LessAndEqual",
-                  "key": "_ABILITY_Player_Electric_ElementalArt_Counter",
-                  "target": "Owner"
-                }
-              ],
-              "target": "Target",
-              "doOffStage": true
-            }
-          ],
-          "elementDurability": 100,
-          "modifierName": "",
-          "__unk_Q3323398612": 0
-        }
-      },
-      "onAbilityStart": [
-        {
-          "$type": "Predicated",
-          "successActions": [
-            {
-              "$type": "DamageByAttackValue",
-              "attackInfo": {
-                "attackProperty": {
-                  "elementType": "Electric",
-                  "attackType": "Range",
-                  "damagePercentageRatio": 0,
-                  "strikeType": "Pierce",
-                  "enBreak": 100,
-                  "damagePercentage": "ElementalArt_Damage",
-                  "elementDurability": 25,
-                  "__exp_arkhe": 0
-                },
-                "hitPattern": {
-                  "__unk_Q3893899620": "",
-                  "onHitEffectName": "default",
-                  "hitHaltTimeScale": 0.01,
-                  "hitImpulseType": "LV3"
-                },
-                "attenuationGroup": "default",
-                "attenuationTag": "Elemental_Art",
-                "attackTag": "Elemental_Art",
-                "canBeModifiedBy": "OriginOwner"
-              },
-              "target": "Target"
-            }
-          ],
-          "failActions": [
-            {
-              "$type": "TriggerAttackEvent",
-              "targetType": "Enemy",
-              "attackEvent": {
-                "attackInfo": {
-                  "attackProperty": {
-                    "elementType": "Electric",
-                    "attackType": "Range",
-                    "damagePercentageRatio": 0,
-                    "strikeType": "Pierce",
-                    "enBreak": 100,
-                    "damagePercentage": "ElementalArt_Damage",
-                    "elementDurability": 25,
-                    "__exp_arkhe": 0
-                  },
-                  "hitPattern": {
-                    "__unk_Q3893899620": "",
-                    "onHitEffectName": "Eff_Player_Electric_ElementalArt_Bullet_Hit",
-                    "hitHaltTimeScale": 0.01,
-                    "hitImpulseType": "LV3"
-                  },
-                  "attenuationGroup": "default",
-                  "attenuationTag": "Elemental_Art",
-                  "attackTag": "Elemental_Art",
-                  "canBeModifiedBy": "OriginOwner"
-                },
-                "attackPattern": {
-                  "$type": "ConfigAttackBox",
-                  "size": {
-                    "x": 0.1,
-                    "z": 0.6,
-                    "y": 0.1
-                  },
-                  "triggerType": "TriggerNoRepeat",
-                  "born": {
-                    "$type": "ConfigBornByCollisionPoint"
-                  },
-                  "checkHitLayerType": "Both"
-                }
-              }
-            }
-          ],
-          "targetPredicates": [
-            {
-              "$type": "ByEntityTypes",
-              "entityTypes": [
-                "MonsterEquip"
-              ]
-            }
-          ],
-          "target": "Target"
-        }
-      ],
-      "onKill": [
-        {
-          "$type": "FireEffect",
-          "effectPattern": "Eff_Player_Electric_ElementalArt_Bullet_Die",
-          "scale": 1,
-          "ILLLPEOODKP": ""
-        }
-      ],
       "abilityName": "Player_Electric_ElementalArt_Bullet_1",
-      "onAdded": [
-        {
-          "$type": "ApplyModifier",
-          "modifierName": "Player_Electric_ElementalArt_ElementBall_Handler"
-        },
-        {
-          "$type": "AttachEffect",
-          "ILLLPEOODKP": "",
-          "scale": 1,
-          "effectPattern": "Eff_Player_Electric_ElementalArt_Magatama_Bullet"
-        },
-        {
-          "$type": "AttachEffect",
-          "ILLLPEOODKP": "",
-          "scale": 1,
-          "effectPattern": "Eff_Player_Electric_ElementalArt_Magatama_Bullet_Trail"
-        },
-        {
-          "$type": "Predicated",
-          "successActions": [
-            {
-              "$type": "ApplyModifier",
-              "modifierName": "Player_Electric_ElementalArt_Bullet_Extra_Handler"
-            }
-          ],
-          "failActions": [
-            {
-              "$type": "ApplyModifier",
-              "modifierName": "Player_Electric_ElementalArt_Bullet_Handler"
-            }
-          ],
-          "targetPredicates": [
-            {
-              "$type": "ByUnlockTalentParam",
-              "talentParam": "Player_Electric_ElementalArt_MaxNumUp"
-            }
-          ],
-          "doOffStage": true
-        }
-      ],
       "abilitySpecials": {
         "ElementalArt_Damage": 0
-      }
-    }
-  },
-  {
-    "Default": {
+      },
       "modifiers": {
         "Player_Electric_ElementalArt_ElementBall_Handler": {
+          "elementDurability": 100,
+          "modifierName": "",
           "onAttackLanded": [
             {
               "$type": "Predicated",
+              "doOffStage": true,
               "successActions": [
                 {
                   "$type": "GenerateElemBall",
-                  "ratio": 1,
+                  "baseEnergy": 3,
                   "born": {
                     "$type": "ConfigBornByTarget"
                   },
                   "configID": 2020,
-                  "baseEnergy": 3
+                  "ratio": 1
                 },
                 {
                   "$type": "AddGlobalValue",
-                  "useLimitRange": true,
+                  "doOffStage": true,
                   "key": "_Ability_Player_Electric_ElementBall_Mark",
                   "maxValue": 1,
                   "minValue": 0,
-                  "value": 1,
                   "target": "OriginOwner",
-                  "doOffStage": true
+                  "useLimitRange": true,
+                  "value": 1
                 }
               ],
+              "target": "Target",
               "targetPredicates": [
                 {
                   "$type": "ByAttackTags",
@@ -1801,103 +1387,51 @@
                 },
                 {
                   "$type": "ByTargetGlobalValue",
-                  "value": 0,
                   "compareType": "NoneOrEqual",
-                  "key": "_ANIMAL_ENTITY_TYPE"
+                  "key": "_ANIMAL_ENTITY_TYPE",
+                  "value": 0
                 },
                 {
                   "$type": "ByTargetGlobalValue",
-                  "value": 0,
                   "compareType": "NoneOrEqual",
                   "key": "_Ability_Player_Electric_ElementBall_Mark",
-                  "target": "OriginOwner"
+                  "target": "OriginOwner",
+                  "value": 0
                 },
                 {
                   "$type": "ByAvatarElementType",
                   "elementType": "Electric",
                   "target": "OriginOwner"
                 }
-              ],
-              "target": "Target",
-              "doOffStage": true
+              ]
             }
           ],
-          "elementDurability": 100,
-          "modifierName": "",
           "__unk_Q3323398612": 0
         },
         "Player_Electric_ElementalArt_Bullet_Handler": {
-          "onHittingOther": [
-            {
-              "$type": "Predicated",
-              "successActions": [
-                {
-                  "$type": "SetGlobalPos",
-                  "key": "_ABILITY_Player_Electric_ElementalArt_BulletPos_2",
-                  "born": {
-                    "$type": "ConfigBornByCollisionPoint"
-                  },
-                  "target": "Owner"
-                },
-                {
-                  "$type": "SetGlobalDir",
-                  "key": "_ABILITY_Player_Electric_ElementalArt_BulletDir_2",
-                  "born": {
-                    "$type": "ConfigBornByCollisionPoint"
-                  },
-                  "target": "Owner"
-                }
-              ],
-              "targetPredicates": [
-                {
-                  "$type": "ByAttackTags",
-                  "attackTags": [
-                    "Elemental_Art"
-                  ]
-                },
-                {
-                  "$type": "ByEntityTypes",
-                  "entityTypes": [
-                    "Monster"
-                  ]
-                },
-                {
-                  "$type": "ByTargetGlobalValue",
-                  "value": 0,
-                  "compareType": "NoneOrEqual",
-                  "key": "_ANIMAL_ENTITY_TYPE"
-                },
-                {
-                  "$type": "ByTargetGlobalValue",
-                  "value": 1,
-                  "compareType": "LessAndEqual",
-                  "key": "_ABILITY_Player_Electric_ElementalArt_Counter",
-                  "target": "Owner"
-                }
-              ],
-              "target": "Target",
-              "doOffStage": true
-            }
-          ],
+          "elementDurability": 100,
+          "modifierName": "",
           "onAttackLanded": [
             {
               "$type": "Predicated",
+              "doOffStage": true,
               "successActions": [
                 {
                   "$type": "AddGlobalValue",
-                  "useLimitRange": true,
                   "key": "_ABILITY_Player_Electric_ElementalArt_Counter",
                   "maxValue": 2,
                   "minValue": 0,
-                  "value": 1,
-                  "target": "Owner"
+                  "target": "Owner",
+                  "useLimitRange": true,
+                  "value": 1
                 },
                 {
                   "$type": "TriggerAbility",
-                  "abilityName": "Avatar_Player_Electric_ElementalArt_SetGadget_2",
+                  "abilityName": "Avatar_Player_Electric_ElementalArt_SetGadget_1",
                   "target": "Owner"
                 }
               ],
+              "target": "Target",
               "targetPredicates": [
                 {
                   "$type": "ByAttackTags",
@@ -1913,48 +1447,43 @@
                 },
                 {
                   "$type": "ByTargetGlobalValue",
-                  "value": 0,
                   "compareType": "NoneOrEqual",
-                  "key": "_ANIMAL_ENTITY_TYPE"
+                  "key": "_ANIMAL_ENTITY_TYPE",
+                  "value": 0
                 },
                 {
                   "$type": "ByTargetGlobalValue",
-                  "value": 1,
                   "compareType": "LessAndEqual",
                   "key": "_ABILITY_Player_Electric_ElementalArt_Counter",
-                  "target": "Owner"
+                  "target": "Owner",
+                  "value": 1
                 }
-              ],
-              "target": "Target",
-              "doOffStage": true
+              ]
             }
           ],
-          "elementDurability": 100,
-          "modifierName": "",
-          "__unk_Q3323398612": 0
-        },
-        "Player_Electric_ElementalArt_Bullet_Extra_Handler": {
           "onHittingOther": [
             {
               "$type": "Predicated",
+              "doOffStage": true,
               "successActions": [
                 {
                   "$type": "SetGlobalPos",
-                  "key": "_ABILITY_Player_Electric_ElementalArt_BulletPos_2",
                   "born": {
                     "$type": "ConfigBornByCollisionPoint"
                   },
+                  "key": "_ABILITY_Player_Electric_ElementalArt_BulletPos_1",
                   "target": "Owner"
                 },
                 {
                   "$type": "SetGlobalDir",
-                  "key": "_ABILITY_Player_Electric_ElementalArt_BulletDir_2",
                   "born": {
                     "$type": "ConfigBornByCollisionPoint"
                   },
+                  "key": "_ABILITY_Player_Electric_ElementalArt_BulletDir_1",
                   "target": "Owner"
                 }
               ],
+              "target": "Target",
               "targetPredicates": [
                 {
                   "$type": "ByAttackTags",
@@ -1970,41 +1499,46 @@
                 },
                 {
                   "$type": "ByTargetGlobalValue",
-                  "value": 0,
                   "compareType": "NoneOrEqual",
-                  "key": "_ANIMAL_ENTITY_TYPE"
+                  "key": "_ANIMAL_ENTITY_TYPE",
+                  "value": 0
                 },
                 {
                   "$type": "ByTargetGlobalValue",
-                  "value": 2,
                   "compareType": "LessAndEqual",
                   "key": "_ABILITY_Player_Electric_ElementalArt_Counter",
-                  "target": "Owner"
+                  "target": "Owner",
+                  "value": 1
                 }
-              ],
-              "target": "Target",
-              "doOffStage": true
+              ]
             }
           ],
+          "__unk_Q3323398612": 0
+        },
+        "Player_Electric_ElementalArt_Bullet_Extra_Handler": {
+          "elementDurability": 100,
+          "modifierName": "",
           "onAttackLanded": [
             {
               "$type": "Predicated",
+              "doOffStage": true,
               "successActions": [
                 {
                   "$type": "AddGlobalValue",
-                  "useLimitRange": true,
                   "key": "_ABILITY_Player_Electric_ElementalArt_Counter",
                   "maxValue": 3,
                   "minValue": 0,
-                  "value": 1,
-                  "target": "Owner"
+                  "target": "Owner",
+                  "useLimitRange": true,
+                  "value": 1
                 },
                 {
                   "$type": "TriggerAbility",
-                  "abilityName": "Avatar_Player_Electric_ElementalArt_SetGadget_2",
+                  "abilityName": "Avatar_Player_Electric_ElementalArt_SetGadget_1",
                   "target": "Owner"
                 }
               ],
+              "target": "Target",
               "targetPredicates": [
                 {
                   "$type": "ByAttackTags",
@@ -2020,101 +1554,150 @@
                 },
                 {
                   "$type": "ByTargetGlobalValue",
-                  "value": 0,
                   "compareType": "NoneOrEqual",
-                  "key": "_ANIMAL_ENTITY_TYPE"
+                  "key": "_ANIMAL_ENTITY_TYPE",
+                  "value": 0
                 },
                 {
                   "$type": "ByTargetGlobalValue",
-                  "value": 2,
                   "compareType": "LessAndEqual",
                   "key": "_ABILITY_Player_Electric_ElementalArt_Counter",
+                  "target": "Owner",
+                  "value": 2
+                }
+              ]
+            }
+          ],
+          "onHittingOther": [
+            {
+              "$type": "Predicated",
+              "doOffStage": true,
+              "successActions": [
+                {
+                  "$type": "SetGlobalPos",
+                  "born": {
+                    "$type": "ConfigBornByCollisionPoint"
+                  },
+                  "key": "_ABILITY_Player_Electric_ElementalArt_BulletPos_1",
+                  "target": "Owner"
+                },
+                {
+                  "$type": "SetGlobalDir",
+                  "born": {
+                    "$type": "ConfigBornByCollisionPoint"
+                  },
+                  "key": "_ABILITY_Player_Electric_ElementalArt_BulletDir_1",
                   "target": "Owner"
                 }
               ],
               "target": "Target",
-              "doOffStage": true
+              "targetPredicates": [
+                {
+                  "$type": "ByAttackTags",
+                  "attackTags": [
+                    "Elemental_Art"
+                  ]
+                },
+                {
+                  "$type": "ByEntityTypes",
+                  "entityTypes": [
+                    "Monster"
+                  ]
+                },
+                {
+                  "$type": "ByTargetGlobalValue",
+                  "compareType": "NoneOrEqual",
+                  "key": "_ANIMAL_ENTITY_TYPE",
+                  "value": 0
+                },
+                {
+                  "$type": "ByTargetGlobalValue",
+                  "compareType": "LessAndEqual",
+                  "key": "_ABILITY_Player_Electric_ElementalArt_Counter",
+                  "target": "Owner",
+                  "value": 2
+                }
+              ]
             }
           ],
-          "elementDurability": 100,
-          "modifierName": "",
           "__unk_Q3323398612": 0
         }
       },
       "onAbilityStart": [
         {
           "$type": "Predicated",
+          "failActions": [
+            {
+              "$type": "TriggerAttackEvent",
+              "attackEvent": {
+                "attackInfo": {
+                  "attackProperty": {
+                    "attackType": "Range",
+                    "damagePercentage": "ElementalArt_Damage",
+                    "damagePercentageRatio": 0,
+                    "elementDurability": 25,
+                    "elementType": "Electric",
+                    "enBreak": 100,
+                    "strikeType": "Pierce",
+                    "__exp_arkhe": 0
+                  },
+                  "attackTag": "Elemental_Art",
+                  "attenuationGroup": "default",
+                  "attenuationTag": "Elemental_Art",
+                  "canBeModifiedBy": "OriginOwner",
+                  "hitPattern": {
+                    "hitHaltTimeScale": 0.01,
+                    "hitImpulseType": "LV3",
+                    "onHitEffectName": "Eff_Player_Electric_ElementalArt_Bullet_Hit",
+                    "__unk_Q3893899620": ""
+                  }
+                },
+                "attackPattern": {
+                  "$type": "ConfigAttackBox",
+                  "born": {
+                    "$type": "ConfigBornByCollisionPoint"
+                  },
+                  "checkHitLayerType": "Both",
+                  "size": {
+                    "z": 0.6,
+                    "y": 0.1,
+                    "x": 0.1
+                  },
+                  "triggerType": "TriggerNoRepeat"
+                }
+              },
+              "targetType": "Enemy"
+            }
+          ],
           "successActions": [
             {
               "$type": "DamageByAttackValue",
               "attackInfo": {
                 "attackProperty": {
-                  "elementType": "Electric",
                   "attackType": "Range",
-                  "damagePercentageRatio": 0,
-                  "strikeType": "Pierce",
-                  "enBreak": 100,
                   "damagePercentage": "ElementalArt_Damage",
+                  "damagePercentageRatio": 0,
                   "elementDurability": 25,
+                  "elementType": "Electric",
+                  "enBreak": 100,
+                  "strikeType": "Pierce",
                   "__exp_arkhe": 0
                 },
-                "hitPattern": {
-                  "__unk_Q3893899620": "",
-                  "onHitEffectName": "default",
-                  "hitHaltTimeScale": 0.01,
-                  "hitImpulseType": "LV3"
-                },
+                "attackTag": "Elemental_Art",
                 "attenuationGroup": "default",
                 "attenuationTag": "Elemental_Art",
-                "attackTag": "Elemental_Art",
-                "canBeModifiedBy": "OriginOwner"
+                "canBeModifiedBy": "OriginOwner",
+                "hitPattern": {
+                  "hitHaltTimeScale": 0.01,
+                  "hitImpulseType": "LV3",
+                  "onHitEffectName": "default",
+                  "__unk_Q3893899620": ""
+                }
               },
               "target": "Target"
             }
           ],
-          "failActions": [
-            {
-              "$type": "TriggerAttackEvent",
-              "targetType": "Enemy",
-              "attackEvent": {
-                "attackInfo": {
-                  "attackProperty": {
-                    "elementType": "Electric",
-                    "attackType": "Range",
-                    "damagePercentageRatio": 0,
-                    "strikeType": "Pierce",
-                    "enBreak": 100,
-                    "damagePercentage": "ElementalArt_Damage",
-                    "elementDurability": 25,
-                    "__exp_arkhe": 0
-                  },
-                  "hitPattern": {
-                    "__unk_Q3893899620": "",
-                    "onHitEffectName": "Eff_Player_Electric_ElementalArt_Bullet_Hit",
-                    "hitHaltTimeScale": 0.01,
-                    "hitImpulseType": "LV3"
-                  },
-                  "attenuationGroup": "default",
-                  "attenuationTag": "Elemental_Art",
-                  "attackTag": "Elemental_Art",
-                  "canBeModifiedBy": "OriginOwner"
-                },
-                "attackPattern": {
-                  "$type": "ConfigAttackBox",
-                  "size": {
-                    "x": 0.1,
-                    "z": 0.6,
-                    "y": 0.1
-                  },
-                  "triggerType": "TriggerNoRepeat",
-                  "born": {
-                    "$type": "ConfigBornByCollisionPoint"
-                  },
-                  "checkHitLayerType": "Both"
-                }
-              }
-            }
-          ],
+          "target": "Target",
           "targetPredicates": [
             {
               "$type": "ByEntityTypes",
@@ -2122,8 +1705,47 @@
                 "MonsterEquip"
               ]
             }
+          ]
+        }
+      ],
+      "onAdded": [
+        {
+          "$type": "ApplyModifier",
+          "modifierName": "Player_Electric_ElementalArt_ElementBall_Handler"
+        },
+        {
+          "$type": "AttachEffect",
+          "effectPattern": "Eff_Player_Electric_ElementalArt_Magatama_Bullet",
+          "scale": 1,
+          "JHAGIJGAKMK": ""
+        },
+        {
+          "$type": "AttachEffect",
+          "effectPattern": "Eff_Player_Electric_ElementalArt_Magatama_Bullet_Trail",
+          "scale": 1,
+          "JHAGIJGAKMK": ""
+        },
+        {
+          "$type": "Predicated",
+          "doOffStage": true,
+          "failActions": [
+            {
+              "$type": "ApplyModifier",
+              "modifierName": "Player_Electric_ElementalArt_Bullet_Handler"
+            }
           ],
-          "target": "Target"
+          "successActions": [
+            {
+              "$type": "ApplyModifier",
+              "modifierName": "Player_Electric_ElementalArt_Bullet_Extra_Handler"
+            }
+          ],
+          "targetPredicates": [
+            {
+              "$type": "ByUnlockTalentParam",
+              "talentParam": "Player_Electric_ElementalArt_MaxNumUp"
+            }
+          ]
         }
       ],
       "onKill": [
@@ -2131,83 +1753,47 @@
           "$type": "FireEffect",
           "effectPattern": "Eff_Player_Electric_ElementalArt_Bullet_Die",
           "scale": 1,
-          "ILLLPEOODKP": ""
+          "JHAGIJGAKMK": ""
         }
-      ],
+      ]
+    }
+  },
+  {
+    "Default": {
       "abilityName": "Player_Electric_ElementalArt_Bullet_2",
-      "onAdded": [
-        {
-          "$type": "ApplyModifier",
-          "modifierName": "Player_Electric_ElementalArt_ElementBall_Handler"
-        },
-        {
-          "$type": "AttachEffect",
-          "ILLLPEOODKP": "",
-          "scale": 1,
-          "effectPattern": "Eff_Player_Electric_ElementalArt_Magatama_Bullet"
-        },
-        {
-          "$type": "AttachEffect",
-          "ILLLPEOODKP": "",
-          "scale": 1,
-          "effectPattern": "Eff_Player_Electric_ElementalArt_Magatama_Bullet_Trail"
-        },
-        {
-          "$type": "Predicated",
-          "successActions": [
-            {
-              "$type": "ApplyModifier",
-              "modifierName": "Player_Electric_ElementalArt_Bullet_Extra_Handler"
-            }
-          ],
-          "failActions": [
-            {
-              "$type": "ApplyModifier",
-              "modifierName": "Player_Electric_ElementalArt_Bullet_Handler"
-            }
-          ],
-          "targetPredicates": [
-            {
-              "$type": "ByUnlockTalentParam",
-              "talentParam": "Player_Electric_ElementalArt_MaxNumUp"
-            }
-          ],
-          "doOffStage": true
-        }
-      ],
       "abilitySpecials": {
         "ElementalArt_Damage": 0
-      }
-    }
-  },
-  {
-    "Default": {
+      },
       "modifiers": {
         "Player_Electric_ElementalArt_ElementBall_Handler": {
+          "elementDurability": 100,
+          "modifierName": "",
           "onAttackLanded": [
             {
               "$type": "Predicated",
+              "doOffStage": true,
               "successActions": [
                 {
                   "$type": "GenerateElemBall",
-                  "ratio": 1,
+                  "baseEnergy": 3,
                   "born": {
                     "$type": "ConfigBornByTarget"
                   },
                   "configID": 2020,
-                  "baseEnergy": 3
+                  "ratio": 1
                 },
                 {
                   "$type": "AddGlobalValue",
-                  "useLimitRange": true,
+                  "doOffStage": true,
                   "key": "_Ability_Player_Electric_ElementBall_Mark",
                   "maxValue": 1,
                   "minValue": 0,
-                  "value": 1,
                   "target": "OriginOwner",
-                  "doOffStage": true
+                  "useLimitRange": true,
+                  "value": 1
                 }
               ],
+              "target": "Target",
               "targetPredicates": [
                 {
                   "$type": "ByAttackTags",
@@ -2223,103 +1809,51 @@
                 },
                 {
                   "$type": "ByTargetGlobalValue",
-                  "value": 0,
                   "compareType": "NoneOrEqual",
-                  "key": "_ANIMAL_ENTITY_TYPE"
+                  "key": "_ANIMAL_ENTITY_TYPE",
+                  "value": 0
                 },
                 {
                   "$type": "ByTargetGlobalValue",
-                  "value": 0,
                   "compareType": "NoneOrEqual",
                   "key": "_Ability_Player_Electric_ElementBall_Mark",
-                  "target": "OriginOwner"
+                  "target": "OriginOwner",
+                  "value": 0
                 },
                 {
                   "$type": "ByAvatarElementType",
                   "elementType": "Electric",
                   "target": "OriginOwner"
                 }
-              ],
-              "target": "Target",
-              "doOffStage": true
+              ]
             }
           ],
-          "elementDurability": 100,
-          "modifierName": "",
           "__unk_Q3323398612": 0
         },
         "Player_Electric_ElementalArt_Bullet_Handler": {
-          "onHittingOther": [
-            {
-              "$type": "Predicated",
-              "successActions": [
-                {
-                  "$type": "SetGlobalPos",
-                  "key": "_ABILITY_Player_Electric_ElementalArt_BulletPos_3",
-                  "born": {
-                    "$type": "ConfigBornByCollisionPoint"
-                  },
-                  "target": "Owner"
-                },
-                {
-                  "$type": "SetGlobalDir",
-                  "key": "_ABILITY_Player_Electric_ElementalArt_BulletDir_3",
-                  "born": {
-                    "$type": "ConfigBornByCollisionPoint"
-                  },
-                  "target": "Owner"
-                }
-              ],
-              "targetPredicates": [
-                {
-                  "$type": "ByAttackTags",
-                  "attackTags": [
-                    "Elemental_Art"
-                  ]
-                },
-                {
-                  "$type": "ByEntityTypes",
-                  "entityTypes": [
-                    "Monster"
-                  ]
-                },
-                {
-                  "$type": "ByTargetGlobalValue",
-                  "value": 0,
-                  "compareType": "NoneOrEqual",
-                  "key": "_ANIMAL_ENTITY_TYPE"
-                },
-                {
-                  "$type": "ByTargetGlobalValue",
-                  "value": 1,
-                  "compareType": "LessAndEqual",
-                  "key": "_ABILITY_Player_Electric_ElementalArt_Counter",
-                  "target": "Owner"
-                }
-              ],
-              "target": "Target",
-              "doOffStage": true
-            }
-          ],
+          "elementDurability": 100,
+          "modifierName": "",
           "onAttackLanded": [
             {
               "$type": "Predicated",
+              "doOffStage": true,
               "successActions": [
                 {
                   "$type": "AddGlobalValue",
-                  "useLimitRange": true,
                   "key": "_ABILITY_Player_Electric_ElementalArt_Counter",
                   "maxValue": 2,
                   "minValue": 0,
-                  "value": 1,
-                  "target": "Owner"
+                  "target": "Owner",
+                  "useLimitRange": true,
+                  "value": 1
                 },
                 {
                   "$type": "TriggerAbility",
-                  "abilityName": "Avatar_Player_Electric_ElementalArt_SetGadget_3",
+                  "abilityName": "Avatar_Player_Electric_ElementalArt_SetGadget_2",
                   "target": "Owner"
                 }
               ],
+              "target": "Target",
               "targetPredicates": [
                 {
                   "$type": "ByAttackTags",
@@ -2335,48 +1869,43 @@
                 },
                 {
                   "$type": "ByTargetGlobalValue",
-                  "value": 0,
                   "compareType": "NoneOrEqual",
-                  "key": "_ANIMAL_ENTITY_TYPE"
+                  "key": "_ANIMAL_ENTITY_TYPE",
+                  "value": 0
                 },
                 {
                   "$type": "ByTargetGlobalValue",
-                  "value": 1,
                   "compareType": "LessAndEqual",
                   "key": "_ABILITY_Player_Electric_ElementalArt_Counter",
-                  "target": "Owner"
+                  "target": "Owner",
+                  "value": 1
                 }
-              ],
-              "target": "Target",
-              "doOffStage": true
+              ]
             }
           ],
-          "elementDurability": 100,
-          "modifierName": "",
-          "__unk_Q3323398612": 0
-        },
-        "Player_Electric_ElementalArt_Bullet_Extra_Handler": {
           "onHittingOther": [
             {
               "$type": "Predicated",
+              "doOffStage": true,
               "successActions": [
                 {
                   "$type": "SetGlobalPos",
-                  "key": "_ABILITY_Player_Electric_ElementalArt_BulletPos_3",
                   "born": {
                     "$type": "ConfigBornByCollisionPoint"
                   },
+                  "key": "_ABILITY_Player_Electric_ElementalArt_BulletPos_2",
                   "target": "Owner"
                 },
                 {
                   "$type": "SetGlobalDir",
-                  "key": "_ABILITY_Player_Electric_ElementalArt_BulletDir_3",
                   "born": {
                     "$type": "ConfigBornByCollisionPoint"
                   },
+                  "key": "_ABILITY_Player_Electric_ElementalArt_BulletDir_2",
                   "target": "Owner"
                 }
               ],
+              "target": "Target",
               "targetPredicates": [
                 {
                   "$type": "ByAttackTags",
@@ -2392,41 +1921,46 @@
                 },
                 {
                   "$type": "ByTargetGlobalValue",
-                  "value": 0,
                   "compareType": "NoneOrEqual",
-                  "key": "_ANIMAL_ENTITY_TYPE"
+                  "key": "_ANIMAL_ENTITY_TYPE",
+                  "value": 0
                 },
                 {
                   "$type": "ByTargetGlobalValue",
-                  "value": 2,
                   "compareType": "LessAndEqual",
                   "key": "_ABILITY_Player_Electric_ElementalArt_Counter",
-                  "target": "Owner"
+                  "target": "Owner",
+                  "value": 1
                 }
-              ],
-              "target": "Target",
-              "doOffStage": true
+              ]
             }
           ],
+          "__unk_Q3323398612": 0
+        },
+        "Player_Electric_ElementalArt_Bullet_Extra_Handler": {
+          "elementDurability": 100,
+          "modifierName": "",
           "onAttackLanded": [
             {
               "$type": "Predicated",
+              "doOffStage": true,
               "successActions": [
                 {
                   "$type": "AddGlobalValue",
-                  "useLimitRange": true,
                   "key": "_ABILITY_Player_Electric_ElementalArt_Counter",
                   "maxValue": 3,
                   "minValue": 0,
-                  "value": 1,
-                  "target": "Owner"
+                  "target": "Owner",
+                  "useLimitRange": true,
+                  "value": 1
                 },
                 {
                   "$type": "TriggerAbility",
-                  "abilityName": "Avatar_Player_Electric_ElementalArt_SetGadget_3",
+                  "abilityName": "Avatar_Player_Electric_ElementalArt_SetGadget_2",
                   "target": "Owner"
                 }
               ],
+              "target": "Target",
               "targetPredicates": [
                 {
                   "$type": "ByAttackTags",
@@ -2442,101 +1976,150 @@
                 },
                 {
                   "$type": "ByTargetGlobalValue",
-                  "value": 0,
                   "compareType": "NoneOrEqual",
-                  "key": "_ANIMAL_ENTITY_TYPE"
+                  "key": "_ANIMAL_ENTITY_TYPE",
+                  "value": 0
                 },
                 {
                   "$type": "ByTargetGlobalValue",
-                  "value": 2,
                   "compareType": "LessAndEqual",
                   "key": "_ABILITY_Player_Electric_ElementalArt_Counter",
+                  "target": "Owner",
+                  "value": 2
+                }
+              ]
+            }
+          ],
+          "onHittingOther": [
+            {
+              "$type": "Predicated",
+              "doOffStage": true,
+              "successActions": [
+                {
+                  "$type": "SetGlobalPos",
+                  "born": {
+                    "$type": "ConfigBornByCollisionPoint"
+                  },
+                  "key": "_ABILITY_Player_Electric_ElementalArt_BulletPos_2",
+                  "target": "Owner"
+                },
+                {
+                  "$type": "SetGlobalDir",
+                  "born": {
+                    "$type": "ConfigBornByCollisionPoint"
+                  },
+                  "key": "_ABILITY_Player_Electric_ElementalArt_BulletDir_2",
                   "target": "Owner"
                 }
               ],
               "target": "Target",
-              "doOffStage": true
+              "targetPredicates": [
+                {
+                  "$type": "ByAttackTags",
+                  "attackTags": [
+                    "Elemental_Art"
+                  ]
+                },
+                {
+                  "$type": "ByEntityTypes",
+                  "entityTypes": [
+                    "Monster"
+                  ]
+                },
+                {
+                  "$type": "ByTargetGlobalValue",
+                  "compareType": "NoneOrEqual",
+                  "key": "_ANIMAL_ENTITY_TYPE",
+                  "value": 0
+                },
+                {
+                  "$type": "ByTargetGlobalValue",
+                  "compareType": "LessAndEqual",
+                  "key": "_ABILITY_Player_Electric_ElementalArt_Counter",
+                  "target": "Owner",
+                  "value": 2
+                }
+              ]
             }
           ],
-          "elementDurability": 100,
-          "modifierName": "",
           "__unk_Q3323398612": 0
         }
       },
       "onAbilityStart": [
         {
           "$type": "Predicated",
+          "failActions": [
+            {
+              "$type": "TriggerAttackEvent",
+              "attackEvent": {
+                "attackInfo": {
+                  "attackProperty": {
+                    "attackType": "Range",
+                    "damagePercentage": "ElementalArt_Damage",
+                    "damagePercentageRatio": 0,
+                    "elementDurability": 25,
+                    "elementType": "Electric",
+                    "enBreak": 100,
+                    "strikeType": "Pierce",
+                    "__exp_arkhe": 0
+                  },
+                  "attackTag": "Elemental_Art",
+                  "attenuationGroup": "default",
+                  "attenuationTag": "Elemental_Art",
+                  "canBeModifiedBy": "OriginOwner",
+                  "hitPattern": {
+                    "hitHaltTimeScale": 0.01,
+                    "hitImpulseType": "LV3",
+                    "onHitEffectName": "Eff_Player_Electric_ElementalArt_Bullet_Hit",
+                    "__unk_Q3893899620": ""
+                  }
+                },
+                "attackPattern": {
+                  "$type": "ConfigAttackBox",
+                  "born": {
+                    "$type": "ConfigBornByCollisionPoint"
+                  },
+                  "checkHitLayerType": "Both",
+                  "size": {
+                    "z": 0.6,
+                    "y": 0.1,
+                    "x": 0.1
+                  },
+                  "triggerType": "TriggerNoRepeat"
+                }
+              },
+              "targetType": "Enemy"
+            }
+          ],
           "successActions": [
             {
               "$type": "DamageByAttackValue",
               "attackInfo": {
                 "attackProperty": {
-                  "elementType": "Electric",
                   "attackType": "Range",
-                  "damagePercentageRatio": 0,
-                  "strikeType": "Pierce",
-                  "enBreak": 100,
                   "damagePercentage": "ElementalArt_Damage",
+                  "damagePercentageRatio": 0,
                   "elementDurability": 25,
+                  "elementType": "Electric",
+                  "enBreak": 100,
+                  "strikeType": "Pierce",
                   "__exp_arkhe": 0
                 },
-                "hitPattern": {
-                  "__unk_Q3893899620": "",
-                  "onHitEffectName": "default",
-                  "hitHaltTimeScale": 0.01,
-                  "hitImpulseType": "LV3"
-                },
+                "attackTag": "Elemental_Art",
                 "attenuationGroup": "default",
                 "attenuationTag": "Elemental_Art",
-                "attackTag": "Elemental_Art",
-                "canBeModifiedBy": "OriginOwner"
+                "canBeModifiedBy": "OriginOwner",
+                "hitPattern": {
+                  "hitHaltTimeScale": 0.01,
+                  "hitImpulseType": "LV3",
+                  "onHitEffectName": "default",
+                  "__unk_Q3893899620": ""
+                }
               },
               "target": "Target"
             }
           ],
-          "failActions": [
-            {
-              "$type": "TriggerAttackEvent",
-              "targetType": "Enemy",
-              "attackEvent": {
-                "attackInfo": {
-                  "attackProperty": {
-                    "elementType": "Electric",
-                    "attackType": "Range",
-                    "damagePercentageRatio": 0,
-                    "strikeType": "Pierce",
-                    "enBreak": 100,
-                    "damagePercentage": "ElementalArt_Damage",
-                    "elementDurability": 25,
-                    "__exp_arkhe": 0
-                  },
-                  "hitPattern": {
-                    "__unk_Q3893899620": "",
-                    "onHitEffectName": "Eff_Player_Electric_ElementalArt_Bullet_Hit",
-                    "hitHaltTimeScale": 0.01,
-                    "hitImpulseType": "LV3"
-                  },
-                  "attenuationGroup": "default",
-                  "attenuationTag": "Elemental_Art",
-                  "attackTag": "Elemental_Art",
-                  "canBeModifiedBy": "OriginOwner"
-                },
-                "attackPattern": {
-                  "$type": "ConfigAttackBox",
-                  "size": {
-                    "x": 0.1,
-                    "z": 0.6,
-                    "y": 0.1
-                  },
-                  "triggerType": "TriggerNoRepeat",
-                  "born": {
-                    "$type": "ConfigBornByCollisionPoint"
-                  },
-                  "checkHitLayerType": "Both"
-                }
-              }
-            }
-          ],
+          "target": "Target",
           "targetPredicates": [
             {
               "$type": "ByEntityTypes",
@@ -2544,19 +2127,9 @@
                 "MonsterEquip"
               ]
             }
-          ],
-          "target": "Target"
+          ]
         }
       ],
-      "onKill": [
-        {
-          "$type": "FireEffect",
-          "effectPattern": "Eff_Player_Electric_ElementalArt_Bullet_Die",
-          "scale": 1,
-          "ILLLPEOODKP": ""
-        }
-      ],
-      "abilityName": "Player_Electric_ElementalArt_Bullet_3",
       "onAdded": [
         {
           "$type": "ApplyModifier",
@@ -2564,28 +2137,29 @@
         },
         {
           "$type": "AttachEffect",
-          "ILLLPEOODKP": "",
+          "effectPattern": "Eff_Player_Electric_ElementalArt_Magatama_Bullet",
           "scale": 1,
-          "effectPattern": "Eff_Player_Electric_ElementalArt_Magatama_Bullet"
+          "JHAGIJGAKMK": ""
         },
         {
           "$type": "AttachEffect",
-          "ILLLPEOODKP": "",
+          "effectPattern": "Eff_Player_Electric_ElementalArt_Magatama_Bullet_Trail",
           "scale": 1,
-          "effectPattern": "Eff_Player_Electric_ElementalArt_Magatama_Bullet_Trail"
+          "JHAGIJGAKMK": ""
         },
         {
           "$type": "Predicated",
-          "successActions": [
-            {
-              "$type": "ApplyModifier",
-              "modifierName": "Player_Electric_ElementalArt_Bullet_Extra_Handler"
-            }
-          ],
+          "doOffStage": true,
           "failActions": [
             {
               "$type": "ApplyModifier",
               "modifierName": "Player_Electric_ElementalArt_Bullet_Handler"
+            }
+          ],
+          "successActions": [
+            {
+              "$type": "ApplyModifier",
+              "modifierName": "Player_Electric_ElementalArt_Bullet_Extra_Handler"
             }
           ],
           "targetPredicates": [
@@ -2593,94 +2167,520 @@
               "$type": "ByUnlockTalentParam",
               "talentParam": "Player_Electric_ElementalArt_MaxNumUp"
             }
-          ],
-          "doOffStage": true
+          ]
         }
       ],
+      "onKill": [
+        {
+          "$type": "FireEffect",
+          "effectPattern": "Eff_Player_Electric_ElementalArt_Bullet_Die",
+          "scale": 1,
+          "JHAGIJGAKMK": ""
+        }
+      ]
+    }
+  },
+  {
+    "Default": {
+      "abilityName": "Player_Electric_ElementalArt_Bullet_3",
       "abilitySpecials": {
         "ElementalArt_Damage": 0
-      }
+      },
+      "modifiers": {
+        "Player_Electric_ElementalArt_ElementBall_Handler": {
+          "elementDurability": 100,
+          "modifierName": "",
+          "onAttackLanded": [
+            {
+              "$type": "Predicated",
+              "doOffStage": true,
+              "successActions": [
+                {
+                  "$type": "GenerateElemBall",
+                  "baseEnergy": 3,
+                  "born": {
+                    "$type": "ConfigBornByTarget"
+                  },
+                  "configID": 2020,
+                  "ratio": 1
+                },
+                {
+                  "$type": "AddGlobalValue",
+                  "doOffStage": true,
+                  "key": "_Ability_Player_Electric_ElementBall_Mark",
+                  "maxValue": 1,
+                  "minValue": 0,
+                  "target": "OriginOwner",
+                  "useLimitRange": true,
+                  "value": 1
+                }
+              ],
+              "target": "Target",
+              "targetPredicates": [
+                {
+                  "$type": "ByAttackTags",
+                  "attackTags": [
+                    "Elemental_Art"
+                  ]
+                },
+                {
+                  "$type": "ByEntityTypes",
+                  "entityTypes": [
+                    "Monster"
+                  ]
+                },
+                {
+                  "$type": "ByTargetGlobalValue",
+                  "compareType": "NoneOrEqual",
+                  "key": "_ANIMAL_ENTITY_TYPE",
+                  "value": 0
+                },
+                {
+                  "$type": "ByTargetGlobalValue",
+                  "compareType": "NoneOrEqual",
+                  "key": "_Ability_Player_Electric_ElementBall_Mark",
+                  "target": "OriginOwner",
+                  "value": 0
+                },
+                {
+                  "$type": "ByAvatarElementType",
+                  "elementType": "Electric",
+                  "target": "OriginOwner"
+                }
+              ]
+            }
+          ],
+          "__unk_Q3323398612": 0
+        },
+        "Player_Electric_ElementalArt_Bullet_Handler": {
+          "elementDurability": 100,
+          "modifierName": "",
+          "onAttackLanded": [
+            {
+              "$type": "Predicated",
+              "doOffStage": true,
+              "successActions": [
+                {
+                  "$type": "AddGlobalValue",
+                  "key": "_ABILITY_Player_Electric_ElementalArt_Counter",
+                  "maxValue": 2,
+                  "minValue": 0,
+                  "target": "Owner",
+                  "useLimitRange": true,
+                  "value": 1
+                },
+                {
+                  "$type": "TriggerAbility",
+                  "abilityName": "Avatar_Player_Electric_ElementalArt_SetGadget_3",
+                  "target": "Owner"
+                }
+              ],
+              "target": "Target",
+              "targetPredicates": [
+                {
+                  "$type": "ByAttackTags",
+                  "attackTags": [
+                    "Elemental_Art"
+                  ]
+                },
+                {
+                  "$type": "ByEntityTypes",
+                  "entityTypes": [
+                    "Monster"
+                  ]
+                },
+                {
+                  "$type": "ByTargetGlobalValue",
+                  "compareType": "NoneOrEqual",
+                  "key": "_ANIMAL_ENTITY_TYPE",
+                  "value": 0
+                },
+                {
+                  "$type": "ByTargetGlobalValue",
+                  "compareType": "LessAndEqual",
+                  "key": "_ABILITY_Player_Electric_ElementalArt_Counter",
+                  "target": "Owner",
+                  "value": 1
+                }
+              ]
+            }
+          ],
+          "onHittingOther": [
+            {
+              "$type": "Predicated",
+              "doOffStage": true,
+              "successActions": [
+                {
+                  "$type": "SetGlobalPos",
+                  "born": {
+                    "$type": "ConfigBornByCollisionPoint"
+                  },
+                  "key": "_ABILITY_Player_Electric_ElementalArt_BulletPos_3",
+                  "target": "Owner"
+                },
+                {
+                  "$type": "SetGlobalDir",
+                  "born": {
+                    "$type": "ConfigBornByCollisionPoint"
+                  },
+                  "key": "_ABILITY_Player_Electric_ElementalArt_BulletDir_3",
+                  "target": "Owner"
+                }
+              ],
+              "target": "Target",
+              "targetPredicates": [
+                {
+                  "$type": "ByAttackTags",
+                  "attackTags": [
+                    "Elemental_Art"
+                  ]
+                },
+                {
+                  "$type": "ByEntityTypes",
+                  "entityTypes": [
+                    "Monster"
+                  ]
+                },
+                {
+                  "$type": "ByTargetGlobalValue",
+                  "compareType": "NoneOrEqual",
+                  "key": "_ANIMAL_ENTITY_TYPE",
+                  "value": 0
+                },
+                {
+                  "$type": "ByTargetGlobalValue",
+                  "compareType": "LessAndEqual",
+                  "key": "_ABILITY_Player_Electric_ElementalArt_Counter",
+                  "target": "Owner",
+                  "value": 1
+                }
+              ]
+            }
+          ],
+          "__unk_Q3323398612": 0
+        },
+        "Player_Electric_ElementalArt_Bullet_Extra_Handler": {
+          "elementDurability": 100,
+          "modifierName": "",
+          "onAttackLanded": [
+            {
+              "$type": "Predicated",
+              "doOffStage": true,
+              "successActions": [
+                {
+                  "$type": "AddGlobalValue",
+                  "key": "_ABILITY_Player_Electric_ElementalArt_Counter",
+                  "maxValue": 3,
+                  "minValue": 0,
+                  "target": "Owner",
+                  "useLimitRange": true,
+                  "value": 1
+                },
+                {
+                  "$type": "TriggerAbility",
+                  "abilityName": "Avatar_Player_Electric_ElementalArt_SetGadget_3",
+                  "target": "Owner"
+                }
+              ],
+              "target": "Target",
+              "targetPredicates": [
+                {
+                  "$type": "ByAttackTags",
+                  "attackTags": [
+                    "Elemental_Art"
+                  ]
+                },
+                {
+                  "$type": "ByEntityTypes",
+                  "entityTypes": [
+                    "Monster"
+                  ]
+                },
+                {
+                  "$type": "ByTargetGlobalValue",
+                  "compareType": "NoneOrEqual",
+                  "key": "_ANIMAL_ENTITY_TYPE",
+                  "value": 0
+                },
+                {
+                  "$type": "ByTargetGlobalValue",
+                  "compareType": "LessAndEqual",
+                  "key": "_ABILITY_Player_Electric_ElementalArt_Counter",
+                  "target": "Owner",
+                  "value": 2
+                }
+              ]
+            }
+          ],
+          "onHittingOther": [
+            {
+              "$type": "Predicated",
+              "doOffStage": true,
+              "successActions": [
+                {
+                  "$type": "SetGlobalPos",
+                  "born": {
+                    "$type": "ConfigBornByCollisionPoint"
+                  },
+                  "key": "_ABILITY_Player_Electric_ElementalArt_BulletPos_3",
+                  "target": "Owner"
+                },
+                {
+                  "$type": "SetGlobalDir",
+                  "born": {
+                    "$type": "ConfigBornByCollisionPoint"
+                  },
+                  "key": "_ABILITY_Player_Electric_ElementalArt_BulletDir_3",
+                  "target": "Owner"
+                }
+              ],
+              "target": "Target",
+              "targetPredicates": [
+                {
+                  "$type": "ByAttackTags",
+                  "attackTags": [
+                    "Elemental_Art"
+                  ]
+                },
+                {
+                  "$type": "ByEntityTypes",
+                  "entityTypes": [
+                    "Monster"
+                  ]
+                },
+                {
+                  "$type": "ByTargetGlobalValue",
+                  "compareType": "NoneOrEqual",
+                  "key": "_ANIMAL_ENTITY_TYPE",
+                  "value": 0
+                },
+                {
+                  "$type": "ByTargetGlobalValue",
+                  "compareType": "LessAndEqual",
+                  "key": "_ABILITY_Player_Electric_ElementalArt_Counter",
+                  "target": "Owner",
+                  "value": 2
+                }
+              ]
+            }
+          ],
+          "__unk_Q3323398612": 0
+        }
+      },
+      "onAbilityStart": [
+        {
+          "$type": "Predicated",
+          "failActions": [
+            {
+              "$type": "TriggerAttackEvent",
+              "attackEvent": {
+                "attackInfo": {
+                  "attackProperty": {
+                    "attackType": "Range",
+                    "damagePercentage": "ElementalArt_Damage",
+                    "damagePercentageRatio": 0,
+                    "elementDurability": 25,
+                    "elementType": "Electric",
+                    "enBreak": 100,
+                    "strikeType": "Pierce",
+                    "__exp_arkhe": 0
+                  },
+                  "attackTag": "Elemental_Art",
+                  "attenuationGroup": "default",
+                  "attenuationTag": "Elemental_Art",
+                  "canBeModifiedBy": "OriginOwner",
+                  "hitPattern": {
+                    "hitHaltTimeScale": 0.01,
+                    "hitImpulseType": "LV3",
+                    "onHitEffectName": "Eff_Player_Electric_ElementalArt_Bullet_Hit",
+                    "__unk_Q3893899620": ""
+                  }
+                },
+                "attackPattern": {
+                  "$type": "ConfigAttackBox",
+                  "born": {
+                    "$type": "ConfigBornByCollisionPoint"
+                  },
+                  "checkHitLayerType": "Both",
+                  "size": {
+                    "z": 0.6,
+                    "y": 0.1,
+                    "x": 0.1
+                  },
+                  "triggerType": "TriggerNoRepeat"
+                }
+              },
+              "targetType": "Enemy"
+            }
+          ],
+          "successActions": [
+            {
+              "$type": "DamageByAttackValue",
+              "attackInfo": {
+                "attackProperty": {
+                  "attackType": "Range",
+                  "damagePercentage": "ElementalArt_Damage",
+                  "damagePercentageRatio": 0,
+                  "elementDurability": 25,
+                  "elementType": "Electric",
+                  "enBreak": 100,
+                  "strikeType": "Pierce",
+                  "__exp_arkhe": 0
+                },
+                "attackTag": "Elemental_Art",
+                "attenuationGroup": "default",
+                "attenuationTag": "Elemental_Art",
+                "canBeModifiedBy": "OriginOwner",
+                "hitPattern": {
+                  "hitHaltTimeScale": 0.01,
+                  "hitImpulseType": "LV3",
+                  "onHitEffectName": "default",
+                  "__unk_Q3893899620": ""
+                }
+              },
+              "target": "Target"
+            }
+          ],
+          "target": "Target",
+          "targetPredicates": [
+            {
+              "$type": "ByEntityTypes",
+              "entityTypes": [
+                "MonsterEquip"
+              ]
+            }
+          ]
+        }
+      ],
+      "onAdded": [
+        {
+          "$type": "ApplyModifier",
+          "modifierName": "Player_Electric_ElementalArt_ElementBall_Handler"
+        },
+        {
+          "$type": "AttachEffect",
+          "effectPattern": "Eff_Player_Electric_ElementalArt_Magatama_Bullet",
+          "scale": 1,
+          "JHAGIJGAKMK": ""
+        },
+        {
+          "$type": "AttachEffect",
+          "effectPattern": "Eff_Player_Electric_ElementalArt_Magatama_Bullet_Trail",
+          "scale": 1,
+          "JHAGIJGAKMK": ""
+        },
+        {
+          "$type": "Predicated",
+          "doOffStage": true,
+          "failActions": [
+            {
+              "$type": "ApplyModifier",
+              "modifierName": "Player_Electric_ElementalArt_Bullet_Handler"
+            }
+          ],
+          "successActions": [
+            {
+              "$type": "ApplyModifier",
+              "modifierName": "Player_Electric_ElementalArt_Bullet_Extra_Handler"
+            }
+          ],
+          "targetPredicates": [
+            {
+              "$type": "ByUnlockTalentParam",
+              "talentParam": "Player_Electric_ElementalArt_MaxNumUp"
+            }
+          ]
+        }
+      ],
+      "onKill": [
+        {
+          "$type": "FireEffect",
+          "effectPattern": "Eff_Player_Electric_ElementalArt_Bullet_Die",
+          "scale": 1,
+          "JHAGIJGAKMK": ""
+        }
+      ]
     }
   },
   {
     "Default": {
-      "onAbilityStart": [
-        {
-          "$type": "CreateGadget",
-          "gadgetID": 41044131,
-          "lifeByOwnerIsAlive": true,
-          "born": {
-            "$type": "ConfigBornByGlobalValue",
-            "positionKey": "_ABILITY_Player_Electric_ElementalArt_BulletPos_1",
-            "directionKey": "_ABILITY_Player_Electric_ElementalArt_BulletDir_1",
-            "onGround": true,
-            "offset": {
-              "z": -0.5
-            },
-            "bornRandom": {
-              "$type": "BornRandomFromCenter",
-              "minRandomRange": 0.2,
-              "maxRandomRange": 0.4
-            }
-          }
-        }
-      ],
       "abilityName": "Avatar_Player_Electric_ElementalArt_SetGadget_1",
-      "isDynamicAbility": true
+      "isDynamicAbility": true,
+      "onAbilityStart": [
+        {
+          "$type": "CreateGadget",
+          "born": {
+            "$type": "ConfigBornByGlobalValue",
+            "bornRandom": {
+              "$type": "BornRandomFromCenter",
+              "maxRandomRange": 0.4,
+              "minRandomRange": 0.2
+            },
+            "directionKey": "_ABILITY_Player_Electric_ElementalArt_BulletDir_1",
+            "offset": {
+              "z": -0.5
+            },
+            "onGround": true,
+            "positionKey": "_ABILITY_Player_Electric_ElementalArt_BulletPos_1"
+          },
+          "gadgetID": 41044131,
+          "lifeByOwnerIsAlive": true
+        }
+      ]
     }
   },
   {
     "Default": {
-      "onAbilityStart": [
-        {
-          "$type": "CreateGadget",
-          "gadgetID": 41044131,
-          "lifeByOwnerIsAlive": true,
-          "born": {
-            "$type": "ConfigBornByGlobalValue",
-            "positionKey": "_ABILITY_Player_Electric_ElementalArt_BulletPos_2",
-            "directionKey": "_ABILITY_Player_Electric_ElementalArt_BulletDir_2",
-            "onGround": true,
-            "offset": {
-              "z": -0.5
-            },
-            "bornRandom": {
-              "$type": "BornRandomFromCenter",
-              "minRandomRange": 0.2,
-              "maxRandomRange": 0.4
-            }
-          }
-        }
-      ],
       "abilityName": "Avatar_Player_Electric_ElementalArt_SetGadget_2",
-      "isDynamicAbility": true
+      "isDynamicAbility": true,
+      "onAbilityStart": [
+        {
+          "$type": "CreateGadget",
+          "born": {
+            "$type": "ConfigBornByGlobalValue",
+            "bornRandom": {
+              "$type": "BornRandomFromCenter",
+              "maxRandomRange": 0.4,
+              "minRandomRange": 0.2
+            },
+            "directionKey": "_ABILITY_Player_Electric_ElementalArt_BulletDir_2",
+            "offset": {
+              "z": -0.5
+            },
+            "onGround": true,
+            "positionKey": "_ABILITY_Player_Electric_ElementalArt_BulletPos_2"
+          },
+          "gadgetID": 41044131,
+          "lifeByOwnerIsAlive": true
+        }
+      ]
     }
   },
   {
     "Default": {
+      "abilityName": "Avatar_Player_Electric_ElementalArt_SetGadget_3",
+      "isDynamicAbility": true,
       "onAbilityStart": [
         {
           "$type": "CreateGadget",
-          "gadgetID": 41044131,
-          "lifeByOwnerIsAlive": true,
           "born": {
             "$type": "ConfigBornByGlobalValue",
-            "positionKey": "_ABILITY_Player_Electric_ElementalArt_BulletPos_3",
+            "bornRandom": {
+              "$type": "BornRandomFromCenter",
+              "maxRandomRange": 0.4,
+              "minRandomRange": 0.2
+            },
             "directionKey": "_ABILITY_Player_Electric_ElementalArt_BulletDir_3",
-            "onGround": true,
             "offset": {
               "z": -0.5
             },
-            "bornRandom": {
-              "$type": "BornRandomFromCenter",
-              "minRandomRange": 0.2,
-              "maxRandomRange": 0.4
-            }
-          }
+            "onGround": true,
+            "positionKey": "_ABILITY_Player_Electric_ElementalArt_BulletPos_3"
+          },
+          "gadgetID": 41044131,
+          "lifeByOwnerIsAlive": true
         }
-      ],
-      "abilityName": "Avatar_Player_Electric_ElementalArt_SetGadget_3",
-      "isDynamicAbility": true
+      ]
     }
   },
   {
@@ -2689,29 +2689,42 @@
       "onAdded": [
         {
           "$type": "AttachEffect",
-          "ILLLPEOODKP": "",
+          "effectPattern": "Eff_Element_Crystal_Elect_Trail",
           "scale": 1,
-          "effectPattern": "Eff_Element_Crystal_Elect_Trail"
+          "JHAGIJGAKMK": ""
         }
       ]
     }
   },
   {
     "Default": {
+      "abilityName": "Player_Electric_ElementalArt_Magatama_Pickable",
+      "abilitySpecials": {
+        "ElementalArt_Magatama_ModifySkillCD": 0,
+        "ElementalArt_Magatama_ExtraEfficiencyUp_Percentage": 0,
+        "ElementalArt_Magatama_EfficiencyUp": 0,
+        "ElementalArt_Magatama_ReviveElemEnergy": 0,
+        "ElementalArt_Magatama_ReviveExtraElemEnergy_Check_Percentage": 0,
+        "ElementalArt_Magatama_Life_Duration": 0,
+        "ElementalArt_Magatama_EfficiencyUp_Duration": 0
+      },
       "modifiers": {
         "Player_Electric_ElementalArt_Magatama_ModifySkillCD": {
           "duration": 1,
+          "elementDurability": 100,
+          "modifierName": "",
           "onAdded": [
             {
               "$type": "Predicated",
+              "doOffStage": true,
               "successActions": [
                 {
                   "$type": "ModifyAvatarSkillCD",
+                  "cdDelta": "ElementalArt_Magatama_ModifySkillCD",
+                  "doOffStage": true,
                   "skillSlot": [
                     2
-                  ],
-                  "cdDelta": "ElementalArt_Magatama_ModifySkillCD",
-                  "doOffStage": true
+                  ]
                 }
               ],
               "targetPredicates": [
@@ -2719,17 +2732,17 @@
                   "$type": "ByUnlockTalentParam",
                   "talentParam": "Player_Electric_ElementalArt_ModifySkillCD"
                 }
-              ],
-              "doOffStage": true
+              ]
             }
           ],
-          "elementDurability": 100,
-          "modifierName": "",
           "__unk_Q3323398612": 0
         },
         "UNIQUE_Player_Electric_ElementalArt_Magatama_ExtraEfficiencyUp": {
           "duration": "ElementalArt_Magatama_EfficiencyUp_Duration",
+          "elementDurability": 100,
           "isLimitedProperties": true,
+          "isUnique": true,
+          "modifierName": "",
           "properties": {
             "Actor_ChargeEfficiencyExtraDelta": [
               "ElementalArt_Magatama_ExtraEfficiencyUp_Percentage",
@@ -2737,88 +2750,86 @@
               "MUL"
             ]
           },
-          "elementDurability": 100,
-          "modifierName": "",
-          "isUnique": true,
           "__unk_Q3323398612": 0
         },
         "UNIQUE_Player_Electric_ElementalArt_Magatama_EfficiencyUp": {
           "duration": "ElementalArt_Magatama_EfficiencyUp_Duration",
+          "elementDurability": 100,
+          "isLimitedProperties": true,
+          "isUnique": true,
+          "modifierName": "",
           "onAdded": [
             {
               "$type": "AttachEffect",
-              "ILLLPEOODKP": "",
+              "effectPattern": "Eff_Player_Electric_ElementalArt_Magatama_Buff",
               "scale": 1,
-              "effectPattern": "Eff_Player_Electric_ElementalArt_Magatama_Buff"
+              "JHAGIJGAKMK": ""
             }
           ],
-          "isLimitedProperties": true,
           "properties": {
             "Actor_ChargeEfficiencyExtraDelta": "ElementalArt_Magatama_EfficiencyUp"
           },
-          "elementDurability": 100,
-          "modifierName": "",
-          "isUnique": true,
           "__unk_Q3323398612": 0
         },
         "Player_Electric_ElementalArt_Magatama_ReviveExtraElemEnergy": {
           "duration": 0.5,
+          "elementDurability": 100,
+          "modifierName": "",
           "onAdded": [
             {
               "$type": "ReviveElemEnergy",
               "value": "ElementalArt_Magatama_ReviveElemEnergy"
             }
           ],
-          "elementDurability": 100,
-          "modifierName": "",
           "__unk_Q3323398612": 0
         },
         "Player_Electric_ElementalArt_Magatama_ReviveElemEnergy": {
           "duration": 0.5,
+          "elementDurability": 100,
+          "modifierName": "",
           "onAdded": [
             {
               "$type": "ReviveElemEnergy",
               "value": "ElementalArt_Magatama_ReviveElemEnergy"
             }
           ],
-          "elementDurability": 100,
-          "modifierName": "",
           "__unk_Q3323398612": 0
         },
         "Player_Electric_ElementalArt_Magatama_VFX": {
+          "elementDurability": 100,
+          "modifierName": "",
           "onAdded": [
             {
               "$type": "AttachEffect",
-              "ILLLPEOODKP": "",
+              "effectPattern": "Eff_Player_Electric_ElementalArt_Magatama",
               "scale": 1,
-              "effectPattern": "Eff_Player_Electric_ElementalArt_Magatama"
+              "JHAGIJGAKMK": ""
             }
           ],
-          "elementDurability": 100,
-          "modifierName": "",
           "__unk_Q3323398612": 0
         },
         "Player_Electric_ElementalArt_Magatama_Life_Duration": {
           "duration": "ElementalArt_Magatama_Life_Duration",
+          "elementDurability": 100,
+          "modifierName": "",
           "onRemoved": [
             {
               "$type": "KillSelf"
             }
           ],
-          "elementDurability": 100,
-          "modifierName": "",
           "__unk_Q3323398612": 0
         }
       },
-      "onKill": [
+      "onAdded": [
         {
-          "$type": "FireEffect",
-          "effectPattern": "Eff_Player_Electric_ElementalArt_Magatama_Die",
-          "scale": 1,
-          "ILLLPEOODKP": ""
+          "$type": "AttachModifier",
+          "modifierName": "Player_Electric_ElementalArt_Magatama_VFX"
+        },
+        {
+          "$type": "AttachModifier",
+          "modifierName": "Player_Electric_ElementalArt_Magatama_Life_Duration"
         }
       ],
-      "abilityName": "Player_Electric_ElementalArt_Magatama_Pickable",
       "onFieldEnter": [
         {
           "$type": "Predicated",
@@ -2826,23 +2837,24 @@
             {
               "$type": "ApplyModifier",
               "modifierName": "Player_Electric_ElementalArt_Magatama_ModifySkillCD",
-              "target": "Owner",
               "predicates": [
                 {
                   "$type": "ByTargetPositionToSelfPosition",
-                  "NJICAELBCCB": "",
-                  "JBOGOHPICML": "",
+                  "logic": "LesserOrEqual",
                   "value": 40,
-                  "logic": "LesserOrEqual"
+                  "FPDDDGMBDKP": "",
+                  "GCDNHEEGIPE": ""
                 }
-              ]
+              ],
+              "target": "Owner"
             }
           ],
+          "target": "Target",
           "targetPredicates": [
             {
               "$type": "ByTargetType",
-              "targetType": "Owner",
               "isTarget": false,
+              "targetType": "Owner",
               "__unk_Q3587015628": ""
             },
             {
@@ -2851,13 +2863,11 @@
                 "Avatar"
               ]
             }
-          ],
-          "target": "Target"
+          ]
         },
         {
           "$type": "ApplyModifier",
           "modifierName": "Player_Electric_ElementalArt_Magatama_ReviveExtraElemEnergy",
-          "target": "Target",
           "predicates": [
             {
               "$type": "ByEntityTypes",
@@ -2867,19 +2877,19 @@
             },
             {
               "$type": "ByEnergyRatio",
-              "ratio": "ElementalArt_Magatama_ReviveExtraElemEnergy_Check_Percentage",
-              "logic": "LesserOrEqual"
+              "logic": "LesserOrEqual",
+              "ratio": "ElementalArt_Magatama_ReviveExtraElemEnergy_Check_Percentage"
             },
             {
               "$type": "ByUnlockTalentParam",
               "talentParam": "Player_Electric_ElementalArt_ExtraEnergy"
             }
-          ]
+          ],
+          "target": "Target"
         },
         {
           "$type": "ApplyModifier",
           "modifierName": "Player_Electric_ElementalArt_Magatama_ReviveElemEnergy",
-          "target": "Target",
           "predicates": [
             {
               "$type": "ByEntityTypes",
@@ -2887,12 +2897,12 @@
                 "Avatar"
               ]
             }
-          ]
+          ],
+          "target": "Target"
         },
         {
           "$type": "RemoveUniqueModifier",
           "modifierName": "UNIQUE_Player_Electric_ElementalArt_Magatama_EfficiencyUp",
-          "target": "Target",
           "predicates": [
             {
               "$type": "ByEntityTypes",
@@ -2900,12 +2910,12 @@
                 "Avatar"
               ]
             }
-          ]
+          ],
+          "target": "Target"
         },
         {
           "$type": "RemoveUniqueModifier",
           "modifierName": "UNIQUE_Player_Electric_ElementalArt_Magatama_ExtraEfficiencyUp",
-          "target": "Target",
           "predicates": [
             {
               "$type": "ByEntityTypes",
@@ -2913,12 +2923,12 @@
                 "Avatar"
               ]
             }
-          ]
+          ],
+          "target": "Target"
         },
         {
           "$type": "ApplyModifier",
           "modifierName": "UNIQUE_Player_Electric_ElementalArt_Magatama_ExtraEfficiencyUp",
-          "target": "Target",
           "predicates": [
             {
               "$type": "ByEntityTypes",
@@ -2930,12 +2940,12 @@
               "$type": "ByUnlockTalentParam",
               "talentParam": "Player_Electric_ElementalArt_ExtraChargeEfficiency"
             }
-          ]
+          ],
+          "target": "Target"
         },
         {
           "$type": "ApplyModifier",
           "modifierName": "UNIQUE_Player_Electric_ElementalArt_Magatama_EfficiencyUp",
-          "target": "Target",
           "predicates": [
             {
               "$type": "ByEntityTypes",
@@ -2943,125 +2953,123 @@
                 "Avatar"
               ]
             }
-          ]
+          ],
+          "target": "Target"
         },
         {
           "$type": "KillSelf",
           "duration": 0.15
         }
       ],
-      "onAdded": [
+      "onKill": [
         {
-          "$type": "AttachModifier",
-          "modifierName": "Player_Electric_ElementalArt_Magatama_VFX"
-        },
-        {
-          "$type": "AttachModifier",
-          "modifierName": "Player_Electric_ElementalArt_Magatama_Life_Duration"
+          "$type": "FireEffect",
+          "effectPattern": "Eff_Player_Electric_ElementalArt_Magatama_Die",
+          "scale": 1,
+          "JHAGIJGAKMK": ""
         }
-      ],
-      "abilitySpecials": {
-        "ElementalArt_Magatama_ModifySkillCD": 0,
-        "ElementalArt_Magatama_ExtraEfficiencyUp_Percentage": 0,
-        "ElementalArt_Magatama_EfficiencyUp": 0,
-        "ElementalArt_Magatama_ReviveElemEnergy": 0,
-        "ElementalArt_Magatama_ReviveExtraElemEnergy_Check_Percentage": 0,
-        "ElementalArt_Magatama_Life_Duration": 0,
-        "ElementalArt_Magatama_EfficiencyUp_Duration": 0
-      }
+      ]
     }
   },
   {
     "Default": {
+      "abilityName": "Avatar_Player_Electric_EnhancedExtraAttack",
+      "abilitySpecials": {
+        "ExtraAttack_Enhanced_ratio": 0,
+        "ExtraAttack_Enhanced_CD": 0,
+        "ExtraAttack_Enhanced_1_BaseDamagePercentage": 0,
+        "ExtraAttack_Enhanced_2_BaseDamagePercentage": 0
+      },
+      "isDynamicAbility": true,
       "modifiers": {
         "UNIQUE_Player_Electric_EnhancedExtraAttack_Main": {
-          "thinkInterval": 1,
-          "onAdded": [
-            {
-              "$type": "SetGlobalValue",
-              "key": "_ABILITY_Player_Electric_EnhancedExtraAttack_Stack",
-              "minValue": 0,
-              "maxValue": 0,
-              "value": 0,
-              "doOffStage": true
-            },
-            {
-              "$type": "SetGlobalValue",
-              "key": "_ABILITY_MODIFIER_UNIQUE_Player_Electric_EnhancedExtraAttack_CD",
-              "minValue": 0,
-              "maxValue": 0,
-              "value": 0,
-              "doOffStage": true
-            },
-            {
-              "$type": "AttachModifier",
-              "modifierName": "Player_Electric_EnhancedExtraAttack_StackListener",
-              "target": "AllPlayerAvatars",
-              "doOffStage": true,
-              "predicates": [
-                {
-                  "$type": "ByTargetPositionToSelfPosition",
-                  "NJICAELBCCB": "",
-                  "JBOGOHPICML": "",
-                  "value": 40,
-                  "logic": "LesserOrEqual"
-                }
-              ]
-            }
-          ],
           "elementDurability": 100,
+          "isUnique": true,
           "modifierMixins": [
             {
               "$type": "DoActionByTeamStatusMixin",
-              "DBLNHBMOHNA": true,
-              "MNLPBOJDABO": true,
-              "OFLOBFOHCEJ": true,
               "actions": [
                 {
                   "$type": "AttachModifier",
-                  "modifierName": "Player_Electric_EnhancedExtraAttack_StackListener",
-                  "target": "AllPlayerAvatars",
                   "doOffStage": true,
+                  "modifierName": "Player_Electric_EnhancedExtraAttack_StackListener",
                   "predicates": [
                     {
                       "$type": "ByTargetPositionToSelfPosition",
-                      "NJICAELBCCB": "",
-                      "JBOGOHPICML": "",
+                      "logic": "LesserOrEqual",
                       "value": 40,
-                      "logic": "LesserOrEqual"
+                      "FPDDDGMBDKP": "",
+                      "GCDNHEEGIPE": ""
                     }
-                  ]
+                  ],
+                  "target": "AllPlayerAvatars"
                 }
-              ]
+              ],
+              "APKEHPBLPEE": true,
+              "EENCHCHMDBI": true,
+              "NFLOPKBJNGH": true
             },
             {
               "$type": "AttachToStateIDMixin",
-              "__unk_Q2081332355": "",
+              "modifierName": "UNIQUE_Player_Electric_EnhancedExtraAttack_Handler",
               "stateIDs": [
                 "ExtraAttack"
               ],
-              "modifierName": "UNIQUE_Player_Electric_EnhancedExtraAttack_Handler"
+              "__unk_Q2081332355": ""
             }
           ],
           "modifierName": "",
-          "isUnique": true,
-          "onThinkInterval": [
+          "onAdded": [
+            {
+              "$type": "SetGlobalValue",
+              "doOffStage": true,
+              "key": "_ABILITY_Player_Electric_EnhancedExtraAttack_Stack",
+              "maxValue": 0,
+              "minValue": 0,
+              "value": 0
+            },
+            {
+              "$type": "SetGlobalValue",
+              "doOffStage": true,
+              "key": "_ABILITY_MODIFIER_UNIQUE_Player_Electric_EnhancedExtraAttack_CD",
+              "maxValue": 0,
+              "minValue": 0,
+              "value": 0
+            },
             {
               "$type": "AttachModifier",
-              "modifierName": "Player_Electric_EnhancedExtraAttack_StackListener",
-              "target": "AllPlayerAvatars",
               "doOffStage": true,
+              "modifierName": "Player_Electric_EnhancedExtraAttack_StackListener",
               "predicates": [
                 {
                   "$type": "ByTargetPositionToSelfPosition",
-                  "NJICAELBCCB": "",
-                  "JBOGOHPICML": "",
+                  "logic": "LesserOrEqual",
                   "value": 40,
-                  "logic": "LesserOrEqual"
+                  "FPDDDGMBDKP": "",
+                  "GCDNHEEGIPE": ""
                 }
-              ]
+              ],
+              "target": "AllPlayerAvatars"
             }
           ],
+          "onThinkInterval": [
+            {
+              "$type": "AttachModifier",
+              "doOffStage": true,
+              "modifierName": "Player_Electric_EnhancedExtraAttack_StackListener",
+              "predicates": [
+                {
+                  "$type": "ByTargetPositionToSelfPosition",
+                  "logic": "LesserOrEqual",
+                  "value": 40,
+                  "FPDDDGMBDKP": "",
+                  "GCDNHEEGIPE": ""
+                }
+              ],
+              "target": "AllPlayerAvatars"
+            }
+          ],
+          "thinkInterval": 1,
           "__unk_Q3323398612": 0
         },
         "Player_Electric_EnhancedExtraAttack_StackListener": {
@@ -3069,56 +3077,59 @@
           "modifierMixins": [
             {
               "$type": "OnAvatarUseSkillMixin",
-              "useSkillStart": true,
+              "clearSkillIdDelay": 0.2,
               "onTriggerUltimateSkill": [
                 {
                   "$type": "ApplyModifier",
+                  "doOffStage": true,
                   "modifierName": "_ABILITY_Player_Electric_EnhancedExtraAttack_Stack",
-                  "target": "Caster",
-                  "doOffStage": true
+                  "target": "Caster"
                 }
               ],
-              "clearSkillIdDelay": 0.2
+              "useSkillStart": true
             }
           ],
           "modifierName": "",
           "__unk_Q3323398612": 0
         },
         "_ABILITY_Player_Electric_EnhancedExtraAttack_Stack": {
+          "buffID": 10012,
+          "elementDurability": 100,
+          "modifierName": "",
           "onAdded": [
             {
               "$type": "AddGlobalValue",
-              "useLimitRange": true,
+              "doOffStage": true,
               "key": "_ABILITY_Player_Electric_EnhancedExtraAttack_Stack",
               "maxValue": 3,
               "minValue": 0,
-              "value": 1,
-              "doOffStage": true
+              "useLimitRange": true,
+              "value": 1
             },
             {
               "$type": "Predicated",
+              "doOffStage": true,
               "successActions": [
                 {
                   "$type": "ApplyModifier",
-                  "modifierName": "UNIQUE_Player_Electric_EnhancedExtraAttack_Ready",
-                  "doOffStage": true
+                  "doOffStage": true,
+                  "modifierName": "UNIQUE_Player_Electric_EnhancedExtraAttack_Ready"
                 }
               ],
               "targetPredicates": [
                 {
                   "$type": "ByTargetGlobalValue",
-                  "value": 3,
                   "compareType": "MoreThanAndEqual",
-                  "key": "_ABILITY_Player_Electric_EnhancedExtraAttack_Stack"
+                  "key": "_ABILITY_Player_Electric_EnhancedExtraAttack_Stack",
+                  "value": 3
                 },
                 {
                   "$type": "ByTargetGlobalValue",
-                  "value": 0,
                   "compareType": "NoneOrEqual",
-                  "key": "_ABILITY_MODIFIER_UNIQUE_Player_Electric_EnhancedExtraAttack_CD"
+                  "key": "_ABILITY_MODIFIER_UNIQUE_Player_Electric_EnhancedExtraAttack_CD",
+                  "value": 0
                 }
-              ],
-              "doOffStage": true
+              ]
             }
           ],
           "stacking": "Multiple",
@@ -3126,31 +3137,27 @@
             "abilitySpecialName": "",
             "maxModifierNumForMultipleType": 3
           },
-          "elementDurability": 100,
-          "modifierName": "",
-          "buffID": 10012,
           "__unk_Q3323398612": 1
         },
         "UNIQUE_Player_Electric_EnhancedExtraAttack_Ready": {
-          "onRemoved": [
-            {
-              "$type": "SetGlobalValue",
-              "key": "_ABILITY_MODIFIER_UNIQUE_Player_Electric_EnhancedExtraAttack_Ready",
-              "minValue": 0,
-              "maxValue": 0,
-              "value": 0,
-              "doOffStage": true
-            }
-          ],
+          "elementDurability": 100,
+          "isUnique": true,
+          "modifierName": "",
           "onAdded": [
             {
               "$type": "SetGlobalValue",
+              "doOffStage": true,
               "key": "_ABILITY_MODIFIER_UNIQUE_Player_Electric_EnhancedExtraAttack_Ready",
-              "minValue": 0,
               "maxValue": 0,
-              "value": 1,
-              "doOffStage": true
+              "minValue": 0,
+              "value": 1
             },
+            {
+              "$type": "AttachModifier",
+              "modifierName": "UNIQUE_Player_Electric_EnhancedExtraAttack_Ready_Effect"
+            }
+          ],
+          "onAvatarIn": [
             {
               "$type": "AttachModifier",
               "modifierName": "UNIQUE_Player_Electric_EnhancedExtraAttack_Ready_Effect"
@@ -3159,90 +3166,25 @@
           "onAvatarOut": [
             {
               "$type": "RemoveModifier",
-              "modifierName": "UNIQUE_Player_Electric_EnhancedExtraAttack_Ready_Effect",
-              "doOffStage": true
-            }
-          ],
-          "elementDurability": 100,
-          "onAvatarIn": [
-            {
-              "$type": "AttachModifier",
+              "doOffStage": true,
               "modifierName": "UNIQUE_Player_Electric_EnhancedExtraAttack_Ready_Effect"
             }
           ],
-          "modifierName": "",
-          "isUnique": true,
+          "onRemoved": [
+            {
+              "$type": "SetGlobalValue",
+              "doOffStage": true,
+              "key": "_ABILITY_MODIFIER_UNIQUE_Player_Electric_EnhancedExtraAttack_Ready",
+              "maxValue": 0,
+              "minValue": 0,
+              "value": 0
+            }
+          ],
           "__unk_Q3323398612": 0
         },
         "UNIQUE_Player_Electric_EnhancedExtraAttack_Handler": {
-          "onAdded": [
-            {
-              "$type": "Predicated",
-              "failActions": [
-                {
-                  "$type": "RemoveModifier",
-                  "modifierName": "UNIQUE_Player_Electric_EnhancedExtraAttack_Ready"
-                },
-                {
-                  "$type": "RemoveModifier",
-                  "modifierName": "UNIQUE_Player_Electric_EnhancedExtraAttack_Handler"
-                }
-              ],
-              "targetPredicates": [
-                {
-                  "$type": "ByTargetGlobalValue",
-                  "value": 1,
-                  "key": "_ABILITY_MODIFIER_UNIQUE_Player_Electric_EnhancedExtraAttack_Ready"
-                },
-                {
-                  "$type": "ByTargetGlobalValue",
-                  "value": 3,
-                  "compareType": "MoreThanAndEqual",
-                  "key": "_ABILITY_Player_Electric_EnhancedExtraAttack_Stack"
-                },
-                {
-                  "$type": "ByTargetGlobalValue",
-                  "value": 0,
-                  "compareType": "NoneOrEqual",
-                  "key": "_ABILITY_MODIFIER_UNIQUE_Player_Electric_EnhancedExtraAttack_CD"
-                }
-              ]
-            }
-          ],
-          "onAttackLanded": [
-            {
-              "$type": "Predicated",
-              "successActions": [
-                {
-                  "$type": "AttachModifier",
-                  "modifierName": "Player_Electric_EnhancedExtraAttack_Hit_Trigger",
-                  "doOffStage": true
-                }
-              ],
-              "targetPredicates": [
-                {
-                  "$type": "ByEntityTypes",
-                  "entityTypes": [
-                    "Monster"
-                  ]
-                },
-                {
-                  "$type": "ByTargetGlobalValue",
-                  "value": 0,
-                  "compareType": "NoneOrEqual",
-                  "key": "_ANIMAL_ENTITY_TYPE"
-                },
-                {
-                  "$type": "ByAttackTags",
-                  "attackTags": [
-                    "Player_Electric_HitTrigger"
-                  ]
-                }
-              ],
-              "target": "Target"
-            }
-          ],
           "elementDurability": 100,
+          "isUnique": true,
           "modifierMixins": [
             {
               "$type": "ReplaceEventPatternMixin",
@@ -3265,341 +3207,413 @@
             {
               "$type": "AttachToNormalizedTimeMixin",
               "modifierName": "Player_Electric_EnhancedExtraAttack_Effect_1",
-              "__unk_Q2081332355": "",
+              "normalizeStart": 0.315,
               "stateID": "ExtraAttack",
-              "normalizeStart": 0.315
+              "__unk_Q2081332355": ""
             },
             {
               "$type": "AttachToNormalizedTimeMixin",
               "modifierName": "Player_Electric_EnhancedExtraAttack_Effect_2",
-              "__unk_Q2081332355": "",
+              "normalizeStart": 0.6236,
               "stateID": "ExtraAttack",
-              "normalizeStart": 0.6236
+              "__unk_Q2081332355": ""
             },
             {
               "$type": "AttachToNormalizedTimeMixin",
               "modifierName": "Player_Electric_EnhancedExtraAttack_Hit_1",
-              "__unk_Q2081332355": "",
+              "normalizeStart": 0.315,
               "stateID": "ExtraAttack",
-              "normalizeStart": 0.315
+              "__unk_Q2081332355": ""
             },
             {
               "$type": "AttachToNormalizedTimeMixin",
               "modifierName": "Player_Electric_EnhancedExtraAttack_Hit_2",
-              "__unk_Q2081332355": "",
+              "normalizeStart": 0.6236,
               "stateID": "ExtraAttack",
-              "normalizeStart": 0.6236
+              "__unk_Q2081332355": ""
             }
           ],
           "modifierName": "",
-          "isUnique": true,
-          "__unk_Q3323398612": 0
-        },
-        "Player_Electric_EnhancedExtraAttack_Effect_1": {
           "onAdded": [
             {
               "$type": "Predicated",
-              "successActions": [
-                {
-                  "$type": "FireEffect",
-                  "effectPattern": "Eff_Player_Electric_EnhancedExtraAttack_Hit_1_Girl",
-                  "scale": 1,
-                  "ILLLPEOODKP": ""
-                }
-              ],
               "failActions": [
                 {
-                  "$type": "FireEffect",
-                  "effectPattern": "Eff_Player_Electric_EnhancedExtraAttack_Hit_1",
-                  "scale": 1,
-                  "ILLLPEOODKP": ""
-                }
-              ],
-              "targetPredicates": [
-                {
-                  "$type": "ByHasFeatureTag",
-                  "featureTagIDs": [
-                    1044
-                  ]
-                }
-              ]
-            }
-          ],
-          "elementDurability": 100,
-          "modifierName": "",
-          "__unk_Q3323398612": 0
-        },
-        "Player_Electric_EnhancedExtraAttack_Effect_2": {
-          "onAdded": [
-            {
-              "$type": "Predicated",
-              "successActions": [
-                {
-                  "$type": "FireEffect",
-                  "effectPattern": "Eff_Player_Electric_EnhancedExtraAttack_Hit_2_Girl",
-                  "scale": 1,
-                  "ILLLPEOODKP": ""
-                }
-              ],
-              "failActions": [
-                {
-                  "$type": "FireEffect",
-                  "effectPattern": "Eff_Player_Electric_EnhancedExtraAttack_Hit_2",
-                  "scale": 1,
-                  "ILLLPEOODKP": ""
-                }
-              ],
-              "targetPredicates": [
-                {
-                  "$type": "ByHasFeatureTag",
-                  "featureTagIDs": [
-                    1044
-                  ]
-                }
-              ]
-            }
-          ],
-          "elementDurability": 100,
-          "modifierName": "",
-          "__unk_Q3323398612": 0
-        },
-        "Player_Electric_EnhancedExtraAttack_Hit_1": {
-          "onAdded": [
-            {
-              "$type": "TriggerAttackEvent",
-              "targetType": "Enemy",
-              "attackEvent": {
-                "attackInfo": {
-                  "attackProperty": {
-                    "elementType": "Electric",
-                    "attackType": "Melee",
-                    "damagePercentageRatio": 0,
-                    "strikeType": "Slash",
-                    "enBreak": 50.6,
-                    "damagePercentage": [
-                      "ExtraAttack_Enhanced_1_BaseDamagePercentage",
-                      "ExtraAttack_Enhanced_ratio",
-                      "ADD"
-                    ],
-                    "elementDurability": 25,
-                    "elementRank": 1.5,
-                    "__exp_arkhe": 0
-                  },
-                  "cameraShake": {
-                    "shakeTime": 0.15,
-                    "MNKFEFOKFKP": "",
-                    "shakeRange": 0.3
-                  },
-                  "hitPattern": {
-                    "__unk_Q3893899620": "",
-                    "retreatType": "ByHitDirection",
-                    "onHitEffectName": "default",
-                    "hitHaltTimeScale": 0.05,
-                    "hitHaltTime": 0.05,
-                    "canBeDefenceHalt": true,
-                    "hitImpulseType": "LV2"
-                  },
-                  "forceCameraShake": true,
-                  "attenuationGroup": "default",
-                  "attenuationTag": "EnhancedExtraAttack",
-                  "__exp_additionalAttackTag": [
-                    "Player_Electric_HitTrigger"
-                  ],
-                  "attackTag": "ExtraAttack",
-                  "canBeModifiedBy": "OriginOwner"
+                  "$type": "RemoveModifier",
+                  "modifierName": "UNIQUE_Player_Electric_EnhancedExtraAttack_Ready"
                 },
-                "attackPattern": {
-                  "$type": "ConfigAttackCircle",
-                  "radius": 3.2,
-                  "height": 2,
-                  "triggerType": "TriggerNoRepeat",
-                  "born": {
-                    "$type": "ConfigBornBySelf",
-                    "useRotation": true,
-                    "offset": {
-                      "z": 1,
-                      "y": -0.5
-                    }
-                  }
-                }
-              }
-            },
-            {
-              "$type": "SetGlobalValue",
-              "key": "_ABILITY_Player_Electric_EnhancedExtraAttack_Stack",
-              "minValue": 0,
-              "maxValue": 0,
-              "value": 0,
-              "doOffStage": true
-            },
-            {
-              "$type": "RemoveModifier",
-              "modifierName": "_ABILITY_Player_Electric_EnhancedExtraAttack_Stack",
-              "doOffStage": true
-            },
-            {
-              "$type": "ApplyModifier",
-              "modifierName": "UNIQUE_Player_Electric_EnhancedExtraAttack_CD",
-              "doOffStage": true
-            },
-            {
-              "$type": "RemoveModifier",
-              "modifierName": "UNIQUE_Player_Electric_EnhancedExtraAttack_Ready",
-              "doOffStage": true
-            }
-          ],
-          "elementDurability": 100,
-          "modifierName": "",
-          "__unk_Q3323398612": 0
-        },
-        "Player_Electric_EnhancedExtraAttack_Hit_2": {
-          "onAdded": [
-            {
-              "$type": "TriggerAttackEvent",
-              "targetType": "Enemy",
-              "attackEvent": {
-                "attackInfo": {
-                  "attackProperty": {
-                    "elementType": "Electric",
-                    "attackType": "Melee",
-                    "damagePercentageRatio": 0,
-                    "strikeType": "Slash",
-                    "enBreak": 50.6,
-                    "damagePercentage": [
-                      "ExtraAttack_Enhanced_2_BaseDamagePercentage",
-                      "ExtraAttack_Enhanced_ratio",
-                      "ADD"
-                    ],
-                    "elementDurability": 25,
-                    "elementRank": 1.5,
-                    "__exp_arkhe": 0
-                  },
-                  "cameraShake": {
-                    "shakeTime": 0.15,
-                    "MNKFEFOKFKP": "",
-                    "shakeRange": 0.3
-                  },
-                  "hitPattern": {
-                    "__unk_Q3893899620": "",
-                    "retreatType": "ByHitDirection",
-                    "onHitEffectName": "default",
-                    "hitHaltTimeScale": 0.05,
-                    "hitHaltTime": 0.05,
-                    "canBeDefenceHalt": true,
-                    "hitImpulseType": "LV2"
-                  },
-                  "forceCameraShake": true,
-                  "attenuationGroup": "default",
-                  "attenuationTag": "EnhancedExtraAttack",
-                  "__exp_additionalAttackTag": [
-                    "Player_Electric_HitTrigger"
-                  ],
-                  "attackTag": "ExtraAttack",
-                  "canBeModifiedBy": "OriginOwner"
-                },
-                "attackPattern": {
-                  "$type": "ConfigAttackCircle",
-                  "radius": 3.2,
-                  "height": 2,
-                  "triggerType": "TriggerNoRepeat",
-                  "born": {
-                    "$type": "ConfigBornBySelf",
-                    "useRotation": true,
-                    "offset": {
-                      "z": 1,
-                      "y": -0.5
-                    }
-                  }
-                }
-              }
-            }
-          ],
-          "elementDurability": 100,
-          "modifierName": "",
-          "__unk_Q3323398612": 0
-        },
-        "Player_Electric_EnhancedExtraAttack_Hit_Trigger": {
-          "onAdded": [
-            {
-              "$type": "CreateGadget",
-              "gadgetID": 41044201,
-              "born": {
-                "$type": "ConfigBornBySelf",
-                "onGround": true,
-                "useRotation": true,
-                "offset": {
-                  "z": 2
-                }
-              },
-              "lifeByOwnerV2": true
-            }
-          ],
-          "stacking": "Unique",
-          "elementDurability": 100,
-          "modifierName": "",
-          "__unk_Q3323398612": 0
-        },
-        "UNIQUE_Player_Electric_EnhancedExtraAttack_CD": {
-          "duration": "ExtraAttack_Enhanced_CD",
-          "onRemoved": [
-            {
-              "$type": "SetGlobalValue",
-              "key": "_ABILITY_MODIFIER_UNIQUE_Player_Electric_EnhancedExtraAttack_CD",
-              "minValue": 0,
-              "maxValue": 0,
-              "value": 0,
-              "doOffStage": true
-            },
-            {
-              "$type": "Predicated",
-              "successActions": [
                 {
-                  "$type": "ApplyModifier",
-                  "modifierName": "UNIQUE_Player_Electric_EnhancedExtraAttack_Ready",
-                  "doOffStage": true
+                  "$type": "RemoveModifier",
+                  "modifierName": "UNIQUE_Player_Electric_EnhancedExtraAttack_Handler"
                 }
               ],
               "targetPredicates": [
                 {
                   "$type": "ByTargetGlobalValue",
-                  "value": 3,
+                  "key": "_ABILITY_MODIFIER_UNIQUE_Player_Electric_EnhancedExtraAttack_Ready",
+                  "value": 1
+                },
+                {
+                  "$type": "ByTargetGlobalValue",
                   "compareType": "MoreThanAndEqual",
-                  "key": "_ABILITY_Player_Electric_EnhancedExtraAttack_Stack"
+                  "key": "_ABILITY_Player_Electric_EnhancedExtraAttack_Stack",
+                  "value": 3
+                },
+                {
+                  "$type": "ByTargetGlobalValue",
+                  "compareType": "NoneOrEqual",
+                  "key": "_ABILITY_MODIFIER_UNIQUE_Player_Electric_EnhancedExtraAttack_CD",
+                  "value": 0
                 }
-              ],
-              "doOffStage": true
+              ]
             }
           ],
+          "onAttackLanded": [
+            {
+              "$type": "Predicated",
+              "successActions": [
+                {
+                  "$type": "AttachModifier",
+                  "doOffStage": true,
+                  "modifierName": "Player_Electric_EnhancedExtraAttack_Hit_Trigger"
+                }
+              ],
+              "target": "Target",
+              "targetPredicates": [
+                {
+                  "$type": "ByEntityTypes",
+                  "entityTypes": [
+                    "Monster"
+                  ]
+                },
+                {
+                  "$type": "ByTargetGlobalValue",
+                  "compareType": "NoneOrEqual",
+                  "key": "_ANIMAL_ENTITY_TYPE",
+                  "value": 0
+                },
+                {
+                  "$type": "ByAttackTags",
+                  "attackTags": [
+                    "Player_Electric_HitTrigger"
+                  ]
+                }
+              ]
+            }
+          ],
+          "__unk_Q3323398612": 0
+        },
+        "Player_Electric_EnhancedExtraAttack_Effect_1": {
+          "elementDurability": 100,
+          "modifierName": "",
+          "onAdded": [
+            {
+              "$type": "Predicated",
+              "failActions": [
+                {
+                  "$type": "FireEffect",
+                  "effectPattern": "Eff_Player_Electric_EnhancedExtraAttack_Hit_1",
+                  "scale": 1,
+                  "JHAGIJGAKMK": ""
+                }
+              ],
+              "successActions": [
+                {
+                  "$type": "FireEffect",
+                  "effectPattern": "Eff_Player_Electric_EnhancedExtraAttack_Hit_1_Girl",
+                  "scale": 1,
+                  "JHAGIJGAKMK": ""
+                }
+              ],
+              "targetPredicates": [
+                {
+                  "$type": "ByHasFeatureTag",
+                  "featureTagIDs": [
+                    1044
+                  ]
+                }
+              ]
+            }
+          ],
+          "__unk_Q3323398612": 0
+        },
+        "Player_Electric_EnhancedExtraAttack_Effect_2": {
+          "elementDurability": 100,
+          "modifierName": "",
+          "onAdded": [
+            {
+              "$type": "Predicated",
+              "failActions": [
+                {
+                  "$type": "FireEffect",
+                  "effectPattern": "Eff_Player_Electric_EnhancedExtraAttack_Hit_2",
+                  "scale": 1,
+                  "JHAGIJGAKMK": ""
+                }
+              ],
+              "successActions": [
+                {
+                  "$type": "FireEffect",
+                  "effectPattern": "Eff_Player_Electric_EnhancedExtraAttack_Hit_2_Girl",
+                  "scale": 1,
+                  "JHAGIJGAKMK": ""
+                }
+              ],
+              "targetPredicates": [
+                {
+                  "$type": "ByHasFeatureTag",
+                  "featureTagIDs": [
+                    1044
+                  ]
+                }
+              ]
+            }
+          ],
+          "__unk_Q3323398612": 0
+        },
+        "Player_Electric_EnhancedExtraAttack_Hit_1": {
+          "elementDurability": 100,
+          "modifierName": "",
+          "onAdded": [
+            {
+              "$type": "TriggerAttackEvent",
+              "attackEvent": {
+                "attackInfo": {
+                  "attackProperty": {
+                    "attackType": "Melee",
+                    "damagePercentage": [
+                      "ExtraAttack_Enhanced_1_BaseDamagePercentage",
+                      "ExtraAttack_Enhanced_ratio",
+                      "ADD"
+                    ],
+                    "damagePercentageRatio": 0,
+                    "elementDurability": 25,
+                    "elementRank": 1.5,
+                    "elementType": "Electric",
+                    "enBreak": 50.6,
+                    "strikeType": "Slash",
+                    "__exp_arkhe": 0
+                  },
+                  "attackTag": "ExtraAttack",
+                  "attenuationGroup": "default",
+                  "attenuationTag": "EnhancedExtraAttack",
+                  "cameraShake": {
+                    "shakeRange": 0.3,
+                    "shakeTime": 0.15,
+                    "OFGBHFBAEKK": ""
+                  },
+                  "canBeModifiedBy": "OriginOwner",
+                  "forceCameraShake": true,
+                  "hitPattern": {
+                    "canBeDefenceHalt": true,
+                    "hitHaltTime": 0.05,
+                    "hitHaltTimeScale": 0.05,
+                    "hitImpulseType": "LV2",
+                    "onHitEffectName": "default",
+                    "retreatType": "ByHitDirection",
+                    "__unk_Q3893899620": ""
+                  },
+                  "__exp_additionalAttackTag": [
+                    "Player_Electric_HitTrigger"
+                  ]
+                },
+                "attackPattern": {
+                  "$type": "ConfigAttackCircle",
+                  "born": {
+                    "$type": "ConfigBornBySelf",
+                    "offset": {
+                      "z": 1,
+                      "y": -0.5
+                    },
+                    "useRotation": true
+                  },
+                  "height": 2,
+                  "radius": 3.2,
+                  "triggerType": "TriggerNoRepeat"
+                }
+              },
+              "targetType": "Enemy"
+            },
+            {
+              "$type": "SetGlobalValue",
+              "doOffStage": true,
+              "key": "_ABILITY_Player_Electric_EnhancedExtraAttack_Stack",
+              "maxValue": 0,
+              "minValue": 0,
+              "value": 0
+            },
+            {
+              "$type": "RemoveModifier",
+              "doOffStage": true,
+              "modifierName": "_ABILITY_Player_Electric_EnhancedExtraAttack_Stack"
+            },
+            {
+              "$type": "ApplyModifier",
+              "doOffStage": true,
+              "modifierName": "UNIQUE_Player_Electric_EnhancedExtraAttack_CD"
+            },
+            {
+              "$type": "RemoveModifier",
+              "doOffStage": true,
+              "modifierName": "UNIQUE_Player_Electric_EnhancedExtraAttack_Ready"
+            }
+          ],
+          "__unk_Q3323398612": 0
+        },
+        "Player_Electric_EnhancedExtraAttack_Hit_2": {
+          "elementDurability": 100,
+          "modifierName": "",
+          "onAdded": [
+            {
+              "$type": "TriggerAttackEvent",
+              "attackEvent": {
+                "attackInfo": {
+                  "attackProperty": {
+                    "attackType": "Melee",
+                    "damagePercentage": [
+                      "ExtraAttack_Enhanced_2_BaseDamagePercentage",
+                      "ExtraAttack_Enhanced_ratio",
+                      "ADD"
+                    ],
+                    "damagePercentageRatio": 0,
+                    "elementDurability": 25,
+                    "elementRank": 1.5,
+                    "elementType": "Electric",
+                    "enBreak": 50.6,
+                    "strikeType": "Slash",
+                    "__exp_arkhe": 0
+                  },
+                  "attackTag": "ExtraAttack",
+                  "attenuationGroup": "default",
+                  "attenuationTag": "EnhancedExtraAttack",
+                  "cameraShake": {
+                    "shakeRange": 0.3,
+                    "shakeTime": 0.15,
+                    "OFGBHFBAEKK": ""
+                  },
+                  "canBeModifiedBy": "OriginOwner",
+                  "forceCameraShake": true,
+                  "hitPattern": {
+                    "canBeDefenceHalt": true,
+                    "hitHaltTime": 0.05,
+                    "hitHaltTimeScale": 0.05,
+                    "hitImpulseType": "LV2",
+                    "onHitEffectName": "default",
+                    "retreatType": "ByHitDirection",
+                    "__unk_Q3893899620": ""
+                  },
+                  "__exp_additionalAttackTag": [
+                    "Player_Electric_HitTrigger"
+                  ]
+                },
+                "attackPattern": {
+                  "$type": "ConfigAttackCircle",
+                  "born": {
+                    "$type": "ConfigBornBySelf",
+                    "offset": {
+                      "z": 1,
+                      "y": -0.5
+                    },
+                    "useRotation": true
+                  },
+                  "height": 2,
+                  "radius": 3.2,
+                  "triggerType": "TriggerNoRepeat"
+                }
+              },
+              "targetType": "Enemy"
+            }
+          ],
+          "__unk_Q3323398612": 0
+        },
+        "Player_Electric_EnhancedExtraAttack_Hit_Trigger": {
+          "elementDurability": 100,
+          "modifierName": "",
+          "onAdded": [
+            {
+              "$type": "CreateGadget",
+              "born": {
+                "$type": "ConfigBornBySelf",
+                "offset": {
+                  "z": 2
+                },
+                "onGround": true,
+                "useRotation": true
+              },
+              "gadgetID": 41044201,
+              "lifeByOwnerV2": true
+            }
+          ],
+          "stacking": "Unique",
+          "__unk_Q3323398612": 0
+        },
+        "UNIQUE_Player_Electric_EnhancedExtraAttack_CD": {
+          "duration": "ExtraAttack_Enhanced_CD",
+          "elementDurability": 100,
+          "isUnique": true,
+          "modifierName": "",
           "onAdded": [
             {
               "$type": "SetGlobalValue",
+              "doOffStage": true,
               "key": "_ABILITY_MODIFIER_UNIQUE_Player_Electric_EnhancedExtraAttack_CD",
-              "minValue": 0,
               "maxValue": 0,
-              "value": 1,
-              "doOffStage": true
+              "minValue": 0,
+              "value": 1
             }
           ],
-          "elementDurability": 100,
-          "modifierName": "",
-          "isUnique": true,
+          "onRemoved": [
+            {
+              "$type": "SetGlobalValue",
+              "doOffStage": true,
+              "key": "_ABILITY_MODIFIER_UNIQUE_Player_Electric_EnhancedExtraAttack_CD",
+              "maxValue": 0,
+              "minValue": 0,
+              "value": 0
+            },
+            {
+              "$type": "Predicated",
+              "doOffStage": true,
+              "successActions": [
+                {
+                  "$type": "ApplyModifier",
+                  "doOffStage": true,
+                  "modifierName": "UNIQUE_Player_Electric_EnhancedExtraAttack_Ready"
+                }
+              ],
+              "targetPredicates": [
+                {
+                  "$type": "ByTargetGlobalValue",
+                  "compareType": "MoreThanAndEqual",
+                  "key": "_ABILITY_Player_Electric_EnhancedExtraAttack_Stack",
+                  "value": 3
+                }
+              ]
+            }
+          ],
           "__unk_Q3323398612": 0
         },
         "UNIQUE_Player_Electric_EnhancedExtraAttack_Ready_Effect": {
+          "elementDurability": 100,
+          "isUnique": true,
+          "modifierName": "",
           "onAdded": [
             {
               "$type": "AttachEffect",
-              "ILLLPEOODKP": "",
+              "effectPattern": "Eff_Player_Electric_EnhancedExtraAttack_Ready",
               "scale": 1,
-              "effectPattern": "Eff_Player_Electric_EnhancedExtraAttack_Ready"
+              "JHAGIJGAKMK": ""
             }
           ],
-          "elementDurability": 100,
-          "modifierName": "",
-          "isUnique": true,
           "__unk_Q3323398612": 0
         }
       },
+      "onAdded": [
+        {
+          "$type": "AttachModifier",
+          "modifierName": "UNIQUE_Player_Electric_EnhancedExtraAttack_Main"
+        }
+      ],
       "onRemoved": [
         {
           "$type": "RemoveModifier",
@@ -3613,122 +3627,108 @@
           "$type": "RemoveModifier",
           "modifierName": "_ABILITY_Player_Electric_EnhancedExtraAttack_Stack"
         }
-      ],
-      "abilityName": "Avatar_Player_Electric_EnhancedExtraAttack",
-      "isDynamicAbility": true,
-      "onAdded": [
-        {
-          "$type": "AttachModifier",
-          "modifierName": "UNIQUE_Player_Electric_EnhancedExtraAttack_Main"
-        }
-      ],
-      "abilitySpecials": {
-        "ExtraAttack_Enhanced_ratio": 0,
-        "ExtraAttack_Enhanced_CD": 0,
-        "ExtraAttack_Enhanced_1_BaseDamagePercentage": 0,
-        "ExtraAttack_Enhanced_2_BaseDamagePercentage": 0
-      }
+      ]
     }
   },
   {
     "Default": {
-      "modifiers": {
-        "Gadget_Player_Electric_EnhancedExtraAttack_ThunderBoltField_Handler": {
-          "duration": "ExtraAttack_Enhanced_Field_WaitTime",
-          "onRemoved": [
-            {
-              "$type": "FireEffect",
-              "effectPattern": "Eff_Player_Electric_EnhancedExtraAttack_Hit_Burst",
-              "scale": 1,
-              "ILLLPEOODKP": ""
-            },
-            {
-              "$type": "TriggerAttackEvent",
-              "targetType": "Enemy",
-              "attackEvent": {
-                "attackInfo": {
-                  "attackProperty": {
-                    "elementType": "Electric",
-                    "damagePercentageRatio": 0,
-                    "strikeType": "Default",
-                    "enBreak": 25,
-                    "damagePercentage": "ExtraAttack_Enhanced_Field_DamageRatio",
-                    "elementDurability": 25,
-                    "elementRank": 1.5,
-                    "__exp_arkhe": 0
-                  },
-                  "cameraShake": {
-                    "shakeTime": 0.15,
-                    "MNKFEFOKFKP": "",
-                    "shakeRange": 0.3
-                  },
-                  "hitPattern": {
-                    "__unk_Q3893899620": "",
-                    "onHitEffectName": "default",
-                    "hitHaltTimeScale": 0.01,
-                    "hitImpulseType": "LV2"
-                  },
-                  "forceCameraShake": true,
-                  "attenuationGroup": "default",
-                  "attenuationTag": "EnhancedExtraAttack",
-                  "attackTag": "ExtraAttack",
-                  "canBeModifiedBy": "OriginOwner"
-                },
-                "attackPattern": {
-                  "$type": "ConfigAttackCircle",
-                  "radius": 3.2,
-                  "height": 2,
-                  "triggerType": "TriggerNoRepeat",
-                  "born": {
-                    "$type": "ConfigBornBySelf",
-                    "useRotation": true,
-                    "offset": {
-                      "z": 1,
-                      "y": -0.5
-                    }
-                  }
-                }
-              }
-            },
-            {
-              "$type": "CreateGadget",
-              "gadgetID": 41044131,
-              "ownerIs": "Owner",
-              "FGNHCAEHEJK": true,
-              "born": {
-                "$type": "ConfigBornByGlobalValue",
-                "positionKey": "",
-                "directionKey": "",
-                "onGround": true
-              }
-            }
-          ],
-          "onAdded": [
-            {
-              "$type": "AttachEffect",
-              "ILLLPEOODKP": "",
-              "scale": 1,
-              "effectPattern": "Eff_Player_Electric_EnhancedExtraAttack_Hit_Tag"
-            }
-          ],
-          "elementDurability": 100,
-          "modifierName": "",
-          "__unk_Q3323398612": 0
-        }
-      },
       "abilityName": "Gadget_Player_Electric_EnhancedExtraAttack_ThunderBoltField",
-      "onAdded": [
-        {
-          "$type": "AttachModifier",
-          "modifierName": "Gadget_Player_Electric_EnhancedExtraAttack_ThunderBoltField_Handler"
-        }
-      ],
       "abilitySpecials": {
         "ExtraAttack_Enhanced_Field_WaitTime": 0,
         "ExtraAttack_Enhanced_Field_DamageRatio": 0,
         "ExtraAttack_Enhanced_1_BaseDamagePercentage": 0,
         "ExtraAttack_Enhanced_2_BaseDamagePercentage": 0
-      }
+      },
+      "modifiers": {
+        "Gadget_Player_Electric_EnhancedExtraAttack_ThunderBoltField_Handler": {
+          "duration": "ExtraAttack_Enhanced_Field_WaitTime",
+          "elementDurability": 100,
+          "modifierName": "",
+          "onAdded": [
+            {
+              "$type": "AttachEffect",
+              "effectPattern": "Eff_Player_Electric_EnhancedExtraAttack_Hit_Tag",
+              "scale": 1,
+              "JHAGIJGAKMK": ""
+            }
+          ],
+          "onRemoved": [
+            {
+              "$type": "FireEffect",
+              "effectPattern": "Eff_Player_Electric_EnhancedExtraAttack_Hit_Burst",
+              "scale": 1,
+              "JHAGIJGAKMK": ""
+            },
+            {
+              "$type": "TriggerAttackEvent",
+              "attackEvent": {
+                "attackInfo": {
+                  "attackProperty": {
+                    "damagePercentage": "ExtraAttack_Enhanced_Field_DamageRatio",
+                    "damagePercentageRatio": 0,
+                    "elementDurability": 25,
+                    "elementRank": 1.5,
+                    "elementType": "Electric",
+                    "enBreak": 25,
+                    "strikeType": "Default",
+                    "__exp_arkhe": 0
+                  },
+                  "attackTag": "ExtraAttack",
+                  "attenuationGroup": "default",
+                  "attenuationTag": "EnhancedExtraAttack",
+                  "cameraShake": {
+                    "shakeRange": 0.3,
+                    "shakeTime": 0.15,
+                    "OFGBHFBAEKK": ""
+                  },
+                  "canBeModifiedBy": "OriginOwner",
+                  "forceCameraShake": true,
+                  "hitPattern": {
+                    "hitHaltTimeScale": 0.01,
+                    "hitImpulseType": "LV2",
+                    "onHitEffectName": "default",
+                    "__unk_Q3893899620": ""
+                  }
+                },
+                "attackPattern": {
+                  "$type": "ConfigAttackCircle",
+                  "born": {
+                    "$type": "ConfigBornBySelf",
+                    "offset": {
+                      "z": 1,
+                      "y": -0.5
+                    },
+                    "useRotation": true
+                  },
+                  "height": 2,
+                  "radius": 3.2,
+                  "triggerType": "TriggerNoRepeat"
+                }
+              },
+              "targetType": "Enemy"
+            },
+            {
+              "$type": "CreateGadget",
+              "born": {
+                "$type": "ConfigBornByGlobalValue",
+                "directionKey": "",
+                "onGround": true,
+                "positionKey": ""
+              },
+              "gadgetID": 41044131,
+              "ownerIs": "Owner",
+              "ADADIMJGCNE": true
+            }
+          ],
+          "__unk_Q3323398612": 0
+        }
+      },
+      "onAdded": [
+        {
+          "$type": "AttachModifier",
+          "modifierName": "Gadget_Player_Electric_EnhancedExtraAttack_ThunderBoltField_Handler"
+        }
+      ]
     }
   }
 ]

@@ -1,26 +1,95 @@
 [
   {
     "Default": {
-      "modifiers": {
-        "ExtraAttack_StaminaCost": {
-          "onAdded": [
-            {
-              "$type": "AvatarSkillStart",
-              "skillID": 10001,
-              "cdRatio": 1,
-              "costStaminaRatio": "ExtraAttack_Sword_Stamina_Cost",
-              "cdRatio": 1
-            }
-          ],
-          "elementDurability": 100,
-          "modifierName": "",
-          "__unk_Q3323398612": 0
-        }
-      },
       "abilityMixins": [
         {
           "$type": "ButtonHoldChargeMixin",
-          "skillID": 100547,
+          "chargeStateIDs": [
+            "Attack01",
+            "Attack02",
+            "Attack03",
+            "Attack04",
+            "Run"
+          ],
+          "chargeTime": 0.12,
+          "onBeginCharged": [
+            {
+              "$type": "SetAnimatorBool",
+              "boolID": "IsCharging",
+              "value": true
+            }
+          ],
+          "onBeginSecondCharged": [
+            {
+              "$type": "SetAnimatorTrigger",
+              "predicates": [
+                {
+                  "$type": "ByLocalAvatarStamina",
+                  "logic": "GreaterOrEqual",
+                  "stamina": [
+                    "ExtraAttack_Sword_Stamina_Cost",
+                    "Flexible_Stamina",
+                    "ADD"
+                  ]
+                }
+              ],
+              "triggerID": "DoSkill"
+            },
+            {
+              "$type": "SetAnimatorInt",
+              "intID": "SkillID",
+              "predicates": [
+                {
+                  "$type": "ByLocalAvatarStamina",
+                  "logic": "GreaterOrEqual",
+                  "stamina": [
+                    "ExtraAttack_Sword_Stamina_Cost",
+                    "Flexible_Stamina",
+                    "ADD"
+                  ]
+                }
+              ],
+              "value": 6
+            },
+            {
+              "$type": "SetAnimatorBool",
+              "boolID": "IsCharging"
+            }
+          ],
+          "onBeginUncharged": [
+            {
+              "$type": "SetAnimatorTrigger",
+              "triggerID": "DoSkill"
+            },
+            {
+              "$type": "SetAnimatorInt",
+              "intID": "SkillID",
+              "predicates": [
+                {
+                  "$type": "ByAny",
+                  "predicates": [
+                    {
+                      "$type": "ByAnimatorInt",
+                      "logic": "Equal",
+                      "parameter": "ComboCount",
+                      "value": 0
+                    },
+                    {
+                      "$type": "ByAnimatorInt",
+                      "logic": "Equal",
+                      "parameter": "ComboCount",
+                      "value": 5
+                    }
+                  ]
+                }
+              ],
+              "value": 99
+            },
+            {
+              "$type": "SetAnimatorBool",
+              "boolID": "IsCharging"
+            }
+          ],
           "onReleaseCharged": [
             {
               "$type": "SetAnimatorBool",
@@ -32,140 +101,140 @@
               "value": 1
             }
           ],
-          "onBeginUncharged": [
-            {
-              "$type": "SetAnimatorTrigger",
-              "triggerID": "DoSkill"
-            },
-            {
-              "$type": "SetAnimatorInt",
-              "intID": "SkillID",
-              "value": 99,
-              "predicates": [
-                {
-                  "$type": "ByAny",
-                  "predicates": [
-                    {
-                      "$type": "ByAnimatorInt",
-                      "value": 0,
-                      "parameter": "ComboCount",
-                      "logic": "Equal"
-                    },
-                    {
-                      "$type": "ByAnimatorInt",
-                      "value": 5,
-                      "parameter": "ComboCount",
-                      "logic": "Equal"
-                    }
-                  ]
-                }
-              ]
-            },
-            {
-              "$type": "SetAnimatorBool",
-              "boolID": "IsCharging"
-            }
-          ],
-          "secondChargeTime": 0.2,
-          "chargeTime": 0.12,
-          "onBeginCharged": [
-            {
-              "$type": "SetAnimatorBool",
-              "value": true,
-              "boolID": "IsCharging"
-            }
-          ],
-          "onBeginSecondCharged": [
-            {
-              "$type": "SetAnimatorTrigger",
-              "triggerID": "DoSkill",
-              "predicates": [
-                {
-                  "$type": "ByLocalAvatarStamina",
-                  "stamina": [
-                    "ExtraAttack_Sword_Stamina_Cost",
-                    "Flexible_Stamina",
-                    "ADD"
-                  ],
-                  "logic": "GreaterOrEqual"
-                }
-              ]
-            },
-            {
-              "$type": "SetAnimatorInt",
-              "intID": "SkillID",
-              "value": 6,
-              "predicates": [
-                {
-                  "$type": "ByLocalAvatarStamina",
-                  "stamina": [
-                    "ExtraAttack_Sword_Stamina_Cost",
-                    "Flexible_Stamina",
-                    "ADD"
-                  ],
-                  "logic": "GreaterOrEqual"
-                }
-              ]
-            },
-            {
-              "$type": "SetAnimatorBool",
-              "boolID": "IsCharging"
-            }
-          ],
-          "chargeStateIDs": [
-            "Attack01",
-            "Attack02",
-            "Attack03",
-            "Attack04",
-            "Run"
-          ],
           "onReleaseUncharged": [
             {
               "$type": "SetAnimatorInt",
               "intID": "SkillID",
               "value": 1
             }
-          ]
+          ],
+          "secondChargeTime": 0.2,
+          "skillID": 100547
         },
         {
           "$type": "AttachToStateIDMixin",
-          "__unk_Q2081332355": "",
+          "modifierName": "ExtraAttack_StaminaCost",
           "stateIDs": [
             "ExtraAttack"
           ],
-          "modifierName": "ExtraAttack_StaminaCost"
+          "__unk_Q2081332355": ""
         }
       ],
       "abilityName": "Avatar_PlayerBoy_ExtraAttack_Grass",
-      "isDynamicAbility": true,
       "abilitySpecials": {
         "ExtraAttack_Sword_Stamina_Cost": 0,
         "Flexible_Stamina": -2
+      },
+      "isDynamicAbility": true,
+      "modifiers": {
+        "ExtraAttack_StaminaCost": {
+          "elementDurability": 100,
+          "modifierName": "",
+          "onAdded": [
+            {
+              "$type": "AvatarSkillStart",
+              "cdRatio": 1,
+              "costStaminaRatio": "ExtraAttack_Sword_Stamina_Cost",
+              "skillID": 10001,
+              "NKOFINBNOOK": 1
+            }
+          ],
+          "__unk_Q3323398612": 0
+        }
       }
     }
   },
   {
     "Default": {
-      "modifiers": {
-        "ExtraAttack_StaminaCost": {
-          "onAdded": [
-            {
-              "$type": "AvatarSkillStart",
-              "skillID": 10001,
-              "cdRatio": 1,
-              "costStaminaRatio": "ExtraAttack_Sword_Stamina_Cost",
-              "cdRatio": 1
-            }
-          ],
-          "elementDurability": 100,
-          "modifierName": "",
-          "__unk_Q3323398612": 0
-        }
-      },
       "abilityMixins": [
         {
           "$type": "ButtonHoldChargeMixin",
-          "skillID": 100557,
+          "chargeStateIDs": [
+            "Attack01",
+            "Attack02",
+            "Attack03",
+            "Attack04",
+            "Run"
+          ],
+          "chargeTime": 0.12,
+          "onBeginCharged": [
+            {
+              "$type": "SetAnimatorBool",
+              "boolID": "IsCharging",
+              "value": true
+            }
+          ],
+          "onBeginSecondCharged": [
+            {
+              "$type": "SetAnimatorTrigger",
+              "predicates": [
+                {
+                  "$type": "ByLocalAvatarStamina",
+                  "logic": "GreaterOrEqual",
+                  "stamina": [
+                    "ExtraAttack_Sword_Stamina_Cost",
+                    "Flexible_Stamina",
+                    "ADD"
+                  ]
+                }
+              ],
+              "triggerID": "DoSkill"
+            },
+            {
+              "$type": "SetAnimatorInt",
+              "intID": "SkillID",
+              "predicates": [
+                {
+                  "$type": "ByLocalAvatarStamina",
+                  "logic": "GreaterOrEqual",
+                  "stamina": [
+                    "ExtraAttack_Sword_Stamina_Cost",
+                    "Flexible_Stamina",
+                    "ADD"
+                  ]
+                }
+              ],
+              "value": 6
+            },
+            {
+              "$type": "SetAnimatorBool",
+              "boolID": "IsCharging"
+            }
+          ],
+          "onBeginUncharged": [
+            {
+              "$type": "SetAnimatorTrigger",
+              "triggerID": "DoSkill"
+            },
+            {
+              "$type": "SetAnimatorInt",
+              "intID": "SkillID",
+              "predicates": [
+                {
+                  "$type": "ByAny",
+                  "predicates": [
+                    {
+                      "$type": "ByAnimatorInt",
+                      "logic": "Equal",
+                      "parameter": "ComboCount",
+                      "value": 0
+                    },
+                    {
+                      "$type": "ByAnimatorInt",
+                      "logic": "Equal",
+                      "parameter": "ComboCount",
+                      "value": 5
+                    }
+                  ]
+                }
+              ],
+              "value": 99
+            },
+            {
+              "$type": "SetAnimatorBool",
+              "boolID": "IsCharging"
+            }
+          ],
           "onReleaseCharged": [
             {
               "$type": "SetAnimatorBool",
@@ -177,137 +246,83 @@
               "value": 1
             }
           ],
-          "onBeginUncharged": [
-            {
-              "$type": "SetAnimatorTrigger",
-              "triggerID": "DoSkill"
-            },
-            {
-              "$type": "SetAnimatorInt",
-              "intID": "SkillID",
-              "value": 99,
-              "predicates": [
-                {
-                  "$type": "ByAny",
-                  "predicates": [
-                    {
-                      "$type": "ByAnimatorInt",
-                      "value": 0,
-                      "parameter": "ComboCount",
-                      "logic": "Equal"
-                    },
-                    {
-                      "$type": "ByAnimatorInt",
-                      "value": 5,
-                      "parameter": "ComboCount",
-                      "logic": "Equal"
-                    }
-                  ]
-                }
-              ]
-            },
-            {
-              "$type": "SetAnimatorBool",
-              "boolID": "IsCharging"
-            }
-          ],
-          "secondChargeTime": 0.2,
-          "chargeTime": 0.12,
-          "onBeginCharged": [
-            {
-              "$type": "SetAnimatorBool",
-              "value": true,
-              "boolID": "IsCharging"
-            }
-          ],
-          "onBeginSecondCharged": [
-            {
-              "$type": "SetAnimatorTrigger",
-              "triggerID": "DoSkill",
-              "predicates": [
-                {
-                  "$type": "ByLocalAvatarStamina",
-                  "stamina": [
-                    "ExtraAttack_Sword_Stamina_Cost",
-                    "Flexible_Stamina",
-                    "ADD"
-                  ],
-                  "logic": "GreaterOrEqual"
-                }
-              ]
-            },
-            {
-              "$type": "SetAnimatorInt",
-              "intID": "SkillID",
-              "value": 6,
-              "predicates": [
-                {
-                  "$type": "ByLocalAvatarStamina",
-                  "stamina": [
-                    "ExtraAttack_Sword_Stamina_Cost",
-                    "Flexible_Stamina",
-                    "ADD"
-                  ],
-                  "logic": "GreaterOrEqual"
-                }
-              ]
-            },
-            {
-              "$type": "SetAnimatorBool",
-              "boolID": "IsCharging"
-            }
-          ],
-          "chargeStateIDs": [
-            "Attack01",
-            "Attack02",
-            "Attack03",
-            "Attack04",
-            "Run"
-          ],
           "onReleaseUncharged": [
             {
               "$type": "SetAnimatorInt",
               "intID": "SkillID",
               "value": 1
             }
-          ]
+          ],
+          "secondChargeTime": 0.2,
+          "skillID": 100557
         },
         {
           "$type": "AttachToStateIDMixin",
-          "__unk_Q2081332355": "",
+          "modifierName": "ExtraAttack_StaminaCost",
           "stateIDs": [
             "ExtraAttack"
           ],
-          "modifierName": "ExtraAttack_StaminaCost"
+          "__unk_Q2081332355": ""
         }
       ],
       "abilityName": "Avatar_PlayerGirl_ExtraAttack_Grass",
-      "isDynamicAbility": true,
       "abilitySpecials": {
         "ExtraAttack_Sword_Stamina_Cost": 0,
         "Flexible_Stamina": -2
+      },
+      "isDynamicAbility": true,
+      "modifiers": {
+        "ExtraAttack_StaminaCost": {
+          "elementDurability": 100,
+          "modifierName": "",
+          "onAdded": [
+            {
+              "$type": "AvatarSkillStart",
+              "cdRatio": 1,
+              "costStaminaRatio": "ExtraAttack_Sword_Stamina_Cost",
+              "skillID": 10001,
+              "NKOFINBNOOK": 1
+            }
+          ],
+          "__unk_Q3323398612": 0
+        }
       }
     }
   },
   {
     "Default": {
+      "abilityMixins": [
+        {
+          "$type": "AttachToNormalizedTimeMixin",
+          "modifierName": "PlayerBoy_Grass_Sword_Eff",
+          "stateID": "Player_Grass_ElementalArt",
+          "__unk_Q2081332355": ""
+        }
+      ],
+      "abilityName": "Avatar_PlayerBoy_ElementalArt_Grass",
+      "abilitySpecials": {
+        "ElementArt_Damage": 0,
+        "Element_Recover_By_Talent_1": 0
+      },
+      "isDynamicAbility": true,
       "modifiers": {
         "PlayerBoy_Grass_Sword_Eff": {
+          "elementDurability": 100,
+          "modifierName": "",
           "onAdded": [
             {
               "$type": "AttachEffect",
-              "ILLLPEOODKP": "",
+              "effectPattern": "Eff_Player_Grass_ElementalArt_Impact_Sword",
               "scale": 1,
-              "effectPattern": "Eff_Player_Grass_ElementalArt_Impact_Sword"
+              "JHAGIJGAKMK": ""
             }
           ],
           "stacking": "Unique",
-          "elementDurability": 100,
-          "modifierName": "",
           "__unk_Q3323398612": 0
         },
         "Avatar_PlayerBoy_EA_Grass_ElemBall_Handler": {
-          "stacking": "Unique",
+          "elementDurability": 100,
+          "modifierName": "",
           "onAttackLanded": [
             {
               "$type": "Predicated",
@@ -317,6 +332,7 @@
                   "modifierName": "PlayerBoy_Grass_ElemBall"
                 }
               ],
+              "target": "Target",
               "targetPredicates": [
                 {
                   "$type": "ByAttackTags",
@@ -332,24 +348,24 @@
                 },
                 {
                   "$type": "ByTargetGlobalValue",
-                  "value": 0,
                   "compareType": "NoneOrEqual",
-                  "key": "_ANIMAL_ENTITY_TYPE"
+                  "key": "_ANIMAL_ENTITY_TYPE",
+                  "value": 0
                 }
-              ],
-              "target": "Target"
+              ]
             }
           ],
-          "elementDurability": 100,
-          "modifierName": "",
+          "stacking": "Unique",
           "__unk_Q3323398612": 0
         },
         "PlayerBoy_Grass_ElemBall": {
           "duration": 0.3,
+          "elementDurability": 100,
+          "modifierName": "",
           "onAdded": [
             {
               "$type": "GenerateElemBall",
-              "ratio": 1,
+              "baseEnergy": 6,
               "born": {
                 "$type": "ConfigBornByTarget",
                 "offset": {
@@ -357,8 +373,8 @@
                 }
               },
               "configID": 2019,
-              "baseEnergy": 6,
-              "doOffStage": true
+              "doOffStage": true,
+              "ratio": 1
             },
             {
               "$type": "Randomed",
@@ -366,7 +382,7 @@
               "successActions": [
                 {
                   "$type": "GenerateElemBall",
-                  "ratio": 1,
+                  "baseEnergy": 3,
                   "born": {
                     "$type": "ConfigBornByTarget",
                     "offset": {
@@ -374,28 +390,30 @@
                     }
                   },
                   "configID": 2019,
-                  "baseEnergy": 3,
-                  "doOffStage": true
+                  "doOffStage": true,
+                  "ratio": 1
                 }
               ]
             }
           ],
           "stacking": "Unique",
-          "elementDurability": 100,
-          "modifierName": "",
           "__unk_Q3323398612": 0
         },
         "Avatar_Player_Grass_Impact_Energy_Recover_Handler": {
+          "elementDurability": 100,
+          "modifierName": "",
           "onAttackLanded": [
             {
               "$type": "Predicated",
+              "doOffStage": true,
               "successActions": [
                 {
                   "$type": "ApplyModifier",
-                  "modifierName": "UNIQUE_Avatar_Player_Grass_Impact_Energy_Recover",
-                  "doOffStage": true
+                  "doOffStage": true,
+                  "modifierName": "UNIQUE_Avatar_Player_Grass_Impact_Energy_Recover"
                 }
               ],
+              "target": "Target",
               "targetPredicates": [
                 {
                   "$type": "ByEntityTypes",
@@ -405,9 +423,9 @@
                 },
                 {
                   "$type": "ByTargetGlobalValue",
-                  "value": 0,
                   "compareType": "NoneOrEqual",
-                  "key": "_ANIMAL_ENTITY_TYPE"
+                  "key": "_ANIMAL_ENTITY_TYPE",
+                  "value": 0
                 },
                 {
                   "$type": "ByAttackTags",
@@ -415,110 +433,96 @@
                     "Elemental_Art"
                   ]
                 }
-              ],
-              "target": "Target",
-              "doOffStage": true
+              ]
             }
           ],
-          "elementDurability": 100,
-          "modifierName": "",
           "__unk_Q3323398612": 0
         },
         "UNIQUE_Avatar_Player_Grass_Impact_Energy_Recover": {
           "duration": 0.3,
+          "elementDurability": 100,
+          "isUnique": true,
+          "modifierName": "",
           "onAdded": [
             {
               "$type": "ReviveElemEnergy",
-              "value": "Element_Recover_By_Talent_1",
+              "doOffStage": true,
               "target": "Caster",
-              "doOffStage": true
+              "value": "Element_Recover_By_Talent_1"
             }
           ],
           "stacking": "Unique",
-          "elementDurability": 100,
-          "modifierName": "",
-          "isUnique": true,
           "__unk_Q3323398612": 0
         }
       },
       "onAbilityStart": [
         {
           "$type": "AvatarSkillStart",
-          "skillID": 10117,
           "cdRatio": 1,
           "costStaminaRatio": 1,
-          "cdRatio": 1,
           "predicates": [
             {
               "$type": "BySkillReady",
               "skillID": 10117
             }
-          ]
+          ],
+          "skillID": 10117,
+          "NKOFINBNOOK": 1
         },
         {
           "$type": "FireEffect",
           "effectPattern": "Eff_Player_Grass_ElementalArt_Impact",
           "scale": 1,
-          "ILLLPEOODKP": ""
+          "JHAGIJGAKMK": ""
         },
         {
           "$type": "TriggerAttackEvent",
-          "targetType": "Enemy",
           "attackEvent": {
             "attackInfo": {
               "attackProperty": {
-                "elementType": "Grass",
                 "attackType": "Melee",
-                "damagePercentageRatio": 0,
-                "strikeType": "Default",
-                "enBreak": 120,
                 "damagePercentage": "ElementArt_Damage",
+                "damagePercentageRatio": 0,
                 "elementDurability": 25,
+                "elementType": "Grass",
+                "enBreak": 120,
+                "strikeType": "Default",
                 "__exp_arkhe": 0
               },
-              "cameraShake": {
-                "shakeTime": 0.12,
-                "shakeDistance": 30,
-                "MNKFEFOKFKP": "",
-                "shakeRange": 0.36
-              },
-              "hitPattern": {
-                "__unk_Q3893899620": "",
-                "onHitEffectName": "default",
-                "hitHaltTimeScale": 0.02,
-                "hitImpulseType": "LV4"
-              },
+              "attackTag": "Elemental_Art",
               "attenuationGroup": "default",
               "attenuationTag": "",
-              "attackTag": "Elemental_Art"
+              "cameraShake": {
+                "shakeDistance": 30,
+                "shakeRange": 0.36,
+                "shakeTime": 0.12,
+                "OFGBHFBAEKK": ""
+              },
+              "hitPattern": {
+                "hitHaltTimeScale": 0.02,
+                "hitImpulseType": "LV4",
+                "onHitEffectName": "default",
+                "__unk_Q3893899620": ""
+              }
             },
             "attackPattern": {
               "$type": "ConfigAttackCircle",
-              "radius": 6.5,
-              "height": 2,
-              "fanAngle": 130,
-              "triggerType": "TriggerNoRepeat",
               "born": {
                 "$type": "ConfigBornBySelf",
                 "offset": {
                   "z": -0.3,
                   "y": -0.5
                 }
-              }
+              },
+              "fanAngle": 130,
+              "height": 2,
+              "radius": 6.5,
+              "triggerType": "TriggerNoRepeat"
             }
-          }
+          },
+          "targetType": "Enemy"
         }
       ],
-      "abilityMixins": [
-        {
-          "$type": "AttachToNormalizedTimeMixin",
-          "modifierName": "PlayerBoy_Grass_Sword_Eff",
-          "__unk_Q2081332355": "",
-          "stateID": "Player_Grass_ElementalArt"
-        }
-      ],
-      "abilityName": "Avatar_PlayerBoy_ElementalArt_Grass",
-      "isDynamicAbility": true,
       "onAdded": [
         {
           "$type": "ApplyModifier",
@@ -534,15 +538,39 @@
             }
           ]
         }
-      ],
-      "abilitySpecials": {
-        "ElementArt_Damage": 0,
-        "Element_Recover_By_Talent_1": 0
-      }
+      ]
     }
   },
   {
     "Default": {
+      "abilityMixins": [
+        {
+          "$type": "AttachToStateIDMixin",
+          "modifierName": "ExitCamera",
+          "stateIDs": [
+            "Player_Grass_ElementalBurst",
+            "Player_Grass_ElementalBurst_AS"
+          ],
+          "__unk_Q2081332355": ""
+        },
+        {
+          "$type": "AttachToStateIDMixin",
+          "modifierName": "ExitCameraHeadControl",
+          "stateIDs": [
+            "Player_Grass_ElementalBurst"
+          ],
+          "__unk_Q2081332355": ""
+        },
+        {
+          "$type": "AttachToNormalizedTimeMixin",
+          "modifierName": "Grass_ElementalBurst_Exit_Camera",
+          "normalizeEnd": 0.4,
+          "stateID": "Player_Grass_ElementalBurst_AS",
+          "__unk_Q2081332355": ""
+        }
+      ],
+      "abilityName": "Avatar_Player_Grass_ElementalBurst_CameraExit",
+      "isDynamicAbility": true,
       "modifiers": {
         "ExitCamera": {
           "elementDurability": 100,
@@ -550,24 +578,26 @@
           "__unk_Q3323398612": 0
         },
         "ExitCameraHeadControl": {
-          "onRemoved": [
-            {
-              "$type": "EnableHeadControl",
-              "enable": true,
-              "doOffStage": true
-            }
-          ],
+          "elementDurability": 100,
+          "modifierName": "",
           "onAdded": [
             {
               "$type": "EnableHeadControl",
               "blend": false
             }
           ],
-          "elementDurability": 100,
-          "modifierName": "",
+          "onRemoved": [
+            {
+              "$type": "EnableHeadControl",
+              "doOffStage": true,
+              "enable": true
+            }
+          ],
           "__unk_Q3323398612": 0
         },
         "Grass_ElementalBurst_Exit_Camera": {
+          "elementDurability": 100,
+          "modifierName": "",
           "onRemoved": [
             {
               "$type": "AvatarExitCameraShot",
@@ -576,15 +606,13 @@
             {
               "$type": "AvatarCameraParam",
               "cameraParam": {
-                "shouldKeepForceRadius": true,
+                "forceRadius": 6,
                 "forceRadiusDuration": 0,
-                "forceRadius": 6
+                "shouldKeepForceRadius": true
               },
               "doOffStage": true
             }
           ],
-          "elementDurability": 100,
-          "modifierName": "",
           "__unk_Q3323398612": 0
         }
       },
@@ -597,53 +625,32 @@
             "power": 1
           }
         }
-      ],
-      "abilityMixins": [
-        {
-          "$type": "AttachToStateIDMixin",
-          "__unk_Q2081332355": "",
-          "stateIDs": [
-            "Player_Grass_ElementalBurst",
-            "Player_Grass_ElementalBurst_AS"
-          ],
-          "modifierName": "ExitCamera"
-        },
-        {
-          "$type": "AttachToStateIDMixin",
-          "__unk_Q2081332355": "",
-          "stateIDs": [
-            "Player_Grass_ElementalBurst"
-          ],
-          "modifierName": "ExitCameraHeadControl"
-        },
-        {
-          "$type": "AttachToNormalizedTimeMixin",
-          "modifierName": "Grass_ElementalBurst_Exit_Camera",
-          "__unk_Q2081332355": "",
-          "normalizeEnd": 0.4,
-          "stateID": "Player_Grass_ElementalBurst_AS"
-        }
-      ],
-      "abilityName": "Avatar_Player_Grass_ElementalBurst_CameraExit",
-      "isDynamicAbility": true
+      ]
     }
   },
   {
     "Default": {
+      "abilityMixins": [
+        {
+          "$type": "AttachToNormalizedTimeMixin",
+          "modifierName": "Player_Grass_ElementalBurst_HideWeapon",
+          "normalizeStart": 0.46,
+          "stateID": "Player_Grass_ElementalBurst",
+          "__unk_Q2081332355": ""
+        },
+        {
+          "$type": "AttachToNormalizedTimeMixin",
+          "modifierName": "Player_Grass_ElementalBurst_HideWeapon",
+          "stateID": "Player_Grass_ElementalBurst_AS",
+          "__unk_Q2081332355": ""
+        }
+      ],
+      "abilityName": "Avatar_Player_Grass_ElementalBurst_WeaponDisplay",
+      "isDynamicAbility": true,
       "modifiers": {
         "Player_Grass_ElementalBurst_HideWeapon": {
-          "onRemoved": [
-            {
-              "$type": "TriggerHideWeapon",
-              "partNames": [
-                "equip01",
-                "equip02",
-                "sheathPoint"
-              ],
-              "visible": true,
-              "doOffStage": true
-            }
-          ],
+          "elementDurability": 100,
+          "modifierName": "",
           "onAdded": [
             {
               "$type": "TriggerHideWeapon",
@@ -654,34 +661,48 @@
               ]
             }
           ],
-          "elementDurability": 100,
-          "modifierName": "",
+          "onRemoved": [
+            {
+              "$type": "TriggerHideWeapon",
+              "doOffStage": true,
+              "partNames": [
+                "equip01",
+                "equip02",
+                "sheathPoint"
+              ],
+              "visible": true
+            }
+          ],
           "__unk_Q3323398612": 0
         }
-      },
-      "abilityMixins": [
-        {
-          "$type": "AttachToNormalizedTimeMixin",
-          "modifierName": "Player_Grass_ElementalBurst_HideWeapon",
-          "__unk_Q2081332355": "",
-          "stateID": "Player_Grass_ElementalBurst",
-          "normalizeStart": 0.46
-        },
-        {
-          "$type": "AttachToNormalizedTimeMixin",
-          "modifierName": "Player_Grass_ElementalBurst_HideWeapon",
-          "__unk_Q2081332355": "",
-          "stateID": "Player_Grass_ElementalBurst_AS"
-        }
-      ],
-      "abilityName": "Avatar_Player_Grass_ElementalBurst_WeaponDisplay",
-      "isDynamicAbility": true
+      }
     }
   },
   {
     "Default": {
+      "abilityMixins": [
+        {
+          "$type": "AttachToStateIDMixin",
+          "modifierName": "Player_Grass_ElementalBurst_Invincible",
+          "stateIDs": [
+            "Player_Grass_ElementalBurst"
+          ],
+          "__unk_Q2081332355": ""
+        },
+        {
+          "$type": "AttachToNormalizedTimeMixin",
+          "modifierName": "Player_Grass_Seed_Sword_Eff",
+          "normalizeStart": 0.1,
+          "stateID": "Player_Grass_ElementalBurst",
+          "__unk_Q2081332355": ""
+        }
+      ],
+      "abilityName": "Avatar_Player_Grass_ElementalBurst_Initiate",
+      "isDynamicAbility": true,
       "modifiers": {
         "Player_Grass_ElementalBurst_Invincible": {
+          "elementDurability": 100,
+          "modifierName": "",
           "onAdded": [
             {
               "$type": "AttachAbilityStateResistance",
@@ -689,28 +710,26 @@
             },
             {
               "$type": "AvatarSkillStart",
-              "skillID": 10118,
               "cdRatio": 1,
               "costStaminaRatio": 1,
-              "cdRatio": 1
+              "skillID": 10118,
+              "NKOFINBNOOK": 1
             }
           ],
-          "elementDurability": 100,
           "state": "Invincible",
-          "modifierName": "",
           "__unk_Q3323398612": 0
         },
         "Player_Grass_Seed_Sword_Eff": {
+          "elementDurability": 100,
+          "modifierName": "",
           "onAdded": [
             {
               "$type": "FireEffect",
               "effectPattern": "Eff_Player_Grass_ElementalBurst_Seed_Sword",
               "scale": 1,
-              "ILLLPEOODKP": ""
+              "JHAGIJGAKMK": ""
             }
           ],
-          "elementDurability": 100,
-          "modifierName": "",
           "__unk_Q3323398612": 0
         }
       },
@@ -723,1214 +742,31 @@
         },
         {
           "$type": "SetGlobalValue",
-          "useLimitRange": true,
           "key": "_ABILITY_PLAYER_GRASS_SEED_STATE_ON_AVATAR",
-          "minValue": 0,
           "maxValue": 3,
+          "minValue": 0,
+          "useLimitRange": true,
           "value": 0
         },
         {
           "$type": "CreateGadget",
-          "gadgetID": 41011001,
-          "campID": 1001,
-          "campTargetType": "Enemy",
           "born": {
             "$type": "ConfigBornBySelf",
-            "onGround": true,
-            "onGroundRaycastUpDist": 3,
             "offset": {
               "z": 1.5
-            }
-          }
+            },
+            "onGround": true,
+            "onGroundRaycastUpDist": 3
+          },
+          "campID": 1001,
+          "campTargetType": "Enemy",
+          "gadgetID": 41011001
         }
-      ],
-      "abilityMixins": [
-        {
-          "$type": "AttachToStateIDMixin",
-          "__unk_Q2081332355": "",
-          "stateIDs": [
-            "Player_Grass_ElementalBurst"
-          ],
-          "modifierName": "Player_Grass_ElementalBurst_Invincible"
-        },
-        {
-          "$type": "AttachToNormalizedTimeMixin",
-          "modifierName": "Player_Grass_Seed_Sword_Eff",
-          "__unk_Q2081332355": "",
-          "stateID": "Player_Grass_ElementalBurst",
-          "normalizeStart": 0.1
-        }
-      ],
-      "abilityName": "Avatar_Player_Grass_ElementalBurst_Initiate",
-      "isDynamicAbility": true
+      ]
     }
   },
   {
     "Default": {
-      "modifiers": {
-        "UNIQUE_Player_Grass_Seed_State_Modify": {
-          "duration": 25,
-          "onAdded": [
-            {
-              "$type": "CopyGlobalValue",
-              "srcKey": "_ABILITY_PLAYER_GRASS_SEED_STATE_MARK_Cache",
-              "dstTarget": "Self",
-              "srcTarget": "Self",
-              "dstKey": "_ABILITY_PLAYER_GRASS_SEED_STATE_MARK"
-            },
-            {
-              "$type": "CopyGlobalValue",
-              "srcKey": "_ABILITY_PLAYER_GRASS_SEED_STATE_MARK_Cache",
-              "dstTarget": "CasterOwner",
-              "srcTarget": "Self",
-              "dstKey": "_ABILITY_PLAYER_GRASS_SEED_STATE_ON_AVATAR"
-            }
-          ],
-          "stacking": "Unique",
-          "elementDurability": 100,
-          "modifierName": "",
-          "isUnique": true,
-          "__unk_Q3323398612": 0
-        },
-        "UNIQUE_Player_Grass_Seed_Attack_Handler_Delay": {
-          "duration": 0.5,
-          "onRemoved": [
-            {
-              "$type": "ApplyModifier",
-              "modifierName": "UNIQUE_Player_Grass_Seed_Attack_Handler"
-            }
-          ],
-          "stacking": "Unique",
-          "elementDurability": 100,
-          "modifierName": "",
-          "isUnique": true,
-          "__unk_Q3323398612": 0
-        },
-        "UNIQUE_Player_Grass_Seed_Eff_Handler": {
-          "stacking": "Unique",
-          "elementDurability": 100,
-          "modifierMixins": [
-            {
-              "$type": "AttachModifierToGlobalValueMixin",
-              "modifierNameSteps": [
-                "UNIQUE_Player_Grass_Seed_Eff_Origin",
-                "UNIQUE_Player_Grass_Seed_Eff_Electric",
-                "UNIQUE_Player_Grass_Seed_Eff_Fire",
-                "UNIQUE_Player_Grass_Seed_Eff_Water"
-              ],
-              "globalValueKey": "_ABILITY_PLAYER_GRASS_SEED_STATE_MARK",
-              "valueSteps": [
-                -0.5,
-                0.5,
-                1.5,
-                2.5,
-                3.5
-              ]
-            }
-          ],
-          "modifierName": "",
-          "isUnique": true,
-          "__unk_Q3323398612": 0
-        },
-        "UNIQUE_Player_Grass_Seed_Circle_Eff_Handler": {
-          "stacking": "Unique",
-          "elementDurability": 100,
-          "modifierMixins": [
-            {
-              "$type": "AttachModifierToGlobalValueMixin",
-              "modifierNameSteps": [
-                "UNIQUE_Player_Grass_Seed_Circle_Eff_Little",
-                "UNIQUE_Player_Grass_Seed_Circle_Eff_None",
-                "UNIQUE_Player_Grass_Seed_Circle_Eff_Big"
-              ],
-              "globalValueKey": "_ABILITY_PLAYER_GRASS_SEED_STATE_MARK",
-              "valueSteps": [
-                -0.5,
-                1.5,
-                2.5,
-                3.5
-              ]
-            }
-          ],
-          "modifierName": "",
-          "isUnique": true,
-          "__unk_Q3323398612": 0
-        },
-        "UNIQUE_Player_Grass_Seed_Attack_Handler": {
-          "duration": "Grass_Seed_Duration",
-          "onRemoved": [
-            {
-              "$type": "KillSelf"
-            }
-          ],
-          "stacking": "Unique",
-          "elementDurability": 100,
-          "modifierMixins": [
-            {
-              "$type": "AttachModifierToGlobalValueMixin",
-              "modifierNameSteps": [
-                "UNIQUE_Player_Grass_Seed_Attacker_Origin",
-                "UNIQUE_Player_Grass_Seed_Attacker_Electric",
-                "UNIQUE_Player_Grass_Seed_Attacker_Fire",
-                "UNIQUE_Player_Grass_Seed_Attacker_Water"
-              ],
-              "globalValueKey": "_ABILITY_PLAYER_GRASS_SEED_STATE_MARK",
-              "valueSteps": [
-                -0.5,
-                0.5,
-                1.5,
-                2.5,
-                3.5
-              ]
-            }
-          ],
-          "modifierName": "",
-          "isUnique": true,
-          "__unk_Q3323398612": 0
-        },
-        "UNIQUE_Player_Grass_Seed_Attacker_Origin": {
-          "thinkInterval": 1.5,
-          "duration": 20,
-          "onAdded": [
-            {
-              "$type": "SetGlobalPos",
-              "key": "_ABILITY_PLAYER_GRASS_SEED_ATTACKER_POS",
-              "born": {
-                "$type": "ConfigBornBySelf",
-                "offset": {
-                  "y": 0.2
-                },
-                "bornRandom": {
-                  "$type": "BornRandomFromCenter",
-                  "minRandomRange": 1,
-                  "maxRandomRange": 6
-                }
-              }
-            },
-            {
-              "$type": "Predicated",
-              "successActions": [
-                {
-                  "$type": "SetGlobalPos",
-                  "setTarget": false,
-                  "key": "_ABILITY_PLAYER_GRASS_SEED_ATTACKER_FIXPOS",
-                  "born": {
-                    "$type": "ConfigBornByTarget",
-                    "offset": {
-                      "y": 0.2
-                    }
-                  },
-                  "target": "Target"
-                },
-                {
-                  "$type": "CopyGlobalValue",
-                  "srcKey": "_ABILITY_PLAYER_GRASS_SEED_ATTACKER_FIXPOS_0",
-                  "dstTarget": "Self",
-                  "srcTarget": "Self",
-                  "dstKey": "_ABILITY_PLAYER_GRASS_SEED_ATTACKER_POS_0"
-                },
-                {
-                  "$type": "CopyGlobalValue",
-                  "srcKey": "_ABILITY_PLAYER_GRASS_SEED_ATTACKER_FIXPOS_1",
-                  "dstTarget": "Self",
-                  "srcTarget": "Self",
-                  "dstKey": "_ABILITY_PLAYER_GRASS_SEED_ATTACKER_POS_1"
-                },
-                {
-                  "$type": "CopyGlobalValue",
-                  "srcKey": "_ABILITY_PLAYER_GRASS_SEED_ATTACKER_FIXPOS_2",
-                  "dstTarget": "Self",
-                  "srcTarget": "Self",
-                  "dstKey": "_ABILITY_PLAYER_GRASS_SEED_ATTACKER_POS_2"
-                }
-              ],
-              "otherTargets": {
-                "$type": "SelectTargetsByShape",
-                "sizeRatio": 1,
-                "campTargetType": "Enemy",
-                "shapeName": "CircleR8H10",
-                "topLimit": 1,
-                "entityTypePriority": [
-                  "Monster",
-                  "Gadget"
-                ],
-                "sortType": "Random"
-              },
-              "predicates": [
-                {
-                  "$type": "ByEntityTypes",
-                  "entityTypes": [
-                    "Monster",
-                    "Gadget"
-                  ]
-                },
-                {
-                  "$type": "ByTargetGlobalValue",
-                  "value": 0,
-                  "compareType": "NoneOrEqual",
-                  "key": "_ANIMAL_ENTITY_TYPE"
-                },
-                {
-                  "$type": "ByTargetGlobalValue",
-                  "value": 0,
-                  "compareType": "NoneOrEqual",
-                  "key": "_ABILITY_PLAYER_GRASS_SEED_OWN_GADGET_MARK"
-                }
-              ]
-            },
-            {
-              "$type": "FireEffect",
-              "effectPattern": "Eff_Player_Grass_ElementalBurst_Seed_Attack",
-              "scale": 1,
-              "born": {
-                "$type": "ConfigBornByGlobalValue",
-                "positionKey": "_ABILITY_PLAYER_GRASS_SEED_ATTACKER_POS",
-                "directionKey": "",
-                "onGround": true,
-                "onGroundRaycastUpDist": 3
-              },
-              "ILLLPEOODKP": ""
-            },
-            {
-              "$type": "FireEffect",
-              "effectPattern": "Eff_Player_Grass_ElementalBurst_Seed_Emission",
-              "scale": 1,
-              "ILLLPEOODKP": ""
-            },
-            {
-              "$type": "ApplyModifier",
-              "modifierName": "Player_Grass_Seed_Attack_Delay_Origin"
-            }
-          ],
-          "stacking": "Unique",
-          "elementDurability": 100,
-          "modifierName": "",
-          "isUnique": true,
-          "onThinkInterval": [
-            {
-              "$type": "SetGlobalPos",
-              "key": "_ABILITY_PLAYER_GRASS_SEED_ATTACKER_POS",
-              "born": {
-                "$type": "ConfigBornBySelf",
-                "offset": {
-                  "y": 0.2
-                },
-                "bornRandom": {
-                  "$type": "BornRandomFromCenter",
-                  "minRandomRange": 1,
-                  "maxRandomRange": 6
-                }
-              }
-            },
-            {
-              "$type": "Predicated",
-              "successActions": [
-                {
-                  "$type": "SetGlobalPos",
-                  "setTarget": false,
-                  "key": "_ABILITY_PLAYER_GRASS_SEED_ATTACKER_FIXPOS",
-                  "born": {
-                    "$type": "ConfigBornByTarget",
-                    "offset": {
-                      "y": 0.2
-                    }
-                  },
-                  "target": "Target"
-                },
-                {
-                  "$type": "CopyGlobalValue",
-                  "srcKey": "_ABILITY_PLAYER_GRASS_SEED_ATTACKER_FIXPOS_0",
-                  "dstTarget": "Self",
-                  "srcTarget": "Self",
-                  "dstKey": "_ABILITY_PLAYER_GRASS_SEED_ATTACKER_POS_0"
-                },
-                {
-                  "$type": "CopyGlobalValue",
-                  "srcKey": "_ABILITY_PLAYER_GRASS_SEED_ATTACKER_FIXPOS_1",
-                  "dstTarget": "Self",
-                  "srcTarget": "Self",
-                  "dstKey": "_ABILITY_PLAYER_GRASS_SEED_ATTACKER_POS_1"
-                },
-                {
-                  "$type": "CopyGlobalValue",
-                  "srcKey": "_ABILITY_PLAYER_GRASS_SEED_ATTACKER_FIXPOS_2",
-                  "dstTarget": "Self",
-                  "srcTarget": "Self",
-                  "dstKey": "_ABILITY_PLAYER_GRASS_SEED_ATTACKER_POS_2"
-                }
-              ],
-              "otherTargets": {
-                "$type": "SelectTargetsByShape",
-                "sizeRatio": 1,
-                "campTargetType": "Enemy",
-                "shapeName": "CircleR8H10",
-                "topLimit": 1,
-                "entityTypePriority": [
-                  "Monster",
-                  "Gadget"
-                ],
-                "sortType": "Random"
-              },
-              "predicates": [
-                {
-                  "$type": "ByEntityTypes",
-                  "entityTypes": [
-                    "Monster",
-                    "Gadget"
-                  ]
-                },
-                {
-                  "$type": "ByTargetGlobalValue",
-                  "value": 0,
-                  "compareType": "NoneOrEqual",
-                  "key": "_ANIMAL_ENTITY_TYPE"
-                },
-                {
-                  "$type": "ByTargetGlobalValue",
-                  "value": 0,
-                  "compareType": "NoneOrEqual",
-                  "key": "_ABILITY_PLAYER_GRASS_SEED_OWN_GADGET_MARK"
-                }
-              ]
-            },
-            {
-              "$type": "FireEffect",
-              "effectPattern": "Eff_Player_Grass_ElementalBurst_Seed_Attack",
-              "scale": 1,
-              "born": {
-                "$type": "ConfigBornByGlobalValue",
-                "positionKey": "_ABILITY_PLAYER_GRASS_SEED_ATTACKER_POS",
-                "directionKey": "",
-                "onGround": true,
-                "onGroundRaycastUpDist": 3
-              },
-              "ILLLPEOODKP": ""
-            },
-            {
-              "$type": "FireEffect",
-              "effectPattern": "Eff_Player_Grass_ElementalBurst_Seed_Emission",
-              "scale": 1,
-              "ILLLPEOODKP": ""
-            },
-            {
-              "$type": "ApplyModifier",
-              "modifierName": "Player_Grass_Seed_Attack_Delay_Origin"
-            }
-          ],
-          "__unk_Q3323398612": 0
-        },
-        "UNIQUE_Player_Grass_Seed_Attacker_Fire": {
-          "thinkInterval": 1,
-          "duration": 1.5,
-          "onRemoved": [
-            {
-              "$type": "KillSelf"
-            }
-          ],
-          "stacking": "Unique",
-          "elementDurability": 100,
-          "modifierName": "",
-          "isUnique": true,
-          "onThinkInterval": [
-            {
-              "$type": "FireEffect",
-              "effectPattern": "Eff_Player_Grass_ElementalBurst_Seed_Fire_Explosion",
-              "scale": 1,
-              "born": {
-                "$type": "ConfigBornBySelf"
-              },
-              "ILLLPEOODKP": ""
-            },
-            {
-              "$type": "TriggerAttackEvent",
-              "targetType": "Enemy",
-              "attackEvent": {
-                "attackInfo": {
-                  "attackProperty": {
-                    "elementType": "Grass",
-                    "attackType": "Range",
-                    "damagePercentageRatio": 0,
-                    "strikeType": "Default",
-                    "enBreak": 200,
-                    "damagePercentage": "Grass_Seed_Fire_Boom_Ratio",
-                    "elementDurability": 50,
-                    "__exp_arkhe": 0
-                  },
-                  "hitPattern": {
-                    "__unk_Q3893899620": "",
-                    "onHitEffectName": "default",
-                    "hitImpulseType": "LV1"
-                  },
-                  "attenuationGroup": "default",
-                  "attenuationTag": "",
-                  "attackTag": "Elemental_Burst",
-                  "canBeModifiedBy": "Owner"
-                },
-                "attackPattern": {
-                  "$type": "ConfigAttackCircle",
-                  "radius": 6.5,
-                  "height": 3,
-                  "triggerType": "TriggerNoRepeat",
-                  "born": {
-                    "$type": "ConfigBornBySelf",
-                    "offset": {
-                      "y": -1
-                    }
-                  }
-                }
-              }
-            }
-          ],
-          "__unk_Q3323398612": 0
-        },
-        "UNIQUE_Player_Grass_Seed_Attacker_Electric": {
-          "thinkInterval": 0.9,
-          "duration": 20,
-          "onAdded": [
-            {
-              "$type": "SetGlobalPos",
-              "key": "_ABILITY_PLAYER_GRASS_SEED_ATTACKER_POS",
-              "born": {
-                "$type": "ConfigBornBySelf",
-                "offset": {
-                  "y": 0.2
-                },
-                "bornRandom": {
-                  "$type": "BornRandomFromCenter",
-                  "minRandomRange": 1,
-                  "maxRandomRange": 6
-                }
-              }
-            },
-            {
-              "$type": "Predicated",
-              "successActions": [
-                {
-                  "$type": "SetGlobalPos",
-                  "setTarget": false,
-                  "key": "_ABILITY_PLAYER_GRASS_SEED_ATTACKER_FIXPOS",
-                  "born": {
-                    "$type": "ConfigBornByTarget",
-                    "offset": {
-                      "y": 0.2
-                    }
-                  },
-                  "target": "Target"
-                },
-                {
-                  "$type": "CopyGlobalValue",
-                  "srcKey": "_ABILITY_PLAYER_GRASS_SEED_ATTACKER_FIXPOS_0",
-                  "dstTarget": "Self",
-                  "srcTarget": "Self",
-                  "dstKey": "_ABILITY_PLAYER_GRASS_SEED_ATTACKER_POS_0"
-                },
-                {
-                  "$type": "CopyGlobalValue",
-                  "srcKey": "_ABILITY_PLAYER_GRASS_SEED_ATTACKER_FIXPOS_1",
-                  "dstTarget": "Self",
-                  "srcTarget": "Self",
-                  "dstKey": "_ABILITY_PLAYER_GRASS_SEED_ATTACKER_POS_1"
-                },
-                {
-                  "$type": "CopyGlobalValue",
-                  "srcKey": "_ABILITY_PLAYER_GRASS_SEED_ATTACKER_FIXPOS_2",
-                  "dstTarget": "Self",
-                  "srcTarget": "Self",
-                  "dstKey": "_ABILITY_PLAYER_GRASS_SEED_ATTACKER_POS_2"
-                },
-                {
-                  "$type": "FireEffect",
-                  "effectPattern": "Eff_Player_Grass_ElementalBurst_Seed_Attack_Electric",
-                  "scale": 1,
-                  "born": {
-                    "$type": "ConfigBornByGlobalValue",
-                    "positionKey": "_ABILITY_PLAYER_GRASS_SEED_ATTACKER_POS",
-                    "directionKey": "",
-                    "onGround": true,
-                    "onGroundRaycastUpDist": 3
-                  },
-                  "ILLLPEOODKP": ""
-                },
-                {
-                  "$type": "ApplyModifier",
-                  "modifierName": "Player_Grass_Seed_Attack_Delay_Origin"
-                }
-              ],
-              "otherTargets": {
-                "$type": "SelectTargetsByShape",
-                "sizeRatio": 1,
-                "campTargetType": "Enemy",
-                "shapeName": "CircleR8H10",
-                "topLimit": 1,
-                "entityTypePriority": [
-                  "Monster",
-                  "Gadget"
-                ],
-                "sortType": "Random"
-              },
-              "predicates": [
-                {
-                  "$type": "ByEntityTypes",
-                  "entityTypes": [
-                    "Monster",
-                    "Gadget"
-                  ]
-                },
-                {
-                  "$type": "ByTargetGlobalValue",
-                  "value": 0,
-                  "compareType": "NoneOrEqual",
-                  "key": "_ANIMAL_ENTITY_TYPE"
-                },
-                {
-                  "$type": "ByTargetGlobalValue",
-                  "value": 0,
-                  "compareType": "NoneOrEqual",
-                  "key": "_ABILITY_PLAYER_GRASS_SEED_OWN_GADGET_MARK"
-                }
-              ]
-            }
-          ],
-          "stacking": "Unique",
-          "elementDurability": 100,
-          "modifierName": "",
-          "isUnique": true,
-          "onThinkInterval": [
-            {
-              "$type": "SetGlobalPos",
-              "key": "_ABILITY_PLAYER_GRASS_SEED_ATTACKER_POS",
-              "born": {
-                "$type": "ConfigBornBySelf",
-                "offset": {
-                  "y": 0.2
-                },
-                "bornRandom": {
-                  "$type": "BornRandomFromCenter",
-                  "minRandomRange": 1,
-                  "maxRandomRange": 6
-                }
-              }
-            },
-            {
-              "$type": "Predicated",
-              "successActions": [
-                {
-                  "$type": "SetGlobalPos",
-                  "setTarget": false,
-                  "key": "_ABILITY_PLAYER_GRASS_SEED_ATTACKER_FIXPOS",
-                  "born": {
-                    "$type": "ConfigBornByTarget",
-                    "offset": {
-                      "y": 0.2
-                    }
-                  },
-                  "target": "Target"
-                },
-                {
-                  "$type": "CopyGlobalValue",
-                  "srcKey": "_ABILITY_PLAYER_GRASS_SEED_ATTACKER_FIXPOS_0",
-                  "dstTarget": "Self",
-                  "srcTarget": "Self",
-                  "dstKey": "_ABILITY_PLAYER_GRASS_SEED_ATTACKER_POS_0"
-                },
-                {
-                  "$type": "CopyGlobalValue",
-                  "srcKey": "_ABILITY_PLAYER_GRASS_SEED_ATTACKER_FIXPOS_1",
-                  "dstTarget": "Self",
-                  "srcTarget": "Self",
-                  "dstKey": "_ABILITY_PLAYER_GRASS_SEED_ATTACKER_POS_1"
-                },
-                {
-                  "$type": "CopyGlobalValue",
-                  "srcKey": "_ABILITY_PLAYER_GRASS_SEED_ATTACKER_FIXPOS_2",
-                  "dstTarget": "Self",
-                  "srcTarget": "Self",
-                  "dstKey": "_ABILITY_PLAYER_GRASS_SEED_ATTACKER_POS_2"
-                }
-              ],
-              "otherTargets": {
-                "$type": "SelectTargetsByShape",
-                "sizeRatio": 1,
-                "campTargetType": "Enemy",
-                "shapeName": "CircleR8H10",
-                "topLimit": 1,
-                "entityTypePriority": [
-                  "Monster",
-                  "Gadget"
-                ],
-                "sortType": "Random"
-              },
-              "predicates": [
-                {
-                  "$type": "ByEntityTypes",
-                  "entityTypes": [
-                    "Monster",
-                    "Gadget"
-                  ]
-                },
-                {
-                  "$type": "ByTargetGlobalValue",
-                  "value": 0,
-                  "compareType": "NoneOrEqual",
-                  "key": "_ANIMAL_ENTITY_TYPE"
-                },
-                {
-                  "$type": "ByTargetGlobalValue",
-                  "value": 0,
-                  "compareType": "NoneOrEqual",
-                  "key": "_ABILITY_PLAYER_GRASS_SEED_OWN_GADGET_MARK"
-                }
-              ]
-            },
-            {
-              "$type": "FireEffect",
-              "effectPattern": "Eff_Player_Grass_ElementalBurst_Seed_Attack_Electric",
-              "scale": 1,
-              "born": {
-                "$type": "ConfigBornByGlobalValue",
-                "positionKey": "_ABILITY_PLAYER_GRASS_SEED_ATTACKER_POS",
-                "directionKey": "",
-                "onGround": true,
-                "onGroundRaycastUpDist": 3
-              },
-              "ILLLPEOODKP": ""
-            },
-            {
-              "$type": "FireEffect",
-              "effectPattern": "Eff_Player_Grass_ElementalBurst_Seed_Emission",
-              "scale": 1,
-              "ILLLPEOODKP": ""
-            },
-            {
-              "$type": "ApplyModifier",
-              "modifierName": "Player_Grass_Seed_Attack_Delay_Origin"
-            }
-          ],
-          "__unk_Q3323398612": 0
-        },
-        "UNIQUE_Player_Grass_Seed_Attacker_Water": {
-          "thinkInterval": 1.5,
-          "duration": 20,
-          "onAdded": [
-            {
-              "$type": "SetGlobalPos",
-              "key": "_ABILITY_PLAYER_GRASS_SEED_ATTACKER_POS",
-              "born": {
-                "$type": "ConfigBornBySelf",
-                "offset": {
-                  "y": 0.2
-                },
-                "bornRandom": {
-                  "$type": "BornRandomFromCenter",
-                  "minRandomRange": 1,
-                  "maxRandomRange": 8
-                }
-              }
-            },
-            {
-              "$type": "Predicated",
-              "successActions": [
-                {
-                  "$type": "SetGlobalPos",
-                  "setTarget": false,
-                  "key": "_ABILITY_PLAYER_GRASS_SEED_ATTACKER_FIXPOS",
-                  "born": {
-                    "$type": "ConfigBornByTarget",
-                    "offset": {
-                      "y": 0.2
-                    }
-                  },
-                  "target": "Target"
-                },
-                {
-                  "$type": "CopyGlobalValue",
-                  "srcKey": "_ABILITY_PLAYER_GRASS_SEED_ATTACKER_FIXPOS_0",
-                  "dstTarget": "Self",
-                  "srcTarget": "Self",
-                  "dstKey": "_ABILITY_PLAYER_GRASS_SEED_ATTACKER_POS_0"
-                },
-                {
-                  "$type": "CopyGlobalValue",
-                  "srcKey": "_ABILITY_PLAYER_GRASS_SEED_ATTACKER_FIXPOS_1",
-                  "dstTarget": "Self",
-                  "srcTarget": "Self",
-                  "dstKey": "_ABILITY_PLAYER_GRASS_SEED_ATTACKER_POS_1"
-                },
-                {
-                  "$type": "CopyGlobalValue",
-                  "srcKey": "_ABILITY_PLAYER_GRASS_SEED_ATTACKER_FIXPOS_2",
-                  "dstTarget": "Self",
-                  "srcTarget": "Self",
-                  "dstKey": "_ABILITY_PLAYER_GRASS_SEED_ATTACKER_POS_2"
-                }
-              ],
-              "otherTargets": {
-                "$type": "SelectTargetsByShape",
-                "sizeRatio": 1,
-                "campTargetType": "Enemy",
-                "shapeName": "CircleR12H10",
-                "topLimit": 1,
-                "entityTypePriority": [
-                  "Monster",
-                  "Gadget"
-                ],
-                "sortType": "Random"
-              },
-              "predicates": [
-                {
-                  "$type": "ByEntityTypes",
-                  "entityTypes": [
-                    "Monster",
-                    "Gadget"
-                  ]
-                },
-                {
-                  "$type": "ByTargetGlobalValue",
-                  "value": 0,
-                  "compareType": "NoneOrEqual",
-                  "key": "_ANIMAL_ENTITY_TYPE"
-                },
-                {
-                  "$type": "ByTargetGlobalValue",
-                  "value": 0,
-                  "compareType": "NoneOrEqual",
-                  "key": "_ABILITY_PLAYER_GRASS_SEED_OWN_GADGET_MARK"
-                }
-              ]
-            },
-            {
-              "$type": "FireEffect",
-              "effectPattern": "Eff_Player_Grass_ElementalBurst_Seed_Attack_Big",
-              "scale": 1,
-              "born": {
-                "$type": "ConfigBornByGlobalValue",
-                "positionKey": "_ABILITY_PLAYER_GRASS_SEED_ATTACKER_POS",
-                "directionKey": "",
-                "onGround": true,
-                "onGroundRaycastUpDist": 3
-              },
-              "ILLLPEOODKP": ""
-            },
-            {
-              "$type": "ApplyModifier",
-              "modifierName": "Player_Grass_Seed_Attack_Delay_Water"
-            }
-          ],
-          "stacking": "Unique",
-          "elementDurability": 100,
-          "modifierName": "",
-          "isUnique": true,
-          "onThinkInterval": [
-            {
-              "$type": "SetGlobalPos",
-              "key": "_ABILITY_PLAYER_GRASS_SEED_ATTACKER_POS",
-              "born": {
-                "$type": "ConfigBornBySelf",
-                "offset": {
-                  "y": 0.2
-                },
-                "bornRandom": {
-                  "$type": "BornRandomFromCenter",
-                  "minRandomRange": 1,
-                  "maxRandomRange": 8
-                }
-              }
-            },
-            {
-              "$type": "Predicated",
-              "successActions": [
-                {
-                  "$type": "SetGlobalPos",
-                  "setTarget": false,
-                  "key": "_ABILITY_PLAYER_GRASS_SEED_ATTACKER_FIXPOS",
-                  "born": {
-                    "$type": "ConfigBornByTarget",
-                    "offset": {
-                      "y": 0.2
-                    }
-                  },
-                  "target": "Target"
-                },
-                {
-                  "$type": "CopyGlobalValue",
-                  "srcKey": "_ABILITY_PLAYER_GRASS_SEED_ATTACKER_FIXPOS_0",
-                  "dstTarget": "Self",
-                  "srcTarget": "Self",
-                  "dstKey": "_ABILITY_PLAYER_GRASS_SEED_ATTACKER_POS_0"
-                },
-                {
-                  "$type": "CopyGlobalValue",
-                  "srcKey": "_ABILITY_PLAYER_GRASS_SEED_ATTACKER_FIXPOS_1",
-                  "dstTarget": "Self",
-                  "srcTarget": "Self",
-                  "dstKey": "_ABILITY_PLAYER_GRASS_SEED_ATTACKER_POS_1"
-                },
-                {
-                  "$type": "CopyGlobalValue",
-                  "srcKey": "_ABILITY_PLAYER_GRASS_SEED_ATTACKER_FIXPOS_2",
-                  "dstTarget": "Self",
-                  "srcTarget": "Self",
-                  "dstKey": "_ABILITY_PLAYER_GRASS_SEED_ATTACKER_POS_2"
-                }
-              ],
-              "otherTargets": {
-                "$type": "SelectTargetsByShape",
-                "sizeRatio": 1,
-                "campTargetType": "Enemy",
-                "shapeName": "CircleR12H10",
-                "topLimit": 1,
-                "entityTypePriority": [
-                  "Monster",
-                  "Gadget"
-                ],
-                "sortType": "Random"
-              },
-              "predicates": [
-                {
-                  "$type": "ByEntityTypes",
-                  "entityTypes": [
-                    "Monster",
-                    "Gadget"
-                  ]
-                },
-                {
-                  "$type": "ByTargetGlobalValue",
-                  "value": 0,
-                  "compareType": "NoneOrEqual",
-                  "key": "_ANIMAL_ENTITY_TYPE"
-                },
-                {
-                  "$type": "ByTargetGlobalValue",
-                  "value": 0,
-                  "compareType": "NoneOrEqual",
-                  "key": "_ABILITY_PLAYER_GRASS_SEED_OWN_GADGET_MARK"
-                }
-              ]
-            },
-            {
-              "$type": "FireEffect",
-              "effectPattern": "Eff_Player_Grass_ElementalBurst_Seed_Attack_Big",
-              "scale": 1,
-              "born": {
-                "$type": "ConfigBornByGlobalValue",
-                "positionKey": "_ABILITY_PLAYER_GRASS_SEED_ATTACKER_POS",
-                "directionKey": "",
-                "onGround": true,
-                "onGroundRaycastUpDist": 3
-              },
-              "ILLLPEOODKP": ""
-            },
-            {
-              "$type": "FireEffect",
-              "effectPattern": "Eff_Player_Grass_ElementalBurst_Seed_Emission",
-              "scale": 1,
-              "ILLLPEOODKP": ""
-            },
-            {
-              "$type": "ApplyModifier",
-              "modifierName": "Player_Grass_Seed_Attack_Delay_Water"
-            }
-          ],
-          "__unk_Q3323398612": 0
-        },
-        "Player_Grass_Seed_Attack_Delay_Origin": {
-          "duration": 0.25,
-          "onRemoved": [
-            {
-              "$type": "TriggerAttackEvent",
-              "targetType": "Enemy",
-              "attackEvent": {
-                "attackInfo": {
-                  "attackProperty": {
-                    "elementType": "Grass",
-                    "attackType": "Range",
-                    "damagePercentageRatio": 0,
-                    "strikeType": "Default",
-                    "damagePercentage": "Grass_Seed_Damage_Ratio",
-                    "elementDurability": 25,
-                    "__exp_arkhe": 0
-                  },
-                  "hitPattern": {
-                    "__unk_Q3893899620": "",
-                    "onHitEffectName": "default",
-                    "hitHaltTimeScale": 0.02,
-                    "hitImpulseType": "LV1"
-                  },
-                  "attenuationGroup": "default",
-                  "attenuationTag": "default",
-                  "attackTag": "Elemental_Burst",
-                  "canBeModifiedBy": "Owner"
-                },
-                "attackPattern": {
-                  "$type": "ConfigAttackCircle",
-                  "radius": 2,
-                  "height": 3.8,
-                  "triggerType": "TriggerNoRepeat",
-                  "born": {
-                    "$type": "ConfigBornByGlobalValue",
-                    "positionKey": "_ABILITY_PLAYER_GRASS_SEED_ATTACKER_POS",
-                    "directionKey": "",
-                    "onGround": true,
-                    "onGroundRaycastUpDist": 3,
-                    "offset": {
-                      "y": -1
-                    }
-                  }
-                }
-              }
-            }
-          ],
-          "stacking": "Multiple",
-          "elementDurability": 100,
-          "modifierName": "",
-          "__unk_Q3323398612": 0
-        },
-        "Player_Grass_Seed_Attack_Delay_Water": {
-          "duration": 0.25,
-          "onRemoved": [
-            {
-              "$type": "TriggerAttackEvent",
-              "targetType": "Enemy",
-              "attackEvent": {
-                "attackInfo": {
-                  "attackProperty": {
-                    "elementType": "Grass",
-                    "attackType": "Range",
-                    "damagePercentageRatio": 0,
-                    "strikeType": "Default",
-                    "enBreak": 50,
-                    "damagePercentage": "Grass_Seed_Damage_Ratio",
-                    "elementDurability": 25,
-                    "__exp_arkhe": 0
-                  },
-                  "hitPattern": {
-                    "__unk_Q3893899620": "",
-                    "onHitEffectName": "default",
-                    "hitHaltTimeScale": 0.02,
-                    "hitImpulseType": "LV1"
-                  },
-                  "attenuationGroup": "default",
-                  "attenuationTag": "default",
-                  "attackTag": "Elemental_Burst",
-                  "canBeModifiedBy": "Owner"
-                },
-                "attackPattern": {
-                  "$type": "ConfigAttackCircle",
-                  "radius": 4,
-                  "height": 3.8,
-                  "triggerType": "TriggerNoRepeat",
-                  "born": {
-                    "$type": "ConfigBornByGlobalValue",
-                    "positionKey": "_ABILITY_PLAYER_GRASS_SEED_ATTACKER_POS",
-                    "directionKey": "",
-                    "onGround": true,
-                    "onGroundRaycastUpDist": 3,
-                    "offset": {
-                      "y": -1
-                    }
-                  }
-                }
-              }
-            }
-          ],
-          "stacking": "Multiple",
-          "elementDurability": 100,
-          "modifierName": "",
-          "__unk_Q3323398612": 0
-        },
-        "UNIQUE_Player_Grass_Seed_Eff_Origin": {
-          "onAdded": [
-            {
-              "$type": "TriggerAudio",
-              "operation": {
-                "$type": "ConfigAudioEventOp",
-                "operation": {
-                  "text": "Play_sfx_char_hero_grass_elementalBurst_seed_lp"
-                }
-              }
-            }
-          ],
-          "stacking": "Unique",
-          "elementDurability": 100,
-          "modifierName": "",
-          "isUnique": true,
-          "__unk_Q3323398612": 0
-        },
-        "UNIQUE_Player_Grass_Seed_Eff_Fire": {
-          "onAdded": [
-            {
-              "$type": "SetAnimatorTrigger",
-              "MPTriggerOnRemote": true,
-              "triggerID": "ChangeFire"
-            },
-            {
-              "$type": "SetAnimatorTrigger",
-              "MPTriggerOnRemote": true,
-              "triggerID": "ChangeFireTexture"
-            },
-            {
-              "$type": "FireEffect",
-              "effectPattern": "Eff_Player_Grass_ElementalBurst_Seed_TurnFire",
-              "scale": 1,
-              "ILLLPEOODKP": ""
-            }
-          ],
-          "stacking": "Unique",
-          "elementDurability": 100,
-          "modifierName": "",
-          "isUnique": true,
-          "__unk_Q3323398612": 0
-        },
-        "UNIQUE_Player_Grass_Seed_Eff_Electric": {
-          "onAdded": [
-            {
-              "$type": "SetAnimatorTrigger",
-              "MPTriggerOnRemote": true,
-              "triggerID": "ChangeThunder"
-            },
-            {
-              "$type": "SetAnimatorTrigger",
-              "MPTriggerOnRemote": true,
-              "triggerID": "ChangeThunderTexture"
-            },
-            {
-              "$type": "FireEffect",
-              "effectPattern": "Eff_Player_Grass_ElementalBurst_Seed_TurnElectric",
-              "scale": 1,
-              "ILLLPEOODKP": ""
-            },
-            {
-              "$type": "TriggerAudio",
-              "operation": {
-                "$type": "ConfigAudioEventOp",
-                "operation": {
-                  "text": "Play_sfx_char_hero_grass_elementalBurst_seed_fast_lp"
-                }
-              }
-            }
-          ],
-          "stacking": "Unique",
-          "elementDurability": 100,
-          "modifierName": "",
-          "isUnique": true,
-          "__unk_Q3323398612": 0
-        },
-        "UNIQUE_Player_Grass_Seed_Eff_Water": {
-          "onAdded": [
-            {
-              "$type": "SetAnimatorTrigger",
-              "MPTriggerOnRemote": true,
-              "triggerID": "ChangeWater"
-            },
-            {
-              "$type": "SetAnimatorTrigger",
-              "MPTriggerOnRemote": true,
-              "triggerID": "ChangeWaterTexture"
-            },
-            {
-              "$type": "FireEffect",
-              "effectPattern": "Eff_Player_Grass_ElementalBurst_Seed_TurnWater",
-              "scale": 1,
-              "ILLLPEOODKP": ""
-            },
-            {
-              "$type": "TriggerAudio",
-              "operation": {
-                "$type": "ConfigAudioEventOp",
-                "operation": {
-                  "text": "Play_sfx_char_hero_grass_elementalBurst_seed_big_lp"
-                }
-              }
-            }
-          ],
-          "stacking": "Unique",
-          "elementDurability": 100,
-          "modifierName": "",
-          "isUnique": true,
-          "__unk_Q3323398612": 0
-        },
-        "UNIQUE_Player_Grass_Seed_Circle_Eff_Little": {
-          "onAdded": [
-            {
-              "$type": "AttachEffect",
-              "ILLLPEOODKP": "",
-              "scale": 1,
-              "effectPattern": "Eff_Player_Grass_ElementalBurst_Seed_Range_Circle"
-            }
-          ],
-          "stacking": "Unique",
-          "onKill": [
-            {
-              "$type": "FireEffect",
-              "GMJJKMKNLAC": [
-                "Eff_Player_Grass_ElementalBurst_Seed_Range_Circle_Disappear"
-              ],
-              "effectPattern": "Eff_Player_Grass_ElementalBurst_Seed_Dispear",
-              "scale": 1,
-              "ILLLPEOODKP": ""
-            }
-          ],
-          "elementDurability": 100,
-          "modifierName": "",
-          "isUnique": true,
-          "__unk_Q3323398612": 0
-        },
-        "UNIQUE_Player_Grass_Seed_Circle_Eff_None": {
-          "onAdded": [
-            {
-              "$type": "FireEffect",
-              "effectPattern": "Eff_Player_Grass_ElementalBurst_Seed_Range_Circle_Disappear",
-              "scale": 1,
-              "ILLLPEOODKP": ""
-            }
-          ],
-          "stacking": "Unique",
-          "elementDurability": 100,
-          "modifierName": "",
-          "isUnique": true,
-          "__unk_Q3323398612": 0
-        },
-        "UNIQUE_Player_Grass_Seed_Circle_Eff_Big": {
-          "onAdded": [
-            {
-              "$type": "AttachEffect",
-              "ILLLPEOODKP": "",
-              "scale": 1,
-              "effectPattern": "Eff_Player_Grass_ElementalBurst_Seed_Range_Circle_Big"
-            }
-          ],
-          "stacking": "Unique",
-          "onKill": [
-            {
-              "$type": "FireEffect",
-              "effectPattern": "Eff_Player_Grass_ElementalBurst_Seed_Dispear_Water",
-              "scale": 1,
-              "ILLLPEOODKP": ""
-            },
-            {
-              "$type": "FireEffect",
-              "effectPattern": "Eff_Player_Grass_ElementalBurst_Seed_Range_Circle_Big_Disappear",
-              "scale": 1,
-              "ILLLPEOODKP": ""
-            }
-          ],
-          "elementDurability": 100,
-          "modifierName": "",
-          "isUnique": true,
-          "__unk_Q3323398612": 0
-        }
-      },
-      "onKill": [
-        {
-          "$type": "TriggerAudio",
-          "operation": {
-            "$type": "ConfigAudioEventOp",
-            "operation": {
-              "text": "Stop_sfx_char_hero_grass_elementalBurst_seed_lp"
-            }
-          }
-        }
-      ],
       "abilityMixins": [
         {
           "$type": "DoActionOnGlobalValueChangeMixin",
@@ -1952,9 +788,9 @@
               "targetPredicates": [
                 {
                   "$type": "ByTargetGlobalValue",
-                  "value": 0,
                   "compareType": "MoreThan",
-                  "key": "_ABILITY_PLAYER_GRASS_SEED_STATE_MARK_Cache"
+                  "key": "_ABILITY_PLAYER_GRASS_SEED_STATE_MARK_Cache",
+                  "value": 0
                 }
               ]
             }
@@ -1963,21 +799,1180 @@
         }
       ],
       "abilityName": "Avatar_Player_Grass_Seed_Gadget",
+      "abilitySpecials": {
+        "Grass_Seed_State_Mark_Temp": 0,
+        "Grass_Seed_Duration": 0.3,
+        "Grass_Seed_Damage_Ratio": 0,
+        "Grass_Seed_Fire_Boom_Ratio": 0
+      },
+      "modifiers": {
+        "UNIQUE_Player_Grass_Seed_State_Modify": {
+          "duration": 25,
+          "elementDurability": 100,
+          "isUnique": true,
+          "modifierName": "",
+          "onAdded": [
+            {
+              "$type": "CopyGlobalValue",
+              "dstKey": "_ABILITY_PLAYER_GRASS_SEED_STATE_MARK",
+              "dstTarget": "Self",
+              "srcKey": "_ABILITY_PLAYER_GRASS_SEED_STATE_MARK_Cache",
+              "srcTarget": "Self"
+            },
+            {
+              "$type": "CopyGlobalValue",
+              "dstKey": "_ABILITY_PLAYER_GRASS_SEED_STATE_ON_AVATAR",
+              "dstTarget": "CasterOwner",
+              "srcKey": "_ABILITY_PLAYER_GRASS_SEED_STATE_MARK_Cache",
+              "srcTarget": "Self"
+            }
+          ],
+          "stacking": "Unique",
+          "__unk_Q3323398612": 0
+        },
+        "UNIQUE_Player_Grass_Seed_Attack_Handler_Delay": {
+          "duration": 0.5,
+          "elementDurability": 100,
+          "isUnique": true,
+          "modifierName": "",
+          "onRemoved": [
+            {
+              "$type": "ApplyModifier",
+              "modifierName": "UNIQUE_Player_Grass_Seed_Attack_Handler"
+            }
+          ],
+          "stacking": "Unique",
+          "__unk_Q3323398612": 0
+        },
+        "UNIQUE_Player_Grass_Seed_Eff_Handler": {
+          "elementDurability": 100,
+          "isUnique": true,
+          "modifierMixins": [
+            {
+              "$type": "AttachModifierToGlobalValueMixin",
+              "globalValueKey": "_ABILITY_PLAYER_GRASS_SEED_STATE_MARK",
+              "modifierNameSteps": [
+                "UNIQUE_Player_Grass_Seed_Eff_Origin",
+                "UNIQUE_Player_Grass_Seed_Eff_Electric",
+                "UNIQUE_Player_Grass_Seed_Eff_Fire",
+                "UNIQUE_Player_Grass_Seed_Eff_Water"
+              ],
+              "valueSteps": [
+                -0.5,
+                0.5,
+                1.5,
+                2.5,
+                3.5
+              ]
+            }
+          ],
+          "modifierName": "",
+          "stacking": "Unique",
+          "__unk_Q3323398612": 0
+        },
+        "UNIQUE_Player_Grass_Seed_Circle_Eff_Handler": {
+          "elementDurability": 100,
+          "isUnique": true,
+          "modifierMixins": [
+            {
+              "$type": "AttachModifierToGlobalValueMixin",
+              "globalValueKey": "_ABILITY_PLAYER_GRASS_SEED_STATE_MARK",
+              "modifierNameSteps": [
+                "UNIQUE_Player_Grass_Seed_Circle_Eff_Little",
+                "UNIQUE_Player_Grass_Seed_Circle_Eff_None",
+                "UNIQUE_Player_Grass_Seed_Circle_Eff_Big"
+              ],
+              "valueSteps": [
+                -0.5,
+                1.5,
+                2.5,
+                3.5
+              ]
+            }
+          ],
+          "modifierName": "",
+          "stacking": "Unique",
+          "__unk_Q3323398612": 0
+        },
+        "UNIQUE_Player_Grass_Seed_Attack_Handler": {
+          "duration": "Grass_Seed_Duration",
+          "elementDurability": 100,
+          "isUnique": true,
+          "modifierMixins": [
+            {
+              "$type": "AttachModifierToGlobalValueMixin",
+              "globalValueKey": "_ABILITY_PLAYER_GRASS_SEED_STATE_MARK",
+              "modifierNameSteps": [
+                "UNIQUE_Player_Grass_Seed_Attacker_Origin",
+                "UNIQUE_Player_Grass_Seed_Attacker_Electric",
+                "UNIQUE_Player_Grass_Seed_Attacker_Fire",
+                "UNIQUE_Player_Grass_Seed_Attacker_Water"
+              ],
+              "valueSteps": [
+                -0.5,
+                0.5,
+                1.5,
+                2.5,
+                3.5
+              ]
+            }
+          ],
+          "modifierName": "",
+          "onRemoved": [
+            {
+              "$type": "KillSelf"
+            }
+          ],
+          "stacking": "Unique",
+          "__unk_Q3323398612": 0
+        },
+        "UNIQUE_Player_Grass_Seed_Attacker_Origin": {
+          "duration": 20,
+          "elementDurability": 100,
+          "isUnique": true,
+          "modifierName": "",
+          "onAdded": [
+            {
+              "$type": "SetGlobalPos",
+              "born": {
+                "$type": "ConfigBornBySelf",
+                "bornRandom": {
+                  "$type": "BornRandomFromCenter",
+                  "maxRandomRange": 6,
+                  "minRandomRange": 1
+                },
+                "offset": {
+                  "y": 0.2
+                }
+              },
+              "key": "_ABILITY_PLAYER_GRASS_SEED_ATTACKER_POS"
+            },
+            {
+              "$type": "Predicated",
+              "otherTargets": {
+                "$type": "SelectTargetsByShape",
+                "campTargetType": "Enemy",
+                "entityTypePriority": [
+                  "Monster",
+                  "Gadget"
+                ],
+                "shapeName": "CircleR8H10",
+                "sizeRatio": 1,
+                "sortType": "Random",
+                "topLimit": 1
+              },
+              "predicates": [
+                {
+                  "$type": "ByEntityTypes",
+                  "entityTypes": [
+                    "Monster",
+                    "Gadget"
+                  ]
+                },
+                {
+                  "$type": "ByTargetGlobalValue",
+                  "compareType": "NoneOrEqual",
+                  "key": "_ANIMAL_ENTITY_TYPE",
+                  "value": 0
+                },
+                {
+                  "$type": "ByTargetGlobalValue",
+                  "compareType": "NoneOrEqual",
+                  "key": "_ABILITY_PLAYER_GRASS_SEED_OWN_GADGET_MARK",
+                  "value": 0
+                }
+              ],
+              "successActions": [
+                {
+                  "$type": "SetGlobalPos",
+                  "born": {
+                    "$type": "ConfigBornByTarget",
+                    "offset": {
+                      "y": 0.2
+                    }
+                  },
+                  "key": "_ABILITY_PLAYER_GRASS_SEED_ATTACKER_FIXPOS",
+                  "setTarget": false,
+                  "target": "Target"
+                },
+                {
+                  "$type": "CopyGlobalValue",
+                  "dstKey": "_ABILITY_PLAYER_GRASS_SEED_ATTACKER_POS_0",
+                  "dstTarget": "Self",
+                  "srcKey": "_ABILITY_PLAYER_GRASS_SEED_ATTACKER_FIXPOS_0",
+                  "srcTarget": "Self"
+                },
+                {
+                  "$type": "CopyGlobalValue",
+                  "dstKey": "_ABILITY_PLAYER_GRASS_SEED_ATTACKER_POS_1",
+                  "dstTarget": "Self",
+                  "srcKey": "_ABILITY_PLAYER_GRASS_SEED_ATTACKER_FIXPOS_1",
+                  "srcTarget": "Self"
+                },
+                {
+                  "$type": "CopyGlobalValue",
+                  "dstKey": "_ABILITY_PLAYER_GRASS_SEED_ATTACKER_POS_2",
+                  "dstTarget": "Self",
+                  "srcKey": "_ABILITY_PLAYER_GRASS_SEED_ATTACKER_FIXPOS_2",
+                  "srcTarget": "Self"
+                }
+              ]
+            },
+            {
+              "$type": "FireEffect",
+              "born": {
+                "$type": "ConfigBornByGlobalValue",
+                "directionKey": "",
+                "onGround": true,
+                "onGroundRaycastUpDist": 3,
+                "positionKey": "_ABILITY_PLAYER_GRASS_SEED_ATTACKER_POS"
+              },
+              "effectPattern": "Eff_Player_Grass_ElementalBurst_Seed_Attack",
+              "scale": 1,
+              "JHAGIJGAKMK": ""
+            },
+            {
+              "$type": "FireEffect",
+              "effectPattern": "Eff_Player_Grass_ElementalBurst_Seed_Emission",
+              "scale": 1,
+              "JHAGIJGAKMK": ""
+            },
+            {
+              "$type": "ApplyModifier",
+              "modifierName": "Player_Grass_Seed_Attack_Delay_Origin"
+            }
+          ],
+          "onThinkInterval": [
+            {
+              "$type": "SetGlobalPos",
+              "born": {
+                "$type": "ConfigBornBySelf",
+                "bornRandom": {
+                  "$type": "BornRandomFromCenter",
+                  "maxRandomRange": 6,
+                  "minRandomRange": 1
+                },
+                "offset": {
+                  "y": 0.2
+                }
+              },
+              "key": "_ABILITY_PLAYER_GRASS_SEED_ATTACKER_POS"
+            },
+            {
+              "$type": "Predicated",
+              "otherTargets": {
+                "$type": "SelectTargetsByShape",
+                "campTargetType": "Enemy",
+                "entityTypePriority": [
+                  "Monster",
+                  "Gadget"
+                ],
+                "shapeName": "CircleR8H10",
+                "sizeRatio": 1,
+                "sortType": "Random",
+                "topLimit": 1
+              },
+              "predicates": [
+                {
+                  "$type": "ByEntityTypes",
+                  "entityTypes": [
+                    "Monster",
+                    "Gadget"
+                  ]
+                },
+                {
+                  "$type": "ByTargetGlobalValue",
+                  "compareType": "NoneOrEqual",
+                  "key": "_ANIMAL_ENTITY_TYPE",
+                  "value": 0
+                },
+                {
+                  "$type": "ByTargetGlobalValue",
+                  "compareType": "NoneOrEqual",
+                  "key": "_ABILITY_PLAYER_GRASS_SEED_OWN_GADGET_MARK",
+                  "value": 0
+                }
+              ],
+              "successActions": [
+                {
+                  "$type": "SetGlobalPos",
+                  "born": {
+                    "$type": "ConfigBornByTarget",
+                    "offset": {
+                      "y": 0.2
+                    }
+                  },
+                  "key": "_ABILITY_PLAYER_GRASS_SEED_ATTACKER_FIXPOS",
+                  "setTarget": false,
+                  "target": "Target"
+                },
+                {
+                  "$type": "CopyGlobalValue",
+                  "dstKey": "_ABILITY_PLAYER_GRASS_SEED_ATTACKER_POS_0",
+                  "dstTarget": "Self",
+                  "srcKey": "_ABILITY_PLAYER_GRASS_SEED_ATTACKER_FIXPOS_0",
+                  "srcTarget": "Self"
+                },
+                {
+                  "$type": "CopyGlobalValue",
+                  "dstKey": "_ABILITY_PLAYER_GRASS_SEED_ATTACKER_POS_1",
+                  "dstTarget": "Self",
+                  "srcKey": "_ABILITY_PLAYER_GRASS_SEED_ATTACKER_FIXPOS_1",
+                  "srcTarget": "Self"
+                },
+                {
+                  "$type": "CopyGlobalValue",
+                  "dstKey": "_ABILITY_PLAYER_GRASS_SEED_ATTACKER_POS_2",
+                  "dstTarget": "Self",
+                  "srcKey": "_ABILITY_PLAYER_GRASS_SEED_ATTACKER_FIXPOS_2",
+                  "srcTarget": "Self"
+                }
+              ]
+            },
+            {
+              "$type": "FireEffect",
+              "born": {
+                "$type": "ConfigBornByGlobalValue",
+                "directionKey": "",
+                "onGround": true,
+                "onGroundRaycastUpDist": 3,
+                "positionKey": "_ABILITY_PLAYER_GRASS_SEED_ATTACKER_POS"
+              },
+              "effectPattern": "Eff_Player_Grass_ElementalBurst_Seed_Attack",
+              "scale": 1,
+              "JHAGIJGAKMK": ""
+            },
+            {
+              "$type": "FireEffect",
+              "effectPattern": "Eff_Player_Grass_ElementalBurst_Seed_Emission",
+              "scale": 1,
+              "JHAGIJGAKMK": ""
+            },
+            {
+              "$type": "ApplyModifier",
+              "modifierName": "Player_Grass_Seed_Attack_Delay_Origin"
+            }
+          ],
+          "stacking": "Unique",
+          "thinkInterval": 1.5,
+          "__unk_Q3323398612": 0
+        },
+        "UNIQUE_Player_Grass_Seed_Attacker_Fire": {
+          "duration": 1.5,
+          "elementDurability": 100,
+          "isUnique": true,
+          "modifierName": "",
+          "onRemoved": [
+            {
+              "$type": "KillSelf"
+            }
+          ],
+          "onThinkInterval": [
+            {
+              "$type": "FireEffect",
+              "born": {
+                "$type": "ConfigBornBySelf"
+              },
+              "effectPattern": "Eff_Player_Grass_ElementalBurst_Seed_Fire_Explosion",
+              "scale": 1,
+              "JHAGIJGAKMK": ""
+            },
+            {
+              "$type": "TriggerAttackEvent",
+              "attackEvent": {
+                "attackInfo": {
+                  "attackProperty": {
+                    "attackType": "Range",
+                    "damagePercentage": "Grass_Seed_Fire_Boom_Ratio",
+                    "damagePercentageRatio": 0,
+                    "elementDurability": 50,
+                    "elementType": "Grass",
+                    "enBreak": 200,
+                    "strikeType": "Default",
+                    "__exp_arkhe": 0
+                  },
+                  "attackTag": "Elemental_Burst",
+                  "attenuationGroup": "default",
+                  "attenuationTag": "",
+                  "canBeModifiedBy": "Owner",
+                  "hitPattern": {
+                    "hitImpulseType": "LV1",
+                    "onHitEffectName": "default",
+                    "__unk_Q3893899620": ""
+                  }
+                },
+                "attackPattern": {
+                  "$type": "ConfigAttackCircle",
+                  "born": {
+                    "$type": "ConfigBornBySelf",
+                    "offset": {
+                      "y": -1
+                    }
+                  },
+                  "height": 3,
+                  "radius": 6.5,
+                  "triggerType": "TriggerNoRepeat"
+                }
+              },
+              "targetType": "Enemy"
+            }
+          ],
+          "stacking": "Unique",
+          "thinkInterval": 1,
+          "__unk_Q3323398612": 0
+        },
+        "UNIQUE_Player_Grass_Seed_Attacker_Electric": {
+          "duration": 20,
+          "elementDurability": 100,
+          "isUnique": true,
+          "modifierName": "",
+          "onAdded": [
+            {
+              "$type": "SetGlobalPos",
+              "born": {
+                "$type": "ConfigBornBySelf",
+                "bornRandom": {
+                  "$type": "BornRandomFromCenter",
+                  "maxRandomRange": 6,
+                  "minRandomRange": 1
+                },
+                "offset": {
+                  "y": 0.2
+                }
+              },
+              "key": "_ABILITY_PLAYER_GRASS_SEED_ATTACKER_POS"
+            },
+            {
+              "$type": "Predicated",
+              "otherTargets": {
+                "$type": "SelectTargetsByShape",
+                "campTargetType": "Enemy",
+                "entityTypePriority": [
+                  "Monster",
+                  "Gadget"
+                ],
+                "shapeName": "CircleR8H10",
+                "sizeRatio": 1,
+                "sortType": "Random",
+                "topLimit": 1
+              },
+              "predicates": [
+                {
+                  "$type": "ByEntityTypes",
+                  "entityTypes": [
+                    "Monster",
+                    "Gadget"
+                  ]
+                },
+                {
+                  "$type": "ByTargetGlobalValue",
+                  "compareType": "NoneOrEqual",
+                  "key": "_ANIMAL_ENTITY_TYPE",
+                  "value": 0
+                },
+                {
+                  "$type": "ByTargetGlobalValue",
+                  "compareType": "NoneOrEqual",
+                  "key": "_ABILITY_PLAYER_GRASS_SEED_OWN_GADGET_MARK",
+                  "value": 0
+                }
+              ],
+              "successActions": [
+                {
+                  "$type": "SetGlobalPos",
+                  "born": {
+                    "$type": "ConfigBornByTarget",
+                    "offset": {
+                      "y": 0.2
+                    }
+                  },
+                  "key": "_ABILITY_PLAYER_GRASS_SEED_ATTACKER_FIXPOS",
+                  "setTarget": false,
+                  "target": "Target"
+                },
+                {
+                  "$type": "CopyGlobalValue",
+                  "dstKey": "_ABILITY_PLAYER_GRASS_SEED_ATTACKER_POS_0",
+                  "dstTarget": "Self",
+                  "srcKey": "_ABILITY_PLAYER_GRASS_SEED_ATTACKER_FIXPOS_0",
+                  "srcTarget": "Self"
+                },
+                {
+                  "$type": "CopyGlobalValue",
+                  "dstKey": "_ABILITY_PLAYER_GRASS_SEED_ATTACKER_POS_1",
+                  "dstTarget": "Self",
+                  "srcKey": "_ABILITY_PLAYER_GRASS_SEED_ATTACKER_FIXPOS_1",
+                  "srcTarget": "Self"
+                },
+                {
+                  "$type": "CopyGlobalValue",
+                  "dstKey": "_ABILITY_PLAYER_GRASS_SEED_ATTACKER_POS_2",
+                  "dstTarget": "Self",
+                  "srcKey": "_ABILITY_PLAYER_GRASS_SEED_ATTACKER_FIXPOS_2",
+                  "srcTarget": "Self"
+                },
+                {
+                  "$type": "FireEffect",
+                  "born": {
+                    "$type": "ConfigBornByGlobalValue",
+                    "directionKey": "",
+                    "onGround": true,
+                    "onGroundRaycastUpDist": 3,
+                    "positionKey": "_ABILITY_PLAYER_GRASS_SEED_ATTACKER_POS"
+                  },
+                  "effectPattern": "Eff_Player_Grass_ElementalBurst_Seed_Attack_Electric",
+                  "scale": 1,
+                  "JHAGIJGAKMK": ""
+                },
+                {
+                  "$type": "ApplyModifier",
+                  "modifierName": "Player_Grass_Seed_Attack_Delay_Origin"
+                }
+              ]
+            }
+          ],
+          "onThinkInterval": [
+            {
+              "$type": "SetGlobalPos",
+              "born": {
+                "$type": "ConfigBornBySelf",
+                "bornRandom": {
+                  "$type": "BornRandomFromCenter",
+                  "maxRandomRange": 6,
+                  "minRandomRange": 1
+                },
+                "offset": {
+                  "y": 0.2
+                }
+              },
+              "key": "_ABILITY_PLAYER_GRASS_SEED_ATTACKER_POS"
+            },
+            {
+              "$type": "Predicated",
+              "otherTargets": {
+                "$type": "SelectTargetsByShape",
+                "campTargetType": "Enemy",
+                "entityTypePriority": [
+                  "Monster",
+                  "Gadget"
+                ],
+                "shapeName": "CircleR8H10",
+                "sizeRatio": 1,
+                "sortType": "Random",
+                "topLimit": 1
+              },
+              "predicates": [
+                {
+                  "$type": "ByEntityTypes",
+                  "entityTypes": [
+                    "Monster",
+                    "Gadget"
+                  ]
+                },
+                {
+                  "$type": "ByTargetGlobalValue",
+                  "compareType": "NoneOrEqual",
+                  "key": "_ANIMAL_ENTITY_TYPE",
+                  "value": 0
+                },
+                {
+                  "$type": "ByTargetGlobalValue",
+                  "compareType": "NoneOrEqual",
+                  "key": "_ABILITY_PLAYER_GRASS_SEED_OWN_GADGET_MARK",
+                  "value": 0
+                }
+              ],
+              "successActions": [
+                {
+                  "$type": "SetGlobalPos",
+                  "born": {
+                    "$type": "ConfigBornByTarget",
+                    "offset": {
+                      "y": 0.2
+                    }
+                  },
+                  "key": "_ABILITY_PLAYER_GRASS_SEED_ATTACKER_FIXPOS",
+                  "setTarget": false,
+                  "target": "Target"
+                },
+                {
+                  "$type": "CopyGlobalValue",
+                  "dstKey": "_ABILITY_PLAYER_GRASS_SEED_ATTACKER_POS_0",
+                  "dstTarget": "Self",
+                  "srcKey": "_ABILITY_PLAYER_GRASS_SEED_ATTACKER_FIXPOS_0",
+                  "srcTarget": "Self"
+                },
+                {
+                  "$type": "CopyGlobalValue",
+                  "dstKey": "_ABILITY_PLAYER_GRASS_SEED_ATTACKER_POS_1",
+                  "dstTarget": "Self",
+                  "srcKey": "_ABILITY_PLAYER_GRASS_SEED_ATTACKER_FIXPOS_1",
+                  "srcTarget": "Self"
+                },
+                {
+                  "$type": "CopyGlobalValue",
+                  "dstKey": "_ABILITY_PLAYER_GRASS_SEED_ATTACKER_POS_2",
+                  "dstTarget": "Self",
+                  "srcKey": "_ABILITY_PLAYER_GRASS_SEED_ATTACKER_FIXPOS_2",
+                  "srcTarget": "Self"
+                }
+              ]
+            },
+            {
+              "$type": "FireEffect",
+              "born": {
+                "$type": "ConfigBornByGlobalValue",
+                "directionKey": "",
+                "onGround": true,
+                "onGroundRaycastUpDist": 3,
+                "positionKey": "_ABILITY_PLAYER_GRASS_SEED_ATTACKER_POS"
+              },
+              "effectPattern": "Eff_Player_Grass_ElementalBurst_Seed_Attack_Electric",
+              "scale": 1,
+              "JHAGIJGAKMK": ""
+            },
+            {
+              "$type": "FireEffect",
+              "effectPattern": "Eff_Player_Grass_ElementalBurst_Seed_Emission",
+              "scale": 1,
+              "JHAGIJGAKMK": ""
+            },
+            {
+              "$type": "ApplyModifier",
+              "modifierName": "Player_Grass_Seed_Attack_Delay_Origin"
+            }
+          ],
+          "stacking": "Unique",
+          "thinkInterval": 0.9,
+          "__unk_Q3323398612": 0
+        },
+        "UNIQUE_Player_Grass_Seed_Attacker_Water": {
+          "duration": 20,
+          "elementDurability": 100,
+          "isUnique": true,
+          "modifierName": "",
+          "onAdded": [
+            {
+              "$type": "SetGlobalPos",
+              "born": {
+                "$type": "ConfigBornBySelf",
+                "bornRandom": {
+                  "$type": "BornRandomFromCenter",
+                  "maxRandomRange": 8,
+                  "minRandomRange": 1
+                },
+                "offset": {
+                  "y": 0.2
+                }
+              },
+              "key": "_ABILITY_PLAYER_GRASS_SEED_ATTACKER_POS"
+            },
+            {
+              "$type": "Predicated",
+              "otherTargets": {
+                "$type": "SelectTargetsByShape",
+                "campTargetType": "Enemy",
+                "entityTypePriority": [
+                  "Monster",
+                  "Gadget"
+                ],
+                "shapeName": "CircleR12H10",
+                "sizeRatio": 1,
+                "sortType": "Random",
+                "topLimit": 1
+              },
+              "predicates": [
+                {
+                  "$type": "ByEntityTypes",
+                  "entityTypes": [
+                    "Monster",
+                    "Gadget"
+                  ]
+                },
+                {
+                  "$type": "ByTargetGlobalValue",
+                  "compareType": "NoneOrEqual",
+                  "key": "_ANIMAL_ENTITY_TYPE",
+                  "value": 0
+                },
+                {
+                  "$type": "ByTargetGlobalValue",
+                  "compareType": "NoneOrEqual",
+                  "key": "_ABILITY_PLAYER_GRASS_SEED_OWN_GADGET_MARK",
+                  "value": 0
+                }
+              ],
+              "successActions": [
+                {
+                  "$type": "SetGlobalPos",
+                  "born": {
+                    "$type": "ConfigBornByTarget",
+                    "offset": {
+                      "y": 0.2
+                    }
+                  },
+                  "key": "_ABILITY_PLAYER_GRASS_SEED_ATTACKER_FIXPOS",
+                  "setTarget": false,
+                  "target": "Target"
+                },
+                {
+                  "$type": "CopyGlobalValue",
+                  "dstKey": "_ABILITY_PLAYER_GRASS_SEED_ATTACKER_POS_0",
+                  "dstTarget": "Self",
+                  "srcKey": "_ABILITY_PLAYER_GRASS_SEED_ATTACKER_FIXPOS_0",
+                  "srcTarget": "Self"
+                },
+                {
+                  "$type": "CopyGlobalValue",
+                  "dstKey": "_ABILITY_PLAYER_GRASS_SEED_ATTACKER_POS_1",
+                  "dstTarget": "Self",
+                  "srcKey": "_ABILITY_PLAYER_GRASS_SEED_ATTACKER_FIXPOS_1",
+                  "srcTarget": "Self"
+                },
+                {
+                  "$type": "CopyGlobalValue",
+                  "dstKey": "_ABILITY_PLAYER_GRASS_SEED_ATTACKER_POS_2",
+                  "dstTarget": "Self",
+                  "srcKey": "_ABILITY_PLAYER_GRASS_SEED_ATTACKER_FIXPOS_2",
+                  "srcTarget": "Self"
+                }
+              ]
+            },
+            {
+              "$type": "FireEffect",
+              "born": {
+                "$type": "ConfigBornByGlobalValue",
+                "directionKey": "",
+                "onGround": true,
+                "onGroundRaycastUpDist": 3,
+                "positionKey": "_ABILITY_PLAYER_GRASS_SEED_ATTACKER_POS"
+              },
+              "effectPattern": "Eff_Player_Grass_ElementalBurst_Seed_Attack_Big",
+              "scale": 1,
+              "JHAGIJGAKMK": ""
+            },
+            {
+              "$type": "ApplyModifier",
+              "modifierName": "Player_Grass_Seed_Attack_Delay_Water"
+            }
+          ],
+          "onThinkInterval": [
+            {
+              "$type": "SetGlobalPos",
+              "born": {
+                "$type": "ConfigBornBySelf",
+                "bornRandom": {
+                  "$type": "BornRandomFromCenter",
+                  "maxRandomRange": 8,
+                  "minRandomRange": 1
+                },
+                "offset": {
+                  "y": 0.2
+                }
+              },
+              "key": "_ABILITY_PLAYER_GRASS_SEED_ATTACKER_POS"
+            },
+            {
+              "$type": "Predicated",
+              "otherTargets": {
+                "$type": "SelectTargetsByShape",
+                "campTargetType": "Enemy",
+                "entityTypePriority": [
+                  "Monster",
+                  "Gadget"
+                ],
+                "shapeName": "CircleR12H10",
+                "sizeRatio": 1,
+                "sortType": "Random",
+                "topLimit": 1
+              },
+              "predicates": [
+                {
+                  "$type": "ByEntityTypes",
+                  "entityTypes": [
+                    "Monster",
+                    "Gadget"
+                  ]
+                },
+                {
+                  "$type": "ByTargetGlobalValue",
+                  "compareType": "NoneOrEqual",
+                  "key": "_ANIMAL_ENTITY_TYPE",
+                  "value": 0
+                },
+                {
+                  "$type": "ByTargetGlobalValue",
+                  "compareType": "NoneOrEqual",
+                  "key": "_ABILITY_PLAYER_GRASS_SEED_OWN_GADGET_MARK",
+                  "value": 0
+                }
+              ],
+              "successActions": [
+                {
+                  "$type": "SetGlobalPos",
+                  "born": {
+                    "$type": "ConfigBornByTarget",
+                    "offset": {
+                      "y": 0.2
+                    }
+                  },
+                  "key": "_ABILITY_PLAYER_GRASS_SEED_ATTACKER_FIXPOS",
+                  "setTarget": false,
+                  "target": "Target"
+                },
+                {
+                  "$type": "CopyGlobalValue",
+                  "dstKey": "_ABILITY_PLAYER_GRASS_SEED_ATTACKER_POS_0",
+                  "dstTarget": "Self",
+                  "srcKey": "_ABILITY_PLAYER_GRASS_SEED_ATTACKER_FIXPOS_0",
+                  "srcTarget": "Self"
+                },
+                {
+                  "$type": "CopyGlobalValue",
+                  "dstKey": "_ABILITY_PLAYER_GRASS_SEED_ATTACKER_POS_1",
+                  "dstTarget": "Self",
+                  "srcKey": "_ABILITY_PLAYER_GRASS_SEED_ATTACKER_FIXPOS_1",
+                  "srcTarget": "Self"
+                },
+                {
+                  "$type": "CopyGlobalValue",
+                  "dstKey": "_ABILITY_PLAYER_GRASS_SEED_ATTACKER_POS_2",
+                  "dstTarget": "Self",
+                  "srcKey": "_ABILITY_PLAYER_GRASS_SEED_ATTACKER_FIXPOS_2",
+                  "srcTarget": "Self"
+                }
+              ]
+            },
+            {
+              "$type": "FireEffect",
+              "born": {
+                "$type": "ConfigBornByGlobalValue",
+                "directionKey": "",
+                "onGround": true,
+                "onGroundRaycastUpDist": 3,
+                "positionKey": "_ABILITY_PLAYER_GRASS_SEED_ATTACKER_POS"
+              },
+              "effectPattern": "Eff_Player_Grass_ElementalBurst_Seed_Attack_Big",
+              "scale": 1,
+              "JHAGIJGAKMK": ""
+            },
+            {
+              "$type": "FireEffect",
+              "effectPattern": "Eff_Player_Grass_ElementalBurst_Seed_Emission",
+              "scale": 1,
+              "JHAGIJGAKMK": ""
+            },
+            {
+              "$type": "ApplyModifier",
+              "modifierName": "Player_Grass_Seed_Attack_Delay_Water"
+            }
+          ],
+          "stacking": "Unique",
+          "thinkInterval": 1.5,
+          "__unk_Q3323398612": 0
+        },
+        "Player_Grass_Seed_Attack_Delay_Origin": {
+          "duration": 0.25,
+          "elementDurability": 100,
+          "modifierName": "",
+          "onRemoved": [
+            {
+              "$type": "TriggerAttackEvent",
+              "attackEvent": {
+                "attackInfo": {
+                  "attackProperty": {
+                    "attackType": "Range",
+                    "damagePercentage": "Grass_Seed_Damage_Ratio",
+                    "damagePercentageRatio": 0,
+                    "elementDurability": 25,
+                    "elementType": "Grass",
+                    "strikeType": "Default",
+                    "__exp_arkhe": 0
+                  },
+                  "attackTag": "Elemental_Burst",
+                  "attenuationGroup": "default",
+                  "attenuationTag": "default",
+                  "canBeModifiedBy": "Owner",
+                  "hitPattern": {
+                    "hitHaltTimeScale": 0.02,
+                    "hitImpulseType": "LV1",
+                    "onHitEffectName": "default",
+                    "__unk_Q3893899620": ""
+                  }
+                },
+                "attackPattern": {
+                  "$type": "ConfigAttackCircle",
+                  "born": {
+                    "$type": "ConfigBornByGlobalValue",
+                    "directionKey": "",
+                    "offset": {
+                      "y": -1
+                    },
+                    "onGround": true,
+                    "onGroundRaycastUpDist": 3,
+                    "positionKey": "_ABILITY_PLAYER_GRASS_SEED_ATTACKER_POS"
+                  },
+                  "height": 3.8,
+                  "radius": 2,
+                  "triggerType": "TriggerNoRepeat"
+                }
+              },
+              "targetType": "Enemy"
+            }
+          ],
+          "stacking": "Multiple",
+          "__unk_Q3323398612": 0
+        },
+        "Player_Grass_Seed_Attack_Delay_Water": {
+          "duration": 0.25,
+          "elementDurability": 100,
+          "modifierName": "",
+          "onRemoved": [
+            {
+              "$type": "TriggerAttackEvent",
+              "attackEvent": {
+                "attackInfo": {
+                  "attackProperty": {
+                    "attackType": "Range",
+                    "damagePercentage": "Grass_Seed_Damage_Ratio",
+                    "damagePercentageRatio": 0,
+                    "elementDurability": 25,
+                    "elementType": "Grass",
+                    "enBreak": 50,
+                    "strikeType": "Default",
+                    "__exp_arkhe": 0
+                  },
+                  "attackTag": "Elemental_Burst",
+                  "attenuationGroup": "default",
+                  "attenuationTag": "default",
+                  "canBeModifiedBy": "Owner",
+                  "hitPattern": {
+                    "hitHaltTimeScale": 0.02,
+                    "hitImpulseType": "LV1",
+                    "onHitEffectName": "default",
+                    "__unk_Q3893899620": ""
+                  }
+                },
+                "attackPattern": {
+                  "$type": "ConfigAttackCircle",
+                  "born": {
+                    "$type": "ConfigBornByGlobalValue",
+                    "directionKey": "",
+                    "offset": {
+                      "y": -1
+                    },
+                    "onGround": true,
+                    "onGroundRaycastUpDist": 3,
+                    "positionKey": "_ABILITY_PLAYER_GRASS_SEED_ATTACKER_POS"
+                  },
+                  "height": 3.8,
+                  "radius": 4,
+                  "triggerType": "TriggerNoRepeat"
+                }
+              },
+              "targetType": "Enemy"
+            }
+          ],
+          "stacking": "Multiple",
+          "__unk_Q3323398612": 0
+        },
+        "UNIQUE_Player_Grass_Seed_Eff_Origin": {
+          "elementDurability": 100,
+          "isUnique": true,
+          "modifierName": "",
+          "onAdded": [
+            {
+              "$type": "TriggerAudio",
+              "operation": {
+                "$type": "ConfigAudioEventOp",
+                "operation": {
+                  "text": "Play_sfx_char_hero_grass_elementalBurst_seed_lp"
+                }
+              }
+            }
+          ],
+          "stacking": "Unique",
+          "__unk_Q3323398612": 0
+        },
+        "UNIQUE_Player_Grass_Seed_Eff_Fire": {
+          "elementDurability": 100,
+          "isUnique": true,
+          "modifierName": "",
+          "onAdded": [
+            {
+              "$type": "SetAnimatorTrigger",
+              "MPTriggerOnRemote": true,
+              "triggerID": "ChangeFire"
+            },
+            {
+              "$type": "SetAnimatorTrigger",
+              "MPTriggerOnRemote": true,
+              "triggerID": "ChangeFireTexture"
+            },
+            {
+              "$type": "FireEffect",
+              "effectPattern": "Eff_Player_Grass_ElementalBurst_Seed_TurnFire",
+              "scale": 1,
+              "JHAGIJGAKMK": ""
+            }
+          ],
+          "stacking": "Unique",
+          "__unk_Q3323398612": 0
+        },
+        "UNIQUE_Player_Grass_Seed_Eff_Electric": {
+          "elementDurability": 100,
+          "isUnique": true,
+          "modifierName": "",
+          "onAdded": [
+            {
+              "$type": "SetAnimatorTrigger",
+              "MPTriggerOnRemote": true,
+              "triggerID": "ChangeThunder"
+            },
+            {
+              "$type": "SetAnimatorTrigger",
+              "MPTriggerOnRemote": true,
+              "triggerID": "ChangeThunderTexture"
+            },
+            {
+              "$type": "FireEffect",
+              "effectPattern": "Eff_Player_Grass_ElementalBurst_Seed_TurnElectric",
+              "scale": 1,
+              "JHAGIJGAKMK": ""
+            },
+            {
+              "$type": "TriggerAudio",
+              "operation": {
+                "$type": "ConfigAudioEventOp",
+                "operation": {
+                  "text": "Play_sfx_char_hero_grass_elementalBurst_seed_fast_lp"
+                }
+              }
+            }
+          ],
+          "stacking": "Unique",
+          "__unk_Q3323398612": 0
+        },
+        "UNIQUE_Player_Grass_Seed_Eff_Water": {
+          "elementDurability": 100,
+          "isUnique": true,
+          "modifierName": "",
+          "onAdded": [
+            {
+              "$type": "SetAnimatorTrigger",
+              "MPTriggerOnRemote": true,
+              "triggerID": "ChangeWater"
+            },
+            {
+              "$type": "SetAnimatorTrigger",
+              "MPTriggerOnRemote": true,
+              "triggerID": "ChangeWaterTexture"
+            },
+            {
+              "$type": "FireEffect",
+              "effectPattern": "Eff_Player_Grass_ElementalBurst_Seed_TurnWater",
+              "scale": 1,
+              "JHAGIJGAKMK": ""
+            },
+            {
+              "$type": "TriggerAudio",
+              "operation": {
+                "$type": "ConfigAudioEventOp",
+                "operation": {
+                  "text": "Play_sfx_char_hero_grass_elementalBurst_seed_big_lp"
+                }
+              }
+            }
+          ],
+          "stacking": "Unique",
+          "__unk_Q3323398612": 0
+        },
+        "UNIQUE_Player_Grass_Seed_Circle_Eff_Little": {
+          "elementDurability": 100,
+          "isUnique": true,
+          "modifierName": "",
+          "onAdded": [
+            {
+              "$type": "AttachEffect",
+              "effectPattern": "Eff_Player_Grass_ElementalBurst_Seed_Range_Circle",
+              "scale": 1,
+              "JHAGIJGAKMK": ""
+            }
+          ],
+          "onKill": [
+            {
+              "$type": "FireEffect",
+              "effectPattern": "Eff_Player_Grass_ElementalBurst_Seed_Dispear",
+              "othereffectPatterns": [
+                "Eff_Player_Grass_ElementalBurst_Seed_Range_Circle_Disappear"
+              ],
+              "scale": 1,
+              "JHAGIJGAKMK": ""
+            }
+          ],
+          "stacking": "Unique",
+          "__unk_Q3323398612": 0
+        },
+        "UNIQUE_Player_Grass_Seed_Circle_Eff_None": {
+          "elementDurability": 100,
+          "isUnique": true,
+          "modifierName": "",
+          "onAdded": [
+            {
+              "$type": "FireEffect",
+              "effectPattern": "Eff_Player_Grass_ElementalBurst_Seed_Range_Circle_Disappear",
+              "scale": 1,
+              "JHAGIJGAKMK": ""
+            }
+          ],
+          "stacking": "Unique",
+          "__unk_Q3323398612": 0
+        },
+        "UNIQUE_Player_Grass_Seed_Circle_Eff_Big": {
+          "elementDurability": 100,
+          "isUnique": true,
+          "modifierName": "",
+          "onAdded": [
+            {
+              "$type": "AttachEffect",
+              "effectPattern": "Eff_Player_Grass_ElementalBurst_Seed_Range_Circle_Big",
+              "scale": 1,
+              "JHAGIJGAKMK": ""
+            }
+          ],
+          "onKill": [
+            {
+              "$type": "FireEffect",
+              "effectPattern": "Eff_Player_Grass_ElementalBurst_Seed_Dispear_Water",
+              "scale": 1,
+              "JHAGIJGAKMK": ""
+            },
+            {
+              "$type": "FireEffect",
+              "effectPattern": "Eff_Player_Grass_ElementalBurst_Seed_Range_Circle_Big_Disappear",
+              "scale": 1,
+              "JHAGIJGAKMK": ""
+            }
+          ],
+          "stacking": "Unique",
+          "__unk_Q3323398612": 0
+        }
+      },
       "onAdded": [
         {
           "$type": "SetGlobalValue",
-          "useLimitRange": true,
           "key": "_ABILITY_PLAYER_GRASS_SEED_STATE_MARK",
-          "minValue": 0,
           "maxValue": 3,
+          "minValue": 0,
+          "useLimitRange": true,
           "value": 0
         },
         {
           "$type": "SetGlobalValue",
-          "useLimitRange": true,
           "key": "_ABILITY_PLAYER_GRASS_SEED_STATE_MARK_Cache",
-          "minValue": 0,
           "maxValue": 3,
+          "minValue": 0,
+          "useLimitRange": true,
           "value": 0
         },
         {
@@ -1994,54 +1989,70 @@
         },
         {
           "$type": "CreateGadget",
-          "gadgetID": 41011002,
-          "campID": 5003,
-          "campTargetType": "All",
           "born": {
             "$type": "ConfigBornBySelf"
           },
+          "campID": 5003,
+          "campTargetType": "All",
+          "gadgetID": 41011002,
           "lifeByOwnerV2": true
         },
         {
           "$type": "FireEffect",
           "effectPattern": "Eff_Player_Grass_ElementalBurst_Seed_Ground_Impact",
           "scale": 1,
-          "ILLLPEOODKP": ""
+          "JHAGIJGAKMK": ""
         }
       ],
-      "abilitySpecials": {
-        "Grass_Seed_State_Mark_Temp": 0,
-        "Grass_Seed_Duration": 0.3,
-        "Grass_Seed_Damage_Ratio": 0,
-        "Grass_Seed_Fire_Boom_Ratio": 0
-      }
+      "onKill": [
+        {
+          "$type": "TriggerAudio",
+          "operation": {
+            "$type": "ConfigAudioEventOp",
+            "operation": {
+              "text": "Stop_sfx_char_hero_grass_elementalBurst_seed_lp"
+            }
+          }
+        }
+      ]
     }
   },
   {
     "Default": {
-      "modifiers": {
-        "Avatar_Player_Grass_Seed_Original_Grass_Durability": {
-          "stacking": "Unique",
-          "elementDurability": 10,
-          "elementType": "Grass",
-          "modifierName": "",
-          "__unk_Q3323398612": 0
-        }
-      },
       "abilityMixins": [
         {
           "$type": "DoActionBySelfElementReactionMixin",
+          "actionQueue": [
+            {
+              "$type": "SetGlobalValue",
+              "key": "_ABILITY_PLAYER_GRASS_SEED_STATE_MARK_Cache",
+              "maxValue": 0,
+              "minValue": 0,
+              "target": "Owner",
+              "value": 2
+            },
+            {
+              "$type": "RemoveModifier",
+              "modifierName": "Avatar_Player_Grass_Seed_Original_Grass_Durability"
+            },
+            {
+              "$type": "KillSelf"
+            }
+          ],
           "reactionTypes": [
             "Burning"
-          ],
+          ]
+        },
+        {
+          "$type": "DoActionBySelfElementReactionMixin",
           "actionQueue": [
             {
               "$type": "SetGlobalValue",
               "key": "_ABILITY_PLAYER_GRASS_SEED_STATE_MARK_Cache",
-              "minValue": 0,
               "maxValue": 0,
-              "value": 2,
-              "target": "Owner"
+              "minValue": 0,
+              "target": "Owner",
+              "value": 1
             },
             {
               "$type": "RemoveModifier",
@@ -2050,21 +2061,21 @@
             {
               "$type": "KillSelf"
             }
-          ]
-        },
-        {
-          "$type": "DoActionBySelfElementReactionMixin",
+          ],
           "reactionTypes": [
             "Overdose"
-          ],
+          ]
+        },
+        {
+          "$type": "DoActionBySelfElementReactionMixin",
           "actionQueue": [
             {
               "$type": "SetGlobalValue",
               "key": "_ABILITY_PLAYER_GRASS_SEED_STATE_MARK_Cache",
-              "minValue": 0,
               "maxValue": 0,
-              "value": 1,
-              "target": "Owner"
+              "minValue": 0,
+              "target": "Owner",
+              "value": 3
             },
             {
               "$type": "RemoveModifier",
@@ -2073,40 +2084,29 @@
             {
               "$type": "KillSelf"
             }
-          ]
-        },
-        {
-          "$type": "DoActionBySelfElementReactionMixin",
+          ],
           "reactionTypes": [
             "Overgrow",
             "MoonOvergrow"
-          ],
-          "actionQueue": [
-            {
-              "$type": "SetGlobalValue",
-              "key": "_ABILITY_PLAYER_GRASS_SEED_STATE_MARK_Cache",
-              "minValue": 0,
-              "maxValue": 0,
-              "value": 3,
-              "target": "Owner"
-            },
-            {
-              "$type": "RemoveModifier",
-              "modifierName": "Avatar_Player_Grass_Seed_Original_Grass_Durability"
-            },
-            {
-              "$type": "KillSelf"
-            }
           ]
         }
       ],
       "abilityName": "Avatar_Player_Grass_Seed_Gadget_HitBox",
+      "modifiers": {
+        "Avatar_Player_Grass_Seed_Original_Grass_Durability": {
+          "elementDurability": 10,
+          "elementType": "Grass",
+          "modifierName": "",
+          "stacking": "Unique",
+          "__unk_Q3323398612": 0
+        }
+      },
       "onAdded": [
         {
           "$type": "SetGlobalValue",
           "key": "_ABILITY_PLAYER_GRASS_SEED_OWN_GADGET_MARK",
-          "minValue": 0,
           "maxValue": 0,
+          "minValue": 0,
           "value": 1
         },
         {
@@ -2118,18 +2118,15 @@
   },
   {
     "Default": {
+      "abilityName": "Avatar_Player_Grass_Permanent_Skill_1",
+      "abilitySpecials": {
+        "Grass_Seed_Element_Mastery_Count": 0,
+        "Grass_Seed_Element_Mastery_Up": 0,
+        "Elemental_Damage_Up_Ratio": 0,
+        "Grass_Seed_type_Cache": 0
+      },
       "modifiers": {
         "Player_Grass_Seed_Aura_Count_Handler": {
-          "thinkInterval": 1,
-          "onAdded": [
-            {
-              "$type": "SetGlobalValueToOverrideMap",
-              "globalValueKey": "_ABILITY_PLAYER_GRASS_SEDD_AURA_LAYER_COUNT",
-              "abilityName": "",
-              "overrideMapKey": "Grass_Seed_Element_Mastery_Count",
-              "target": "Caster"
-            }
-          ],
           "elementDurability": 100,
           "modifierMixins": [
             {
@@ -2137,8 +2134,8 @@
               "actions": [
                 {
                   "$type": "SetGlobalValueToOverrideMap",
-                  "globalValueKey": "_ABILITY_PLAYER_GRASS_SEED_STATE_MARK",
                   "abilityName": "",
+                  "globalValueKey": "_ABILITY_PLAYER_GRASS_SEED_STATE_MARK",
                   "overrideMapKey": "Grass_Seed_type_Cache"
                 }
               ],
@@ -2146,23 +2143,33 @@
             }
           ],
           "modifierName": "",
-          "onThinkInterval": [
-            {
-              "$type": "AddGlobalValue",
-              "useLimitRange": true,
-              "key": "_ABILITY_PLAYER_GRASS_SEDD_AURA_LAYER_COUNT",
-              "maxValue": 10,
-              "minValue": 1,
-              "value": 1
-            },
+          "onAdded": [
             {
               "$type": "SetGlobalValueToOverrideMap",
-              "globalValueKey": "_ABILITY_PLAYER_GRASS_SEDD_AURA_LAYER_COUNT",
               "abilityName": "",
+              "globalValueKey": "_ABILITY_PLAYER_GRASS_SEDD_AURA_LAYER_COUNT",
               "overrideMapKey": "Grass_Seed_Element_Mastery_Count",
               "target": "Caster"
             }
           ],
+          "onThinkInterval": [
+            {
+              "$type": "AddGlobalValue",
+              "key": "_ABILITY_PLAYER_GRASS_SEDD_AURA_LAYER_COUNT",
+              "maxValue": 10,
+              "minValue": 1,
+              "useLimitRange": true,
+              "value": 1
+            },
+            {
+              "$type": "SetGlobalValueToOverrideMap",
+              "abilityName": "",
+              "globalValueKey": "_ABILITY_PLAYER_GRASS_SEDD_AURA_LAYER_COUNT",
+              "overrideMapKey": "Grass_Seed_Element_Mastery_Count",
+              "target": "Caster"
+            }
+          ],
+          "thinkInterval": 1,
           "__unk_Q3323398612": 0
         },
         "Player_Grass_Seed_Aura_Extra_Count_Handler": {
@@ -2173,10 +2180,10 @@
               "actions": [
                 {
                   "$type": "AddGlobalValue",
-                  "useLimitRange": true,
                   "key": "_ABILITY_PLAYER_GRASS_SEDD_AURA_LAYER_COUNT",
                   "maxValue": 10,
                   "minValue": 1,
+                  "useLimitRange": true,
                   "value": 5
                 }
               ],
@@ -2187,19 +2194,20 @@
           "__unk_Q3323398612": 0
         },
         "Player_Grass_Seed_Aura_Handler": {
-          "thinkInterval": 0.3,
+          "elementDurability": 100,
+          "modifierName": "",
           "onAdded": [
             {
               "$type": "Predicated",
-              "successActions": [
+              "failActions": [
                 {
                   "$type": "ApplyModifier",
                   "modifierName": "UNIQUE_Player_Grass_Mastery_Up_Handler",
                   "otherTargets": {
                     "$type": "SelectTargetsByShape",
-                    "sizeRatio": 1,
                     "campTargetType": "Alliance",
-                    "shapeName": "CircleR12H10"
+                    "shapeName": "CircleR8H10",
+                    "sizeRatio": 1
                   },
                   "predicates": [
                     {
@@ -2211,15 +2219,15 @@
                   ]
                 }
               ],
-              "failActions": [
+              "successActions": [
                 {
                   "$type": "ApplyModifier",
                   "modifierName": "UNIQUE_Player_Grass_Mastery_Up_Handler",
                   "otherTargets": {
                     "$type": "SelectTargetsByShape",
-                    "sizeRatio": 1,
                     "campTargetType": "Alliance",
-                    "shapeName": "CircleR8H10"
+                    "shapeName": "CircleR12H10",
+                    "sizeRatio": 1
                   },
                   "predicates": [
                     {
@@ -2234,26 +2242,24 @@
               "targetPredicates": [
                 {
                   "$type": "ByTargetGlobalValue",
-                  "value": 3,
-                  "key": "_ABILITY_PLAYER_GRASS_SEED_STATE_MARK"
+                  "key": "_ABILITY_PLAYER_GRASS_SEED_STATE_MARK",
+                  "value": 3
                 }
               ]
             }
           ],
-          "elementDurability": 100,
-          "modifierName": "",
           "onThinkInterval": [
             {
               "$type": "Predicated",
-              "successActions": [
+              "failActions": [
                 {
                   "$type": "ApplyModifier",
                   "modifierName": "UNIQUE_Player_Grass_Mastery_Up_Handler",
                   "otherTargets": {
                     "$type": "SelectTargetsByShape",
-                    "sizeRatio": 1,
                     "campTargetType": "Alliance",
-                    "shapeName": "CircleR12H10"
+                    "shapeName": "CircleR8H10",
+                    "sizeRatio": 1
                   },
                   "predicates": [
                     {
@@ -2265,15 +2271,15 @@
                   ]
                 }
               ],
-              "failActions": [
+              "successActions": [
                 {
                   "$type": "ApplyModifier",
                   "modifierName": "UNIQUE_Player_Grass_Mastery_Up_Handler",
                   "otherTargets": {
                     "$type": "SelectTargetsByShape",
-                    "sizeRatio": 1,
                     "campTargetType": "Alliance",
-                    "shapeName": "CircleR8H10"
+                    "shapeName": "CircleR12H10",
+                    "sizeRatio": 1
                   },
                   "predicates": [
                     {
@@ -2288,15 +2294,20 @@
               "targetPredicates": [
                 {
                   "$type": "ByTargetGlobalValue",
-                  "value": 3,
-                  "key": "_ABILITY_PLAYER_GRASS_SEED_STATE_MARK"
+                  "key": "_ABILITY_PLAYER_GRASS_SEED_STATE_MARK",
+                  "value": 3
                 }
               ]
             }
           ],
+          "thinkInterval": 0.3,
           "__unk_Q3323398612": 0
         },
         "UNIQUE_Player_Grass_Seed_Aura_Element_Mastery_Up": {
+          "elementDurability": 100,
+          "isLimitedProperties": true,
+          "isUnique": true,
+          "modifierName": "",
           "onAdded": [
             {
               "$type": "AttachModifier",
@@ -2308,10 +2319,10 @@
                 },
                 {
                   "$type": "ByTargetGlobalValue",
-                  "value": 0,
                   "compareType": "NoneOrEqual",
                   "key": "_ABILITY_PLAYER_GRASS_SEED_STATE_MARK",
-                  "target": "Caster"
+                  "target": "Caster",
+                  "value": 0
                 }
               ]
             },
@@ -2325,10 +2336,10 @@
                 },
                 {
                   "$type": "ByTargetGlobalValue",
-                  "value": 2,
                   "compareType": "NoneOrEqual",
                   "key": "_ABILITY_PLAYER_GRASS_SEED_STATE_MARK",
-                  "target": "Caster"
+                  "target": "Caster",
+                  "value": 2
                 }
               ]
             },
@@ -2342,10 +2353,10 @@
                 },
                 {
                   "$type": "ByTargetGlobalValue",
-                  "value": 1,
                   "compareType": "NoneOrEqual",
                   "key": "_ABILITY_PLAYER_GRASS_SEED_STATE_MARK",
-                  "target": "Caster"
+                  "target": "Caster",
+                  "value": 1
                 }
               ]
             },
@@ -2359,20 +2370,19 @@
                 },
                 {
                   "$type": "ByTargetGlobalValue",
-                  "value": 3,
                   "compareType": "NoneOrEqual",
                   "key": "_ABILITY_PLAYER_GRASS_SEED_STATE_MARK",
-                  "target": "Caster"
+                  "target": "Caster",
+                  "value": 3
                 }
               ]
             }
           ],
-          "isLimitedProperties": true,
           "onAvatarOut": [
             {
               "$type": "RemoveModifier",
-              "modifierName": "UNIQUE_Player_Grass_Seed_Aura_Element_Mastery_Up",
-              "doOffStage": true
+              "doOffStage": true,
+              "modifierName": "UNIQUE_Player_Grass_Seed_Aura_Element_Mastery_Up"
             }
           ],
           "properties": {
@@ -2382,51 +2392,12 @@
               "MUL"
             ]
           },
-          "elementDurability": 100,
-          "modifierName": "",
-          "isUnique": true,
           "__unk_Q3323398612": 0
         },
         "UNIQUE_Player_Grass_Mastery_Up_Handler": {
-          "thinkInterval": 0.3,
           "duration": 1,
-          "onRemoved": [
-            {
-              "$type": "SetGlobalValue",
-              "key": "_ABILITY_Player_Grass_Aura_Count_Cache",
-              "minValue": 0,
-              "maxValue": 0,
-              "value": 0
-            }
-          ],
-          "onAdded": [
-            {
-              "$type": "SetGlobalValue",
-              "key": "_ABILITY_Player_Grass_Aura_Count_Cache",
-              "minValue": 0,
-              "maxValue": 0,
-              "value": "Grass_Seed_Element_Mastery_Count"
-            },
-            {
-              "$type": "SetGlobalValue",
-              "key": "_ABILITY_Player_Grass_Seed_State_Cache",
-              "minValue": 0,
-              "maxValue": 0,
-              "value": "Grass_Seed_type_Cache"
-            },
-            {
-              "$type": "AttachModifier",
-              "modifierName": "UNIQUE_Player_Grass_Seed_Aura_Element_Mastery_Up"
-            }
-          ],
-          "onAvatarOut": [
-            {
-              "$type": "RemoveModifier",
-              "modifierName": "UNIQUE_Player_Grass_Mastery_Up_Handler",
-              "doOffStage": true
-            }
-          ],
           "elementDurability": 100,
+          "isUnique": true,
           "modifierMixins": [
             {
               "$type": "DoActionOnGlobalValueChangeMixin",
@@ -2457,106 +2428,141 @@
               "globalValueKey": "_ABILITY_Player_Grass_Seed_State_Cache"
             }
           ],
-          "state": "AttackUp",
           "modifierName": "",
-          "isUnique": true,
-          "onThinkInterval": [
+          "onAdded": [
             {
               "$type": "SetGlobalValue",
               "key": "_ABILITY_Player_Grass_Aura_Count_Cache",
-              "minValue": 0,
               "maxValue": 0,
-              "value": "Grass_Seed_Element_Mastery_Count",
-              "predicates": [
-                {
-                  "$type": "ByNot",
-                  "predicates": [
-                    {
-                      "$type": "ByTargetGlobalValue",
-                      "value": "Grass_Seed_Element_Mastery_Count",
-                      "key": "_ABILITY_Player_Grass_Aura_Count_Cache"
-                    }
-                  ]
-                }
-              ]
+              "minValue": 0,
+              "value": "Grass_Seed_Element_Mastery_Count"
             },
             {
               "$type": "SetGlobalValue",
               "key": "_ABILITY_Player_Grass_Seed_State_Cache",
-              "minValue": 0,
               "maxValue": 0,
-              "value": "Grass_Seed_type_Cache",
+              "minValue": 0,
+              "value": "Grass_Seed_type_Cache"
+            },
+            {
+              "$type": "AttachModifier",
+              "modifierName": "UNIQUE_Player_Grass_Seed_Aura_Element_Mastery_Up"
+            }
+          ],
+          "onAvatarOut": [
+            {
+              "$type": "RemoveModifier",
+              "doOffStage": true,
+              "modifierName": "UNIQUE_Player_Grass_Mastery_Up_Handler"
+            }
+          ],
+          "onRemoved": [
+            {
+              "$type": "SetGlobalValue",
+              "key": "_ABILITY_Player_Grass_Aura_Count_Cache",
+              "maxValue": 0,
+              "minValue": 0,
+              "value": 0
+            }
+          ],
+          "onThinkInterval": [
+            {
+              "$type": "SetGlobalValue",
+              "key": "_ABILITY_Player_Grass_Aura_Count_Cache",
+              "maxValue": 0,
+              "minValue": 0,
               "predicates": [
                 {
                   "$type": "ByNot",
                   "predicates": [
                     {
                       "$type": "ByTargetGlobalValue",
-                      "value": "Grass_Seed_type_Cache",
-                      "key": "_ABILITY_Player_Grass_Seed_State_Cache"
+                      "key": "_ABILITY_Player_Grass_Aura_Count_Cache",
+                      "value": "Grass_Seed_Element_Mastery_Count"
                     }
                   ]
                 }
-              ]
+              ],
+              "value": "Grass_Seed_Element_Mastery_Count"
+            },
+            {
+              "$type": "SetGlobalValue",
+              "key": "_ABILITY_Player_Grass_Seed_State_Cache",
+              "maxValue": 0,
+              "minValue": 0,
+              "predicates": [
+                {
+                  "$type": "ByNot",
+                  "predicates": [
+                    {
+                      "$type": "ByTargetGlobalValue",
+                      "key": "_ABILITY_Player_Grass_Seed_State_Cache",
+                      "value": "Grass_Seed_type_Cache"
+                    }
+                  ]
+                }
+              ],
+              "value": "Grass_Seed_type_Cache"
             }
           ],
+          "state": "AttackUp",
+          "thinkInterval": 0.3,
           "__unk_Q3323398612": 0
         },
         "Player_Grass_Seed_Aura_Element_Damage_Up_Origin": {
+          "elementDurability": 100,
           "isLimitedProperties": true,
+          "modifierName": "",
           "properties": {
             "Actor_GrassAddHurtDelta": "Elemental_Damage_Up_Ratio"
           },
-          "elementDurability": 100,
-          "modifierName": "",
           "__unk_Q3323398612": 0
         },
         "Player_Grass_Seed_Aura_Element_Damage_Up_Fire": {
+          "elementDurability": 100,
           "isLimitedProperties": true,
+          "modifierName": "",
           "properties": {
             "Actor_GrassAddHurtDelta": "Elemental_Damage_Up_Ratio",
             "Actor_FireAddHurtDelta": "Elemental_Damage_Up_Ratio"
           },
-          "elementDurability": 100,
-          "modifierName": "",
           "__unk_Q3323398612": 0
         },
         "Player_Grass_Seed_Aura_Element_Damage_Up_Electric": {
+          "elementDurability": 100,
           "isLimitedProperties": true,
+          "modifierName": "",
           "properties": {
             "Actor_GrassAddHurtDelta": "Elemental_Damage_Up_Ratio",
             "Actor_ElecAddHurtDelta": "Elemental_Damage_Up_Ratio"
           },
-          "elementDurability": 100,
-          "modifierName": "",
           "__unk_Q3323398612": 0
         },
         "Player_Grass_Seed_Aura_Element_Damage_Up_Water": {
+          "elementDurability": 100,
           "isLimitedProperties": true,
+          "modifierName": "",
           "properties": {
             "Actor_GrassAddHurtDelta": "Elemental_Damage_Up_Ratio",
             "Actor_WaterAddHurtDelta": "Elemental_Damage_Up_Ratio"
           },
-          "elementDurability": 100,
-          "modifierName": "",
           "__unk_Q3323398612": 0
         }
       },
-      "abilityName": "Avatar_Player_Grass_Permanent_Skill_1",
       "onAdded": [
         {
           "$type": "SetGlobalValue",
-          "useLimitRange": true,
           "key": "_ABILITY_PLAYER_GRASS_SEDD_AURA_LAYER_COUNT",
-          "minValue": 1,
           "maxValue": 10,
-          "value": 1,
+          "minValue": 1,
           "predicates": [
             {
               "$type": "ByUnlockTalentParam",
               "talentParam": "Player_Grass_Seed_Aura_Permanent_Skill_1"
             }
-          ]
+          ],
+          "useLimitRange": true,
+          "value": 1
         },
         {
           "$type": "AttachModifier",
@@ -2588,92 +2594,92 @@
             }
           ]
         }
-      ],
-      "abilitySpecials": {
-        "Grass_Seed_Element_Mastery_Count": 0,
-        "Grass_Seed_Element_Mastery_Up": 0,
-        "Elemental_Damage_Up_Ratio": 0,
-        "Grass_Seed_type_Cache": 0
-      }
+      ]
     }
   },
   {
     "Default": {
+      "abilityName": "Avatar_Player_Grass_Damage_Up_By_Element_Mastery",
+      "abilitySpecials": {
+        "Element_Mastery_Cache": 0,
+        "Element_Mastery_Transform_To_ElementArt_Damage_Ratio": 0,
+        "Element_Mastery_Transform_To_ElementBurst_Damage_Ratio": 0
+      },
+      "isDynamicAbility": true,
       "modifiers": {
         "UNIQUE_Avatar_Player_Grass_Damage_Up_Handler": {
-          "thinkInterval": 0.5,
-          "onAdded": [
-            {
-              "$type": "SetGlobalValueToOverrideMap",
-              "globalValueKey": "_ABILITY_Player_Element_MasterY_Cache",
-              "abilityName": "",
-              "overrideMapKey": "Element_Mastery_Cache",
-              "doOffStage": true
-            }
-          ],
           "elementDurability": 100,
+          "isUnique": true,
           "modifierMixins": [
             {
               "$type": "ModifyDamageMixin",
+              "attackTags": [
+                "Elemental_Art"
+              ],
               "damagePercentageRatio": [
                 "Element_Mastery_Cache",
                 "Element_Mastery_Transform_To_ElementArt_Damage_Ratio",
                 "MUL"
               ],
-              "attackTags": [
-                "Elemental_Art"
-              ],
               "predicates": [
                 {
                   "$type": "ByTargetGlobalValue",
-                  "value": "FIGHT_PROP_ELEMENT_MASTERY",
                   "compareType": "LessAndEqual",
                   "key": "_ABILITY_Player_Element_Mastery_Lower_Limit",
-                  "target": "Self"
+                  "target": "Self",
+                  "value": "FIGHT_PROP_ELEMENT_MASTERY"
                 }
               ]
             },
             {
               "$type": "ModifyDamageMixin",
+              "attackTags": [
+                "Elemental_Burst"
+              ],
               "damagePercentageRatio": [
                 "Element_Mastery_Cache",
                 "Element_Mastery_Transform_To_ElementBurst_Damage_Ratio",
                 "MUL"
               ],
-              "attackTags": [
-                "Elemental_Burst"
-              ],
               "predicates": [
                 {
                   "$type": "ByTargetGlobalValue",
-                  "value": "FIGHT_PROP_ELEMENT_MASTERY",
                   "compareType": "LessAndEqual",
                   "key": "_ABILITY_Player_Element_Mastery_Lower_Limit",
-                  "target": "Self"
+                  "target": "Self",
+                  "value": "FIGHT_PROP_ELEMENT_MASTERY"
                 }
               ]
             }
           ],
           "modifierName": "",
-          "isUnique": true,
+          "onAdded": [
+            {
+              "$type": "SetGlobalValueToOverrideMap",
+              "abilityName": "",
+              "doOffStage": true,
+              "globalValueKey": "_ABILITY_Player_Element_MasterY_Cache",
+              "overrideMapKey": "Element_Mastery_Cache"
+            }
+          ],
           "onThinkInterval": [
             {
               "$type": "Predicated",
               "successActions": [
                 {
                   "$type": "SetGlobalValue",
+                  "doOffStage": true,
                   "key": "_ABILITY_Player_Element_MasterY_Cache",
-                  "minValue": 0,
                   "maxValue": 0,
-                  "value": "FIGHT_PROP_ELEMENT_MASTERY",
-                  "doOffStage": true
+                  "minValue": 0,
+                  "value": "FIGHT_PROP_ELEMENT_MASTERY"
                 },
                 {
                   "$type": "SetGlobalValueToOverrideMap",
-                  "globalValueKey": "_ABILITY_Player_Element_MasterY_Cache",
                   "abilityName": "",
-                  "overrideMapKey": "Element_Mastery_Cache",
-                  "doOffStage": true
+                  "doOffStage": true,
+                  "globalValueKey": "_ABILITY_Player_Element_MasterY_Cache",
+                  "overrideMapKey": "Element_Mastery_Cache"
                 }
               ],
               "targetPredicates": [
@@ -2682,140 +2688,145 @@
                   "predicates": [
                     {
                       "$type": "ByTargetGlobalValue",
-                      "value": "FIGHT_PROP_ELEMENT_MASTERY",
-                      "key": "_ABILITY_Player_Element_MasterY_Cache"
+                      "key": "_ABILITY_Player_Element_MasterY_Cache",
+                      "value": "FIGHT_PROP_ELEMENT_MASTERY"
                     }
                   ]
                 }
               ]
             }
           ],
+          "thinkInterval": 0.5,
           "__unk_Q3323398612": 0
         }
       },
-      "abilityName": "Avatar_Player_Grass_Damage_Up_By_Element_Mastery",
-      "isDynamicAbility": true,
       "onAdded": [
         {
           "$type": "SetGlobalValue",
+          "doOffStage": true,
           "key": "_ABILITY_Player_Element_MasterY_Cache",
-          "minValue": 0,
           "maxValue": 0,
-          "value": "FIGHT_PROP_ELEMENT_MASTERY",
-          "doOffStage": true
+          "minValue": 0,
+          "value": "FIGHT_PROP_ELEMENT_MASTERY"
         },
         {
           "$type": "AttachModifier",
-          "modifierName": "UNIQUE_Avatar_Player_Grass_Damage_Up_Handler",
-          "doOffStage": true
+          "doOffStage": true,
+          "modifierName": "UNIQUE_Avatar_Player_Grass_Damage_Up_Handler"
         },
         {
           "$type": "SetGlobalValue",
+          "doOffStage": true,
           "key": "_ABILITY_Player_Element_Mastery_Lower_Limit",
-          "minValue": 0,
           "maxValue": 0,
-          "value": 0,
-          "doOffStage": true
+          "minValue": 0,
+          "value": 0
         }
-      ],
-      "abilitySpecials": {
-        "Element_Mastery_Cache": 0,
-        "Element_Mastery_Transform_To_ElementArt_Damage_Ratio": 0,
-        "Element_Mastery_Transform_To_ElementBurst_Damage_Ratio": 0
-      }
+      ]
     }
   },
   {
     "Default": {
+      "abilityName": "Avatar_Player_Grass_EnhancedExtraAttack",
+      "abilitySpecials": {
+        "ExtraAttack_Enhanced_ratio": 0,
+        "ExtraAttack_Enhanced_CD": 0,
+        "ExtraAttack_Enhanced_Stack_Seed_CD": 0,
+        "ExtraAttack_Enhanced_Stack_Moon_CD": 0,
+        "ExtraAttack_Enhanced_Field_Time_2": 0,
+        "ExtraAttack_Enhanced_1_BaseDamagePercentage": 0,
+        "ExtraAttack_Enhanced_2_BaseDamagePercentage": 0
+      },
+      "isDynamicAbility": true,
       "modifiers": {
         "UNIQUE_Player_Grass_EnhancedExtraAttack_Main": {
-          "thinkInterval": 1,
-          "onAdded": [
-            {
-              "$type": "SetGlobalValue",
-              "key": "_ABILITY_Player_Grass_EnhancedExtraAttack_Stack",
-              "minValue": 0,
-              "maxValue": 0,
-              "value": 0,
-              "doOffStage": true
-            },
-            {
-              "$type": "SetGlobalValue",
-              "key": "_ABILITY_MODIFIER_UNIQUE_Player_Grass_EnhancedExtraAttack_CD",
-              "minValue": 0,
-              "maxValue": 0,
-              "value": 0,
-              "doOffStage": true
-            },
-            {
-              "$type": "AttachModifier",
-              "modifierName": "Player_Grass_EnhancedExtraAttack_StackListener",
-              "target": "AllPlayerAvatars",
-              "doOffStage": true,
-              "predicates": [
-                {
-                  "$type": "ByTargetPositionToSelfPosition",
-                  "NJICAELBCCB": "",
-                  "JBOGOHPICML": "",
-                  "value": 40,
-                  "logic": "LesserOrEqual"
-                }
-              ]
-            }
-          ],
           "elementDurability": 100,
+          "isUnique": true,
           "modifierMixins": [
             {
               "$type": "DoActionByTeamStatusMixin",
-              "DBLNHBMOHNA": true,
-              "MNLPBOJDABO": true,
-              "OFLOBFOHCEJ": true,
               "actions": [
                 {
                   "$type": "AttachModifier",
-                  "modifierName": "Player_Grass_EnhancedExtraAttack_StackListener",
-                  "target": "AllPlayerAvatars",
                   "doOffStage": true,
+                  "modifierName": "Player_Grass_EnhancedExtraAttack_StackListener",
                   "predicates": [
                     {
                       "$type": "ByTargetPositionToSelfPosition",
-                      "NJICAELBCCB": "",
-                      "JBOGOHPICML": "",
+                      "logic": "LesserOrEqual",
                       "value": 40,
-                      "logic": "LesserOrEqual"
+                      "FPDDDGMBDKP": "",
+                      "GCDNHEEGIPE": ""
                     }
-                  ]
+                  ],
+                  "target": "AllPlayerAvatars"
                 }
-              ]
+              ],
+              "APKEHPBLPEE": true,
+              "EENCHCHMDBI": true,
+              "NFLOPKBJNGH": true
             },
             {
               "$type": "AttachToStateIDMixin",
-              "__unk_Q2081332355": "",
+              "modifierName": "UNIQUE_Player_Grass_EnhancedExtraAttack_Handler",
               "stateIDs": [
                 "ExtraAttack"
               ],
-              "modifierName": "UNIQUE_Player_Grass_EnhancedExtraAttack_Handler"
+              "__unk_Q2081332355": ""
             }
           ],
           "modifierName": "",
-          "isUnique": true,
-          "onThinkInterval": [
+          "onAdded": [
+            {
+              "$type": "SetGlobalValue",
+              "doOffStage": true,
+              "key": "_ABILITY_Player_Grass_EnhancedExtraAttack_Stack",
+              "maxValue": 0,
+              "minValue": 0,
+              "value": 0
+            },
+            {
+              "$type": "SetGlobalValue",
+              "doOffStage": true,
+              "key": "_ABILITY_MODIFIER_UNIQUE_Player_Grass_EnhancedExtraAttack_CD",
+              "maxValue": 0,
+              "minValue": 0,
+              "value": 0
+            },
             {
               "$type": "AttachModifier",
-              "modifierName": "Player_Grass_EnhancedExtraAttack_StackListener",
-              "target": "AllPlayerAvatars",
               "doOffStage": true,
+              "modifierName": "Player_Grass_EnhancedExtraAttack_StackListener",
               "predicates": [
                 {
                   "$type": "ByTargetPositionToSelfPosition",
-                  "NJICAELBCCB": "",
-                  "JBOGOHPICML": "",
+                  "logic": "LesserOrEqual",
                   "value": 40,
-                  "logic": "LesserOrEqual"
+                  "FPDDDGMBDKP": "",
+                  "GCDNHEEGIPE": ""
                 }
-              ]
+              ],
+              "target": "AllPlayerAvatars"
             }
           ],
+          "onThinkInterval": [
+            {
+              "$type": "AttachModifier",
+              "doOffStage": true,
+              "modifierName": "Player_Grass_EnhancedExtraAttack_StackListener",
+              "predicates": [
+                {
+                  "$type": "ByTargetPositionToSelfPosition",
+                  "logic": "LesserOrEqual",
+                  "value": 40,
+                  "FPDDDGMBDKP": "",
+                  "GCDNHEEGIPE": ""
+                }
+              ],
+              "target": "AllPlayerAvatars"
+            }
+          ],
+          "thinkInterval": 1,
           "__unk_Q3323398612": 0
         },
         "Player_Grass_EnhancedExtraAttack_StackListener": {
@@ -2826,17 +2837,19 @@
               "actionQueue": [
                 {
                   "$type": "Predicated",
+                  "doOffStage": true,
                   "successActions": [
                     {
                       "$type": "ApplyModifier",
+                      "doOffStage": true,
                       "modifierName": "_ABILITY_Player_Grass_EnhancedExtraAttack_Stack_Agent_Seed",
-                      "target": "Caster",
-                      "doOffStage": true
+                      "target": "Caster"
                     }
                   ],
+                  "target": "Target",
                   "targetPredicates": [
                     {
-                      "$type": "ILMHBGFOAJN",
+                      "$type": "OLEJKJFOBPF",
                       "configIdArray": [
                         70900397,
                         70900399,
@@ -2846,29 +2859,27 @@
                     },
                     {
                       "$type": "ByTargetPositionToSelfPosition",
-                      "NJICAELBCCB": "",
-                      "JBOGOHPICML": "",
+                      "logic": "LesserOrEqual",
                       "value": 40,
-                      "logic": "LesserOrEqual"
+                      "FPDDDGMBDKP": "",
+                      "GCDNHEEGIPE": ""
                     }
-                  ],
-                  "target": "Target",
-                  "doOffStage": true
+                  ]
                 }
               ],
-              "NIGGOJGEKCP": true
+              "IMNINOAOEOO": true
             },
             {
               "$type": "MoonOvergrowMonitorMixin",
-              "DCFNNMGPHKK": "",
               "actions": [
                 {
                   "$type": "ApplyModifier",
+                  "doOffStage": true,
                   "modifierName": "_ABILITY_Player_Grass_EnhancedExtraAttack_Stack_Agent_Moon",
-                  "target": "Caster",
-                  "doOffStage": true
+                  "target": "Caster"
                 }
-              ]
+              ],
+              "FLIGMGOFIEE": ""
             }
           ],
           "modifierName": "",
@@ -2876,19 +2887,21 @@
         },
         "_ABILITY_Player_Grass_EnhancedExtraAttack_Stack_Agent_Seed": {
           "duration": 3,
+          "elementDurability": 100,
+          "modifierName": "",
           "onAdded": [
             {
               "$type": "ApplyModifier",
-              "modifierName": "_ABILITY_Player_Grass_EnhancedExtraAttack_Stack",
               "doOffStage": true,
+              "modifierName": "_ABILITY_Player_Grass_EnhancedExtraAttack_Stack",
               "predicates": [
                 {
                   "$type": "ByNot",
                   "predicates": [
                     {
                       "$type": "ByTargetGlobalValue",
-                      "value": 1,
-                      "key": "_ABILITY_MODIFIER_UNIQUE_Player_Grass_EnhancedExtraAttack_StackListener_Seed_CD"
+                      "key": "_ABILITY_MODIFIER_UNIQUE_Player_Grass_EnhancedExtraAttack_StackListener_Seed_CD",
+                      "value": 1
                     }
                   ]
                 }
@@ -2896,16 +2909,16 @@
             },
             {
               "$type": "ApplyModifier",
-              "modifierName": "UNIQUE_Player_Grass_EnhancedExtraAttack_StackListener_Seed_CD",
               "doOffStage": true,
+              "modifierName": "UNIQUE_Player_Grass_EnhancedExtraAttack_StackListener_Seed_CD",
               "predicates": [
                 {
                   "$type": "ByNot",
                   "predicates": [
                     {
                       "$type": "ByTargetGlobalValue",
-                      "value": 1,
-                      "key": "_ABILITY_MODIFIER_UNIQUE_Player_Grass_EnhancedExtraAttack_StackListener_Seed_CD"
+                      "key": "_ABILITY_MODIFIER_UNIQUE_Player_Grass_EnhancedExtraAttack_StackListener_Seed_CD",
+                      "value": 1
                     }
                   ]
                 }
@@ -2917,25 +2930,25 @@
             "abilitySpecialName": "",
             "maxModifierNumForMultipleType": 3
           },
-          "elementDurability": 100,
-          "modifierName": "",
           "__unk_Q3323398612": 0
         },
         "_ABILITY_Player_Grass_EnhancedExtraAttack_Stack_Agent_Moon": {
           "duration": 3,
+          "elementDurability": 100,
+          "modifierName": "",
           "onAdded": [
             {
               "$type": "ApplyModifier",
-              "modifierName": "_ABILITY_Player_Grass_EnhancedExtraAttack_Stack",
               "doOffStage": true,
+              "modifierName": "_ABILITY_Player_Grass_EnhancedExtraAttack_Stack",
               "predicates": [
                 {
                   "$type": "ByNot",
                   "predicates": [
                     {
                       "$type": "ByTargetGlobalValue",
-                      "value": 1,
-                      "key": "_ABILITY_MODIFIER_UNIQUE_Player_Grass_EnhancedExtraAttack_StackListener_Moon_CD"
+                      "key": "_ABILITY_MODIFIER_UNIQUE_Player_Grass_EnhancedExtraAttack_StackListener_Moon_CD",
+                      "value": 1
                     }
                   ]
                 }
@@ -2943,16 +2956,16 @@
             },
             {
               "$type": "ApplyModifier",
-              "modifierName": "UNIQUE_Player_Grass_EnhancedExtraAttack_StackListener_Moon_CD",
               "doOffStage": true,
+              "modifierName": "UNIQUE_Player_Grass_EnhancedExtraAttack_StackListener_Moon_CD",
               "predicates": [
                 {
                   "$type": "ByNot",
                   "predicates": [
                     {
                       "$type": "ByTargetGlobalValue",
-                      "value": 1,
-                      "key": "_ABILITY_MODIFIER_UNIQUE_Player_Grass_EnhancedExtraAttack_StackListener_Moon_CD"
+                      "key": "_ABILITY_MODIFIER_UNIQUE_Player_Grass_EnhancedExtraAttack_StackListener_Moon_CD",
+                      "value": 1
                     }
                   ]
                 }
@@ -2964,99 +2977,100 @@
             "abilitySpecialName": "",
             "maxModifierNumForMultipleType": 3
           },
-          "elementDurability": 100,
-          "modifierName": "",
           "__unk_Q3323398612": 0
         },
         "UNIQUE_Player_Grass_EnhancedExtraAttack_StackListener_Seed_CD": {
           "duration": "ExtraAttack_Enhanced_Stack_Seed_CD",
-          "onRemoved": [
-            {
-              "$type": "SetGlobalValue",
-              "key": "_ABILITY_MODIFIER_UNIQUE_Player_Grass_EnhancedExtraAttack_StackListener_Seed_CD",
-              "minValue": 0,
-              "maxValue": 0,
-              "value": 0,
-              "doOffStage": true
-            }
-          ],
+          "elementDurability": 100,
+          "isUnique": true,
+          "modifierName": "",
           "onAdded": [
             {
               "$type": "SetGlobalValue",
+              "doOffStage": true,
               "key": "_ABILITY_MODIFIER_UNIQUE_Player_Grass_EnhancedExtraAttack_StackListener_Seed_CD",
-              "minValue": 0,
               "maxValue": 0,
-              "value": 1,
-              "doOffStage": true
+              "minValue": 0,
+              "value": 1
             }
           ],
-          "elementDurability": 100,
-          "modifierName": "",
-          "isUnique": true,
+          "onRemoved": [
+            {
+              "$type": "SetGlobalValue",
+              "doOffStage": true,
+              "key": "_ABILITY_MODIFIER_UNIQUE_Player_Grass_EnhancedExtraAttack_StackListener_Seed_CD",
+              "maxValue": 0,
+              "minValue": 0,
+              "value": 0
+            }
+          ],
           "__unk_Q3323398612": 0
         },
         "UNIQUE_Player_Grass_EnhancedExtraAttack_StackListener_Moon_CD": {
           "duration": "ExtraAttack_Enhanced_Stack_Moon_CD",
+          "elementDurability": 100,
+          "isUnique": true,
+          "modifierName": "",
+          "onAdded": [
+            {
+              "$type": "SetGlobalValue",
+              "doOffStage": true,
+              "key": "_ABILITY_MODIFIER_UNIQUE_Player_Grass_EnhancedExtraAttack_StackListener_Moon_CD",
+              "maxValue": 0,
+              "minValue": 0,
+              "value": 1
+            }
+          ],
           "onRemoved": [
             {
               "$type": "SetGlobalValue",
+              "doOffStage": true,
               "key": "_ABILITY_MODIFIER_UNIQUE_Player_Grass_EnhancedExtraAttack_StackListener_Moon_CD",
-              "minValue": 0,
               "maxValue": 0,
-              "value": 0,
-              "doOffStage": true
+              "minValue": 0,
+              "value": 0
             }
           ],
-          "onAdded": [
-            {
-              "$type": "SetGlobalValue",
-              "key": "_ABILITY_MODIFIER_UNIQUE_Player_Grass_EnhancedExtraAttack_StackListener_Moon_CD",
-              "minValue": 0,
-              "maxValue": 0,
-              "value": 1,
-              "doOffStage": true
-            }
-          ],
-          "elementDurability": 100,
-          "modifierName": "",
-          "isUnique": true,
           "__unk_Q3323398612": 0
         },
         "_ABILITY_Player_Grass_EnhancedExtraAttack_Stack": {
+          "buffID": 10012,
+          "elementDurability": 100,
+          "modifierName": "",
           "onAdded": [
             {
               "$type": "AddGlobalValue",
-              "useLimitRange": true,
+              "doOffStage": true,
               "key": "_ABILITY_Player_Grass_EnhancedExtraAttack_Stack",
               "maxValue": 3,
               "minValue": 0,
-              "value": 1,
-              "doOffStage": true
+              "useLimitRange": true,
+              "value": 1
             },
             {
               "$type": "Predicated",
+              "doOffStage": true,
               "successActions": [
                 {
                   "$type": "ApplyModifier",
-                  "modifierName": "UNIQUE_Player_Grass_EnhancedExtraAttack_Ready",
-                  "doOffStage": true
+                  "doOffStage": true,
+                  "modifierName": "UNIQUE_Player_Grass_EnhancedExtraAttack_Ready"
                 }
               ],
               "targetPredicates": [
                 {
                   "$type": "ByTargetGlobalValue",
-                  "value": 3,
                   "compareType": "MoreThanAndEqual",
-                  "key": "_ABILITY_Player_Grass_EnhancedExtraAttack_Stack"
+                  "key": "_ABILITY_Player_Grass_EnhancedExtraAttack_Stack",
+                  "value": 3
                 },
                 {
                   "$type": "ByTargetGlobalValue",
-                  "value": 0,
                   "compareType": "NoneOrEqual",
-                  "key": "_ABILITY_MODIFIER_UNIQUE_Player_Grass_EnhancedExtraAttack_CD"
+                  "key": "_ABILITY_MODIFIER_UNIQUE_Player_Grass_EnhancedExtraAttack_CD",
+                  "value": 0
                 }
-              ],
-              "doOffStage": true
+              ]
             }
           ],
           "stacking": "Multiple",
@@ -3064,31 +3078,27 @@
             "abilitySpecialName": "",
             "maxModifierNumForMultipleType": 3
           },
-          "elementDurability": 100,
-          "modifierName": "",
-          "buffID": 10012,
           "__unk_Q3323398612": 1
         },
         "UNIQUE_Player_Grass_EnhancedExtraAttack_Ready": {
-          "onRemoved": [
-            {
-              "$type": "SetGlobalValue",
-              "key": "_ABILITY_MODIFIER_UNIQUE_Player_Grass_EnhancedExtraAttack_Ready",
-              "minValue": 0,
-              "maxValue": 0,
-              "value": 0,
-              "doOffStage": true
-            }
-          ],
+          "elementDurability": 100,
+          "isUnique": true,
+          "modifierName": "",
           "onAdded": [
             {
               "$type": "SetGlobalValue",
+              "doOffStage": true,
               "key": "_ABILITY_MODIFIER_UNIQUE_Player_Grass_EnhancedExtraAttack_Ready",
-              "minValue": 0,
               "maxValue": 0,
-              "value": 1,
-              "doOffStage": true
+              "minValue": 0,
+              "value": 1
             },
+            {
+              "$type": "AttachModifier",
+              "modifierName": "UNIQUE_Player_Grass_EnhancedExtraAttack_Ready_Effect"
+            }
+          ],
+          "onAvatarIn": [
             {
               "$type": "AttachModifier",
               "modifierName": "UNIQUE_Player_Grass_EnhancedExtraAttack_Ready_Effect"
@@ -3097,57 +3107,25 @@
           "onAvatarOut": [
             {
               "$type": "RemoveModifier",
-              "modifierName": "UNIQUE_Player_Grass_EnhancedExtraAttack_Ready_Effect",
-              "doOffStage": true
-            }
-          ],
-          "elementDurability": 100,
-          "onAvatarIn": [
-            {
-              "$type": "AttachModifier",
+              "doOffStage": true,
               "modifierName": "UNIQUE_Player_Grass_EnhancedExtraAttack_Ready_Effect"
             }
           ],
-          "modifierName": "",
-          "isUnique": true,
+          "onRemoved": [
+            {
+              "$type": "SetGlobalValue",
+              "doOffStage": true,
+              "key": "_ABILITY_MODIFIER_UNIQUE_Player_Grass_EnhancedExtraAttack_Ready",
+              "maxValue": 0,
+              "minValue": 0,
+              "value": 0
+            }
+          ],
           "__unk_Q3323398612": 0
         },
         "UNIQUE_Player_Grass_EnhancedExtraAttack_Handler": {
-          "onAdded": [
-            {
-              "$type": "Predicated",
-              "failActions": [
-                {
-                  "$type": "RemoveModifier",
-                  "modifierName": "UNIQUE_Player_Grass_EnhancedExtraAttack_Ready"
-                },
-                {
-                  "$type": "RemoveModifier",
-                  "modifierName": "UNIQUE_Player_Grass_EnhancedExtraAttack_Handler"
-                }
-              ],
-              "targetPredicates": [
-                {
-                  "$type": "ByTargetGlobalValue",
-                  "value": 1,
-                  "key": "_ABILITY_MODIFIER_UNIQUE_Player_Grass_EnhancedExtraAttack_Ready"
-                },
-                {
-                  "$type": "ByTargetGlobalValue",
-                  "value": 3,
-                  "compareType": "MoreThanAndEqual",
-                  "key": "_ABILITY_Player_Grass_EnhancedExtraAttack_Stack"
-                },
-                {
-                  "$type": "ByTargetGlobalValue",
-                  "value": 0,
-                  "compareType": "NoneOrEqual",
-                  "key": "_ABILITY_MODIFIER_UNIQUE_Player_Grass_EnhancedExtraAttack_CD"
-                }
-              ]
-            }
-          ],
           "elementDurability": 100,
+          "isUnique": true,
           "modifierMixins": [
             {
               "$type": "ReplaceEventPatternMixin",
@@ -3170,390 +3148,429 @@
             {
               "$type": "AttachToNormalizedTimeMixin",
               "modifierName": "Player_Grass_EnhancedExtraAttack_Effect_1",
-              "__unk_Q2081332355": "",
+              "normalizeStart": 0.319,
               "stateID": "ExtraAttack",
-              "normalizeStart": 0.319
+              "__unk_Q2081332355": ""
             },
             {
               "$type": "AttachToNormalizedTimeMixin",
               "modifierName": "Player_Grass_EnhancedExtraAttack_Effect_2",
-              "__unk_Q2081332355": "",
+              "normalizeStart": 0.62,
               "stateID": "ExtraAttack",
-              "normalizeStart": 0.62
+              "__unk_Q2081332355": ""
             },
             {
               "$type": "AttachToNormalizedTimeMixin",
               "modifierName": "Player_Grass_EnhancedExtraAttack_Hit_1",
-              "__unk_Q2081332355": "",
+              "normalizeStart": 0.319,
               "stateID": "ExtraAttack",
-              "normalizeStart": 0.319
+              "__unk_Q2081332355": ""
             },
             {
               "$type": "AttachToNormalizedTimeMixin",
               "modifierName": "Player_Grass_EnhancedExtraAttack_Hit_2",
-              "__unk_Q2081332355": "",
+              "normalizeStart": 0.62,
               "stateID": "ExtraAttack",
-              "normalizeStart": 0.62
+              "__unk_Q2081332355": ""
             },
             {
               "$type": "AttachToNormalizedTimeMixin",
               "modifierName": "Player_Grass_EnhancedExtraAttack_Seed_1",
-              "__unk_Q2081332355": "",
+              "normalizeStart": 0.416,
               "stateID": "ExtraAttack",
-              "normalizeStart": 0.416
+              "__unk_Q2081332355": ""
             },
             {
               "$type": "AttachToNormalizedTimeMixin",
               "modifierName": "Player_Grass_EnhancedExtraAttack_Seed_2",
-              "__unk_Q2081332355": "",
+              "normalizeStart": 0.733,
               "stateID": "ExtraAttack",
-              "normalizeStart": 0.733
+              "__unk_Q2081332355": ""
             }
           ],
           "modifierName": "",
-          "isUnique": true,
-          "__unk_Q3323398612": 0
-        },
-        "Player_Grass_EnhancedExtraAttack_Effect_1": {
           "onAdded": [
             {
               "$type": "Predicated",
-              "successActions": [
-                {
-                  "$type": "FireEffect",
-                  "effectPattern": "Eff_Player_Grass_EnhancedExtraAttack_Hit_1_Girl",
-                  "scale": 1,
-                  "ILLLPEOODKP": ""
-                }
-              ],
               "failActions": [
                 {
-                  "$type": "FireEffect",
-                  "effectPattern": "Eff_Player_Grass_EnhancedExtraAttack_Hit_1",
-                  "scale": 1,
-                  "ILLLPEOODKP": ""
-                }
-              ],
-              "targetPredicates": [
-                {
-                  "$type": "ByHasFeatureTag",
-                  "featureTagIDs": [
-                    1044
-                  ]
-                }
-              ]
-            }
-          ],
-          "elementDurability": 100,
-          "modifierName": "",
-          "__unk_Q3323398612": 0
-        },
-        "Player_Grass_EnhancedExtraAttack_Effect_2": {
-          "onAdded": [
-            {
-              "$type": "Predicated",
-              "successActions": [
-                {
-                  "$type": "FireEffect",
-                  "effectPattern": "Eff_Player_Grass_EnhancedExtraAttack_Hit_2_Girl",
-                  "scale": 1,
-                  "ILLLPEOODKP": ""
-                }
-              ],
-              "failActions": [
-                {
-                  "$type": "FireEffect",
-                  "effectPattern": "Eff_Player_Grass_EnhancedExtraAttack_Hit_2",
-                  "scale": 1,
-                  "ILLLPEOODKP": ""
-                }
-              ],
-              "targetPredicates": [
-                {
-                  "$type": "ByHasFeatureTag",
-                  "featureTagIDs": [
-                    1044
-                  ]
-                }
-              ]
-            }
-          ],
-          "elementDurability": 100,
-          "modifierName": "",
-          "__unk_Q3323398612": 0
-        },
-        "Player_Grass_EnhancedExtraAttack_Seed_1": {
-          "onAdded": [
-            {
-              "$type": "SetGlobalValue",
-              "key": "Player_Grass_EnhancedExtraAttack_Field_Time_ToAdd",
-              "minValue": 0,
-              "maxValue": 0,
-              "value": 0,
-              "doOffStage": true
-            },
-            {
-              "$type": "CreateGadget",
-              "gadgetID": 41011101,
-              "born": {
-                "$type": "ConfigBornBySelf",
-                "useRotation": true,
-                "offset": {
-                  "x": -1.5,
-                  "z": 1.8
-                }
-              },
-              "doOffStage": true
-            }
-          ],
-          "elementDurability": 100,
-          "modifierName": "",
-          "__unk_Q3323398612": 0
-        },
-        "Player_Grass_EnhancedExtraAttack_Seed_2": {
-          "onAdded": [
-            {
-              "$type": "SetGlobalValue",
-              "key": "Player_Grass_EnhancedExtraAttack_Field_Time_ToAdd",
-              "minValue": 0,
-              "maxValue": 0,
-              "value": "ExtraAttack_Enhanced_Field_Time_2",
-              "doOffStage": true
-            },
-            {
-              "$type": "CreateGadget",
-              "gadgetID": 41011101,
-              "born": {
-                "$type": "ConfigBornBySelf",
-                "useRotation": true,
-                "offset": {
-                  "x": 1.8,
-                  "z": 1.5
-                }
-              },
-              "doOffStage": true
-            }
-          ],
-          "elementDurability": 100,
-          "modifierName": "",
-          "__unk_Q3323398612": 0
-        },
-        "Player_Grass_EnhancedExtraAttack_Hit_1": {
-          "onAdded": [
-            {
-              "$type": "TriggerAttackEvent",
-              "targetType": "Enemy",
-              "attackEvent": {
-                "attackInfo": {
-                  "attackProperty": {
-                    "elementType": "Grass",
-                    "attackType": "Melee",
-                    "damagePercentageRatio": 0,
-                    "strikeType": "Slash",
-                    "enBreak": 50.6,
-                    "damagePercentage": [
-                      "ExtraAttack_Enhanced_1_BaseDamagePercentage",
-                      "ExtraAttack_Enhanced_ratio",
-                      "ADD"
-                    ],
-                    "elementDurability": 25,
-                    "elementRank": 1.5,
-                    "__exp_arkhe": 0
-                  },
-                  "cameraShake": {
-                    "shakeTime": 0.15,
-                    "MNKFEFOKFKP": "",
-                    "shakeRange": 0.3
-                  },
-                  "hitPattern": {
-                    "__unk_Q3893899620": "",
-                    "retreatType": "ByHitDirection",
-                    "onHitEffectName": "default",
-                    "hitHaltTimeScale": 0.05,
-                    "hitHaltTime": 0.05,
-                    "canBeDefenceHalt": true,
-                    "hitImpulseType": "LV2"
-                  },
-                  "forceCameraShake": true,
-                  "attenuationGroup": "default",
-                  "attenuationTag": "EnhancedExtraAttack",
-                  "__exp_additionalAttackTag": [
-                    "Player_Grass_TeambuffAdder"
-                  ],
-                  "attackTag": "ExtraAttack",
-                  "canBeModifiedBy": "OriginOwner"
+                  "$type": "RemoveModifier",
+                  "modifierName": "UNIQUE_Player_Grass_EnhancedExtraAttack_Ready"
                 },
-                "attackPattern": {
-                  "$type": "ConfigAttackCircle",
-                  "radius": 3.2,
-                  "height": 2,
-                  "triggerType": "TriggerNoRepeat",
-                  "born": {
-                    "$type": "ConfigBornBySelf",
-                    "useRotation": true,
-                    "offset": {
-                      "z": 1,
-                      "y": -0.5
-                    }
-                  }
-                }
-              }
-            },
-            {
-              "$type": "SetGlobalValue",
-              "key": "_ABILITY_Player_Grass_EnhancedExtraAttack_Stack",
-              "minValue": 0,
-              "maxValue": 0,
-              "value": 0,
-              "doOffStage": true
-            },
-            {
-              "$type": "RemoveModifier",
-              "modifierName": "_ABILITY_Player_Grass_EnhancedExtraAttack_Stack",
-              "doOffStage": true
-            },
-            {
-              "$type": "ApplyModifier",
-              "modifierName": "UNIQUE_Player_Grass_EnhancedExtraAttack_CD",
-              "doOffStage": true
-            },
-            {
-              "$type": "RemoveModifier",
-              "modifierName": "UNIQUE_Player_Grass_EnhancedExtraAttack_Ready",
-              "doOffStage": true
-            }
-          ],
-          "elementDurability": 100,
-          "modifierName": "",
-          "__unk_Q3323398612": 0
-        },
-        "Player_Grass_EnhancedExtraAttack_Hit_2": {
-          "onAdded": [
-            {
-              "$type": "TriggerAttackEvent",
-              "targetType": "Enemy",
-              "attackEvent": {
-                "attackInfo": {
-                  "attackProperty": {
-                    "elementType": "Grass",
-                    "attackType": "Melee",
-                    "damagePercentageRatio": 0,
-                    "strikeType": "Slash",
-                    "enBreak": 50.6,
-                    "damagePercentage": [
-                      "ExtraAttack_Enhanced_2_BaseDamagePercentage",
-                      "ExtraAttack_Enhanced_ratio",
-                      "ADD"
-                    ],
-                    "elementDurability": 25,
-                    "elementRank": 1.5,
-                    "__exp_arkhe": 0
-                  },
-                  "cameraShake": {
-                    "shakeTime": 0.15,
-                    "MNKFEFOKFKP": "",
-                    "shakeRange": 0.3
-                  },
-                  "hitPattern": {
-                    "__unk_Q3893899620": "",
-                    "retreatType": "ByHitDirection",
-                    "onHitEffectName": "default",
-                    "hitHaltTimeScale": 0.05,
-                    "hitHaltTime": 0.05,
-                    "canBeDefenceHalt": true,
-                    "hitImpulseType": "LV2"
-                  },
-                  "forceCameraShake": true,
-                  "attenuationGroup": "default",
-                  "attenuationTag": "EnhancedExtraAttack",
-                  "__exp_additionalAttackTag": [
-                    "Player_Grass_TeambuffAdder"
-                  ],
-                  "attackTag": "ExtraAttack",
-                  "canBeModifiedBy": "OriginOwner"
-                },
-                "attackPattern": {
-                  "$type": "ConfigAttackCircle",
-                  "radius": 3.2,
-                  "height": 2,
-                  "triggerType": "TriggerNoRepeat",
-                  "born": {
-                    "$type": "ConfigBornBySelf",
-                    "useRotation": true,
-                    "offset": {
-                      "z": 1,
-                      "y": -0.5
-                    }
-                  }
-                }
-              }
-            }
-          ],
-          "elementDurability": 100,
-          "modifierName": "",
-          "__unk_Q3323398612": 0
-        },
-        "UNIQUE_Player_Grass_EnhancedExtraAttack_CD": {
-          "duration": "ExtraAttack_Enhanced_CD",
-          "onRemoved": [
-            {
-              "$type": "SetGlobalValue",
-              "key": "_ABILITY_MODIFIER_UNIQUE_Player_Grass_EnhancedExtraAttack_CD",
-              "minValue": 0,
-              "maxValue": 0,
-              "value": 0,
-              "doOffStage": true
-            },
-            {
-              "$type": "Predicated",
-              "successActions": [
                 {
-                  "$type": "ApplyModifier",
-                  "modifierName": "UNIQUE_Player_Grass_EnhancedExtraAttack_Ready",
-                  "doOffStage": true
+                  "$type": "RemoveModifier",
+                  "modifierName": "UNIQUE_Player_Grass_EnhancedExtraAttack_Handler"
                 }
               ],
               "targetPredicates": [
                 {
                   "$type": "ByTargetGlobalValue",
-                  "value": 3,
+                  "key": "_ABILITY_MODIFIER_UNIQUE_Player_Grass_EnhancedExtraAttack_Ready",
+                  "value": 1
+                },
+                {
+                  "$type": "ByTargetGlobalValue",
                   "compareType": "MoreThanAndEqual",
-                  "key": "_ABILITY_Player_Grass_EnhancedExtraAttack_Stack"
+                  "key": "_ABILITY_Player_Grass_EnhancedExtraAttack_Stack",
+                  "value": 3
+                },
+                {
+                  "$type": "ByTargetGlobalValue",
+                  "compareType": "NoneOrEqual",
+                  "key": "_ABILITY_MODIFIER_UNIQUE_Player_Grass_EnhancedExtraAttack_CD",
+                  "value": 0
                 }
-              ],
-              "doOffStage": true
+              ]
             }
           ],
+          "__unk_Q3323398612": 0
+        },
+        "Player_Grass_EnhancedExtraAttack_Effect_1": {
+          "elementDurability": 100,
+          "modifierName": "",
+          "onAdded": [
+            {
+              "$type": "Predicated",
+              "failActions": [
+                {
+                  "$type": "FireEffect",
+                  "effectPattern": "Eff_Player_Grass_EnhancedExtraAttack_Hit_1",
+                  "scale": 1,
+                  "JHAGIJGAKMK": ""
+                }
+              ],
+              "successActions": [
+                {
+                  "$type": "FireEffect",
+                  "effectPattern": "Eff_Player_Grass_EnhancedExtraAttack_Hit_1_Girl",
+                  "scale": 1,
+                  "JHAGIJGAKMK": ""
+                }
+              ],
+              "targetPredicates": [
+                {
+                  "$type": "ByHasFeatureTag",
+                  "featureTagIDs": [
+                    1044
+                  ]
+                }
+              ]
+            }
+          ],
+          "__unk_Q3323398612": 0
+        },
+        "Player_Grass_EnhancedExtraAttack_Effect_2": {
+          "elementDurability": 100,
+          "modifierName": "",
+          "onAdded": [
+            {
+              "$type": "Predicated",
+              "failActions": [
+                {
+                  "$type": "FireEffect",
+                  "effectPattern": "Eff_Player_Grass_EnhancedExtraAttack_Hit_2",
+                  "scale": 1,
+                  "JHAGIJGAKMK": ""
+                }
+              ],
+              "successActions": [
+                {
+                  "$type": "FireEffect",
+                  "effectPattern": "Eff_Player_Grass_EnhancedExtraAttack_Hit_2_Girl",
+                  "scale": 1,
+                  "JHAGIJGAKMK": ""
+                }
+              ],
+              "targetPredicates": [
+                {
+                  "$type": "ByHasFeatureTag",
+                  "featureTagIDs": [
+                    1044
+                  ]
+                }
+              ]
+            }
+          ],
+          "__unk_Q3323398612": 0
+        },
+        "Player_Grass_EnhancedExtraAttack_Seed_1": {
+          "elementDurability": 100,
+          "modifierName": "",
           "onAdded": [
             {
               "$type": "SetGlobalValue",
-              "key": "_ABILITY_MODIFIER_UNIQUE_Player_Grass_EnhancedExtraAttack_CD",
-              "minValue": 0,
+              "doOffStage": true,
+              "key": "Player_Grass_EnhancedExtraAttack_Field_Time_ToAdd",
               "maxValue": 0,
-              "value": 1,
-              "doOffStage": true
+              "minValue": 0,
+              "value": 0
+            },
+            {
+              "$type": "CreateGadget",
+              "born": {
+                "$type": "ConfigBornBySelf",
+                "offset": {
+                  "z": 1.8,
+                  "x": -1.5
+                },
+                "useRotation": true
+              },
+              "doOffStage": true,
+              "gadgetID": 41011101
             }
           ],
+          "__unk_Q3323398612": 0
+        },
+        "Player_Grass_EnhancedExtraAttack_Seed_2": {
           "elementDurability": 100,
           "modifierName": "",
+          "onAdded": [
+            {
+              "$type": "SetGlobalValue",
+              "doOffStage": true,
+              "key": "Player_Grass_EnhancedExtraAttack_Field_Time_ToAdd",
+              "maxValue": 0,
+              "minValue": 0,
+              "value": "ExtraAttack_Enhanced_Field_Time_2"
+            },
+            {
+              "$type": "CreateGadget",
+              "born": {
+                "$type": "ConfigBornBySelf",
+                "offset": {
+                  "z": 1.5,
+                  "x": 1.8
+                },
+                "useRotation": true
+              },
+              "doOffStage": true,
+              "gadgetID": 41011101
+            }
+          ],
+          "__unk_Q3323398612": 0
+        },
+        "Player_Grass_EnhancedExtraAttack_Hit_1": {
+          "elementDurability": 100,
+          "modifierName": "",
+          "onAdded": [
+            {
+              "$type": "TriggerAttackEvent",
+              "attackEvent": {
+                "attackInfo": {
+                  "attackProperty": {
+                    "attackType": "Melee",
+                    "damagePercentage": [
+                      "ExtraAttack_Enhanced_1_BaseDamagePercentage",
+                      "ExtraAttack_Enhanced_ratio",
+                      "ADD"
+                    ],
+                    "damagePercentageRatio": 0,
+                    "elementDurability": 25,
+                    "elementRank": 1.5,
+                    "elementType": "Grass",
+                    "enBreak": 50.6,
+                    "strikeType": "Slash",
+                    "__exp_arkhe": 0
+                  },
+                  "attackTag": "ExtraAttack",
+                  "attenuationGroup": "default",
+                  "attenuationTag": "EnhancedExtraAttack",
+                  "cameraShake": {
+                    "shakeRange": 0.3,
+                    "shakeTime": 0.15,
+                    "OFGBHFBAEKK": ""
+                  },
+                  "canBeModifiedBy": "OriginOwner",
+                  "forceCameraShake": true,
+                  "hitPattern": {
+                    "canBeDefenceHalt": true,
+                    "hitHaltTime": 0.05,
+                    "hitHaltTimeScale": 0.05,
+                    "hitImpulseType": "LV2",
+                    "onHitEffectName": "default",
+                    "retreatType": "ByHitDirection",
+                    "__unk_Q3893899620": ""
+                  },
+                  "__exp_additionalAttackTag": [
+                    "Player_Grass_TeambuffAdder"
+                  ]
+                },
+                "attackPattern": {
+                  "$type": "ConfigAttackCircle",
+                  "born": {
+                    "$type": "ConfigBornBySelf",
+                    "offset": {
+                      "z": 1,
+                      "y": -0.5
+                    },
+                    "useRotation": true
+                  },
+                  "height": 2,
+                  "radius": 3.2,
+                  "triggerType": "TriggerNoRepeat"
+                }
+              },
+              "targetType": "Enemy"
+            },
+            {
+              "$type": "SetGlobalValue",
+              "doOffStage": true,
+              "key": "_ABILITY_Player_Grass_EnhancedExtraAttack_Stack",
+              "maxValue": 0,
+              "minValue": 0,
+              "value": 0
+            },
+            {
+              "$type": "RemoveModifier",
+              "doOffStage": true,
+              "modifierName": "_ABILITY_Player_Grass_EnhancedExtraAttack_Stack"
+            },
+            {
+              "$type": "ApplyModifier",
+              "doOffStage": true,
+              "modifierName": "UNIQUE_Player_Grass_EnhancedExtraAttack_CD"
+            },
+            {
+              "$type": "RemoveModifier",
+              "doOffStage": true,
+              "modifierName": "UNIQUE_Player_Grass_EnhancedExtraAttack_Ready"
+            }
+          ],
+          "__unk_Q3323398612": 0
+        },
+        "Player_Grass_EnhancedExtraAttack_Hit_2": {
+          "elementDurability": 100,
+          "modifierName": "",
+          "onAdded": [
+            {
+              "$type": "TriggerAttackEvent",
+              "attackEvent": {
+                "attackInfo": {
+                  "attackProperty": {
+                    "attackType": "Melee",
+                    "damagePercentage": [
+                      "ExtraAttack_Enhanced_2_BaseDamagePercentage",
+                      "ExtraAttack_Enhanced_ratio",
+                      "ADD"
+                    ],
+                    "damagePercentageRatio": 0,
+                    "elementDurability": 25,
+                    "elementRank": 1.5,
+                    "elementType": "Grass",
+                    "enBreak": 50.6,
+                    "strikeType": "Slash",
+                    "__exp_arkhe": 0
+                  },
+                  "attackTag": "ExtraAttack",
+                  "attenuationGroup": "default",
+                  "attenuationTag": "EnhancedExtraAttack",
+                  "cameraShake": {
+                    "shakeRange": 0.3,
+                    "shakeTime": 0.15,
+                    "OFGBHFBAEKK": ""
+                  },
+                  "canBeModifiedBy": "OriginOwner",
+                  "forceCameraShake": true,
+                  "hitPattern": {
+                    "canBeDefenceHalt": true,
+                    "hitHaltTime": 0.05,
+                    "hitHaltTimeScale": 0.05,
+                    "hitImpulseType": "LV2",
+                    "onHitEffectName": "default",
+                    "retreatType": "ByHitDirection",
+                    "__unk_Q3893899620": ""
+                  },
+                  "__exp_additionalAttackTag": [
+                    "Player_Grass_TeambuffAdder"
+                  ]
+                },
+                "attackPattern": {
+                  "$type": "ConfigAttackCircle",
+                  "born": {
+                    "$type": "ConfigBornBySelf",
+                    "offset": {
+                      "z": 1,
+                      "y": -0.5
+                    },
+                    "useRotation": true
+                  },
+                  "height": 2,
+                  "radius": 3.2,
+                  "triggerType": "TriggerNoRepeat"
+                }
+              },
+              "targetType": "Enemy"
+            }
+          ],
+          "__unk_Q3323398612": 0
+        },
+        "UNIQUE_Player_Grass_EnhancedExtraAttack_CD": {
+          "duration": "ExtraAttack_Enhanced_CD",
+          "elementDurability": 100,
           "isUnique": true,
+          "modifierName": "",
+          "onAdded": [
+            {
+              "$type": "SetGlobalValue",
+              "doOffStage": true,
+              "key": "_ABILITY_MODIFIER_UNIQUE_Player_Grass_EnhancedExtraAttack_CD",
+              "maxValue": 0,
+              "minValue": 0,
+              "value": 1
+            }
+          ],
+          "onRemoved": [
+            {
+              "$type": "SetGlobalValue",
+              "doOffStage": true,
+              "key": "_ABILITY_MODIFIER_UNIQUE_Player_Grass_EnhancedExtraAttack_CD",
+              "maxValue": 0,
+              "minValue": 0,
+              "value": 0
+            },
+            {
+              "$type": "Predicated",
+              "doOffStage": true,
+              "successActions": [
+                {
+                  "$type": "ApplyModifier",
+                  "doOffStage": true,
+                  "modifierName": "UNIQUE_Player_Grass_EnhancedExtraAttack_Ready"
+                }
+              ],
+              "targetPredicates": [
+                {
+                  "$type": "ByTargetGlobalValue",
+                  "compareType": "MoreThanAndEqual",
+                  "key": "_ABILITY_Player_Grass_EnhancedExtraAttack_Stack",
+                  "value": 3
+                }
+              ]
+            }
+          ],
           "__unk_Q3323398612": 0
         },
         "UNIQUE_Player_Grass_EnhancedExtraAttack_Ready_Effect": {
+          "elementDurability": 100,
+          "isUnique": true,
+          "modifierName": "",
           "onAdded": [
             {
               "$type": "AttachEffect",
-              "ILLLPEOODKP": "",
+              "effectPattern": "Eff_Player_Grass_EnhancedExtraAttack_Ready",
               "scale": 1,
-              "effectPattern": "Eff_Player_Grass_EnhancedExtraAttack_Ready"
+              "JHAGIJGAKMK": ""
             }
           ],
-          "elementDurability": 100,
-          "modifierName": "",
-          "isUnique": true,
           "__unk_Q3323398612": 0
         }
       },
+      "onAdded": [
+        {
+          "$type": "AttachModifier",
+          "modifierName": "UNIQUE_Player_Grass_EnhancedExtraAttack_Main"
+        }
+      ],
       "onRemoved": [
         {
           "$type": "RemoveModifier",
@@ -3567,138 +3584,128 @@
           "$type": "RemoveModifier",
           "modifierName": "_ABILITY_Player_Grass_EnhancedExtraAttack_Stack"
         }
-      ],
-      "abilityName": "Avatar_Player_Grass_EnhancedExtraAttack",
-      "isDynamicAbility": true,
-      "onAdded": [
-        {
-          "$type": "AttachModifier",
-          "modifierName": "UNIQUE_Player_Grass_EnhancedExtraAttack_Main"
-        }
-      ],
-      "abilitySpecials": {
-        "ExtraAttack_Enhanced_ratio": 0,
-        "ExtraAttack_Enhanced_CD": 0,
-        "ExtraAttack_Enhanced_Stack_Seed_CD": 0,
-        "ExtraAttack_Enhanced_Stack_Moon_CD": 0,
-        "ExtraAttack_Enhanced_Field_Time_2": 0,
-        "ExtraAttack_Enhanced_1_BaseDamagePercentage": 0,
-        "ExtraAttack_Enhanced_2_BaseDamagePercentage": 0
-      }
+      ]
     }
   },
   {
     "Default": {
+      "abilityName": "Gadget_Player_Grass_EnhancedExtraAttack_Field",
+      "abilitySpecials": {
+        "ExtraAttack_Enhanced_Field_DamageRatio": 0,
+        "ExtraAttack_Enhanced_Field_Time": 0,
+        "ExtraAttack_Enhanced_Field_Time_ToAdd": 0,
+        "ExtraAttack_Enhanced_1_BaseDamagePercentage": 0,
+        "ExtraAttack_Enhanced_2_BaseDamagePercentage": 0
+      },
+      "isDynamicAbility": true,
       "modifiers": {
         "Gadget_Player_Grass_EnhancedExtraAttack_Field_Handler": {
           "duration": "ExtraAttack_Enhanced_Field_Time",
+          "elementDurability": 100,
+          "modifierName": "",
+          "onAdded": [
+            {
+              "$type": "CopyGlobalValue",
+              "doOffStage": true,
+              "dstKey": "Player_Grass_ExtraAttack_Enhanced_Field_Time_ToAdd",
+              "dstTarget": "Self",
+              "srcKey": "Player_Grass_EnhancedExtraAttack_Field_Time_ToAdd",
+              "srcTarget": "Owner"
+            },
+            {
+              "$type": "SetGlobalValueToOverrideMap",
+              "abilityName": "",
+              "doOffStage": true,
+              "globalValueKey": "Player_Grass_ExtraAttack_Enhanced_Field_Time_ToAdd",
+              "overrideMapKey": "ExtraAttack_Enhanced_Field_Time_ToAdd"
+            },
+            {
+              "$type": "AddElementDurability",
+              "doOffStage": true,
+              "maxValue": 3.4028235e+38,
+              "modifierName": "",
+              "value": "ExtraAttack_Enhanced_Field_Time_ToAdd"
+            }
+          ],
           "onRemoved": [
             {
               "$type": "SendEffectTrigger",
-              "parameter": "Next",
-              "value": 201,
-              "effectPattern": "Eff_Player_Grass_EnhancedExtraAttack_Hit_Seed",
-              "type": "Int",
               "attachPoint": "",
-              "doOffStage": true
+              "doOffStage": true,
+              "effectPattern": "Eff_Player_Grass_EnhancedExtraAttack_Hit_Seed",
+              "parameter": "Next",
+              "type": "Int",
+              "value": 201
             },
             {
               "$type": "FireEffect",
               "effectPattern": "Eff_Player_Grass_EnhancedExtraAttack_Hit_SeedsExplod",
               "scale": 1,
-              "ILLLPEOODKP": ""
+              "JHAGIJGAKMK": ""
             },
             {
               "$type": "TriggerAttackEvent",
-              "targetType": "Enemy",
               "attackEvent": {
                 "attackInfo": {
                   "attackProperty": {
-                    "elementType": "Grass",
-                    "damagePercentageRatio": 0,
-                    "strikeType": "Default",
-                    "enBreak": 25,
                     "damagePercentage": "ExtraAttack_Enhanced_Field_DamageRatio",
+                    "damagePercentageRatio": 0,
                     "elementDurability": 25,
                     "elementRank": 1.5,
+                    "elementType": "Grass",
+                    "enBreak": 25,
+                    "strikeType": "Default",
                     "__exp_arkhe": 0
                   },
-                  "hitPattern": {
-                    "__unk_Q3893899620": "",
-                    "onHitEffectName": "default",
-                    "hitHaltTimeScale": 0.01,
-                    "hitImpulseType": "LV2"
-                  },
+                  "attackTag": "ExtraAttack",
                   "attenuationGroup": "default",
                   "attenuationTag": "EnhancedExtraAttack",
-                  "attackTag": "ExtraAttack",
-                  "canBeModifiedBy": "OriginOwner"
+                  "canBeModifiedBy": "OriginOwner",
+                  "hitPattern": {
+                    "hitHaltTimeScale": 0.01,
+                    "hitImpulseType": "LV2",
+                    "onHitEffectName": "default",
+                    "__unk_Q3893899620": ""
+                  }
                 },
                 "attackPattern": {
                   "$type": "ConfigAttackCircle",
-                  "radius": 2.5,
-                  "height": 2,
-                  "triggerType": "TriggerNoRepeat",
                   "born": {
                     "$type": "ConfigBornBySelf",
                     "useRotation": true
-                  }
+                  },
+                  "height": 2,
+                  "radius": 2.5,
+                  "triggerType": "TriggerNoRepeat"
                 }
-              }
+              },
+              "targetType": "Enemy"
             },
             {
               "$type": "KillSelf",
               "configIdArray": [
                 41011101
               ],
-              "duration": 1,
-              "doOffStage": true
+              "doOffStage": true,
+              "duration": 1
             }
           ],
-          "onAdded": [
-            {
-              "$type": "CopyGlobalValue",
-              "srcKey": "Player_Grass_EnhancedExtraAttack_Field_Time_ToAdd",
-              "dstTarget": "Self",
-              "srcTarget": "Owner",
-              "dstKey": "Player_Grass_ExtraAttack_Enhanced_Field_Time_ToAdd",
-              "doOffStage": true
-            },
-            {
-              "$type": "SetGlobalValueToOverrideMap",
-              "globalValueKey": "Player_Grass_ExtraAttack_Enhanced_Field_Time_ToAdd",
-              "abilityName": "",
-              "overrideMapKey": "ExtraAttack_Enhanced_Field_Time_ToAdd",
-              "doOffStage": true
-            },
-            {
-              "$type": "AddElementDurability",
-              "value": "ExtraAttack_Enhanced_Field_Time_ToAdd",
-              "maxValue": 3.4028235e+38,
-              "modifierName": "",
-              "doOffStage": true
-            }
-          ],
-          "elementDurability": 100,
-          "modifierName": "",
           "__unk_Q3323398612": 0
         },
         "Gadget_Player_Grass_EnhancedExtraAttack_Field_Effect": {
+          "elementDurability": 100,
+          "modifierName": "",
           "onAdded": [
             {
               "$type": "AttachEffect",
-              "ILLLPEOODKP": "",
+              "effectPattern": "Eff_Player_Grass_EnhancedExtraAttack_Hit_Seed",
               "scale": 1,
-              "effectPattern": "Eff_Player_Grass_EnhancedExtraAttack_Hit_Seed"
+              "JHAGIJGAKMK": ""
             }
           ],
-          "elementDurability": 100,
-          "modifierName": "",
           "__unk_Q3323398612": 0
         }
       },
-      "abilityName": "Gadget_Player_Grass_EnhancedExtraAttack_Field",
-      "isDynamicAbility": true,
       "onAdded": [
         {
           "$type": "AttachModifier",
@@ -3708,14 +3715,7 @@
           "$type": "AttachModifier",
           "modifierName": "Gadget_Player_Grass_EnhancedExtraAttack_Field_Effect"
         }
-      ],
-      "abilitySpecials": {
-        "ExtraAttack_Enhanced_Field_DamageRatio": 0,
-        "ExtraAttack_Enhanced_Field_Time": 0,
-        "ExtraAttack_Enhanced_Field_Time_ToAdd": 0,
-        "ExtraAttack_Enhanced_1_BaseDamagePercentage": 0,
-        "ExtraAttack_Enhanced_2_BaseDamagePercentage": 0
-      }
+      ]
     }
   }
 ]

@@ -1,26 +1,96 @@
 [
   {
     "Default": {
-      "modifiers": {
-        "ExtraAttack_StaminaCost": {
-          "onAdded": [
-            {
-              "$type": "AvatarSkillStart",
-              "skillID": 10001,
-              "cdRatio": 1,
-              "costStaminaRatio": "ExtraAttack_Sword_Stamina_Cost",
-              "cdRatio": 1
-            }
-          ],
-          "elementDurability": 100,
-          "modifierName": "",
-          "__unk_Q3323398612": 0
-        }
-      },
       "abilityMixins": [
         {
           "$type": "ButtonHoldChargeMixin",
-          "skillID": 10421,
+          "chargeStateIDs": [
+            "Attack01",
+            "Attack02",
+            "Attack03",
+            "Attack04",
+            "Attack05",
+            "Run"
+          ],
+          "chargeTime": 0.12,
+          "onBeginCharged": [
+            {
+              "$type": "SetAnimatorBool",
+              "boolID": "IsCharging",
+              "value": true
+            }
+          ],
+          "onBeginSecondCharged": [
+            {
+              "$type": "SetAnimatorTrigger",
+              "predicates": [
+                {
+                  "$type": "ByLocalAvatarStamina",
+                  "logic": "GreaterOrEqual",
+                  "stamina": [
+                    "ExtraAttack_Sword_Stamina_Cost",
+                    "Flexible_Stamina",
+                    "ADD"
+                  ]
+                }
+              ],
+              "triggerID": "DoSkill"
+            },
+            {
+              "$type": "SetAnimatorInt",
+              "intID": "SkillID",
+              "predicates": [
+                {
+                  "$type": "ByLocalAvatarStamina",
+                  "logic": "GreaterOrEqual",
+                  "stamina": [
+                    "ExtraAttack_Sword_Stamina_Cost",
+                    "Flexible_Stamina",
+                    "ADD"
+                  ]
+                }
+              ],
+              "value": 6
+            },
+            {
+              "$type": "SetAnimatorBool",
+              "boolID": "IsCharging"
+            }
+          ],
+          "onBeginUncharged": [
+            {
+              "$type": "SetAnimatorTrigger",
+              "triggerID": "DoSkill"
+            },
+            {
+              "$type": "SetAnimatorInt",
+              "intID": "SkillID",
+              "predicates": [
+                {
+                  "$type": "ByAny",
+                  "predicates": [
+                    {
+                      "$type": "ByAnimatorInt",
+                      "logic": "Equal",
+                      "parameter": "ComboCount",
+                      "value": 0
+                    },
+                    {
+                      "$type": "ByAnimatorInt",
+                      "logic": "Equal",
+                      "parameter": "ComboCount",
+                      "value": 5
+                    }
+                  ]
+                }
+              ],
+              "value": 99
+            },
+            {
+              "$type": "SetAnimatorBool",
+              "boolID": "IsCharging"
+            }
+          ],
           "onReleaseCharged": [
             {
               "$type": "SetAnimatorBool",
@@ -32,120 +102,51 @@
               "value": 1
             }
           ],
-          "onBeginUncharged": [
-            {
-              "$type": "SetAnimatorTrigger",
-              "triggerID": "DoSkill"
-            },
-            {
-              "$type": "SetAnimatorInt",
-              "intID": "SkillID",
-              "value": 99,
-              "predicates": [
-                {
-                  "$type": "ByAny",
-                  "predicates": [
-                    {
-                      "$type": "ByAnimatorInt",
-                      "value": 0,
-                      "parameter": "ComboCount",
-                      "logic": "Equal"
-                    },
-                    {
-                      "$type": "ByAnimatorInt",
-                      "value": 5,
-                      "parameter": "ComboCount",
-                      "logic": "Equal"
-                    }
-                  ]
-                }
-              ]
-            },
-            {
-              "$type": "SetAnimatorBool",
-              "boolID": "IsCharging"
-            }
-          ],
-          "secondChargeTime": 0.2,
-          "chargeTime": 0.12,
-          "onBeginCharged": [
-            {
-              "$type": "SetAnimatorBool",
-              "value": true,
-              "boolID": "IsCharging"
-            }
-          ],
-          "onBeginSecondCharged": [
-            {
-              "$type": "SetAnimatorTrigger",
-              "triggerID": "DoSkill",
-              "predicates": [
-                {
-                  "$type": "ByLocalAvatarStamina",
-                  "stamina": [
-                    "ExtraAttack_Sword_Stamina_Cost",
-                    "Flexible_Stamina",
-                    "ADD"
-                  ],
-                  "logic": "GreaterOrEqual"
-                }
-              ]
-            },
-            {
-              "$type": "SetAnimatorInt",
-              "intID": "SkillID",
-              "value": 6,
-              "predicates": [
-                {
-                  "$type": "ByLocalAvatarStamina",
-                  "stamina": [
-                    "ExtraAttack_Sword_Stamina_Cost",
-                    "Flexible_Stamina",
-                    "ADD"
-                  ],
-                  "logic": "GreaterOrEqual"
-                }
-              ]
-            },
-            {
-              "$type": "SetAnimatorBool",
-              "boolID": "IsCharging"
-            }
-          ],
-          "chargeStateIDs": [
-            "Attack01",
-            "Attack02",
-            "Attack03",
-            "Attack04",
-            "Attack05",
-            "Run"
-          ],
           "onReleaseUncharged": [
             {
               "$type": "SetAnimatorInt",
               "intID": "SkillID",
               "value": 1
             }
-          ]
+          ],
+          "secondChargeTime": 0.2,
+          "skillID": 10421
         },
         {
           "$type": "AttachToStateIDMixin",
-          "__unk_Q2081332355": "",
+          "modifierName": "ExtraAttack_StaminaCost",
           "stateIDs": [
             "ExtraAttack"
           ],
-          "modifierName": "ExtraAttack_StaminaCost"
+          "__unk_Q2081332355": ""
         }
       ],
       "abilityName": "Avatar_Keqing_ExtraAttack",
       "abilitySpecials": {
         "ExtraAttack_Sword_Stamina_Cost": 0,
         "Flexible_Stamina": -2
+      },
+      "modifiers": {
+        "ExtraAttack_StaminaCost": {
+          "elementDurability": 100,
+          "modifierName": "",
+          "onAdded": [
+            {
+              "$type": "AvatarSkillStart",
+              "cdRatio": 1,
+              "costStaminaRatio": "ExtraAttack_Sword_Stamina_Cost",
+              "skillID": 10001,
+              "NKOFINBNOOK": 1
+            }
+          ],
+          "__unk_Q3323398612": 0
+        }
       }
     }
   },
   {
     "Default": {
+      "abilityName": "Avatar_Keqing_ExtraAttack_ExplodeGadget_Eff",
       "onAbilityStart": [
         {
           "$type": "TriggerAbility",
@@ -155,12 +156,12 @@
             "configID": 41042004
           }
         }
-      ],
-      "abilityName": "Avatar_Keqing_ExtraAttack_ExplodeGadget_Eff"
+      ]
     }
   },
   {
     "Default": {
+      "abilityName": "Avatar_Keqing_ExtraAttack_ExplodeGadget",
       "onAbilityStart": [
         {
           "$type": "TriggerAbility",
@@ -174,33 +175,82 @@
           "$type": "RemoveUniqueModifier",
           "modifierName": "UNIQUE_Keqing_SkillChange"
         }
-      ],
-      "abilityName": "Avatar_Keqing_ExtraAttack_ExplodeGadget"
+      ]
     }
   },
   {
     "Default": {
+      "abilityMixins": [
+        {
+          "$type": "AttachToNormalizedTimeMixin",
+          "modifierName": "Keqing_Hide",
+          "normalizeEnd": 0.4,
+          "normalizeStart": 0.19,
+          "stateID": "Attack04",
+          "__unk_Q2081332355": ""
+        },
+        {
+          "$type": "AttachToNormalizedTimeMixin",
+          "modifierName": "Keqing_Hide2",
+          "normalizeEnd": 0.08,
+          "stateID": "Attack05",
+          "__unk_Q2081332355": ""
+        },
+        {
+          "$type": "AttachToNormalizedTimeMixin",
+          "modifierName": "Keqing_Appear2",
+          "normalizeStart": 0.08,
+          "stateID": "Attack05",
+          "__unk_Q2081332355": ""
+        },
+        {
+          "$type": "AttachToStateIDMixin",
+          "modifierName": "Keqing_Hide_Handler",
+          "stateIDs": [
+            "Attack05"
+          ],
+          "__unk_Q2081332355": ""
+        }
+      ],
+      "abilityName": "Avatar_Keqing_NormalAttack_Handler",
       "modifiers": {
         "Keqing_Hide_Handler": {
+          "elementDurability": 100,
+          "modifierName": "",
           "onRemoved": [
             {
               "$type": "KillGadget",
+              "doOffStage": true,
               "gadgetInfo": {
                 "configID": 41042003
-              },
-              "doOffStage": true
+              }
             }
           ],
-          "elementDurability": 100,
-          "modifierName": "",
           "__unk_Q3323398612": 0
         },
         "Keqing_Hide": {
+          "elementDurability": 100,
+          "modifierName": "",
+          "onAdded": [
+            {
+              "$type": "TriggerSetVisible",
+              "doOffStage": true
+            },
+            {
+              "$type": "TriggerSetPassThrough",
+              "doOffStage": true,
+              "passThrough": true
+            },
+            {
+              "$type": "EnableHDMesh",
+              "hdMeshKey": "Default"
+            }
+          ],
           "onRemoved": [
             {
               "$type": "TriggerSetVisible",
-              "visible": true,
-              "doOffStage": true
+              "doOffStage": true,
+              "visible": true
             },
             {
               "$type": "TriggerSetPassThrough",
@@ -209,28 +259,11 @@
             },
             {
               "$type": "EnableHDMesh",
+              "canBeHandledOnRecover": true,
               "enable": true,
-              "hdMeshKey": "Default",
-              "canBeHandledOnRecover": true
-            }
-          ],
-          "onAdded": [
-            {
-              "$type": "TriggerSetVisible",
-              "doOffStage": true
-            },
-            {
-              "$type": "TriggerSetPassThrough",
-              "passThrough": true,
-              "doOffStage": true
-            },
-            {
-              "$type": "EnableHDMesh",
               "hdMeshKey": "Default"
             }
           ],
-          "elementDurability": 100,
-          "modifierName": "",
           "__unk_Q3323398612": 0
         },
         "Keqing_Appear": {
@@ -239,11 +272,28 @@
           "__unk_Q3323398612": 0
         },
         "Keqing_Hide2": {
+          "elementDurability": 100,
+          "modifierName": "",
+          "onAdded": [
+            {
+              "$type": "TriggerSetVisible",
+              "doOffStage": true
+            },
+            {
+              "$type": "TriggerSetPassThrough",
+              "doOffStage": true,
+              "passThrough": true
+            },
+            {
+              "$type": "EnableHDMesh",
+              "hdMeshKey": "Default"
+            }
+          ],
           "onRemoved": [
             {
               "$type": "TriggerSetVisible",
-              "visible": true,
-              "doOffStage": true
+              "doOffStage": true,
+              "visible": true
             },
             {
               "$type": "TriggerSetPassThrough",
@@ -252,28 +302,11 @@
             },
             {
               "$type": "EnableHDMesh",
+              "canBeHandledOnRecover": true,
               "enable": true,
-              "hdMeshKey": "Default",
-              "canBeHandledOnRecover": true
-            }
-          ],
-          "onAdded": [
-            {
-              "$type": "TriggerSetVisible",
-              "doOffStage": true
-            },
-            {
-              "$type": "TriggerSetPassThrough",
-              "passThrough": true,
-              "doOffStage": true
-            },
-            {
-              "$type": "EnableHDMesh",
               "hdMeshKey": "Default"
             }
           ],
-          "elementDurability": 100,
-          "modifierName": "",
           "__unk_Q3323398612": 0
         },
         "Keqing_Appear2": {
@@ -281,145 +314,114 @@
           "modifierName": "",
           "__unk_Q3323398612": 0
         }
-      },
-      "abilityMixins": [
-        {
-          "$type": "AttachToNormalizedTimeMixin",
-          "modifierName": "Keqing_Hide",
-          "__unk_Q2081332355": "",
-          "normalizeEnd": 0.4,
-          "stateID": "Attack04",
-          "normalizeStart": 0.19
-        },
-        {
-          "$type": "AttachToNormalizedTimeMixin",
-          "modifierName": "Keqing_Hide2",
-          "__unk_Q2081332355": "",
-          "normalizeEnd": 0.08,
-          "stateID": "Attack05"
-        },
-        {
-          "$type": "AttachToNormalizedTimeMixin",
-          "modifierName": "Keqing_Appear2",
-          "__unk_Q2081332355": "",
-          "stateID": "Attack05",
-          "normalizeStart": 0.08
-        },
-        {
-          "$type": "AttachToStateIDMixin",
-          "__unk_Q2081332355": "",
-          "stateIDs": [
-            "Attack05"
-          ],
-          "modifierName": "Keqing_Hide_Handler"
-        }
-      ],
-      "abilityName": "Avatar_Keqing_NormalAttack_Handler"
+      }
     }
   },
   {
     "Default": {
+      "abilityName": "Avatar_Keqing_NormalAttack05_CreateBullet",
       "onAbilityStart": [
         {
           "$type": "TriggerBullet",
           "bulletID": 41042003
         }
-      ],
-      "abilityName": "Avatar_Keqing_NormalAttack05_CreateBullet"
+      ]
     }
   },
   {
     "Default": {
+      "abilityName": "Avatar_Keqing_NormalAttack05_Bullet",
       "onAbilityStart": [
         {
           "$type": "Predicated",
+          "failActions": [
+            {
+              "$type": "TriggerAttackEvent",
+              "attackEvent": {
+                "attackInfo": {
+                  "attackProperty": {
+                    "attackType": "Melee",
+                    "damagePercentage": 0.72,
+                    "damagePercentageRatio": 0,
+                    "elementDurability": 25,
+                    "enBreak": 64.8,
+                    "overrideByWeapon": true,
+                    "strikeType": "Slash",
+                    "__exp_arkhe": 0
+                  },
+                  "attackTag": "NormalAttack_05",
+                  "attenuationGroup": "default",
+                  "attenuationTag": "NormalAttack",
+                  "cameraShake": {
+                    "shakeDir": {
+                      "z": -1
+                    },
+                    "shakeDistance": 30,
+                    "shakeRange": 0.36,
+                    "shakeTime": 0.12,
+                    "shakeType": "CustomVector",
+                    "OFGBHFBAEKK": ""
+                  },
+                  "canBeModifiedBy": "OriginOwner",
+                  "hitPattern": {
+                    "hitHaltTimeScale": 0.01,
+                    "hitImpulseType": "LV7",
+                    "onHitEffectName": "default",
+                    "__unk_Q3893899620": ""
+                  }
+                },
+                "attackPattern": {
+                  "$type": "ConfigAttackSphere",
+                  "born": {
+                    "$type": "ConfigBornByCollisionPoint"
+                  },
+                  "filterByFrame": true,
+                  "radius": 0.8,
+                  "triggerType": "TriggerNoRepeat"
+                }
+              },
+              "targetType": "Enemy"
+            }
+          ],
           "successActions": [
             {
               "$type": "DamageByAttackValue",
               "attackInfo": {
                 "attackProperty": {
                   "attackType": "Melee",
-                  "damagePercentageRatio": 0,
-                  "strikeType": "Slash",
-                  "enBreak": 64.8,
                   "damagePercentage": 0.72,
+                  "damagePercentageRatio": 0,
                   "elementDurability": 25,
+                  "enBreak": 64.8,
                   "overrideByWeapon": true,
+                  "strikeType": "Slash",
                   "__exp_arkhe": 0
                 },
-                "cameraShake": {
-                  "shakeDir": {
-                    "x": -1
-                  },
-                  "shakeTime": 0.12,
-                  "shakeType": "CustomVector",
-                  "shakeDistance": 30,
-                  "MNKFEFOKFKP": "",
-                  "shakeRange": 0.36
-                },
-                "hitPattern": {
-                  "__unk_Q3893899620": "",
-                  "onHitEffectName": "default",
-                  "hitHaltTimeScale": 0.01,
-                  "hitImpulseType": "LV7"
-                },
+                "attackTag": "NormalAttack_05",
                 "attenuationGroup": "default",
                 "attenuationTag": "NormalAttack",
-                "attackTag": "NormalAttack_05",
-                "canBeModifiedBy": "OriginOwner"
+                "cameraShake": {
+                  "shakeDir": {
+                    "z": -1
+                  },
+                  "shakeDistance": 30,
+                  "shakeRange": 0.36,
+                  "shakeTime": 0.12,
+                  "shakeType": "CustomVector",
+                  "OFGBHFBAEKK": ""
+                },
+                "canBeModifiedBy": "OriginOwner",
+                "hitPattern": {
+                  "hitHaltTimeScale": 0.01,
+                  "hitImpulseType": "LV7",
+                  "onHitEffectName": "default",
+                  "__unk_Q3893899620": ""
+                }
               },
               "target": "Target"
             }
           ],
-          "failActions": [
-            {
-              "$type": "TriggerAttackEvent",
-              "targetType": "Enemy",
-              "attackEvent": {
-                "attackInfo": {
-                  "attackProperty": {
-                    "attackType": "Melee",
-                    "damagePercentageRatio": 0,
-                    "strikeType": "Slash",
-                    "enBreak": 64.8,
-                    "damagePercentage": 0.72,
-                    "elementDurability": 25,
-                    "overrideByWeapon": true,
-                    "__exp_arkhe": 0
-                  },
-                  "cameraShake": {
-                    "shakeDir": {
-                      "x": -1
-                    },
-                    "shakeTime": 0.12,
-                    "shakeType": "CustomVector",
-                    "shakeDistance": 30,
-                    "MNKFEFOKFKP": "",
-                    "shakeRange": 0.36
-                  },
-                  "hitPattern": {
-                    "__unk_Q3893899620": "",
-                    "onHitEffectName": "default",
-                    "hitHaltTimeScale": 0.01,
-                    "hitImpulseType": "LV7"
-                  },
-                  "attenuationGroup": "default",
-                  "attenuationTag": "NormalAttack",
-                  "attackTag": "NormalAttack_05",
-                  "canBeModifiedBy": "OriginOwner"
-                },
-                "attackPattern": {
-                  "$type": "ConfigAttackSphere",
-                  "radius": 0.8,
-                  "triggerType": "TriggerNoRepeat",
-                  "filterByFrame": true,
-                  "born": {
-                    "$type": "ConfigBornByCollisionPoint"
-                  }
-                }
-              }
-            }
-          ],
+          "target": "Target",
           "targetPredicates": [
             {
               "$type": "ByEntityTypes",
@@ -427,74 +429,52 @@
                 "MonsterEquip"
               ]
             }
-          ],
-          "target": "Target"
+          ]
         }
-      ],
-      "abilityName": "Avatar_Keqing_NormalAttack05_Bullet"
+      ]
     }
   },
   {
     "Default": {
+      "abilityName": "Avatar_Keqing_Electrans_Click",
       "modifiers": {
         "UNIQUE_Keqing_SkillChange": {
           "duration": 5,
           "elementDurability": 100,
+          "isUnique": true,
           "modifierMixins": [
             {
               "$type": "SwitchSkillIDMixin",
-              "skillIndex": 1,
               "priority": "AvatarSpecial",
-              "skillID": 10423
+              "skillID": 10423,
+              "skillIndex": 1
             }
           ],
           "modifierName": "",
-          "isUnique": true,
           "__unk_Q3323398612": 0
         }
       },
       "onAbilityStart": [
         {
           "$type": "AvatarSkillStart",
-          "skillID": 10422,
           "cdRatio": 1,
           "costStaminaRatio": 1,
-          "cdRatio": 1
+          "skillID": 10422,
+          "NKOFINBNOOK": 1
         },
         {
           "$type": "SetGlobalPos",
-          "key": "_ABILITY_Keqing_AttackPos",
           "born": {
             "$type": "ConfigBornBySelf",
             "offset": {
               "z": 5
             }
           },
-          "doOffStage": true
+          "doOffStage": true,
+          "key": "_ABILITY_Keqing_AttackPos"
         },
         {
           "$type": "Predicated",
-          "successActions": [
-            {
-              "$type": "TriggerBullet",
-              "born": {
-                "$type": "ConfigBornByAttachPoint",
-                "attachPointName": "FocusAnchor",
-                "attachPointTargetType": "Self",
-                "offset": {
-                  "z": 0.7
-                },
-                "direction": {
-                  "$type": "ConfigDirectionByAttachPoint",
-                  "attachPointName": "FocusAnchor",
-                  "attachPointTargetType": "Self",
-                  "maxAngle": 45,
-                  "maxAngleType": "Vertical"
-                }
-              },
-              "bulletID": 41042001
-            }
-          ],
           "failActions": [
             {
               "$type": "TriggerBullet",
@@ -502,18 +482,39 @@
                 "$type": "ConfigBornByAttachPoint",
                 "attachPointName": "FocusAnchor",
                 "attachPointTargetType": "Self",
-                "offset": {
-                  "z": 0.7
-                },
                 "direction": {
                   "$type": "ConfigDirectionByAttachPoint",
                   "attachPointName": "FocusAnchor",
                   "attachPointTargetType": "Self",
                   "maxAngle": 45,
                   "maxAngleType": "Vertical"
+                },
+                "offset": {
+                  "z": 0.7
                 }
               },
               "bulletID": 41042007
+            }
+          ],
+          "successActions": [
+            {
+              "$type": "TriggerBullet",
+              "born": {
+                "$type": "ConfigBornByAttachPoint",
+                "attachPointName": "FocusAnchor",
+                "attachPointTargetType": "Self",
+                "direction": {
+                  "$type": "ConfigDirectionByAttachPoint",
+                  "attachPointName": "FocusAnchor",
+                  "attachPointTargetType": "Self",
+                  "maxAngle": 45,
+                  "maxAngleType": "Vertical"
+                },
+                "offset": {
+                  "z": 0.7
+                }
+              },
+              "bulletID": 41042001
             }
           ],
           "targetPredicates": [
@@ -524,139 +525,181 @@
         },
         {
           "$type": "SetAnimatorBool",
-          "persistent": true,
-          "boolID": "CombatAir"
+          "boolID": "CombatAir",
+          "persistent": true
         },
         {
           "$type": "ApplyModifier",
           "modifierName": "UNIQUE_Keqing_SkillChange"
         }
-      ],
-      "abilityName": "Avatar_Keqing_Electrans_Click"
+      ]
     }
   },
   {
     "Default": {
+      "abilityMixins": [
+        {
+          "$type": "SkillButtonHoldChargeMixin",
+          "afterStateIDs": [
+            "Electrans_Charge_Cast",
+            "Electrans_Charge_AS"
+          ],
+          "beforeHoldDuration": 0.1,
+          "beforeStateIDs": [
+            "Electrans_BS"
+          ],
+          "chargeLoopDurations": [
+            10
+          ],
+          "chargeLoopStateIDs": [
+            "Electrans_Charge_Loop"
+          ],
+          "endHoldTrigger": "EndHoldTrigger",
+          "nextLoopTriggerID": "NextLoopTrigger",
+          "skillID": 10422
+        },
+        {
+          "$type": "AttachToStateIDMixin",
+          "modifierName": "Focus",
+          "stateIDs": [
+            "Electrans_Charge_Loop",
+            "Electrans_Charge_Cast"
+          ],
+          "__unk_Q2081332355": ""
+        },
+        {
+          "$type": "AttachToStateIDMixin",
+          "modifierName": "Charge",
+          "stateIDs": [
+            "Electrans_Charge_Loop"
+          ],
+          "__unk_Q2081332355": ""
+        }
+      ],
+      "abilityName": "Avatar_Keqing_Electrans_Charge",
+      "abilitySpecials": {
+        "dmg": 0
+      },
       "modifiers": {
         "Focus": {
+          "elementDurability": 100,
+          "modifierName": "",
+          "onAdded": [
+            {
+              "$type": "AvatarEnterFocus",
+              "assistance": {
+                "other": {
+                  "useGyro": true
+                }
+              },
+              "cameraFastFocusMode": true,
+              "cameraFollowLower": {
+                "z": 0.8,
+                "y": 0.2,
+                "x": -2.5
+              },
+              "cameraFollowMaxDegree": 35,
+              "cameraFollowMinDegree": -55,
+              "cameraFollowUpper": {
+                "z": 0.5,
+                "y": -0.2
+              },
+              "canMove": false,
+              "dragButtonName": "Skill2",
+              "showCrosshair": false,
+              "APEJECEFMAJ": "",
+              "JEFFFDCPEDH": "",
+              "JILNABGHIJA": ""
+            }
+          ],
           "onRemoved": [
             {
               "$type": "AvatarExitFocus",
               "keepRotation": true
             }
           ],
-          "onAdded": [
-            {
-              "$type": "AvatarEnterFocus",
-              "dragButtonName": "Skill2",
-              "cameraFastFocusMode": true,
-              "canMove": false,
-              "assistance": {
-                "KFIOILLKPCF": {
-                  "GMHNBMJHEGP": true
-                }
-              },
-              "showCrosshair": false,
-              "cameraFollowUpper": {
-                "y": -0.2,
-                "x": 0.5
-              },
-              "OINODICCCCO": "",
-              "GPNAODGIDCF": "",
-              "cameraFollowMinDegree": -55,
-              "FDEONAODDDM": "",
-              "cameraFollowMaxDegree": 35,
-              "cameraFollowLower": {
-                "y": 0.2,
-                "z": -2.5,
-                "x": 0.8
-              }
-            }
-          ],
-          "elementDurability": 100,
-          "modifierName": "",
           "__unk_Q3323398612": 0
         },
         "Charge": {
+          "elementDurability": 100,
+          "modifierName": "",
           "onAdded": [
             {
               "$type": "AddGlobalValue",
-              "useLimitRange": true,
               "key": "_Keqing_Aim_Range",
               "maxValue": 8,
               "minValue": 8,
+              "useLimitRange": true,
               "value": 8
             },
             {
               "$type": "AttachEffect",
-              "ILLLPEOODKP": "",
+              "effectPattern": "Eff_Avatar_Keqing_ElementalArt_Charge_Aim",
               "scale": 1,
-              "effectPattern": "Eff_Avatar_Keqing_ElementalArt_Charge_Aim"
+              "JHAGIJGAKMK": ""
             }
           ],
-          "elementDurability": 100,
-          "modifierName": "",
           "__unk_Q3323398612": 0
         },
         "UNIQUE_Keqing_SkillChange": {
           "duration": 5,
           "elementDurability": 100,
+          "isUnique": true,
           "modifierMixins": [
             {
               "$type": "SwitchSkillIDMixin",
-              "skillIndex": 1,
               "priority": "AvatarSpecial",
-              "skillID": 10423
+              "skillID": 10423,
+              "skillIndex": 1
             }
           ],
           "modifierName": "",
-          "isUnique": true,
           "__unk_Q3323398612": 0
         }
       },
       "onAbilityStart": [
         {
           "$type": "AvatarSkillStart",
-          "skillID": 10422,
           "cdRatio": 1,
           "costStaminaRatio": 1,
-          "cdRatio": 1
+          "skillID": 10422,
+          "NKOFINBNOOK": 1
         },
         {
           "$type": "SetAnimatorBool",
+          "boolID": "CombatAir",
           "persistent": true,
-          "value": true,
-          "boolID": "CombatAir"
+          "value": true
         },
         {
           "$type": "SetAnimatorBool",
-          "value": true,
           "boolID": "GadgetHigh",
-          "target": "Owner"
+          "target": "Owner",
+          "value": true
         },
         {
           "$type": "SetGlobalPos",
-          "key": "_ABILITY_Keqing_AttackPos",
           "born": {
             "$type": "ConfigBornBySelf",
             "offset": {
               "z": 5
             }
           },
-          "doOffStage": true
+          "doOffStage": true,
+          "key": "_ABILITY_Keqing_AttackPos"
         },
         {
           "$type": "TriggerBullet",
           "born": {
             "$type": "ConfigBornByAttachPoint",
             "attachPointName": "FocusAnchor",
-            "offset": {
-              "z": 0.7
-            },
             "direction": {
               "$type": "ConfigDirectionByAttachPoint",
               "attachPointName": "FocusAnchor",
               "attachPointTargetType": "Self"
+            },
+            "offset": {
+              "z": 0.7
             }
           },
           "bulletID": 41042002
@@ -665,173 +708,196 @@
           "$type": "ApplyModifier",
           "modifierName": "UNIQUE_Keqing_SkillChange"
         }
-      ],
-      "abilityMixins": [
-        {
-          "$type": "SkillButtonHoldChargeMixin",
-          "beforeStateIDs": [
-            "Electrans_BS"
-          ],
-          "endHoldTrigger": "EndHoldTrigger",
-          "afterStateIDs": [
-            "Electrans_Charge_Cast",
-            "Electrans_Charge_AS"
-          ],
-          "chargeLoopStateIDs": [
-            "Electrans_Charge_Loop"
-          ],
-          "chargeLoopDurations": [
-            10
-          ],
-          "beforeHoldDuration": 0.1,
-          "skillID": 10422,
-          "nextLoopTriggerID": "NextLoopTrigger"
-        },
-        {
-          "$type": "AttachToStateIDMixin",
-          "__unk_Q2081332355": "",
-          "stateIDs": [
-            "Electrans_Charge_Loop",
-            "Electrans_Charge_Cast"
-          ],
-          "modifierName": "Focus"
-        },
-        {
-          "$type": "AttachToStateIDMixin",
-          "__unk_Q2081332355": "",
-          "stateIDs": [
-            "Electrans_Charge_Loop"
-          ],
-          "modifierName": "Charge"
-        }
-      ],
-      "abilityName": "Avatar_Keqing_Electrans_Charge",
-      "abilitySpecials": {
-        "dmg": 0
-      }
+      ]
     }
   },
   {
     "Default": {
+      "abilityName": "Avatar_Keqing_Electrans_SetGadget",
       "onAbilityStart": [
         {
           "$type": "Predicated",
-          "successActions": [
-            {
-              "$type": "CreateGadget",
-              "gadgetID": 41042004,
-              "campID": 1001,
-              "campTargetType": "Enemy",
-              "born": {
-                "$type": "ConfigBornByGlobalValue",
-                "positionKey": "_ABILITY_Keqing_AttackPos",
-                "directionKey": "_ABILITY_Keqing_AttackDir"
-              }
-            }
-          ],
           "failActions": [
             {
               "$type": "CreateGadget",
-              "gadgetID": 41042004,
-              "campID": 1001,
-              "campTargetType": "Enemy",
               "born": {
                 "$type": "ConfigBornByGlobalValue",
-                "positionKey": "_ABILITY_Keqing_AttackPos",
                 "directionKey": "_ABILITY_Keqing_AttackDir",
-                "onGround": true
-              }
+                "onGround": true,
+                "positionKey": "_ABILITY_Keqing_AttackPos"
+              },
+              "campID": 1001,
+              "campTargetType": "Enemy",
+              "gadgetID": 41042004
             },
             {
               "$type": "AddGlobalValue",
+              "doOffStage": true,
               "key": "_ABILITY_Keqing_AttackPos_1",
               "maxValue": 0,
               "minValue": 0,
-              "value": 0.3,
-              "doOffStage": true
+              "value": 0.3
+            }
+          ],
+          "successActions": [
+            {
+              "$type": "CreateGadget",
+              "born": {
+                "$type": "ConfigBornByGlobalValue",
+                "directionKey": "_ABILITY_Keqing_AttackDir",
+                "positionKey": "_ABILITY_Keqing_AttackPos"
+              },
+              "campID": 1001,
+              "campTargetType": "Enemy",
+              "gadgetID": 41042004
             }
           ],
           "targetPredicates": [
             {
               "$type": "ByTargetGlobalValue",
-              "value": 1,
               "compareType": "NoneOrEqual",
-              "key": "_ABILITY_Keqing_GadgetHigh"
+              "key": "_ABILITY_Keqing_GadgetHigh",
+              "value": 1
             }
           ]
         }
-      ],
-      "abilityName": "Avatar_Keqing_Electrans_SetGadget"
+      ]
     }
   },
   {
     "Default": {
+      "abilityMixins": [
+        {
+          "$type": "AttachToNormalizedTimeMixin",
+          "modifierName": "Keqing_Blink_Ground",
+          "normalizeEnd": 0.55,
+          "stateID": "Electrans_Ground",
+          "__unk_Q2081332355": ""
+        },
+        {
+          "$type": "AttachToNormalizedTimeMixin",
+          "modifierName": "Keqing_CloseCollider_Ground",
+          "normalizeEnd": 0.5,
+          "stateID": "Electrans_Ground",
+          "__unk_Q2081332355": ""
+        },
+        {
+          "$type": "AttachToNormalizedTimeMixin",
+          "modifierName": "Keqing_Blink",
+          "normalizeEnd": 0.55,
+          "stateID": "Electrans_Fly",
+          "__unk_Q2081332355": ""
+        },
+        {
+          "$type": "AttachToNormalizedTimeMixin",
+          "modifierName": "Keqing_CloseCollider",
+          "normalizeEnd": 0.5,
+          "stateID": "Electrans_Fly",
+          "__unk_Q2081332355": ""
+        },
+        {
+          "$type": "AttachToNormalizedTimeMixin",
+          "modifierName": "Keqing_Blink_Air",
+          "normalizeEnd": 0.55,
+          "stateID": "Electrans_FlyAir",
+          "__unk_Q2081332355": ""
+        },
+        {
+          "$type": "AttachToNormalizedTimeMixin",
+          "modifierName": "Keqing_CloseCollider_Air",
+          "normalizeEnd": 0.26,
+          "stateID": "Electrans_FlyAir",
+          "__unk_Q2081332355": ""
+        },
+        {
+          "$type": "AttachToStateIDMixin",
+          "modifierName": "Keqing_Air_LoseWeight",
+          "stateIDs": [
+            "Electrans_Fly",
+            "Electrans_FlyAir"
+          ],
+          "__unk_Q2081332355": ""
+        },
+        {
+          "$type": "AttachToNormalizedTimeMixin",
+          "modifierName": "Keqing_Air_LoseWeight2",
+          "normalizeEnd": 0.4,
+          "stateID": "Electrans_FlyAir_AS",
+          "__unk_Q2081332355": ""
+        },
+        {
+          "$type": "AttachToNormalizedTimeMixin",
+          "modifierName": "Electrans_CameraPullBack_Air",
+          "normalizeEnd": 0.9,
+          "stateID": "Electrans_FlyAir",
+          "__unk_Q2081332355": ""
+        }
+      ],
+      "abilityName": "Avatar_Keqing_Electrans_Part2",
+      "abilitySpecials": {
+        "Dura": 0.6
+      },
       "modifiers": {
         "KillGadget": {
-          "thinkInterval": 0.1,
           "duration": 0.33,
+          "elementDurability": 100,
+          "modifierName": "",
           "onRemoved": [
             {
               "$type": "KillGadget",
+              "doOffStage": true,
               "gadgetInfo": {
                 "configID": 41042004
-              },
-              "doOffStage": true
+              }
             }
           ],
-          "elementDurability": 100,
-          "modifierName": "",
           "onThinkInterval": [
             {
               "$type": "KillGadget",
+              "doOffStage": true,
               "gadgetInfo": {
                 "configID": 41042004
-              },
-              "doOffStage": true
+              }
             }
           ],
+          "thinkInterval": 0.1,
           "__unk_Q3323398612": 0
         },
         "Keqing_Blink_Ground": {
-          "onRemoved": [
-            {
-              "$type": "TriggerSetVisible",
-              "visible": true,
-              "doOffStage": true
-            }
-          ],
+          "elementDurability": 100,
+          "modifierName": "",
           "onAdded": [
             {
               "$type": "TriggerSetVisible"
             },
             {
               "$type": "Predicated",
-              "successActions": [
-                {
-                  "$type": "FireEffect",
-                  "effectPattern": "Eff_Avatar_Keqing_ElementalArt_HideSpark_Talent",
-                  "scale": 1,
-                  "ILLLPEOODKP": ""
-                },
-                {
-                  "$type": "FireEffect",
-                  "effectPattern": "Eff_Avatar_Keqing_ElementalArt_ShowSpark_Talent",
-                  "scale": 1,
-                  "ILLLPEOODKP": ""
-                }
-              ],
               "failActions": [
                 {
                   "$type": "FireEffect",
                   "effectPattern": "Eff_Avatar_Keqing_ElementalArt_HideSpark",
                   "scale": 1,
-                  "ILLLPEOODKP": ""
+                  "JHAGIJGAKMK": ""
                 },
                 {
                   "$type": "FireEffect",
                   "effectPattern": "Eff_Avatar_Keqing_ElementalArt_ShowSpark",
                   "scale": 1,
-                  "ILLLPEOODKP": ""
+                  "JHAGIJGAKMK": ""
+                }
+              ],
+              "successActions": [
+                {
+                  "$type": "FireEffect",
+                  "effectPattern": "Eff_Avatar_Keqing_ElementalArt_HideSpark_Talent",
+                  "scale": 1,
+                  "JHAGIJGAKMK": ""
+                },
+                {
+                  "$type": "FireEffect",
+                  "effectPattern": "Eff_Avatar_Keqing_ElementalArt_ShowSpark_Talent",
+                  "scale": 1,
+                  "JHAGIJGAKMK": ""
                 }
               ],
               "targetPredicates": [
@@ -846,79 +912,79 @@
               "modifierName": "Keqing_SkinSet"
             }
           ],
-          "elementDurability": 100,
-          "modifierName": "",
+          "onRemoved": [
+            {
+              "$type": "TriggerSetVisible",
+              "doOffStage": true,
+              "visible": true
+            }
+          ],
           "__unk_Q3323398612": 0
         },
         "Keqing_CloseCollider_Ground": {
-          "onRemoved": [
-            {
-              "$type": "TriggerSetPassThrough",
-              "canBeHandledOnRecover": true,
-              "doOffStage": true
-            },
-            {
-              "$type": "EnableHDMesh",
-              "enable": true,
-              "hdMeshKey": "Default",
-              "canBeHandledOnRecover": true
-            }
-          ],
+          "elementDurability": 100,
+          "modifierName": "",
           "onAdded": [
             {
               "$type": "TriggerSetPassThrough",
-              "passThrough": true,
-              "doOffStage": true
+              "doOffStage": true,
+              "passThrough": true
             },
             {
               "$type": "EnableHDMesh",
               "hdMeshKey": "Default"
             }
           ],
-          "elementDurability": 100,
-          "modifierName": "",
+          "onRemoved": [
+            {
+              "$type": "TriggerSetPassThrough",
+              "canBeHandledOnRecover": true,
+              "doOffStage": true
+            },
+            {
+              "$type": "EnableHDMesh",
+              "canBeHandledOnRecover": true,
+              "enable": true,
+              "hdMeshKey": "Default"
+            }
+          ],
           "__unk_Q3323398612": 0
         },
         "Keqing_Blink": {
-          "onRemoved": [
-            {
-              "$type": "TriggerSetVisible",
-              "visible": true,
-              "doOffStage": true
-            }
-          ],
+          "elementDurability": 100,
+          "modifierName": "",
           "onAdded": [
             {
               "$type": "TriggerSetVisible"
             },
             {
               "$type": "Predicated",
-              "successActions": [
-                {
-                  "$type": "FireEffect",
-                  "effectPattern": "Eff_Avatar_Keqing_ElementalArt_HideSpark_Talent",
-                  "scale": 1,
-                  "ILLLPEOODKP": ""
-                },
-                {
-                  "$type": "FireEffect",
-                  "effectPattern": "Eff_Avatar_Keqing_ElementalArt_ShowSpark_Talent",
-                  "scale": 1,
-                  "ILLLPEOODKP": ""
-                }
-              ],
               "failActions": [
                 {
                   "$type": "FireEffect",
                   "effectPattern": "Eff_Avatar_Keqing_ElementalArt_HideSpark",
                   "scale": 1,
-                  "ILLLPEOODKP": ""
+                  "JHAGIJGAKMK": ""
                 },
                 {
                   "$type": "FireEffect",
                   "effectPattern": "Eff_Avatar_Keqing_ElementalArt_ShowSpark",
                   "scale": 1,
-                  "ILLLPEOODKP": ""
+                  "JHAGIJGAKMK": ""
+                }
+              ],
+              "successActions": [
+                {
+                  "$type": "FireEffect",
+                  "effectPattern": "Eff_Avatar_Keqing_ElementalArt_HideSpark_Talent",
+                  "scale": 1,
+                  "JHAGIJGAKMK": ""
+                },
+                {
+                  "$type": "FireEffect",
+                  "effectPattern": "Eff_Avatar_Keqing_ElementalArt_ShowSpark_Talent",
+                  "scale": 1,
+                  "JHAGIJGAKMK": ""
                 }
               ],
               "targetPredicates": [
@@ -933,14 +999,32 @@
               "modifierName": "Keqing_SkinSet"
             }
           ],
+          "onRemoved": [
+            {
+              "$type": "TriggerSetVisible",
+              "doOffStage": true,
+              "visible": true
+            }
+          ],
           "properties": {
             "Actor_EndureDelta": 0
           },
-          "elementDurability": 100,
-          "modifierName": "",
           "__unk_Q3323398612": 0
         },
         "Keqing_CloseCollider": {
+          "elementDurability": 100,
+          "modifierName": "",
+          "onAdded": [
+            {
+              "$type": "TriggerSetPassThrough",
+              "doOffStage": true,
+              "passThrough": true
+            },
+            {
+              "$type": "EnableHDMesh",
+              "hdMeshKey": "Default"
+            }
+          ],
           "onRemoved": [
             {
               "$type": "TriggerSetPassThrough",
@@ -949,9 +1033,9 @@
             },
             {
               "$type": "EnableHDMesh",
+              "canBeHandledOnRecover": true,
               "enable": true,
-              "hdMeshKey": "Default",
-              "canBeHandledOnRecover": true
+              "hdMeshKey": "Default"
             },
             {
               "$type": "RemoveVelocityForce",
@@ -961,61 +1045,43 @@
               ]
             }
           ],
-          "onAdded": [
-            {
-              "$type": "TriggerSetPassThrough",
-              "passThrough": true,
-              "doOffStage": true
-            },
-            {
-              "$type": "EnableHDMesh",
-              "hdMeshKey": "Default"
-            }
-          ],
-          "elementDurability": 100,
-          "modifierName": "",
           "__unk_Q3323398612": 0
         },
         "Keqing_Blink_Air": {
-          "onRemoved": [
-            {
-              "$type": "TriggerSetVisible",
-              "visible": true,
-              "doOffStage": true
-            }
-          ],
+          "elementDurability": 100,
+          "modifierName": "",
           "onAdded": [
             {
               "$type": "TriggerSetVisible"
             },
             {
               "$type": "Predicated",
-              "successActions": [
-                {
-                  "$type": "FireEffect",
-                  "effectPattern": "Eff_Avatar_Keqing_ElementalArt_HideSpark_Talent",
-                  "scale": 1,
-                  "ILLLPEOODKP": ""
-                },
-                {
-                  "$type": "FireEffect",
-                  "effectPattern": "Eff_Avatar_Keqing_ElementalArt_ShowSpark_Talent",
-                  "scale": 1,
-                  "ILLLPEOODKP": ""
-                }
-              ],
               "failActions": [
                 {
                   "$type": "FireEffect",
                   "effectPattern": "Eff_Avatar_Keqing_ElementalArt_HideSpark",
                   "scale": 1,
-                  "ILLLPEOODKP": ""
+                  "JHAGIJGAKMK": ""
                 },
                 {
                   "$type": "FireEffect",
                   "effectPattern": "Eff_Avatar_Keqing_ElementalArt_ShowSpark",
                   "scale": 1,
-                  "ILLLPEOODKP": ""
+                  "JHAGIJGAKMK": ""
+                }
+              ],
+              "successActions": [
+                {
+                  "$type": "FireEffect",
+                  "effectPattern": "Eff_Avatar_Keqing_ElementalArt_HideSpark_Talent",
+                  "scale": 1,
+                  "JHAGIJGAKMK": ""
+                },
+                {
+                  "$type": "FireEffect",
+                  "effectPattern": "Eff_Avatar_Keqing_ElementalArt_ShowSpark_Talent",
+                  "scale": 1,
+                  "JHAGIJGAKMK": ""
                 }
               ],
               "targetPredicates": [
@@ -1030,32 +1096,46 @@
               "modifierName": "Keqing_SkinSet"
             }
           ],
+          "onRemoved": [
+            {
+              "$type": "TriggerSetVisible",
+              "doOffStage": true,
+              "visible": true
+            }
+          ],
           "properties": {
             "Actor_EndureDelta": 0
           },
-          "elementDurability": 100,
-          "modifierName": "",
           "__unk_Q3323398612": 0
         },
         "Keqing_SkinSet": {
           "duration": 1.2,
-          "onRemoved": [
-            {
-              "$type": "SetAnimatorTrigger",
-              "triggerID": "SkinReset"
-            }
-          ],
+          "elementDurability": 100,
+          "modifierName": "",
           "onAdded": [
             {
               "$type": "SetAnimatorTrigger",
               "triggerID": "SkinSet"
             }
           ],
-          "elementDurability": 100,
-          "modifierName": "",
+          "onRemoved": [
+            {
+              "$type": "SetAnimatorTrigger",
+              "triggerID": "SkinReset"
+            }
+          ],
           "__unk_Q3323398612": 0
         },
         "Keqing_CloseCollider_Air": {
+          "elementDurability": 100,
+          "modifierName": "",
+          "onAdded": [
+            {
+              "$type": "TriggerSetPassThrough",
+              "doOffStage": true,
+              "passThrough": true
+            }
+          ],
           "onRemoved": [
             {
               "$type": "TriggerSetPassThrough",
@@ -1070,18 +1150,17 @@
               ]
             }
           ],
-          "onAdded": [
-            {
-              "$type": "TriggerSetPassThrough",
-              "passThrough": true,
-              "doOffStage": true
-            }
-          ],
-          "elementDurability": 100,
-          "modifierName": "",
           "__unk_Q3323398612": 0
         },
         "Keqing_Air_LoseWeight": {
+          "elementDurability": 100,
+          "modifierName": "",
+          "onAdded": [
+            {
+              "$type": "SetVelocityIgnoreAirGY",
+              "ignoreAirGY": true
+            }
+          ],
           "onRemoved": [
             {
               "$type": "SetVelocityIgnoreAirGY",
@@ -1093,23 +1172,23 @@
                 "RushMoveType",
                 "InertiaType"
               ]
-            }
-          ],
-          "onAdded": [
-            {
-              "$type": "SetVelocityIgnoreAirGY",
-              "ignoreAirGY": true
             }
           ],
           "properties": {
             "Actor_AddGravityScale": -2,
             "Actor_FallingDamageRatio": -1
           },
-          "elementDurability": 100,
-          "modifierName": "",
           "__unk_Q3323398612": 0
         },
         "Keqing_Air_LoseWeight2": {
+          "elementDurability": 100,
+          "modifierName": "",
+          "onAdded": [
+            {
+              "$type": "SetVelocityIgnoreAirGY",
+              "ignoreAirGY": true
+            }
+          ],
           "onRemoved": [
             {
               "$type": "SetVelocityIgnoreAirGY",
@@ -1123,47 +1202,39 @@
               ]
             }
           ],
-          "onAdded": [
-            {
-              "$type": "SetVelocityIgnoreAirGY",
-              "ignoreAirGY": true
-            }
-          ],
           "properties": {
             "Actor_AddGravityScale": -2
           },
-          "elementDurability": 100,
-          "modifierName": "",
           "__unk_Q3323398612": 0
         },
         "Electrans_CameraPullBack_Air": {
+          "elementDurability": 100,
+          "modifierName": "",
           "onAdded": [
             {
               "$type": "AvatarCameraParam",
               "cameraParam": {
-                "shouldKeepForceRadius": true,
+                "forceRadius": 5,
                 "forceRadiusDuration": 0,
-                "forceRadius": 5
+                "shouldKeepForceRadius": true
               }
             }
           ],
-          "elementDurability": 100,
-          "modifierName": "",
           "__unk_Q3323398612": 0
         },
         "Keqing_ElementalArt_AttackElectric": {
           "duration": "Dura",
-          "onAdded": [
-            {
-              "$type": "AttachEffect",
-              "ILLLPEOODKP": "",
-              "scale": 1,
-              "effectPattern": "Eff_Avatar_Keqing_Break1_Buff"
-            }
-          ],
           "elementDurability": 25,
           "elementType": "Electric",
           "modifierName": "",
+          "onAdded": [
+            {
+              "$type": "AttachEffect",
+              "effectPattern": "Eff_Avatar_Keqing_Break1_Buff",
+              "scale": 1,
+              "JHAGIJGAKMK": ""
+            }
+          ],
           "overrideWeaponElement": true,
           "__unk_Q3323398612": 0
         }
@@ -1171,19 +1242,19 @@
       "onAbilityStart": [
         {
           "$type": "AvatarSkillStart",
-          "skillID": 10423,
           "cdRatio": 1,
           "costStaminaRatio": 1,
-          "cdRatio": 1
+          "skillID": 10423,
+          "NKOFINBNOOK": 1
         },
         {
           "$type": "SetSelfAttackTarget",
-          "turnToTargetImmediately": true,
           "otherTargets": {
             "$type": "SelectTargetsByChildren",
             "configID": 41042004,
             "topLimit": 1
-          }
+          },
+          "turnToTargetImmediately": true
         },
         {
           "$type": "KillGadget",
@@ -1205,21 +1276,21 @@
         },
         {
           "$type": "FixedAvatarRushMove",
-          "toPos": {
-            "$type": "ConfigBornByGlobalValue",
-            "positionKey": "_ABILITY_Keqing_AttackPos",
-            "directionKey": ""
-          },
-          "overrideMoveCollider": "",
-          "maxRange": 15,
-          "timeRange": 0.16,
           "animatorStateIDs": [
             "Electrans_Ground",
             "Electrans_Fly",
             "Electrans_FlyAir"
           ],
           "isInAir": true,
-          "target": "Target"
+          "maxRange": 15,
+          "overrideMoveCollider": "",
+          "target": "Target",
+          "timeRange": 0.16,
+          "toPos": {
+            "$type": "ConfigBornByGlobalValue",
+            "directionKey": "",
+            "positionKey": "_ABILITY_Keqing_AttackPos"
+          }
         },
         {
           "$type": "RemoveUniqueModifier",
@@ -1253,187 +1324,123 @@
             }
           ]
         }
-      ],
-      "abilityMixins": [
-        {
-          "$type": "AttachToNormalizedTimeMixin",
-          "modifierName": "Keqing_Blink_Ground",
-          "__unk_Q2081332355": "",
-          "normalizeEnd": 0.55,
-          "stateID": "Electrans_Ground"
-        },
-        {
-          "$type": "AttachToNormalizedTimeMixin",
-          "modifierName": "Keqing_CloseCollider_Ground",
-          "__unk_Q2081332355": "",
-          "normalizeEnd": 0.5,
-          "stateID": "Electrans_Ground"
-        },
-        {
-          "$type": "AttachToNormalizedTimeMixin",
-          "modifierName": "Keqing_Blink",
-          "__unk_Q2081332355": "",
-          "normalizeEnd": 0.55,
-          "stateID": "Electrans_Fly"
-        },
-        {
-          "$type": "AttachToNormalizedTimeMixin",
-          "modifierName": "Keqing_CloseCollider",
-          "__unk_Q2081332355": "",
-          "normalizeEnd": 0.5,
-          "stateID": "Electrans_Fly"
-        },
-        {
-          "$type": "AttachToNormalizedTimeMixin",
-          "modifierName": "Keqing_Blink_Air",
-          "__unk_Q2081332355": "",
-          "normalizeEnd": 0.55,
-          "stateID": "Electrans_FlyAir"
-        },
-        {
-          "$type": "AttachToNormalizedTimeMixin",
-          "modifierName": "Keqing_CloseCollider_Air",
-          "__unk_Q2081332355": "",
-          "normalizeEnd": 0.26,
-          "stateID": "Electrans_FlyAir"
-        },
-        {
-          "$type": "AttachToStateIDMixin",
-          "__unk_Q2081332355": "",
-          "stateIDs": [
-            "Electrans_Fly",
-            "Electrans_FlyAir"
-          ],
-          "modifierName": "Keqing_Air_LoseWeight"
-        },
-        {
-          "$type": "AttachToNormalizedTimeMixin",
-          "modifierName": "Keqing_Air_LoseWeight2",
-          "__unk_Q2081332355": "",
-          "normalizeEnd": 0.4,
-          "stateID": "Electrans_FlyAir_AS"
-        },
-        {
-          "$type": "AttachToNormalizedTimeMixin",
-          "modifierName": "Electrans_CameraPullBack_Air",
-          "__unk_Q2081332355": "",
-          "normalizeEnd": 0.9,
-          "stateID": "Electrans_FlyAir"
-        }
-      ],
-      "abilityName": "Avatar_Keqing_Electrans_Part2",
-      "abilitySpecials": {
-        "Dura": 0.6
-      }
+      ]
     }
   },
   {
     "Default": {
+      "abilityName": "Avatar_Keqing_Talent_Electrans_BlinkAttack1",
+      "abilitySpecials": {
+        "Damage": 0
+      },
+      "isDynamicAbility": true,
       "onAbilityStart": [
         {
           "$type": "TriggerAttackEvent",
-          "targetType": "Enemy",
           "attackEvent": {
             "attackInfo": {
               "attackProperty": {
-                "elementType": "Electric",
                 "attackType": "Melee",
-                "damagePercentageRatio": 0,
-                "strikeType": "Default",
-                "enBreak": 50,
                 "damagePercentage": "Damage",
+                "damagePercentageRatio": 0,
                 "elementDurability": 25,
+                "elementType": "Electric",
+                "enBreak": 50,
+                "strikeType": "Default",
                 "__exp_arkhe": 0
               },
-              "hitPattern": {
-                "__unk_Q3893899620": "",
-                "retreatType": "ByHitDirection",
-                "onHitEffectName": "default",
-                "hitHaltTimeScale": 0.01,
-                "hitImpulseType": "LV1"
-              },
+              "attackTag": "Elemental_Art_Hold",
               "attenuationGroup": "default",
               "attenuationTag": "Elemental_Art",
-              "attackTag": "Elemental_Art_Hold"
+              "hitPattern": {
+                "hitHaltTimeScale": 0.01,
+                "hitImpulseType": "LV1",
+                "onHitEffectName": "default",
+                "retreatType": "ByHitDirection",
+                "__unk_Q3893899620": ""
+              }
             },
             "attackPattern": {
               "$type": "ConfigAttackSphere",
-              "radius": 2,
-              "triggerType": "TriggerNoRepeat",
-              "ignoreMassive": true,
               "born": {
                 "$type": "ConfigBornBySelf",
                 "offset": {
                   "y": 1
                 }
-              }
+              },
+              "ignoreMassive": true,
+              "radius": 2,
+              "triggerType": "TriggerNoRepeat"
             }
-          }
+          },
+          "targetType": "Enemy"
         }
-      ],
-      "abilityName": "Avatar_Keqing_Talent_Electrans_BlinkAttack1",
-      "isDynamicAbility": true,
-      "abilitySpecials": {
-        "Damage": 0
-      }
+      ]
     }
   },
   {
     "Default": {
+      "abilityName": "Avatar_Keqing_Talent_Electrans_BlinkAttack2",
+      "abilitySpecials": {
+        "Damage": 0
+      },
+      "isDynamicAbility": true,
       "onAbilityStart": [
         {
           "$type": "TriggerAttackEvent",
-          "targetType": "Enemy",
           "attackEvent": {
             "attackInfo": {
               "attackProperty": {
-                "elementType": "Electric",
                 "attackType": "Melee",
-                "damagePercentageRatio": 0,
-                "strikeType": "Default",
-                "enBreak": 50,
                 "damagePercentage": "Damage",
+                "damagePercentageRatio": 0,
                 "elementDurability": 25,
+                "elementType": "Electric",
+                "enBreak": 50,
+                "strikeType": "Default",
                 "__exp_arkhe": 0
               },
-              "hitPattern": {
-                "__unk_Q3893899620": "",
-                "retreatType": "ByHitDirection",
-                "onHitEffectName": "default",
-                "hitHaltTimeScale": 0.01,
-                "hitImpulseType": "LV1"
-              },
+              "attackTag": "Elemental_Art_Hold",
               "attenuationGroup": "default",
               "attenuationTag": "Elemental_Art",
-              "attackTag": "Elemental_Art_Hold"
+              "hitPattern": {
+                "hitHaltTimeScale": 0.01,
+                "hitImpulseType": "LV1",
+                "onHitEffectName": "default",
+                "retreatType": "ByHitDirection",
+                "__unk_Q3893899620": ""
+              }
             },
             "attackPattern": {
               "$type": "ConfigAttackSphere",
-              "radius": 2,
-              "triggerType": "TriggerNoRepeat",
-              "ignoreMassive": true,
               "born": {
                 "$type": "ConfigBornBySelf",
                 "offset": {
                   "z": 1.5,
                   "y": 1
                 }
-              }
+              },
+              "ignoreMassive": true,
+              "radius": 2,
+              "triggerType": "TriggerNoRepeat"
             }
-          }
+          },
+          "targetType": "Enemy"
         }
-      ],
-      "abilityName": "Avatar_Keqing_Talent_Electrans_BlinkAttack2",
-      "isDynamicAbility": true,
-      "abilitySpecials": {
-        "Damage": 0
-      }
+      ]
     }
   },
   {
     "Default": {
+      "abilityName": "Avatar_Keqing_Electrans_Strike",
+      "abilitySpecials": {
+        "GetElementRatio": 1,
+        "Damage": 0
+      },
       "modifiers": {
         "GenerateElemBall_ElementalArt": {
+          "elementDurability": 100,
+          "modifierName": "",
           "onAttackLanded": [
             {
               "$type": "Predicated",
@@ -1443,6 +1450,7 @@
                   "modifierName": "Ball"
                 }
               ],
+              "target": "Target",
               "targetPredicates": [
                 {
                   "$type": "ByAttackTags",
@@ -1458,24 +1466,23 @@
                 },
                 {
                   "$type": "ByTargetGlobalValue",
-                  "value": 0,
                   "compareType": "NoneOrEqual",
-                  "key": "_ANIMAL_ENTITY_TYPE"
+                  "key": "_ANIMAL_ENTITY_TYPE",
+                  "value": 0
                 },
                 {
                   "$type": "ByHitStrikeType",
                   "strikeType": "Slash"
                 }
-              ],
-              "target": "Target"
+              ]
             }
           ],
-          "elementDurability": 100,
-          "modifierName": "",
           "__unk_Q3323398612": 0
         },
         "Ball": {
           "duration": 0.6,
+          "elementDurability": 100,
+          "modifierName": "",
           "onAdded": [
             {
               "$type": "Randomed",
@@ -1483,7 +1490,7 @@
               "successActions": [
                 {
                   "$type": "GenerateElemBall",
-                  "ratio": "GetElementRatio",
+                  "baseEnergy": 6,
                   "born": {
                     "$type": "ConfigBornByTarget",
                     "offset": {
@@ -1491,7 +1498,7 @@
                     }
                   },
                   "configID": 2020,
-                  "baseEnergy": 6
+                  "ratio": "GetElementRatio"
                 }
               ]
             },
@@ -1501,7 +1508,7 @@
               "successActions": [
                 {
                   "$type": "GenerateElemBall",
-                  "ratio": "GetElementRatio",
+                  "baseEnergy": 3,
                   "born": {
                     "$type": "ConfigBornByTarget",
                     "offset": {
@@ -1509,238 +1516,240 @@
                     }
                   },
                   "configID": 2020,
-                  "baseEnergy": 3
+                  "ratio": "GetElementRatio"
                 }
               ]
             }
           ],
           "stacking": "Unique",
-          "elementDurability": 100,
-          "modifierName": "",
           "__unk_Q3323398612": 0
         }
       },
       "onAbilityStart": [
         {
           "$type": "TriggerAttackEvent",
-          "targetType": "Enemy",
           "attackEvent": {
             "attackInfo": {
               "attackProperty": {
-                "elementType": "Electric",
                 "attackType": "Melee",
-                "damagePercentageRatio": 0,
-                "strikeType": "Slash",
-                "enBreak": 100,
                 "damagePercentage": "Damage",
+                "damagePercentageRatio": 0,
                 "elementDurability": 50,
+                "elementType": "Electric",
+                "enBreak": 100,
+                "strikeType": "Slash",
                 "__exp_arkhe": 0
               },
-              "cameraShake": {
-                "shakeDir": {
-                  "y": 0.1,
-                  "x": -0.9
-                },
-                "shakeTime": 0.12,
-                "shakeType": "CustomVector",
-                "MNKFEFOKFKP": "",
-                "shakeRange": 0.3
-              },
-              "hitPattern": {
-                "__unk_Q3893899620": "",
-                "retreatType": "ByHitDirection",
-                "onHitEffectName": "Eff_Avatar_Keqing_ElementalArt_Strike_Hit",
-                "hitHaltTimeScale": 0.01,
-                "hitHaltTime": 0.09,
-                "overrideHitImpulse": {
-                  "hitLevel": "Air",
-                  "hitImpulseX": 0,
-                  "hitImpulseY": 600
-                },
-                "hitImpulseType": "LV7"
-              },
+              "attackTag": "Elemental_Art",
               "attenuationGroup": "default",
               "attenuationTag": "Elemental_Art",
-              "attackTag": "Elemental_Art"
+              "cameraShake": {
+                "shakeDir": {
+                  "z": -0.9,
+                  "y": 0.1
+                },
+                "shakeRange": 0.3,
+                "shakeTime": 0.12,
+                "shakeType": "CustomVector",
+                "OFGBHFBAEKK": ""
+              },
+              "hitPattern": {
+                "hitHaltTime": 0.09,
+                "hitHaltTimeScale": 0.01,
+                "hitImpulseType": "LV7",
+                "onHitEffectName": "Eff_Avatar_Keqing_ElementalArt_Strike_Hit",
+                "overrideHitImpulse": {
+                  "hitImpulseX": 0,
+                  "hitImpulseY": 600,
+                  "hitLevel": "Air"
+                },
+                "retreatType": "ByHitDirection",
+                "__unk_Q3893899620": ""
+              }
             },
             "attackPattern": {
               "$type": "ConfigAttackCircle",
-              "radius": 3,
-              "height": 3,
-              "triggerType": "TriggerNoRepeat",
-              "ignoreMassive": true,
               "born": {
                 "$type": "ConfigBornBySelf",
                 "offset": {
                   "z": 1,
                   "y": -1
                 }
-              }
+              },
+              "height": 3,
+              "ignoreMassive": true,
+              "radius": 3,
+              "triggerType": "TriggerNoRepeat"
             }
-          }
+          },
+          "targetType": "Enemy"
         }
       ],
-      "abilityName": "Avatar_Keqing_Electrans_Strike",
       "onAdded": [
         {
           "$type": "AttachModifier",
           "modifierName": "GenerateElemBall_ElementalArt"
         }
-      ],
-      "abilitySpecials": {
-        "GetElementRatio": 1,
-        "Damage": 0
-      }
+      ]
     }
   },
   {
     "Default": {
+      "abilityName": "Keqing_SkillBullet_Material",
+      "abilitySpecials": {
+        "ExtraHeight": 0,
+        "Damage": 0
+      },
       "onAbilityStart": [
         {
           "$type": "TriggerAttackEvent",
-          "targetType": "Enemy",
           "attackEvent": {
             "attackInfo": {
               "attackProperty": {
-                "elementType": "Electric",
-                "damagePercentageRatio": 0,
-                "strikeType": "Default",
-                "enBreak": 50,
                 "damagePercentage": "Damage",
+                "damagePercentageRatio": 0,
                 "elementDurability": 25,
+                "elementType": "Electric",
+                "enBreak": 50,
+                "strikeType": "Default",
                 "__exp_arkhe": 0
               },
-              "cameraShake": {
-                "shakeTime": 0.1,
-                "MNKFEFOKFKP": "",
-                "shakeRange": 0.12
-              },
-              "hitPattern": {
-                "__unk_Q3893899620": "",
-                "onHitEffectName": "Eff_Avatar_Keqing_ElementalArt_Hit",
-                "hitHaltTimeScale": 0.01,
-                "hitImpulseType": "LV3"
-              },
+              "attackTag": "Elemental_Art",
               "attenuationGroup": "default",
               "attenuationTag": "",
-              "attackTag": "Elemental_Art",
-              "canBeModifiedBy": "OriginOwner"
+              "cameraShake": {
+                "shakeRange": 0.12,
+                "shakeTime": 0.1,
+                "OFGBHFBAEKK": ""
+              },
+              "canBeModifiedBy": "OriginOwner",
+              "hitPattern": {
+                "hitHaltTimeScale": 0.01,
+                "hitImpulseType": "LV3",
+                "onHitEffectName": "Eff_Avatar_Keqing_ElementalArt_Hit",
+                "__unk_Q3893899620": ""
+              }
             },
             "attackPattern": {
               "$type": "ConfigAttackSphere",
-              "radius": 1.6,
-              "triggerType": "TriggerNoRepeat",
               "born": {
                 "$type": "ConfigBornBySelf"
               },
-              "checkHitLayerType": "Both"
+              "checkHitLayerType": "Both",
+              "radius": 1.6,
+              "triggerType": "TriggerNoRepeat"
             }
-          }
+          },
+          "targetType": "Enemy"
+        }
+      ],
+      "onAdded": [
+        {
+          "$type": "AttachEffect",
+          "effectPattern": "Eff_Avatar_Keqing_ElementalArt_Bullet",
+          "scale": 1,
+          "JHAGIJGAKMK": ""
         }
       ],
       "onKill": [
         {
           "$type": "Predicated",
-          "successActions": [
-            {
-              "$type": "AddGlobalValue",
-              "useLimitRange": true,
-              "key": "_ABILITY_Keqing_GadgetHigh",
-              "maxValue": 1,
-              "minValue": 1,
-              "value": 1,
-              "target": "Owner"
-            },
-            {
-              "$type": "SetGlobalPos",
-              "key": "_ABILITY_Keqing_AttackPos",
-              "born": {
-                "$type": "ConfigBornBySelf"
-              },
-              "target": "Owner",
-              "doOffStage": true
-            },
-            {
-              "$type": "SetGlobalDir",
-              "key": "_ABILITY_Keqing_AttackDir",
-              "born": {
-                "$type": "ConfigBornBySelf"
-              },
-              "target": "Owner",
-              "doOffStage": true
-            }
-          ],
           "failActions": [
             {
               "$type": "AddGlobalValue",
-              "useLimitRange": true,
               "key": "_ABILITY_Keqing_GadgetHigh",
               "maxValue": 0,
               "minValue": 0,
-              "value": 0,
-              "target": "Owner"
+              "target": "Owner",
+              "useLimitRange": true,
+              "value": 0
             },
             {
               "$type": "SetGlobalPos",
-              "key": "_ABILITY_Keqing_AttackPos",
               "born": {
                 "$type": "ConfigBornBySelf",
                 "onGround": true,
                 "onGroundRaycastUpDist": 1
               },
-              "target": "Owner",
-              "doOffStage": true
+              "doOffStage": true,
+              "key": "_ABILITY_Keqing_AttackPos",
+              "target": "Owner"
             },
             {
               "$type": "SetGlobalDir",
-              "key": "_ABILITY_Keqing_AttackDir",
               "born": {
                 "$type": "ConfigBornBySelf",
                 "onGround": true,
                 "onGroundRaycastUpDist": 1
               },
+              "doOffStage": true,
+              "key": "_ABILITY_Keqing_AttackDir",
+              "target": "Owner"
+            }
+          ],
+          "successActions": [
+            {
+              "$type": "AddGlobalValue",
+              "key": "_ABILITY_Keqing_GadgetHigh",
+              "maxValue": 1,
+              "minValue": 1,
               "target": "Owner",
-              "doOffStage": true
+              "useLimitRange": true,
+              "value": 1
+            },
+            {
+              "$type": "SetGlobalPos",
+              "born": {
+                "$type": "ConfigBornBySelf"
+              },
+              "doOffStage": true,
+              "key": "_ABILITY_Keqing_AttackPos",
+              "target": "Owner"
+            },
+            {
+              "$type": "SetGlobalDir",
+              "born": {
+                "$type": "ConfigBornBySelf"
+              },
+              "doOffStage": true,
+              "key": "_ABILITY_Keqing_AttackDir",
+              "target": "Owner"
             }
           ],
           "targetPredicates": [
             {
               "$type": "ByTargetAltitude",
-              "value": 0.5,
-              "logic": "GreaterOrEqual"
+              "logic": "GreaterOrEqual",
+              "value": 0.5
             }
           ]
         },
         {
           "$type": "TriggerAbility",
           "abilityName": "Avatar_Keqing_Electrans_SetGadget",
-          "target": "Owner",
-          "doOffStage": true
+          "doOffStage": true,
+          "target": "Owner"
         }
-      ],
-      "abilityName": "Keqing_SkillBullet_Material",
-      "onAdded": [
-        {
-          "$type": "AttachEffect",
-          "ILLLPEOODKP": "",
-          "scale": 1,
-          "effectPattern": "Eff_Avatar_Keqing_ElementalArt_Bullet"
-        }
-      ],
-      "abilitySpecials": {
-        "ExtraHeight": 0,
-        "Damage": 0
-      }
+      ]
     }
   },
   {
     "Default": {
+      "abilityName": "Keqing_SkillGadget_Material",
       "onAbilityStart": [
         {
           "$type": "SendEffectTrigger",
-          "parameter": "Eff_Keqing_Trap_Bomb",
+          "attachPoint": "",
           "effectPattern": "Eff_Avatar_Keqing_ElementalArt_Trap",
-          "attachPoint": ""
+          "parameter": "Eff_Keqing_Trap_Bomb"
+        }
+      ],
+      "onAdded": [
+        {
+          "$type": "AttachEffect",
+          "effectPattern": "Eff_Avatar_Keqing_ElementalArt_Trap",
+          "scale": 1,
+          "JHAGIJGAKMK": ""
         }
       ],
       "onKill": [
@@ -1748,195 +1757,229 @@
           "$type": "FireEffect",
           "effectPattern": "Eff_Avatar_Keqing_ElementalArt_Trap_Die",
           "scale": 1,
-          "ILLLPEOODKP": ""
+          "JHAGIJGAKMK": ""
         },
         {
           "$type": "RemoveUniqueModifier",
           "modifierName": "UNIQUE_Keqing_SkillChange",
           "target": "Owner"
         }
-      ],
-      "abilityName": "Keqing_SkillGadget_Material",
-      "onAdded": [
+      ]
+    }
+  },
+  {
+    "Default": {
+      "abilityName": "Keqing_SkillGadget_ExplodeAbility",
+      "onAbilityStart": [
         {
-          "$type": "AttachEffect",
-          "ILLLPEOODKP": "",
-          "scale": 1,
-          "effectPattern": "Eff_Avatar_Keqing_ElementalArt_Trap"
+          "$type": "CreateGadget",
+          "campID": 1001,
+          "campTargetType": "Enemy",
+          "gadgetID": 41042005
+        },
+        {
+          "$type": "KillSelf"
         }
       ]
     }
   },
   {
     "Default": {
-      "onAbilityStart": [
-        {
-          "$type": "CreateGadget",
-          "gadgetID": 41042005,
-          "campID": 1001,
-          "campTargetType": "Enemy"
-        },
-        {
-          "$type": "KillSelf"
-        }
-      ],
-      "abilityName": "Keqing_SkillGadget_ExplodeAbility"
-    }
-  },
-  {
-    "Default": {
+      "abilityName": "Keqing_TrapBurst_Material",
+      "abilitySpecials": {
+        "GetElementRatio": 1,
+        "Damage1": 0,
+        "Damage2": 0
+      },
       "modifiers": {
         "Trap_Busrt": {
           "duration": 0.1,
-          "onRemoved": [
-            {
-              "$type": "TriggerAttackEvent",
-              "targetType": "Enemy",
-              "attackEvent": {
-                "attackInfo": {
-                  "attackProperty": {
-                    "elementType": "Electric",
-                    "attackType": "Range",
-                    "damagePercentageRatio": 0,
-                    "strikeType": "Slash",
-                    "enBreak": 50,
-                    "damagePercentage": "Damage2",
-                    "elementDurability": 50,
-                    "__exp_arkhe": 0
-                  },
-                  "hitPattern": {
-                    "__unk_Q3893899620": "",
-                    "retreatType": "ByOriginOwner",
-                    "onHitEffectName": "default",
-                    "hitHaltTimeScale": 0.01,
-                    "hitImpulseType": "LV2"
-                  },
-                  "attenuationGroup": "default",
-                  "attenuationTag": "Elemental_Art",
-                  "attackTag": "Elemental_Art",
-                  "canBeModifiedBy": "OriginOwner"
-                },
-                "attackPattern": {
-                  "$type": "ConfigAttackSphere",
-                  "radius": 2.5,
-                  "triggerType": "TriggerNoRepeat",
-                  "born": {
-                    "$type": "ConfigBornBySelf",
-                    "offset": {
-                      "y": 0.4
-                    }
-                  }
-                }
-              }
-            }
-          ],
+          "elementDurability": 100,
+          "modifierName": "",
           "onAdded": [
             {
               "$type": "FireEffect",
               "effectPattern": "Eff_Avatar_Keqing_ElementalArt_TrapBurst",
               "scale": 1,
-              "ILLLPEOODKP": ""
+              "JHAGIJGAKMK": ""
             },
             {
               "$type": "TriggerAttackEvent",
-              "targetType": "Enemy",
               "attackEvent": {
                 "attackInfo": {
                   "attackProperty": {
-                    "elementType": "Electric",
                     "attackType": "Range",
-                    "damagePercentageRatio": 0,
-                    "strikeType": "Slash",
-                    "enBreak": 50,
                     "damagePercentage": "Damage1",
+                    "damagePercentageRatio": 0,
                     "elementDurability": 50,
+                    "elementType": "Electric",
+                    "enBreak": 50,
+                    "strikeType": "Slash",
                     "__exp_arkhe": 0
                   },
-                  "hitPattern": {
-                    "__unk_Q3893899620": "",
-                    "retreatType": "ByOriginOwner",
-                    "onHitEffectName": "default",
-                    "hitHaltTimeScale": 0.01,
-                    "hitImpulseType": "LV2"
-                  },
+                  "attackTag": "Elemental_Art",
                   "attenuationGroup": "default",
                   "attenuationTag": "Elemental_Art",
-                  "attackTag": "Elemental_Art",
-                  "canBeModifiedBy": "OriginOwner"
+                  "canBeModifiedBy": "OriginOwner",
+                  "hitPattern": {
+                    "hitHaltTimeScale": 0.01,
+                    "hitImpulseType": "LV2",
+                    "onHitEffectName": "default",
+                    "retreatType": "ByOriginOwner",
+                    "__unk_Q3893899620": ""
+                  }
                 },
                 "attackPattern": {
                   "$type": "ConfigAttackSphere",
-                  "radius": 2.5,
-                  "triggerType": "TriggerNoRepeat",
                   "born": {
                     "$type": "ConfigBornBySelf"
-                  }
+                  },
+                  "radius": 2.5,
+                  "triggerType": "TriggerNoRepeat"
                 }
-              }
+              },
+              "targetType": "Enemy"
             }
           ],
-          "elementDurability": 100,
-          "modifierName": "",
+          "onRemoved": [
+            {
+              "$type": "TriggerAttackEvent",
+              "attackEvent": {
+                "attackInfo": {
+                  "attackProperty": {
+                    "attackType": "Range",
+                    "damagePercentage": "Damage2",
+                    "damagePercentageRatio": 0,
+                    "elementDurability": 50,
+                    "elementType": "Electric",
+                    "enBreak": 50,
+                    "strikeType": "Slash",
+                    "__exp_arkhe": 0
+                  },
+                  "attackTag": "Elemental_Art",
+                  "attenuationGroup": "default",
+                  "attenuationTag": "Elemental_Art",
+                  "canBeModifiedBy": "OriginOwner",
+                  "hitPattern": {
+                    "hitHaltTimeScale": 0.01,
+                    "hitImpulseType": "LV2",
+                    "onHitEffectName": "default",
+                    "retreatType": "ByOriginOwner",
+                    "__unk_Q3893899620": ""
+                  }
+                },
+                "attackPattern": {
+                  "$type": "ConfigAttackSphere",
+                  "born": {
+                    "$type": "ConfigBornBySelf",
+                    "offset": {
+                      "y": 0.4
+                    }
+                  },
+                  "radius": 2.5,
+                  "triggerType": "TriggerNoRepeat"
+                }
+              },
+              "targetType": "Enemy"
+            }
+          ],
           "__unk_Q3323398612": 0
         }
       },
-      "abilityName": "Keqing_TrapBurst_Material",
       "onAdded": [
         {
           "$type": "ApplyModifier",
           "modifierName": "Trap_Busrt"
         }
-      ],
-      "abilitySpecials": {
-        "GetElementRatio": 1,
-        "Damage1": 0,
-        "Damage2": 0
-      }
+      ]
     }
   },
   {
     "Default": {
+      "abilityMixins": [
+        {
+          "$type": "AttachToStateIDMixin",
+          "modifierName": "Camera_Handler",
+          "stateIDs": [
+            "ElementalBurst_BS",
+            "ElementalBurst",
+            "ElementalBurst_AS"
+          ],
+          "__unk_Q2081332355": ""
+        },
+        {
+          "$type": "AttachToStateIDMixin",
+          "modifierName": "Keqing_EmotionControl",
+          "stateIDs": [
+            "ElementalBurst_BS",
+            "ElementalBurst"
+          ],
+          "__unk_Q2081332355": ""
+        },
+        {
+          "$type": "AttachToStateIDMixin",
+          "modifierName": "ElementalBurst_Protection",
+          "stateIDs": [
+            "ElementalBurst_BS",
+            "ElementalBurst",
+            "ElementalBurst_AS"
+          ],
+          "__unk_Q2081332355": ""
+        },
+        {
+          "$type": "AttachToStateIDMixin",
+          "modifierName": "Keqing_ElementalBurst_HideWeapon",
+          "stateIDs": [
+            "ElementalBurst_BS",
+            "ElementalBurst"
+          ],
+          "__unk_Q2081332355": ""
+        },
+        {
+          "$type": "AttachToStateIDMixin",
+          "modifierName": "Keqing_ElementalBurst_Initialize",
+          "stateIDs": [
+            "ElementalBurst_BS"
+          ],
+          "__unk_Q2081332355": ""
+        },
+        {
+          "$type": "AttachToNormalizedTimeMixin",
+          "modifierName": "Keqing_ElementalBurst_Hide",
+          "normalizeEnd": 0.9,
+          "normalizeStart": 0.02,
+          "stateID": "ElementalBurst",
+          "__unk_Q2081332355": ""
+        }
+      ],
+      "abilityName": "Avatar_Keqing_ElementalBurst_Camera",
+      "abilitySpecials": {
+        "Critic": 0,
+        "ChargeRatio": 0,
+        "Time": 0
+      },
       "modifiers": {
         "ElementalBurst_Protection": {
+          "elementDurability": 100,
+          "modifierName": "",
           "onAdded": [
             {
               "$type": "AttachAbilityStateResistance",
               "resistanceListID": 11002
             }
           ],
-          "elementDurability": 100,
           "state": "Invincible",
-          "modifierName": "",
           "__unk_Q3323398612": 0
         },
         "Camera_Handler": {
-          "onRemoved": [
+          "elementDurability": 100,
+          "modifierMixins": [
             {
-              "$type": "AvatarExitCameraShot",
-              "doOffStage": true
-            },
-            {
-              "$type": "EnableHeadControl",
-              "enable": true
-            },
-            {
-              "$type": "DungeonFogEffects",
-              "playerFogEffectName": "",
-              "cameraFogEffectName": "Eff_Avatar_Keqing_ElementalBurst_CameraEff",
-              "localOffset": {
-                "z": -3
-              },
-              "doOffStage": true
-            },
-            {
-              "$type": "AvatarCameraParam",
-              "cameraParam": {
-                "shouldKeepForceRadius": true,
-                "forceRadiusDuration": 0.6,
-                "forceRadius": 8
-              }
+              "$type": "TriggerPostProcessEffectMixin",
+              "postEffectAssetName": "PostEffect_Avatar_Keqing_ElementalBurst_ScreenEffect_01"
             }
           ],
+          "modifierName": "",
           "onAdded": [
             {
               "$type": "EnableHeadControl",
@@ -1950,51 +1993,66 @@
             },
             {
               "$type": "EnableHeadControl",
-              "enable": true,
-              "doOffStage": true
+              "doOffStage": true,
+              "enable": true
             },
             {
               "$type": "DungeonFogEffects",
-              "playerFogEffectName": "",
               "cameraFogEffectName": "Eff_Avatar_Keqing_ElementalBurst_CameraEff",
+              "doOffStage": true,
               "localOffset": {
-                "z": -3
+                "x": -3
               },
-              "doOffStage": true
+              "playerFogEffectName": ""
             },
             {
               "$type": "AvatarCameraParam",
               "cameraParam": {
-                "shouldKeepForceRadius": true,
+                "forceRadius": 8,
                 "forceRadiusDuration": 0.6,
-                "forceRadius": 8
+                "shouldKeepForceRadius": true
               },
               "doOffStage": true
             }
           ],
-          "elementDurability": 100,
-          "modifierMixins": [
+          "onRemoved": [
             {
-              "$type": "TriggerPostProcessEffectMixin",
-              "postEffectAssetName": "PostEffect_Avatar_Keqing_ElementalBurst_ScreenEffect_01"
+              "$type": "AvatarExitCameraShot",
+              "doOffStage": true
+            },
+            {
+              "$type": "EnableHeadControl",
+              "enable": true
+            },
+            {
+              "$type": "DungeonFogEffects",
+              "cameraFogEffectName": "Eff_Avatar_Keqing_ElementalBurst_CameraEff",
+              "doOffStage": true,
+              "localOffset": {
+                "x": -3
+              },
+              "playerFogEffectName": ""
+            },
+            {
+              "$type": "AvatarCameraParam",
+              "cameraParam": {
+                "forceRadius": 8,
+                "forceRadiusDuration": 0.6,
+                "shouldKeepForceRadius": true
+              }
             }
           ],
-          "modifierName": "",
           "__unk_Q3323398612": 0
         },
         "Keqing_EmotionControl": {
-          "onRemoved": [
-            {
-              "$type": "ControlEmotion",
-              "doOffStage": true
-            }
-          ],
+          "elementDurability": 100,
+          "modifierName": "",
           "onAdded": [
             {
               "$type": "ControlEmotion",
-              "MJCILBIAAJA": false,
-              "PIIDHCFMKEM": false,
-              "LIIHBLNMGAF": false
+              "DPOOKEFGHMF": false,
+              "GOOCKOFEIOB": false,
+              "HBOECFAANAH": false
             }
           ],
           "onAvatarOut": [
@@ -2003,8 +2061,12 @@
               "doOffStage": true
             }
           ],
-          "elementDurability": 100,
-          "modifierName": "",
+          "onRemoved": [
+            {
+              "$type": "ControlEmotion",
+              "doOffStage": true
+            }
+          ],
           "__unk_Q3323398612": 0
         },
         "Weather_ChangeMixin": {
@@ -2023,17 +2085,8 @@
           "__unk_Q3323398612": 0
         },
         "Keqing_ElementalBurst_HideWeapon": {
-          "onRemoved": [
-            {
-              "$type": "TriggerHideWeapon",
-              "partNames": [
-                "equip01",
-                "sheathPoint"
-              ],
-              "visible": true,
-              "doOffStage": true
-            }
-          ],
+          "elementDurability": 100,
+          "modifierName": "",
           "onAdded": [
             {
               "$type": "TriggerHideWeapon",
@@ -2043,26 +2096,22 @@
               ]
             }
           ],
-          "elementDurability": 100,
-          "modifierName": "",
+          "onRemoved": [
+            {
+              "$type": "TriggerHideWeapon",
+              "doOffStage": true,
+              "partNames": [
+                "equip01",
+                "sheathPoint"
+              ],
+              "visible": true
+            }
+          ],
           "__unk_Q3323398612": 0
         },
         "Keqing_ElementalBurst_Hide": {
-          "onRemoved": [
-            {
-              "$type": "TriggerSetVisible",
-              "visible": true,
-              "doOffStage": true
-            },
-            {
-              "$type": "EnablePushColliderName",
-              "setEnable": true,
-              "pushColliderNames": [
-                "PushCollider"
-              ],
-              "doOffStage": true
-            }
-          ],
+          "elementDurability": 100,
+          "modifierName": "",
           "onAdded": [
             {
               "$type": "TriggerSetVisible"
@@ -2076,17 +2125,57 @@
             {
               "$type": "AvatarCameraParam",
               "cameraParam": {
-                "shouldKeepForceRadius": true,
+                "forceRadius": 8,
                 "forceRadiusDuration": 0.6,
-                "forceRadius": 8
+                "shouldKeepForceRadius": true
               }
             }
           ],
-          "elementDurability": 100,
-          "modifierName": "",
+          "onRemoved": [
+            {
+              "$type": "TriggerSetVisible",
+              "doOffStage": true,
+              "visible": true
+            },
+            {
+              "$type": "EnablePushColliderName",
+              "doOffStage": true,
+              "pushColliderNames": [
+                "PushCollider"
+              ],
+              "setEnable": true
+            }
+          ],
           "__unk_Q3323398612": 0
         },
         "Keqing_ElementalBurst_Initialize": {
+          "elementDurability": 100,
+          "modifierMixins": [
+            {
+              "$type": "WindZoneMixin",
+              "attenuation": 0,
+              "innerRadius": 0,
+              "modifierName": "",
+              "predicates": [
+                {
+                  "$type": "ByTargetWeight",
+                  "logic": "LesserOrEqual",
+                  "weight": 150
+                },
+                {
+                  "$type": "ByEntityTypes",
+                  "entityTypes": [
+                    "Avatar"
+                  ],
+                  "reject": true
+                }
+              ],
+              "shapeName": "CircleR2",
+              "strength": -2,
+              "targetType": "All"
+            }
+          ],
+          "modifierName": "",
           "onAdded": [
             {
               "$type": "ApplyModifier",
@@ -2099,89 +2188,50 @@
               ]
             }
           ],
-          "elementDurability": 100,
-          "modifierMixins": [
-            {
-              "$type": "WindZoneMixin",
-              "targetType": "All",
-              "modifierName": "",
-              "innerRadius": 0,
-              "strength": -2,
-              "attenuation": 0,
-              "shapeName": "CircleR2",
-              "predicates": [
-                {
-                  "$type": "ByTargetWeight",
-                  "weight": 150,
-                  "logic": "LesserOrEqual"
-                },
-                {
-                  "$type": "ByEntityTypes",
-                  "entityTypes": [
-                    "Avatar"
-                  ],
-                  "reject": true
-                }
-              ]
-            }
-          ],
-          "modifierName": "",
           "__unk_Q3323398612": 0
         },
         "Keqing_ElementalBurst_Talent_Buff": {
           "duration": "Time",
+          "elementDurability": 100,
+          "modifierName": "",
           "onAdded": [
             {
               "$type": "AttachEffect",
-              "ILLLPEOODKP": "",
+              "effectPattern": "Eff_Avatar_Keqing_Talent6_Buff",
               "scale": 1,
-              "effectPattern": "Eff_Avatar_Keqing_Talent6_Buff"
+              "JHAGIJGAKMK": ""
             }
           ],
           "properties": {
             "Actor_CriticalDelta": "Critic",
             "Actor_ChargeEfficiencyDelta": "ChargeRatio"
           },
-          "elementDurability": 100,
-          "modifierName": "",
           "__unk_Q3323398612": 0
         }
       },
       "onAbilityStart": [
         {
           "$type": "AddGlobalValue",
-          "useLimitRange": true,
           "key": "_ABILITY_Keqing_NoCamera",
           "maxValue": 0,
           "minValue": 0,
+          "useLimitRange": true,
           "value": 0
         },
         {
           "$type": "FireEffect",
           "effectPattern": "Eff_Avatar_Keqing_ElementalBurst_Field",
           "scale": 1,
-          "ILLLPEOODKP": ""
+          "JHAGIJGAKMK": ""
         },
         {
           "$type": "Predicated",
-          "successActions": [
-            {
-              "$type": "AvatarEnterCameraShot",
-              "cameraMoveCfgPath": "Camera_Keqing_ElementalBurst"
-            },
-            {
-              "$type": "FireEffect",
-              "effectPattern": "Eff_Avatar_Keqing_ElementalBurst_Weapon",
-              "scale": 1,
-              "ILLLPEOODKP": ""
-            }
-          ],
           "failActions": [
             {
               "$type": "FireEffect",
               "effectPattern": "Eff_Avatar_Keqing_ElementalBurst_Weapon_NoCamera",
               "scale": 1,
-              "ILLLPEOODKP": ""
+              "JHAGIJGAKMK": ""
             },
             {
               "$type": "AddGlobalValue",
@@ -2191,21 +2241,33 @@
               "value": 1
             }
           ],
+          "successActions": [
+            {
+              "$type": "AvatarEnterCameraShot",
+              "cameraMoveCfgPath": "Camera_Keqing_ElementalBurst"
+            },
+            {
+              "$type": "FireEffect",
+              "effectPattern": "Eff_Avatar_Keqing_ElementalBurst_Weapon",
+              "scale": 1,
+              "JHAGIJGAKMK": ""
+            }
+          ],
           "targetPredicates": [
             {
               "$type": "ByAttackNotHitScene",
               "attackPattern": {
                 "$type": "ConfigAttackCircle",
-                "radius": 1,
-                "height": 0.2,
-                "triggerType": "TriggerNoRepeat",
                 "born": {
                   "$type": "ConfigBornBySelf",
                   "offset": {
                     "z": -0.2,
                     "y": 1
                   }
-                }
+                },
+                "height": 0.2,
+                "radius": 1,
+                "triggerType": "TriggerNoRepeat"
               }
             },
             {
@@ -2219,121 +2281,66 @@
           "$type": "ApplyModifier",
           "modifierName": "Weather_ChangeMixin"
         }
-      ],
-      "abilityMixins": [
-        {
-          "$type": "AttachToStateIDMixin",
-          "__unk_Q2081332355": "",
-          "stateIDs": [
-            "ElementalBurst_BS",
-            "ElementalBurst",
-            "ElementalBurst_AS"
-          ],
-          "modifierName": "Camera_Handler"
-        },
-        {
-          "$type": "AttachToStateIDMixin",
-          "__unk_Q2081332355": "",
-          "stateIDs": [
-            "ElementalBurst_BS",
-            "ElementalBurst"
-          ],
-          "modifierName": "Keqing_EmotionControl"
-        },
-        {
-          "$type": "AttachToStateIDMixin",
-          "__unk_Q2081332355": "",
-          "stateIDs": [
-            "ElementalBurst_BS",
-            "ElementalBurst",
-            "ElementalBurst_AS"
-          ],
-          "modifierName": "ElementalBurst_Protection"
-        },
-        {
-          "$type": "AttachToStateIDMixin",
-          "__unk_Q2081332355": "",
-          "stateIDs": [
-            "ElementalBurst_BS",
-            "ElementalBurst"
-          ],
-          "modifierName": "Keqing_ElementalBurst_HideWeapon"
-        },
-        {
-          "$type": "AttachToStateIDMixin",
-          "__unk_Q2081332355": "",
-          "stateIDs": [
-            "ElementalBurst_BS"
-          ],
-          "modifierName": "Keqing_ElementalBurst_Initialize"
-        },
-        {
-          "$type": "AttachToNormalizedTimeMixin",
-          "modifierName": "Keqing_ElementalBurst_Hide",
-          "__unk_Q2081332355": "",
-          "normalizeEnd": 0.9,
-          "stateID": "ElementalBurst",
-          "normalizeStart": 0.02
-        }
-      ],
-      "abilityName": "Avatar_Keqing_ElementalBurst_Camera",
-      "abilitySpecials": {
-        "Critic": 0,
-        "ChargeRatio": 0,
-        "Time": 0
-      }
+      ]
     }
   },
   {
     "Default": {
+      "abilityName": "Avatar_Keqing_ElementalBurst",
       "onAbilityStart": [
         {
           "$type": "AvatarSkillStart",
-          "skillID": 10425,
           "cdRatio": 1,
           "costStaminaRatio": 1,
-          "cdRatio": 1
+          "skillID": 10425,
+          "NKOFINBNOOK": 1
         },
         {
           "$type": "CreateGadget",
-          "gadgetID": 41042006,
           "campID": 1001,
-          "campTargetType": "Enemy"
+          "campTargetType": "Enemy",
+          "gadgetID": 41042006
         }
-      ],
-      "abilityName": "Avatar_Keqing_ElementalBurst"
+      ]
     }
   },
   {
     "Default": {
+      "abilityName": "Keqing_ElementalBurst_Gadget_Material",
+      "abilitySpecials": {
+        "Damage_Start": 0,
+        "Damage1": 0,
+        "Damage2": 0,
+        "Damage_Last": 0
+      },
       "onAbilityStart": [
         {
           "$type": "Predicated",
-          "successActions": [
-            {
-              "$type": "FireEffect",
-              "effectPattern": "Eff_Avatar_Keqing_ElementalBurst_Attack03",
-              "scale": 1,
-              "ILLLPEOODKP": ""
-            }
-          ],
           "failActions": [
             {
               "$type": "FireEffect",
               "effectPattern": "Eff_Avatar_Keqing_ElementalBurst_Attack03_NoCamera",
               "scale": 1,
-              "ILLLPEOODKP": ""
+              "JHAGIJGAKMK": ""
             }
           ],
+          "successActions": [
+            {
+              "$type": "FireEffect",
+              "effectPattern": "Eff_Avatar_Keqing_ElementalBurst_Attack03",
+              "scale": 1,
+              "JHAGIJGAKMK": ""
+            }
+          ],
+          "target": "Owner",
           "targetPredicates": [
             {
               "$type": "ByTargetGlobalValue",
-              "value": 0,
               "compareType": "NoneOrEqual",
-              "key": "_ABILITY_Keqing_NoCamera"
+              "key": "_ABILITY_Keqing_NoCamera",
+              "value": 0
             }
-          ],
-          "target": "Owner"
+          ]
         },
         {
           "$type": "ActCameraRadialBlur",
@@ -2345,89 +2352,83 @@
         },
         {
           "$type": "TriggerAttackEvent",
-          "targetType": "Enemy",
           "attackEvent": {
             "attackInfo": {
               "attackProperty": {
-                "elementType": "Electric",
                 "attackType": "Range",
-                "damagePercentageRatio": 0,
-                "strikeType": "Slash",
-                "enBreak": 200,
                 "damagePercentage": "Damage_Last",
+                "damagePercentageRatio": 0,
                 "elementDurability": 25,
+                "elementType": "Electric",
+                "enBreak": 200,
+                "strikeType": "Slash",
                 "__exp_arkhe": 0
               },
-              "cameraShake": {
-                "shakeDir": {
-                  "y": 0.2,
-                  "x": -1
-                },
-                "shakeTime": 0.35,
-                "shakeType": "CustomVector",
-                "MNKFEFOKFKP": "",
-                "shakeRange": 0.45
-              },
-              "hitPattern": {
-                "__unk_Q3893899620": "",
-                "retreatType": "ByHitDirection",
-                "onHitEffectName": "Eff_Avatar_Keqing_ElementalBurst_Attack_Hit",
-                "hitHaltTimeScale": 0.01,
-                "hitImpulseType": "LV7"
-              },
-              "forceCameraShake": true,
+              "attackTag": "Elemental_Burst",
               "attenuationGroup": "default",
               "attenuationTag": "Elemental_Burst",
-              "attackTag": "Elemental_Burst"
+              "cameraShake": {
+                "shakeDir": {
+                  "z": -1,
+                  "y": 0.2
+                },
+                "shakeRange": 0.45,
+                "shakeTime": 0.35,
+                "shakeType": "CustomVector",
+                "OFGBHFBAEKK": ""
+              },
+              "forceCameraShake": true,
+              "hitPattern": {
+                "hitHaltTimeScale": 0.01,
+                "hitImpulseType": "LV7",
+                "onHitEffectName": "Eff_Avatar_Keqing_ElementalBurst_Attack_Hit",
+                "retreatType": "ByHitDirection",
+                "__unk_Q3893899620": ""
+              }
             },
             "attackPattern": {
               "$type": "ConfigAttackCircle",
-              "radius": 8,
-              "height": 4,
-              "triggerType": "TriggerNoRepeat",
-              "ignoreMassive": true,
               "born": {
                 "$type": "ConfigBornBySelf",
                 "offset": {
                   "y": -1
                 }
-              }
+              },
+              "height": 4,
+              "ignoreMassive": true,
+              "radius": 8,
+              "triggerType": "TriggerNoRepeat"
             }
           },
-          "target": "OriginOwner"
+          "target": "OriginOwner",
+          "targetType": "Enemy"
         }
       ],
-      "abilityName": "Keqing_ElementalBurst_Gadget_Material",
       "onAdded": [
         {
           "$type": "FireEffect",
           "effectPattern": "Eff_Avatar_Keqing_ElementalBurst_Attack00",
           "scale": 1,
-          "ILLLPEOODKP": ""
+          "JHAGIJGAKMK": ""
         },
         {
           "$type": "FireEffect",
           "effectPattern": "Eff_Avatar_Keqing_ElementalBurst_Attack01",
           "scale": 1,
-          "ILLLPEOODKP": ""
+          "JHAGIJGAKMK": ""
         },
         {
           "$type": "FireEffect",
           "effectPattern": "Eff_Avatar_Keqing_ElementalBurst_Attack02",
           "scale": 1,
-          "ILLLPEOODKP": ""
+          "JHAGIJGAKMK": ""
         }
-      ],
-      "abilitySpecials": {
-        "Damage_Start": 0,
-        "Damage1": 0,
-        "Damage2": 0,
-        "Damage_Last": 0
-      }
+      ]
     }
   },
   {
     "Default": {
+      "abilityName": "Keqing_ElementalBurst_Gadget_CameraEffect",
       "modifiers": {
         "Camera_Effect": {
           "duration": 1,
@@ -2449,364 +2450,363 @@
           "modifierName": "Camera_Effect",
           "target": "Owner"
         }
-      ],
-      "abilityName": "Keqing_ElementalBurst_Gadget_CameraEffect"
+      ]
     }
   },
   {
     "Default": {
-      "onAbilityStart": [
-        {
-          "$type": "TriggerAttackEvent",
-          "targetType": "Enemy",
-          "attackEvent": {
-            "attackInfo": {
-              "attackProperty": {
-                "elementType": "Electric",
-                "attackType": "Range",
-                "damagePercentageRatio": 0,
-                "strikeType": "Slash",
-                "enBreak": 100,
-                "damagePercentage": "Damage_Start",
-                "elementDurability": 25,
-                "__exp_arkhe": 0
-              },
-              "cameraShake": {
-                "shakeDir": {
-                  "y": -1
-                },
-                "shakeTime": 0.06,
-                "shakeDistance": 10,
-                "MNKFEFOKFKP": "",
-                "shakeRange": 0.09
-              },
-              "hitPattern": {
-                "__unk_Q3893899620": "",
-                "retreatType": "ByHitDirection",
-                "onHitEffectName": "Eff_Avatar_Keqing_ElementalBurst_Attack_Hit",
-                "hitHaltTimeScale": 0.01,
-                "hitImpulseType": "LV1"
-              },
-              "forceCameraShake": true,
-              "attenuationGroup": "default",
-              "attenuationTag": "Elemental_Burst",
-              "attackTag": "Elemental_Burst",
-              "canBeModifiedBy": "OriginOwner"
-            },
-            "attackPattern": {
-              "$type": "ConfigAttackCircle",
-              "radius": 8,
-              "height": 4,
-              "triggerType": "TriggerNoRepeat",
-              "ignoreMassive": true,
-              "born": {
-                "$type": "ConfigBornBySelf",
-                "offset": {
-                  "y": -1
-                }
-              }
-            }
-          },
-          "target": "OriginOwner"
-        }
-      ],
       "abilityName": "Keqing_ElementalBurst_Gadget_StartAttack",
       "abilitySpecials": {
         "Damage_Start": 0
-      }
-    }
-  },
-  {
-    "Default": {
+      },
       "onAbilityStart": [
         {
           "$type": "TriggerAttackEvent",
-          "targetType": "Enemy",
           "attackEvent": {
             "attackInfo": {
               "attackProperty": {
-                "elementType": "Electric",
                 "attackType": "Range",
+                "damagePercentage": "Damage_Start",
                 "damagePercentageRatio": 0,
-                "strikeType": "Slash",
-                "enBreak": 25,
-                "damagePercentage": "Damage",
                 "elementDurability": 25,
+                "elementType": "Electric",
+                "enBreak": 100,
+                "strikeType": "Slash",
                 "__exp_arkhe": 0
               },
-              "hitPattern": {
-                "__unk_Q3893899620": "",
-                "retreatType": "ByHitDirection",
-                "onHitEffectName": "Eff_Avatar_Keqing_ElementalBurst_Attack_Hit",
-                "hitHaltTimeScale": 0.01,
-                "hitImpulseType": "LV3"
-              },
+              "attackTag": "Elemental_Burst",
               "attenuationGroup": "default",
               "attenuationTag": "Elemental_Burst",
-              "attackTag": "Elemental_Burst"
+              "cameraShake": {
+                "shakeDir": {
+                  "y": -1
+                },
+                "shakeDistance": 10,
+                "shakeRange": 0.09,
+                "shakeTime": 0.06,
+                "OFGBHFBAEKK": ""
+              },
+              "canBeModifiedBy": "OriginOwner",
+              "forceCameraShake": true,
+              "hitPattern": {
+                "hitHaltTimeScale": 0.01,
+                "hitImpulseType": "LV1",
+                "onHitEffectName": "Eff_Avatar_Keqing_ElementalBurst_Attack_Hit",
+                "retreatType": "ByHitDirection",
+                "__unk_Q3893899620": ""
+              }
             },
             "attackPattern": {
               "$type": "ConfigAttackCircle",
-              "radius": 8,
-              "height": 4,
-              "triggerType": "TriggerNoRepeat",
-              "ignoreMassive": true,
               "born": {
                 "$type": "ConfigBornBySelf",
                 "offset": {
                   "y": -1
                 }
-              }
+              },
+              "height": 4,
+              "ignoreMassive": true,
+              "radius": 8,
+              "triggerType": "TriggerNoRepeat"
             }
           },
-          "target": "OriginOwner"
+          "target": "OriginOwner",
+          "targetType": "Enemy"
         }
-      ],
+      ]
+    }
+  },
+  {
+    "Default": {
       "abilityName": "Keqing_ElementalBurst_Gadget_AttackType1",
       "abilitySpecials": {
         "Damage": 0
-      }
-    }
-  },
-  {
-    "Default": {
+      },
       "onAbilityStart": [
         {
           "$type": "TriggerAttackEvent",
-          "targetType": "Enemy",
           "attackEvent": {
             "attackInfo": {
               "attackProperty": {
-                "elementType": "Electric",
                 "attackType": "Range",
-                "damagePercentageRatio": 0,
-                "strikeType": "Slash",
-                "enBreak": 25,
                 "damagePercentage": "Damage",
+                "damagePercentageRatio": 0,
                 "elementDurability": 25,
+                "elementType": "Electric",
+                "enBreak": 25,
+                "strikeType": "Slash",
                 "__exp_arkhe": 0
               },
-              "hitPattern": {
-                "__unk_Q3893899620": "",
-                "retreatType": "ByHitDirection",
-                "onHitEffectName": "Eff_Avatar_Keqing_ElementalBurst_Attack_Hit",
-                "hitHaltTimeScale": 0.01,
-                "hitImpulseType": "LV1"
-              },
+              "attackTag": "Elemental_Burst",
               "attenuationGroup": "default",
               "attenuationTag": "Elemental_Burst",
-              "attackTag": "Elemental_Burst"
+              "hitPattern": {
+                "hitHaltTimeScale": 0.01,
+                "hitImpulseType": "LV3",
+                "onHitEffectName": "Eff_Avatar_Keqing_ElementalBurst_Attack_Hit",
+                "retreatType": "ByHitDirection",
+                "__unk_Q3893899620": ""
+              }
             },
             "attackPattern": {
               "$type": "ConfigAttackCircle",
-              "radius": 8,
-              "height": 4,
-              "triggerType": "TriggerNoRepeat",
-              "ignoreMassive": true,
               "born": {
                 "$type": "ConfigBornBySelf",
                 "offset": {
                   "y": -1
                 }
-              }
+              },
+              "height": 4,
+              "ignoreMassive": true,
+              "radius": 8,
+              "triggerType": "TriggerNoRepeat"
             }
           },
-          "target": "OriginOwner"
+          "target": "OriginOwner",
+          "targetType": "Enemy"
         }
-      ],
+      ]
+    }
+  },
+  {
+    "Default": {
       "abilityName": "Keqing_ElementalBurst_Gadget_AttackType2",
       "abilitySpecials": {
         "Damage": 0
-      }
-    }
-  },
-  {
-    "Default": {
+      },
       "onAbilityStart": [
         {
           "$type": "TriggerAttackEvent",
-          "targetType": "Enemy",
           "attackEvent": {
             "attackInfo": {
               "attackProperty": {
-                "elementType": "Electric",
                 "attackType": "Range",
-                "damagePercentageRatio": 0,
-                "strikeType": "Slash",
-                "enBreak": 25,
                 "damagePercentage": "Damage",
+                "damagePercentageRatio": 0,
                 "elementDurability": 25,
+                "elementType": "Electric",
+                "enBreak": 25,
+                "strikeType": "Slash",
                 "__exp_arkhe": 0
               },
-              "cameraShake": {
-                "shakeDir": {
-                  "x": 1
-                },
-                "shakeTime": 0.09,
-                "shakeType": "CustomVector",
-                "MNKFEFOKFKP": "",
-                "shakeRange": 0.15
-              },
-              "hitPattern": {
-                "__unk_Q3893899620": "",
-                "retreatType": "ByHitDirection",
-                "onHitEffectName": "Eff_Avatar_Keqing_ElementalBurst_Attack_Hit",
-                "hitHaltTimeScale": 0.01,
-                "hitImpulseType": "LV3"
-              },
-              "forceCameraShake": true,
+              "attackTag": "Elemental_Burst",
               "attenuationGroup": "default",
               "attenuationTag": "Elemental_Burst",
-              "attackTag": "Elemental_Burst",
-              "canBeModifiedBy": "OriginOwner"
+              "hitPattern": {
+                "hitHaltTimeScale": 0.01,
+                "hitImpulseType": "LV1",
+                "onHitEffectName": "Eff_Avatar_Keqing_ElementalBurst_Attack_Hit",
+                "retreatType": "ByHitDirection",
+                "__unk_Q3893899620": ""
+              }
             },
             "attackPattern": {
               "$type": "ConfigAttackCircle",
-              "radius": 8,
-              "height": 4,
-              "triggerType": "TriggerNoRepeat",
-              "ignoreMassive": true,
               "born": {
                 "$type": "ConfigBornBySelf",
                 "offset": {
                   "y": -1
                 }
-              }
+              },
+              "height": 4,
+              "ignoreMassive": true,
+              "radius": 8,
+              "triggerType": "TriggerNoRepeat"
             }
           },
-          "target": "OriginOwner"
+          "target": "OriginOwner",
+          "targetType": "Enemy"
         }
-      ],
+      ]
+    }
+  },
+  {
+    "Default": {
       "abilityName": "Keqing_ElementalBurst_Gadget_AttackType3",
       "abilitySpecials": {
         "Damage": 0
-      }
-    }
-  },
-  {
-    "Default": {
+      },
       "onAbilityStart": [
         {
           "$type": "TriggerAttackEvent",
-          "targetType": "Enemy",
           "attackEvent": {
             "attackInfo": {
               "attackProperty": {
-                "elementType": "Electric",
                 "attackType": "Range",
-                "damagePercentageRatio": 0,
-                "strikeType": "Slash",
-                "enBreak": 25,
                 "damagePercentage": "Damage",
+                "damagePercentageRatio": 0,
                 "elementDurability": 25,
+                "elementType": "Electric",
+                "enBreak": 25,
+                "strikeType": "Slash",
                 "__exp_arkhe": 0
               },
-              "cameraShake": {
-                "shakeDir": {
-                  "x": -1
-                },
-                "shakeTime": 0.09,
-                "shakeType": "CustomVector",
-                "MNKFEFOKFKP": "",
-                "shakeRange": 0.15
-              },
-              "hitPattern": {
-                "__unk_Q3893899620": "",
-                "retreatType": "ByHitDirection",
-                "onHitEffectName": "Eff_Avatar_Keqing_ElementalBurst_Attack_Hit",
-                "hitHaltTimeScale": 0.01,
-                "hitImpulseType": "LV1"
-              },
-              "forceCameraShake": true,
+              "attackTag": "Elemental_Burst",
               "attenuationGroup": "default",
               "attenuationTag": "Elemental_Burst",
-              "attackTag": "Elemental_Burst",
-              "canBeModifiedBy": "OriginOwner"
+              "cameraShake": {
+                "shakeDir": {
+                  "z": 1
+                },
+                "shakeRange": 0.15,
+                "shakeTime": 0.09,
+                "shakeType": "CustomVector",
+                "OFGBHFBAEKK": ""
+              },
+              "canBeModifiedBy": "OriginOwner",
+              "forceCameraShake": true,
+              "hitPattern": {
+                "hitHaltTimeScale": 0.01,
+                "hitImpulseType": "LV3",
+                "onHitEffectName": "Eff_Avatar_Keqing_ElementalBurst_Attack_Hit",
+                "retreatType": "ByHitDirection",
+                "__unk_Q3893899620": ""
+              }
             },
             "attackPattern": {
               "$type": "ConfigAttackCircle",
-              "radius": 8,
-              "height": 4,
-              "triggerType": "TriggerNoRepeat",
-              "ignoreMassive": true,
               "born": {
                 "$type": "ConfigBornBySelf",
                 "offset": {
                   "y": -1
                 }
-              }
+              },
+              "height": 4,
+              "ignoreMassive": true,
+              "radius": 8,
+              "triggerType": "TriggerNoRepeat"
             }
           },
-          "target": "OriginOwner"
+          "target": "OriginOwner",
+          "targetType": "Enemy"
         }
-      ],
+      ]
+    }
+  },
+  {
+    "Default": {
       "abilityName": "Keqing_ElementalBurst_Gadget_AttackType4",
       "abilitySpecials": {
         "Damage": 0
-      }
-    }
-  },
-  {
-    "Default": {
+      },
       "onAbilityStart": [
         {
           "$type": "TriggerAttackEvent",
-          "targetType": "Enemy",
           "attackEvent": {
             "attackInfo": {
               "attackProperty": {
-                "elementType": "Electric",
                 "attackType": "Range",
-                "damagePercentageRatio": 0,
-                "strikeType": "Slash",
-                "enBreak": 25,
                 "damagePercentage": "Damage",
+                "damagePercentageRatio": 0,
                 "elementDurability": 25,
+                "elementType": "Electric",
+                "enBreak": 25,
+                "strikeType": "Slash",
                 "__exp_arkhe": 0
               },
-              "cameraShake": {
-                "shakeDir": {
-                  "y": -1
-                },
-                "shakeTime": 0.12,
-                "shakeType": "CustomVector",
-                "MNKFEFOKFKP": "",
-                "shakeRange": 0.2
-              },
-              "hitPattern": {
-                "__unk_Q3893899620": "",
-                "retreatType": "ByHitDirection",
-                "onHitEffectName": "Eff_Avatar_Keqing_ElementalBurst_Attack_Hit",
-                "hitHaltTimeScale": 0.01,
-                "hitImpulseType": "LV1"
-              },
-              "forceCameraShake": true,
+              "attackTag": "Elemental_Burst",
               "attenuationGroup": "default",
               "attenuationTag": "Elemental_Burst",
-              "attackTag": "Elemental_Burst",
-              "canBeModifiedBy": "OriginOwner"
+              "cameraShake": {
+                "shakeDir": {
+                  "z": -1
+                },
+                "shakeRange": 0.15,
+                "shakeTime": 0.09,
+                "shakeType": "CustomVector",
+                "OFGBHFBAEKK": ""
+              },
+              "canBeModifiedBy": "OriginOwner",
+              "forceCameraShake": true,
+              "hitPattern": {
+                "hitHaltTimeScale": 0.01,
+                "hitImpulseType": "LV1",
+                "onHitEffectName": "Eff_Avatar_Keqing_ElementalBurst_Attack_Hit",
+                "retreatType": "ByHitDirection",
+                "__unk_Q3893899620": ""
+              }
             },
             "attackPattern": {
               "$type": "ConfigAttackCircle",
-              "radius": 8,
-              "height": 4,
-              "triggerType": "TriggerNoRepeat",
-              "ignoreMassive": true,
               "born": {
                 "$type": "ConfigBornBySelf",
                 "offset": {
                   "y": -1
                 }
-              }
+              },
+              "height": 4,
+              "ignoreMassive": true,
+              "radius": 8,
+              "triggerType": "TriggerNoRepeat"
             }
           },
-          "target": "OriginOwner"
+          "target": "OriginOwner",
+          "targetType": "Enemy"
         }
-      ],
+      ]
+    }
+  },
+  {
+    "Default": {
       "abilityName": "Keqing_ElementalBurst_Gadget_AttackType5",
       "abilitySpecials": {
         "Damage": 0
-      }
+      },
+      "onAbilityStart": [
+        {
+          "$type": "TriggerAttackEvent",
+          "attackEvent": {
+            "attackInfo": {
+              "attackProperty": {
+                "attackType": "Range",
+                "damagePercentage": "Damage",
+                "damagePercentageRatio": 0,
+                "elementDurability": 25,
+                "elementType": "Electric",
+                "enBreak": 25,
+                "strikeType": "Slash",
+                "__exp_arkhe": 0
+              },
+              "attackTag": "Elemental_Burst",
+              "attenuationGroup": "default",
+              "attenuationTag": "Elemental_Burst",
+              "cameraShake": {
+                "shakeDir": {
+                  "y": -1
+                },
+                "shakeRange": 0.2,
+                "shakeTime": 0.12,
+                "shakeType": "CustomVector",
+                "OFGBHFBAEKK": ""
+              },
+              "canBeModifiedBy": "OriginOwner",
+              "forceCameraShake": true,
+              "hitPattern": {
+                "hitHaltTimeScale": 0.01,
+                "hitImpulseType": "LV1",
+                "onHitEffectName": "Eff_Avatar_Keqing_ElementalBurst_Attack_Hit",
+                "retreatType": "ByHitDirection",
+                "__unk_Q3893899620": ""
+              }
+            },
+            "attackPattern": {
+              "$type": "ConfigAttackCircle",
+              "born": {
+                "$type": "ConfigBornBySelf",
+                "offset": {
+                  "y": -1
+                }
+              },
+              "height": 4,
+              "ignoreMassive": true,
+              "radius": 8,
+              "triggerType": "TriggerNoRepeat"
+            }
+          },
+          "target": "OriginOwner",
+          "targetType": "Enemy"
+        }
+      ]
     }
   },
   {
@@ -2814,67 +2814,67 @@
       "abilityMixins": [
         {
           "$type": "ModifyDamageMixin",
-          "damagePercentageRatio": 0,
-          "damagePercentage": "Attack_01",
           "animEventNames": [
             "ATK01"
-          ]
+          ],
+          "damagePercentage": "Attack_01",
+          "damagePercentageRatio": 0
         },
         {
           "$type": "ModifyDamageMixin",
-          "damagePercentageRatio": 0,
-          "damagePercentage": "Attack_02",
           "animEventNames": [
             "ATK02"
-          ]
+          ],
+          "damagePercentage": "Attack_02",
+          "damagePercentageRatio": 0
         },
         {
           "$type": "ModifyDamageMixin",
-          "damagePercentageRatio": 0,
-          "damagePercentage": "Attack_03",
           "animEventNames": [
             "ATK03"
-          ]
+          ],
+          "damagePercentage": "Attack_03",
+          "damagePercentageRatio": 0
         },
         {
           "$type": "ModifyDamageMixin",
-          "damagePercentageRatio": 0,
-          "damagePercentage": "Attack_04_01",
           "animEventNames": [
             "ATK04_1"
-          ]
+          ],
+          "damagePercentage": "Attack_04_01",
+          "damagePercentageRatio": 0
         },
         {
           "$type": "ModifyDamageMixin",
-          "damagePercentageRatio": 0,
-          "damagePercentage": "Attack_04_02",
           "animEventNames": [
             "ATK04_2"
-          ]
+          ],
+          "damagePercentage": "Attack_04_02",
+          "damagePercentageRatio": 0
         },
         {
           "$type": "ModifyDamageMixin",
-          "damagePercentageRatio": 0,
-          "damagePercentage": "Attack_05",
           "attackTags": [
             "NormalAttack_05"
-          ]
+          ],
+          "damagePercentage": "Attack_05",
+          "damagePercentageRatio": 0
         },
         {
           "$type": "ModifyDamageMixin",
-          "damagePercentageRatio": 0,
-          "damagePercentage": "ExtraAttack1",
           "animEventNames": [
             "ExtraAttack_1"
-          ]
+          ],
+          "damagePercentage": "ExtraAttack1",
+          "damagePercentageRatio": 0
         },
         {
           "$type": "ModifyDamageMixin",
-          "damagePercentageRatio": 0,
-          "damagePercentage": "ExtraAttack2",
           "animEventNames": [
             "ExtraAttack_2"
-          ]
+          ],
+          "damagePercentage": "ExtraAttack2",
+          "damagePercentageRatio": 0
         }
       ],
       "abilityName": "Avatar_Keqing_NormalAttack_DamageHandler",
@@ -2892,8 +2892,31 @@
   },
   {
     "Default": {
+      "abilityMixins": [
+        {
+          "$type": "AttachToStateIDMixin",
+          "modifierName": "Keqing_DropBall_Talent_Handler",
+          "stateIDs": [
+            "Attack01",
+            "Attack02",
+            "Attack03",
+            "Attack04",
+            "Attack05",
+            "ExtraAttack"
+          ],
+          "__unk_Q2081332355": ""
+        }
+      ],
+      "abilityName": "Avatar_Keqing_DropBall_Talent",
+      "abilitySpecials": {
+        "Chance": 0,
+        "CDTime": 0
+      },
+      "isDynamicAbility": true,
       "modifiers": {
         "Keqing_DropBall_Talent_Handler": {
+          "elementDurability": 100,
+          "modifierName": "",
           "onAttackLanded": [
             {
               "$type": "Predicated",
@@ -2909,6 +2932,7 @@
                   ]
                 }
               ],
+              "target": "Target",
               "targetPredicates": [
                 {
                   "$type": "ByEntityTypes",
@@ -2925,79 +2949,42 @@
                     }
                   ]
                 }
-              ],
-              "target": "Target"
+              ]
             }
           ],
-          "elementDurability": 100,
-          "modifierName": "",
           "__unk_Q3323398612": 0
         },
         "Keqing_DropBall_Talent": {
           "duration": "CDTime",
+          "elementDurability": 100,
+          "modifierName": "",
           "onAdded": [
             {
               "$type": "GenerateElemBall",
-              "ratio": 1,
+              "baseEnergy": 3,
               "born": {
                 "$type": "ConfigBornByTarget",
-                "offset": {
-                  "z": 1
-                },
                 "bornRandom": {
                   "$type": "BornRandomFromCenter",
-                  "minRandomRange": 0,
-                  "maxRandomRange": 1
+                  "maxRandomRange": 1,
+                  "minRandomRange": 0
+                },
+                "offset": {
+                  "z": 1
                 }
               },
               "configID": 2020,
-              "baseEnergy": 3
+              "ratio": 1
             }
           ],
           "stacking": "Unique",
-          "elementDurability": 100,
-          "modifierName": "",
           "__unk_Q3323398612": 0
         }
-      },
-      "abilityMixins": [
-        {
-          "$type": "AttachToStateIDMixin",
-          "__unk_Q2081332355": "",
-          "stateIDs": [
-            "Attack01",
-            "Attack02",
-            "Attack03",
-            "Attack04",
-            "Attack05",
-            "ExtraAttack"
-          ],
-          "modifierName": "Keqing_DropBall_Talent_Handler"
-        }
-      ],
-      "abilityName": "Avatar_Keqing_DropBall_Talent",
-      "isDynamicAbility": true,
-      "abilitySpecials": {
-        "Chance": 0,
-        "CDTime": 0
       }
     }
   },
   {
     "Default": {
-      "modifiers": {
-        "Avatar_Keqing_AttackUp_Talent": {
-          "duration": "Dura",
-          "isLimitedProperties": true,
-          "properties": {
-            "Actor_AttackRatio": "AttackUp"
-          },
-          "elementDurability": 100,
-          "state": "AttackUp",
-          "modifierName": "",
-          "__unk_Q3323398612": 0
-        }
-      },
       "abilityMixins": [
         {
           "$type": "DoActionByElementReactionMixin",
@@ -3025,83 +3012,44 @@
         }
       ],
       "abilityName": "Avatar_Keqing_ElecReaction_Talent",
-      "isDynamicAbility": true,
       "abilitySpecials": {
         "Dura": 0,
         "AttackUp": 0
+      },
+      "isDynamicAbility": true,
+      "modifiers": {
+        "Avatar_Keqing_AttackUp_Talent": {
+          "duration": "Dura",
+          "elementDurability": 100,
+          "isLimitedProperties": true,
+          "modifierName": "",
+          "properties": {
+            "Actor_AttackRatio": "AttackUp"
+          },
+          "state": "AttackUp",
+          "__unk_Q3323398612": 0
+        }
       }
     }
   },
   {
     "Default": {
-      "modifiers": {
-        "Talent_Keqing_ExtraAttack_Buff_Trigger": {
-          "onAdded": [
-            {
-              "$type": "ApplyModifier",
-              "modifierName": "Talent_Keqing_ExtraAttack_Buff"
-            }
-          ],
-          "elementDurability": 100,
-          "modifierName": "",
-          "__unk_Q3323398612": 0
-        },
-        "Talent_Keqing_NormalAttack_Buff": {
-          "duration": "Dura",
-          "isLimitedProperties": true,
-          "properties": {
-            "Actor_ElecAddHurtDelta": "Rate"
-          },
-          "elementDurability": 100,
-          "modifierName": "",
-          "__unk_Q3323398612": 0
-        },
-        "Talent_Keqing_ExtraAttack_Buff": {
-          "duration": "Dura",
-          "isLimitedProperties": true,
-          "properties": {
-            "Actor_ElecAddHurtDelta": "Rate"
-          },
-          "elementDurability": 100,
-          "modifierName": "",
-          "__unk_Q3323398612": 0
-        },
-        "Talent_Keqing_ElemntalArt_Buff": {
-          "duration": "Dura",
-          "isLimitedProperties": true,
-          "properties": {
-            "Actor_ElecAddHurtDelta": "Rate"
-          },
-          "elementDurability": 100,
-          "modifierName": "",
-          "__unk_Q3323398612": 0
-        },
-        "Talent_Keqing_ElemntalBurst_Buff": {
-          "duration": "Dura",
-          "isLimitedProperties": true,
-          "properties": {
-            "Actor_ElecAddHurtDelta": "Rate"
-          },
-          "elementDurability": 100,
-          "modifierName": "",
-          "__unk_Q3323398612": 0
-        }
-      },
       "abilityMixins": [
         {
           "$type": "AttachToStateIDMixin",
-          "__unk_Q2081332355": "",
+          "modifierName": "Talent_Keqing_ExtraAttack_Buff_Trigger",
           "stateIDs": [
             "ExtraAttack"
           ],
-          "modifierName": "Talent_Keqing_ExtraAttack_Buff_Trigger"
+          "__unk_Q2081332355": ""
         },
         {
           "$type": "OnAvatarUseSkillMixin",
-          "onTriggerUltimateSkill": [
+          "clearSkillIdDelay": 0.2,
+          "onTriggerNormalAttack": [
             {
               "$type": "ApplyModifier",
-              "modifierName": "Talent_Keqing_ElemntalBurst_Buff"
+              "modifierName": "Talent_Keqing_NormalAttack_Buff"
             }
           ],
           "onTriggerSkill": [
@@ -3110,750 +3058,192 @@
               "modifierName": "Talent_Keqing_ElemntalArt_Buff"
             }
           ],
-          "onTriggerNormalAttack": [
+          "onTriggerUltimateSkill": [
             {
               "$type": "ApplyModifier",
-              "modifierName": "Talent_Keqing_NormalAttack_Buff"
+              "modifierName": "Talent_Keqing_ElemntalBurst_Buff"
             }
-          ],
-          "clearSkillIdDelay": 0.2
+          ]
         }
       ],
       "abilityName": "Avatar_Keqing_ElecUpWhenDoSkill_Talent",
-      "isDynamicAbility": true,
       "abilitySpecials": {
         "Rate": 0,
         "Dura": 0
+      },
+      "isDynamicAbility": true,
+      "modifiers": {
+        "Talent_Keqing_ExtraAttack_Buff_Trigger": {
+          "elementDurability": 100,
+          "modifierName": "",
+          "onAdded": [
+            {
+              "$type": "ApplyModifier",
+              "modifierName": "Talent_Keqing_ExtraAttack_Buff"
+            }
+          ],
+          "__unk_Q3323398612": 0
+        },
+        "Talent_Keqing_NormalAttack_Buff": {
+          "duration": "Dura",
+          "elementDurability": 100,
+          "isLimitedProperties": true,
+          "modifierName": "",
+          "properties": {
+            "Actor_ElecAddHurtDelta": "Rate"
+          },
+          "__unk_Q3323398612": 0
+        },
+        "Talent_Keqing_ExtraAttack_Buff": {
+          "duration": "Dura",
+          "elementDurability": 100,
+          "isLimitedProperties": true,
+          "modifierName": "",
+          "properties": {
+            "Actor_ElecAddHurtDelta": "Rate"
+          },
+          "__unk_Q3323398612": 0
+        },
+        "Talent_Keqing_ElemntalArt_Buff": {
+          "duration": "Dura",
+          "elementDurability": 100,
+          "isLimitedProperties": true,
+          "modifierName": "",
+          "properties": {
+            "Actor_ElecAddHurtDelta": "Rate"
+          },
+          "__unk_Q3323398612": 0
+        },
+        "Talent_Keqing_ElemntalBurst_Buff": {
+          "duration": "Dura",
+          "elementDurability": 100,
+          "isLimitedProperties": true,
+          "modifierName": "",
+          "properties": {
+            "Actor_ElecAddHurtDelta": "Rate"
+          },
+          "__unk_Q3323398612": 0
+        }
       }
     }
   },
   {
     "Default": {
-      "modifiers": {
-        "FallingAnthem_AttachWeaponEffect": {
-          "onAdded": [
-            {
-              "$type": "AttachEffect",
-              "ILLLPEOODKP": "",
-              "scale": 1,
-              "effectPattern": "Eff_Avatar_Sword_FallAnthem_Self_01"
-            }
-          ],
-          "elementDurability": 100,
-          "modifierName": "",
-          "__unk_Q3323398612": 0
-        },
-        "FallingAnthem_CameraRadialBlur": {
-          "duration": 0.23,
-          "elementDurability": 100,
-          "modifierMixins": [
-            {
-              "$type": "CameraBlurMixin",
-              "cameraRadialBlur": {
-                "fadeTime": 0.15,
-                "power": 0.3
-              }
-            }
-          ],
-          "modifierName": "",
-          "__unk_Q3323398612": 0
-        },
-        "FallingAnthem_BS_Material": {
-          "onAdded": [
-            {
-              "$type": "FireEffect",
-              "effectPattern": "Eff_Avatar_Sword_FallAnthem_BS",
-              "scale": 1,
-              "ILLLPEOODKP": ""
-            }
-          ],
-          "elementDurability": 100,
-          "modifierName": "",
-          "__unk_Q3323398612": 0
-        },
-        "FallingAnthem_BS_VelocityForce_Initialize": {
-          "onAdded": [
-            {
-              "$type": "RemoveVelocityForce",
-              "forces": [
-                "RushMoveType"
-              ]
-            }
-          ],
-          "properties": {
-            "Actor_AddGravityScale": -2
-          },
-          "elementDurability": 100,
-          "modifierName": "",
-          "__unk_Q3323398612": 0
-        },
-        "FallingAnthem_LoopDamage": {
-          "thinkInterval": 0.3,
-          "elementDurability": 100,
-          "modifierName": "",
-          "onThinkInterval": [
-            {
-              "$type": "TriggerAttackEvent",
-              "targetType": "Enemy",
-              "attackEvent": {
-                "attackInfo": {
-                  "attackProperty": {
-                    "attackType": "Melee",
-                    "damagePercentageRatio": 0,
-                    "strikeType": "Slash",
-                    "enBreak": 25,
-                    "damagePercentage": "FallingAnthem_Normal_Loop_Damage",
-                    "elementDurability": 0,
-                    "overrideByWeapon": true,
-                    "__exp_arkhe": 0
-                  },
-                  "hitPattern": {
-                    "__unk_Q3893899620": "",
-                    "onHitEffectName": "default",
-                    "hitHaltTimeScale": 0.02,
-                    "hitImpulseType": "LV2"
-                  },
-                  "attenuationGroup": "default",
-                  "attenuationTag": "",
-                  "attackTag": "FallingAttack"
-                },
-                "attackPattern": {
-                  "$type": "ConfigAttackSphere",
-                  "radius": 1,
-                  "triggerType": "TriggerNoRepeat",
-                  "born": {
-                    "$type": "ConfigBornBySelf",
-                    "offset": {
-                      "z": 1
-                    }
-                  }
-                }
-              }
-            }
-          ],
-          "__unk_Q3323398612": 0
-        },
-        "FallingAnthem_FallingDamageImmune_01": {
-          "onAdded": [
-            {
-              "$type": "ClearGlobalValue",
-              "key": "_ABILITY_FallingAttack_Altitude"
-            },
-            {
-              "$type": "AddGlobalValue",
-              "useLimitRange": true,
-              "key": "_ABILITY_FallingAttack_Altitude",
-              "maxValue": "FallingAnthem_FallingDamageRatio_Lv0",
-              "minValue": "FallingAnthem_FallingDamageRatio_Lv0",
-              "value": "FallingAnthem_FallingDamageRatio_Lv0",
-              "predicates": [
-                {
-                  "$type": "ByTargetAltitude",
-                  "value": "FallingAnthem_Altitude_Lv0",
-                  "logic": "LesserOrEqual"
-                }
-              ]
-            },
-            {
-              "$type": "AddGlobalValue",
-              "useLimitRange": true,
-              "key": "_ABILITY_FallingAttack_Altitude",
-              "maxValue": "FallingAnthem_FallingDamageRatio_Lv1",
-              "minValue": "FallingAnthem_FallingDamageRatio_Lv1",
-              "value": "FallingAnthem_FallingDamageRatio_Lv1",
-              "predicates": [
-                {
-                  "$type": "ByTargetAltitude",
-                  "value": "FallingAnthem_Altitude_Lv1",
-                  "logic": "LesserOrEqual"
-                },
-                {
-                  "$type": "ByTargetAltitude",
-                  "value": "FallingAnthem_Altitude_Lv0"
-                }
-              ]
-            },
-            {
-              "$type": "AddGlobalValue",
-              "useLimitRange": true,
-              "key": "_ABILITY_FallingAttack_Altitude",
-              "maxValue": "FallingAnthem_FallingDamageRatio_Lv2",
-              "minValue": "FallingAnthem_FallingDamageRatio_Lv2",
-              "value": "FallingAnthem_FallingDamageRatio_Lv2",
-              "predicates": [
-                {
-                  "$type": "ByTargetAltitude",
-                  "value": "FallingAnthem_Altitude_Lv2",
-                  "logic": "LesserOrEqual"
-                },
-                {
-                  "$type": "ByTargetAltitude",
-                  "value": "FallingAnthem_Altitude_Lv1"
-                }
-              ]
-            },
-            {
-              "$type": "AddGlobalValue",
-              "useLimitRange": true,
-              "key": "_ABILITY_FallingAttack_Altitude",
-              "maxValue": "FallingAnthem_FallingDamageRatio_Lv3",
-              "minValue": "FallingAnthem_FallingDamageRatio_Lv3",
-              "value": "FallingAnthem_FallingDamageRatio_Lv3",
-              "predicates": [
-                {
-                  "$type": "ByTargetAltitude",
-                  "value": "FallingAnthem_Altitude_Lv3",
-                  "logic": "LesserOrEqual"
-                },
-                {
-                  "$type": "ByTargetAltitude",
-                  "value": "FallingAnthem_Altitude_Lv2"
-                }
-              ]
-            },
-            {
-              "$type": "AddGlobalValue",
-              "useLimitRange": true,
-              "key": "_ABILITY_FallingAttack_Altitude",
-              "maxValue": "FallingAnthem_FallingDamageRatio_Lv4",
-              "minValue": "FallingAnthem_FallingDamageRatio_Lv4",
-              "value": "FallingAnthem_FallingDamageRatio_Lv4",
-              "predicates": [
-                {
-                  "$type": "ByTargetAltitude",
-                  "value": "FallingAnthem_Altitude_Lv3"
-                }
-              ]
-            },
-            {
-              "$type": "AttachModifier",
-              "modifierName": "FallingAnthem_FallingDamageImmune_02"
-            }
-          ],
-          "elementDurability": 100,
-          "modifierName": "",
-          "__unk_Q3323398612": 0
-        },
-        "FallingAnthem_FallingDamageImmune_02": {
-          "onAdded": [
-            {
-              "$type": "SetGlobalValueToOverrideMap",
-              "globalValueKey": "_ABILITY_FallingAttack_Altitude",
-              "abilityName": "",
-              "overrideMapKey": "FallingAnthem_FallingDamageRatio"
-            },
-            {
-              "$type": "AttachModifier",
-              "modifierName": "FallingAnthem_FallingDamageImmune_03"
-            }
-          ],
-          "elementDurability": 100,
-          "modifierName": "",
-          "__unk_Q3323398612": 0
-        },
-        "FallingAnthem_FallingDamageImmune_03": {
-          "properties": {
-            "Actor_FallingDamageRatio": "FallingAnthem_FallingDamageRatio"
-          },
-          "elementDurability": 100,
-          "modifierName": "",
-          "__unk_Q3323398612": 0
-        },
-        "FallingAnthem_Loop_Normal": {
-          "elementDurability": 100,
-          "modifierMixins": [
-            {
-              "$type": "AttachModifierToSelfGlobalValueMixin",
-              "modifierNameSteps": [
-                "FallingAnthem_Loop_Normal_Rank_1",
-                "FallingAnthem_Loop_Normal_Rank_2"
-              ],
-              "valueSteps": [
-                -1,
-                0.5,
-                1.5
-              ],
-              "globalValueKey": "_ABILITY_FallingAnthem_UseCamera",
-              "defaultGlobalValueOnCreate": 0
-            }
-          ],
-          "modifierName": "",
-          "__unk_Q3323398612": 0
-        },
-        "FallingAnthem_Loop_Normal_Rank_1": {
-          "onAdded": [
-            {
-              "$type": "AttachEffect",
-              "ILLLPEOODKP": "",
-              "scale": 1,
-              "effectPattern": "Eff_Avatar_Sword_FallAnthem_Loop_01"
-            }
-          ],
-          "elementDurability": 100,
-          "modifierName": "",
-          "__unk_Q3323398612": 0
-        },
-        "FallingAnthem_Loop_Normal_Rank_2": {
-          "onAdded": [
-            {
-              "$type": "AttachEffect",
-              "ILLLPEOODKP": "",
-              "scale": 1,
-              "effectPattern": "Eff_Avatar_Sword_FallAnthem_Loop_02"
-            }
-          ],
-          "elementDurability": 100,
-          "modifierName": "",
-          "__unk_Q3323398612": 0
-        },
-        "Inertia": {
-          "elementDurability": 100,
-          "modifierMixins": [
-            {
-              "$type": "ApplyInertiaVelocityMixin",
-              "useXZ": false,
-              "useY": false
-            }
-          ],
-          "modifierName": "",
-          "__unk_Q3323398612": 0
-        },
-        "FallingAnthem_Height_Detect": {
-          "onRemoved": [
-            {
-              "$type": "SetAnimatorFloat",
-              "floatID": "FallingAnthem_UseCamera",
-              "value": 0
-            },
-            {
-              "$type": "AddGlobalValue",
-              "useLimitRange": true,
-              "key": "_ABILITY_FallingAnthem_UseCamera",
-              "maxValue": 0,
-              "minValue": 0,
-              "value": 0
-            }
-          ],
-          "onAdded": [
-            {
-              "$type": "AddGlobalValue",
-              "useLimitRange": true,
-              "key": "_ABILITY_FallingAnthem_UseCamera",
-              "maxValue": 0,
-              "minValue": 0,
-              "value": 0,
-              "predicates": [
-                {
-                  "$type": "ByTargetAltitude",
-                  "value": 2.4,
-                  "logic": "LesserOrEqual"
-                }
-              ]
-            },
-            {
-              "$type": "AddGlobalValue",
-              "useLimitRange": true,
-              "key": "_ABILITY_FallingAnthem_UseCamera",
-              "maxValue": 1,
-              "minValue": 0,
-              "value": 5,
-              "predicates": [
-                {
-                  "$type": "ByTargetAltitude",
-                  "value": 2.4
-                }
-              ]
-            },
-            {
-              "$type": "SetAnimatorFloat",
-              "floatID": "FallingAnthem_UseCamera",
-              "value": 0,
-              "predicates": [
-                {
-                  "$type": "ByTargetAltitude",
-                  "value": 2.4,
-                  "logic": "LesserOrEqual"
-                }
-              ]
-            },
-            {
-              "$type": "SetAnimatorFloat",
-              "floatID": "FallingAnthem_UseCamera",
-              "value": 1,
-              "predicates": [
-                {
-                  "$type": "ByTargetAltitude",
-                  "value": 2.4
-                }
-              ]
-            }
-          ],
-          "elementDurability": 100,
-          "modifierName": "",
-          "__unk_Q3323398612": 0
-        },
-        "FallingAnthem_OverHead_Camera": {
-          "onAdded": [
-            {
-              "$type": "AvatarCameraParam",
-              "cameraParam": {
-                "shouldKeepForceRadius": true,
-                "forceRadiusDuration": 0.2,
-                "forceRadius": 4.5
-              },
-              "predicates": [
-                {
-                  "$type": "ByAnimatorFloat",
-                  "parameter": "FallingAnthem_UseCamera",
-                  "value": 1,
-                  "logic": "Equal"
-                }
-              ]
-            }
-          ],
-          "elementDurability": 100,
-          "modifierName": "",
-          "__unk_Q3323398612": 0
-        },
-        "FallingAnthem_OverHead_Camera_Remover": {
-          "onAdded": [
-            {
-              "$type": "AvatarExitCameraShot",
-              "doOffStage": true
-            }
-          ],
-          "elementDurability": 100,
-          "modifierName": "",
-          "__unk_Q3323398612": 0
-        },
-        "FallingAnthem_Landed_Camera": {
-          "onAdded": [
-            {
-              "$type": "AvatarCameraParam",
-              "cameraParam": {
-                "shouldKeepForceRadius": true,
-                "forceRadiusDuration": 0.1,
-                "forceRadius": 6
-              },
-              "predicates": [
-                {
-                  "$type": "ByAnimatorFloat",
-                  "parameter": "FallingAnthem_UseCamera",
-                  "value": 1,
-                  "logic": "Equal"
-                }
-              ]
-            }
-          ],
-          "elementDurability": 100,
-          "modifierName": "",
-          "__unk_Q3323398612": 0
-        },
-        "FallingAnthem_ClearVelocityForce": {
-          "onAdded": [
-            {
-              "$type": "RemoveVelocityForce",
-              "forces": [
-                "RushMoveType",
-                "InertiaType"
-              ]
-            }
-          ],
-          "elementDurability": 100,
-          "modifierName": "",
-          "__unk_Q3323398612": 0
-        },
-        "FallingAnthem_ClearVelocityForce_AS": {
-          "onAdded": [
-            {
-              "$type": "RemoveVelocityForce",
-              "forces": [
-                "RushMoveType",
-                "InertiaType"
-              ]
-            }
-          ],
-          "elementDurability": 100,
-          "modifierName": "",
-          "__unk_Q3323398612": 0
-        }
-      },
-      "onAbilityStart": [
-        {
-          "$type": "TriggerAttackEvent",
-          "targetType": "Enemy",
-          "attackEvent": {
-            "attackInfo": {
-              "attackProperty": {
-                "attackType": "Melee",
-                "damagePercentageRatio": 0,
-                "strikeType": "Blunt",
-                "enBreak": 100,
-                "damagePercentage": "FallingAnthem_Normal_Rank_1_Damage",
-                "elementDurability": 25,
-                "overrideByWeapon": true,
-                "__exp_arkhe": 0
-              },
-              "cameraShake": {
-                "extension": {
-                  "rangeAttenuation": 0.3,
-                  "baseCycle": 0.24,
-                  "cycleDamping": 0
-                },
-                "shakeDir": {
-                  "y": 1
-                },
-                "shakeTime": 0.12,
-                "shakeType": "CustomVector",
-                "shakeDistance": 30,
-                "MNKFEFOKFKP": "",
-                "shakeRange": 0.24
-              },
-              "hitPattern": {
-                "__unk_Q3893899620": "",
-                "onHitEffectName": "none",
-                "hitHaltTimeScale": 0.1,
-                "hitImpulseType": "LV4"
-              },
-              "forceCameraShake": true,
-              "attenuationGroup": "default",
-              "attenuationTag": "",
-              "attackTag": "FallingAttack"
-            },
-            "attackPattern": {
-              "$type": "ConfigAttackCircle",
-              "radius": 3,
-              "height": 2,
-              "triggerType": "TriggerNoRepeat",
-              "born": {
-                "$type": "ConfigBornByTarget",
-                "offset": {
-                  "z": 1,
-                  "y": -0.5
-                }
-              }
-            }
-          },
-          "predicates": [
-            {
-              "$type": "ByTargetGlobalValue",
-              "value": 0,
-              "compareType": "NoneOrEqual",
-              "key": "_ABILITY_FallingAnthem_UseCamera",
-              "forceByCaster": true
-            }
-          ]
-        },
-        {
-          "$type": "TriggerAttackEvent",
-          "targetType": "Enemy",
-          "attackEvent": {
-            "attackInfo": {
-              "attackProperty": {
-                "attackType": "Melee",
-                "damagePercentageRatio": 0,
-                "strikeType": "Blunt",
-                "enBreak": 150,
-                "damagePercentage": "FallingAnthem_Normal_Rank_2_Damage",
-                "elementDurability": 25,
-                "overrideByWeapon": true,
-                "__exp_arkhe": 0
-              },
-              "cameraShake": {
-                "extension": {
-                  "rangeAttenuation": 0.3,
-                  "baseCycle": 0.4,
-                  "cycleDamping": 0
-                },
-                "shakeDir": {
-                  "y": 1,
-                  "z": 1
-                },
-                "shakeTime": 0.2,
-                "shakeType": "CustomVector",
-                "shakeDistance": 30,
-                "MNKFEFOKFKP": "",
-                "shakeRange": 0.5
-              },
-              "hitPattern": {
-                "__unk_Q3893899620": "",
-                "onHitEffectName": "none",
-                "hitHaltTimeScale": 0.1,
-                "hitImpulseType": "LV7"
-              },
-              "forceCameraShake": true,
-              "attenuationGroup": "default",
-              "attenuationTag": "",
-              "attackTag": "FallingAttack"
-            },
-            "attackPattern": {
-              "$type": "ConfigAttackCircle",
-              "radius": 5,
-              "height": 2,
-              "triggerType": "TriggerNoRepeat",
-              "born": {
-                "$type": "ConfigBornByTarget",
-                "offset": {
-                  "z": 1,
-                  "y": -0.5
-                }
-              }
-            }
-          },
-          "predicates": [
-            {
-              "$type": "ByTargetGlobalValue",
-              "value": 1,
-              "key": "_ABILITY_FallingAnthem_UseCamera",
-              "forceByCaster": true
-            }
-          ]
-        },
-        {
-          "$type": "FireEffect",
-          "effectPattern": "Eff_Avatar_Sword_FallAnthem_Strike_01",
-          "scale": 1,
-          "ILLLPEOODKP": "",
-          "predicates": [
-            {
-              "$type": "ByTargetGlobalValue",
-              "value": 0,
-              "compareType": "NoneOrEqual",
-              "key": "_ABILITY_FallingAnthem_UseCamera",
-              "forceByCaster": true
-            }
-          ]
-        },
-        {
-          "$type": "FireEffect",
-          "effectPattern": "Eff_Avatar_Sword_FallAnthem_Strike_02",
-          "scale": 1,
-          "ILLLPEOODKP": "",
-          "predicates": [
-            {
-              "$type": "ByTargetGlobalValue",
-              "value": 1,
-              "key": "_ABILITY_FallingAnthem_UseCamera",
-              "forceByCaster": true
-            }
-          ]
-        }
-      ],
       "abilityMixins": [
         {
           "$type": "AvatarChangeSkillMixin",
-          "OLDBNEGFONF": 5042010,
-          "flySkillID": 5042010
+          "flySkillID": 5042010,
+          "DNONAJNPHLB": 5042010
         },
         {
           "$type": "AttachToStateIDMixin",
-          "__unk_Q2081332355": "",
+          "modifierName": "FallingAnthem_BS_Material",
           "stateIDs": [
             "FallingAnthem_BS"
           ],
-          "modifierName": "FallingAnthem_BS_Material"
+          "__unk_Q2081332355": ""
         },
         {
           "$type": "AttachToStateIDMixin",
-          "__unk_Q2081332355": "",
+          "modifierName": "FallingAnthem_Loop_Normal",
           "stateIDs": [
             "FallingAnthem_BS"
           ],
-          "modifierName": "FallingAnthem_Loop_Normal"
+          "__unk_Q2081332355": ""
         },
         {
           "$type": "AttachToAnimatorStateIDMixin",
-          "__unk_Q2081332355": "",
+          "modifierName": "FallingAnthem_LoopDamage",
           "stateIDs": [
             "FallingAnthem_BS_2",
             "FallingAnthem_Loop",
             "FallingAnthem_Loop_Low"
           ],
-          "modifierName": "FallingAnthem_LoopDamage"
+          "__unk_Q2081332355": ""
         },
         {
           "$type": "AttachToStateIDMixin",
-          "__unk_Q2081332355": "",
+          "modifierName": "FallingAnthem_BS_VelocityForce_Initialize",
           "stateIDs": [
             "FallingAnthem_BS"
           ],
-          "modifierName": "FallingAnthem_BS_VelocityForce_Initialize"
+          "__unk_Q2081332355": ""
         },
         {
           "$type": "AttachToStateIDMixin",
-          "__unk_Q2081332355": "",
+          "modifierName": "FallingAnthem_Height_Detect",
           "stateIDs": [
             "FallingAnthem_BS",
             "FallingAnthem_Loop",
             "FallingAnthem_AS_1",
             "FallingAnthem_AS_2"
           ],
-          "modifierName": "FallingAnthem_Height_Detect"
+          "__unk_Q2081332355": ""
         },
         {
           "$type": "AttachToStateIDMixin",
-          "__unk_Q2081332355": "",
+          "modifierName": "FallingAnthem_FallingDamageImmune_01",
           "stateIDs": [
             "FallingAnthem_BS",
             "FallingAnthem_Loop",
             "FallingAnthem_AS_1",
             "FallingAnthem_AS_2"
           ],
-          "modifierName": "FallingAnthem_FallingDamageImmune_01"
+          "__unk_Q2081332355": ""
         },
         {
           "$type": "AttachToStateIDMixin",
-          "__unk_Q2081332355": "",
+          "modifierName": "Inertia",
           "stateIDs": [
             "FallingAnthem_BS",
             "FallingAnthem_Loop"
           ],
-          "modifierName": "Inertia"
+          "__unk_Q2081332355": ""
         },
         {
           "$type": "AttachToStateIDMixin",
-          "__unk_Q2081332355": "",
+          "modifierName": "FallingAnthem_OverHead_Camera",
           "stateIDs": [
             "FallingAnthem_BS",
             "FallingAnthem_Loop",
             "FallingAnthem_AS_1",
             "FallingAnthem_AS_2"
           ],
-          "modifierName": "FallingAnthem_OverHead_Camera"
+          "__unk_Q2081332355": ""
         },
         {
           "$type": "AttachToStateIDMixin",
-          "__unk_Q2081332355": "",
+          "modifierName": "FallingAnthem_ClearVelocityForce",
           "stateIDs": [
             "FallingAnthem_BS"
           ],
-          "modifierName": "FallingAnthem_ClearVelocityForce"
+          "__unk_Q2081332355": ""
         },
         {
           "$type": "AttachToStateIDMixin",
-          "__unk_Q2081332355": "",
+          "modifierName": "FallingAnthem_ClearVelocityForce_AS",
           "stateIDs": [
             "FallingAnthem_AS_1",
             "FallingAnthem_AS_2"
           ],
-          "modifierName": "FallingAnthem_ClearVelocityForce_AS"
+          "__unk_Q2081332355": ""
         },
         {
           "$type": "AttachToStateIDMixin",
-          "__unk_Q2081332355": "",
+          "modifierName": "FallingAnthem_AttachWeaponEffect",
           "stateIDs": [
             "FallingAnthem_BS",
             "FallingAnthem_Loop"
           ],
-          "modifierName": "FallingAnthem_AttachWeaponEffect"
+          "__unk_Q2081332355": ""
         },
         {
           "$type": "AttachToAnimatorStateIDMixin",
-          "__unk_Q2081332355": "",
+          "modifierName": "FallingAnthem_CameraRadialBlur",
           "stateIDs": [
             "FallingAnthem_BS_2"
           ],
-          "modifierName": "FallingAnthem_CameraRadialBlur"
+          "__unk_Q2081332355": ""
         }
       ],
       "abilityName": "Avatar_Keqing_FallingAnthem",
@@ -3872,7 +3262,617 @@
         "FallingAnthem_FallingDamageRatio_Lv3": -0.8,
         "FallingAnthem_FallingDamageRatio_Lv4": -0.6,
         "FallingAnthem_FallingDamageRatio": 0
-      }
+      },
+      "modifiers": {
+        "FallingAnthem_AttachWeaponEffect": {
+          "elementDurability": 100,
+          "modifierName": "",
+          "onAdded": [
+            {
+              "$type": "AttachEffect",
+              "effectPattern": "Eff_Avatar_Sword_FallAnthem_Self_01",
+              "scale": 1,
+              "JHAGIJGAKMK": ""
+            }
+          ],
+          "__unk_Q3323398612": 0
+        },
+        "FallingAnthem_CameraRadialBlur": {
+          "duration": 0.23,
+          "elementDurability": 100,
+          "modifierMixins": [
+            {
+              "$type": "CameraBlurMixin",
+              "cameraRadialBlur": {
+                "fadeTime": 0.15,
+                "power": 0.3
+              }
+            }
+          ],
+          "modifierName": "",
+          "__unk_Q3323398612": 0
+        },
+        "FallingAnthem_BS_Material": {
+          "elementDurability": 100,
+          "modifierName": "",
+          "onAdded": [
+            {
+              "$type": "FireEffect",
+              "effectPattern": "Eff_Avatar_Sword_FallAnthem_BS",
+              "scale": 1,
+              "JHAGIJGAKMK": ""
+            }
+          ],
+          "__unk_Q3323398612": 0
+        },
+        "FallingAnthem_BS_VelocityForce_Initialize": {
+          "elementDurability": 100,
+          "modifierName": "",
+          "onAdded": [
+            {
+              "$type": "RemoveVelocityForce",
+              "forces": [
+                "RushMoveType"
+              ]
+            }
+          ],
+          "properties": {
+            "Actor_AddGravityScale": -2
+          },
+          "__unk_Q3323398612": 0
+        },
+        "FallingAnthem_LoopDamage": {
+          "elementDurability": 100,
+          "modifierName": "",
+          "onThinkInterval": [
+            {
+              "$type": "TriggerAttackEvent",
+              "attackEvent": {
+                "attackInfo": {
+                  "attackProperty": {
+                    "attackType": "Melee",
+                    "damagePercentage": "FallingAnthem_Normal_Loop_Damage",
+                    "damagePercentageRatio": 0,
+                    "elementDurability": 0,
+                    "enBreak": 25,
+                    "overrideByWeapon": true,
+                    "strikeType": "Slash",
+                    "__exp_arkhe": 0
+                  },
+                  "attackTag": "FallingAttack",
+                  "attenuationGroup": "default",
+                  "attenuationTag": "",
+                  "hitPattern": {
+                    "hitHaltTimeScale": 0.02,
+                    "hitImpulseType": "LV2",
+                    "onHitEffectName": "default",
+                    "__unk_Q3893899620": ""
+                  }
+                },
+                "attackPattern": {
+                  "$type": "ConfigAttackSphere",
+                  "born": {
+                    "$type": "ConfigBornBySelf",
+                    "offset": {
+                      "z": 1
+                    }
+                  },
+                  "radius": 1,
+                  "triggerType": "TriggerNoRepeat"
+                }
+              },
+              "targetType": "Enemy"
+            }
+          ],
+          "thinkInterval": 0.3,
+          "__unk_Q3323398612": 0
+        },
+        "FallingAnthem_FallingDamageImmune_01": {
+          "elementDurability": 100,
+          "modifierName": "",
+          "onAdded": [
+            {
+              "$type": "ClearGlobalValue",
+              "key": "_ABILITY_FallingAttack_Altitude"
+            },
+            {
+              "$type": "AddGlobalValue",
+              "key": "_ABILITY_FallingAttack_Altitude",
+              "maxValue": "FallingAnthem_FallingDamageRatio_Lv0",
+              "minValue": "FallingAnthem_FallingDamageRatio_Lv0",
+              "predicates": [
+                {
+                  "$type": "ByTargetAltitude",
+                  "logic": "LesserOrEqual",
+                  "value": "FallingAnthem_Altitude_Lv0"
+                }
+              ],
+              "useLimitRange": true,
+              "value": "FallingAnthem_FallingDamageRatio_Lv0"
+            },
+            {
+              "$type": "AddGlobalValue",
+              "key": "_ABILITY_FallingAttack_Altitude",
+              "maxValue": "FallingAnthem_FallingDamageRatio_Lv1",
+              "minValue": "FallingAnthem_FallingDamageRatio_Lv1",
+              "predicates": [
+                {
+                  "$type": "ByTargetAltitude",
+                  "logic": "LesserOrEqual",
+                  "value": "FallingAnthem_Altitude_Lv1"
+                },
+                {
+                  "$type": "ByTargetAltitude",
+                  "value": "FallingAnthem_Altitude_Lv0"
+                }
+              ],
+              "useLimitRange": true,
+              "value": "FallingAnthem_FallingDamageRatio_Lv1"
+            },
+            {
+              "$type": "AddGlobalValue",
+              "key": "_ABILITY_FallingAttack_Altitude",
+              "maxValue": "FallingAnthem_FallingDamageRatio_Lv2",
+              "minValue": "FallingAnthem_FallingDamageRatio_Lv2",
+              "predicates": [
+                {
+                  "$type": "ByTargetAltitude",
+                  "logic": "LesserOrEqual",
+                  "value": "FallingAnthem_Altitude_Lv2"
+                },
+                {
+                  "$type": "ByTargetAltitude",
+                  "value": "FallingAnthem_Altitude_Lv1"
+                }
+              ],
+              "useLimitRange": true,
+              "value": "FallingAnthem_FallingDamageRatio_Lv2"
+            },
+            {
+              "$type": "AddGlobalValue",
+              "key": "_ABILITY_FallingAttack_Altitude",
+              "maxValue": "FallingAnthem_FallingDamageRatio_Lv3",
+              "minValue": "FallingAnthem_FallingDamageRatio_Lv3",
+              "predicates": [
+                {
+                  "$type": "ByTargetAltitude",
+                  "logic": "LesserOrEqual",
+                  "value": "FallingAnthem_Altitude_Lv3"
+                },
+                {
+                  "$type": "ByTargetAltitude",
+                  "value": "FallingAnthem_Altitude_Lv2"
+                }
+              ],
+              "useLimitRange": true,
+              "value": "FallingAnthem_FallingDamageRatio_Lv3"
+            },
+            {
+              "$type": "AddGlobalValue",
+              "key": "_ABILITY_FallingAttack_Altitude",
+              "maxValue": "FallingAnthem_FallingDamageRatio_Lv4",
+              "minValue": "FallingAnthem_FallingDamageRatio_Lv4",
+              "predicates": [
+                {
+                  "$type": "ByTargetAltitude",
+                  "value": "FallingAnthem_Altitude_Lv3"
+                }
+              ],
+              "useLimitRange": true,
+              "value": "FallingAnthem_FallingDamageRatio_Lv4"
+            },
+            {
+              "$type": "AttachModifier",
+              "modifierName": "FallingAnthem_FallingDamageImmune_02"
+            }
+          ],
+          "__unk_Q3323398612": 0
+        },
+        "FallingAnthem_FallingDamageImmune_02": {
+          "elementDurability": 100,
+          "modifierName": "",
+          "onAdded": [
+            {
+              "$type": "SetGlobalValueToOverrideMap",
+              "abilityName": "",
+              "globalValueKey": "_ABILITY_FallingAttack_Altitude",
+              "overrideMapKey": "FallingAnthem_FallingDamageRatio"
+            },
+            {
+              "$type": "AttachModifier",
+              "modifierName": "FallingAnthem_FallingDamageImmune_03"
+            }
+          ],
+          "__unk_Q3323398612": 0
+        },
+        "FallingAnthem_FallingDamageImmune_03": {
+          "elementDurability": 100,
+          "modifierName": "",
+          "properties": {
+            "Actor_FallingDamageRatio": "FallingAnthem_FallingDamageRatio"
+          },
+          "__unk_Q3323398612": 0
+        },
+        "FallingAnthem_Loop_Normal": {
+          "elementDurability": 100,
+          "modifierMixins": [
+            {
+              "$type": "AttachModifierToSelfGlobalValueMixin",
+              "defaultGlobalValueOnCreate": 0,
+              "globalValueKey": "_ABILITY_FallingAnthem_UseCamera",
+              "modifierNameSteps": [
+                "FallingAnthem_Loop_Normal_Rank_1",
+                "FallingAnthem_Loop_Normal_Rank_2"
+              ],
+              "valueSteps": [
+                -1,
+                0.5,
+                1.5
+              ]
+            }
+          ],
+          "modifierName": "",
+          "__unk_Q3323398612": 0
+        },
+        "FallingAnthem_Loop_Normal_Rank_1": {
+          "elementDurability": 100,
+          "modifierName": "",
+          "onAdded": [
+            {
+              "$type": "AttachEffect",
+              "effectPattern": "Eff_Avatar_Sword_FallAnthem_Loop_01",
+              "scale": 1,
+              "JHAGIJGAKMK": ""
+            }
+          ],
+          "__unk_Q3323398612": 0
+        },
+        "FallingAnthem_Loop_Normal_Rank_2": {
+          "elementDurability": 100,
+          "modifierName": "",
+          "onAdded": [
+            {
+              "$type": "AttachEffect",
+              "effectPattern": "Eff_Avatar_Sword_FallAnthem_Loop_02",
+              "scale": 1,
+              "JHAGIJGAKMK": ""
+            }
+          ],
+          "__unk_Q3323398612": 0
+        },
+        "Inertia": {
+          "elementDurability": 100,
+          "modifierMixins": [
+            {
+              "$type": "ApplyInertiaVelocityMixin",
+              "useXZ": false,
+              "useY": false
+            }
+          ],
+          "modifierName": "",
+          "__unk_Q3323398612": 0
+        },
+        "FallingAnthem_Height_Detect": {
+          "elementDurability": 100,
+          "modifierName": "",
+          "onAdded": [
+            {
+              "$type": "AddGlobalValue",
+              "key": "_ABILITY_FallingAnthem_UseCamera",
+              "maxValue": 0,
+              "minValue": 0,
+              "predicates": [
+                {
+                  "$type": "ByTargetAltitude",
+                  "logic": "LesserOrEqual",
+                  "value": 2.4
+                }
+              ],
+              "useLimitRange": true,
+              "value": 0
+            },
+            {
+              "$type": "AddGlobalValue",
+              "key": "_ABILITY_FallingAnthem_UseCamera",
+              "maxValue": 1,
+              "minValue": 0,
+              "predicates": [
+                {
+                  "$type": "ByTargetAltitude",
+                  "value": 2.4
+                }
+              ],
+              "useLimitRange": true,
+              "value": 5
+            },
+            {
+              "$type": "SetAnimatorFloat",
+              "floatID": "FallingAnthem_UseCamera",
+              "predicates": [
+                {
+                  "$type": "ByTargetAltitude",
+                  "logic": "LesserOrEqual",
+                  "value": 2.4
+                }
+              ],
+              "value": 0
+            },
+            {
+              "$type": "SetAnimatorFloat",
+              "floatID": "FallingAnthem_UseCamera",
+              "predicates": [
+                {
+                  "$type": "ByTargetAltitude",
+                  "value": 2.4
+                }
+              ],
+              "value": 1
+            }
+          ],
+          "onRemoved": [
+            {
+              "$type": "SetAnimatorFloat",
+              "floatID": "FallingAnthem_UseCamera",
+              "value": 0
+            },
+            {
+              "$type": "AddGlobalValue",
+              "key": "_ABILITY_FallingAnthem_UseCamera",
+              "maxValue": 0,
+              "minValue": 0,
+              "useLimitRange": true,
+              "value": 0
+            }
+          ],
+          "__unk_Q3323398612": 0
+        },
+        "FallingAnthem_OverHead_Camera": {
+          "elementDurability": 100,
+          "modifierName": "",
+          "onAdded": [
+            {
+              "$type": "AvatarCameraParam",
+              "cameraParam": {
+                "forceRadius": 4.5,
+                "forceRadiusDuration": 0.2,
+                "shouldKeepForceRadius": true
+              },
+              "predicates": [
+                {
+                  "$type": "ByAnimatorFloat",
+                  "logic": "Equal",
+                  "parameter": "FallingAnthem_UseCamera",
+                  "value": 1
+                }
+              ]
+            }
+          ],
+          "__unk_Q3323398612": 0
+        },
+        "FallingAnthem_OverHead_Camera_Remover": {
+          "elementDurability": 100,
+          "modifierName": "",
+          "onAdded": [
+            {
+              "$type": "AvatarExitCameraShot",
+              "doOffStage": true
+            }
+          ],
+          "__unk_Q3323398612": 0
+        },
+        "FallingAnthem_Landed_Camera": {
+          "elementDurability": 100,
+          "modifierName": "",
+          "onAdded": [
+            {
+              "$type": "AvatarCameraParam",
+              "cameraParam": {
+                "forceRadius": 6,
+                "forceRadiusDuration": 0.1,
+                "shouldKeepForceRadius": true
+              },
+              "predicates": [
+                {
+                  "$type": "ByAnimatorFloat",
+                  "logic": "Equal",
+                  "parameter": "FallingAnthem_UseCamera",
+                  "value": 1
+                }
+              ]
+            }
+          ],
+          "__unk_Q3323398612": 0
+        },
+        "FallingAnthem_ClearVelocityForce": {
+          "elementDurability": 100,
+          "modifierName": "",
+          "onAdded": [
+            {
+              "$type": "RemoveVelocityForce",
+              "forces": [
+                "RushMoveType",
+                "InertiaType"
+              ]
+            }
+          ],
+          "__unk_Q3323398612": 0
+        },
+        "FallingAnthem_ClearVelocityForce_AS": {
+          "elementDurability": 100,
+          "modifierName": "",
+          "onAdded": [
+            {
+              "$type": "RemoveVelocityForce",
+              "forces": [
+                "RushMoveType",
+                "InertiaType"
+              ]
+            }
+          ],
+          "__unk_Q3323398612": 0
+        }
+      },
+      "onAbilityStart": [
+        {
+          "$type": "TriggerAttackEvent",
+          "attackEvent": {
+            "attackInfo": {
+              "attackProperty": {
+                "attackType": "Melee",
+                "damagePercentage": "FallingAnthem_Normal_Rank_1_Damage",
+                "damagePercentageRatio": 0,
+                "elementDurability": 25,
+                "enBreak": 100,
+                "overrideByWeapon": true,
+                "strikeType": "Blunt",
+                "__exp_arkhe": 0
+              },
+              "attackTag": "FallingAttack",
+              "attenuationGroup": "default",
+              "attenuationTag": "",
+              "cameraShake": {
+                "extension": {
+                  "baseCycle": 0.24,
+                  "cycleDamping": 0,
+                  "rangeAttenuation": 0.3
+                },
+                "shakeDir": {
+                  "y": 1
+                },
+                "shakeDistance": 30,
+                "shakeRange": 0.24,
+                "shakeTime": 0.12,
+                "shakeType": "CustomVector",
+                "OFGBHFBAEKK": ""
+              },
+              "forceCameraShake": true,
+              "hitPattern": {
+                "hitHaltTimeScale": 0.1,
+                "hitImpulseType": "LV4",
+                "onHitEffectName": "none",
+                "__unk_Q3893899620": ""
+              }
+            },
+            "attackPattern": {
+              "$type": "ConfigAttackCircle",
+              "born": {
+                "$type": "ConfigBornByTarget",
+                "offset": {
+                  "z": 1,
+                  "y": -0.5
+                }
+              },
+              "height": 2,
+              "radius": 3,
+              "triggerType": "TriggerNoRepeat"
+            }
+          },
+          "predicates": [
+            {
+              "$type": "ByTargetGlobalValue",
+              "compareType": "NoneOrEqual",
+              "forceByCaster": true,
+              "key": "_ABILITY_FallingAnthem_UseCamera",
+              "value": 0
+            }
+          ],
+          "targetType": "Enemy"
+        },
+        {
+          "$type": "TriggerAttackEvent",
+          "attackEvent": {
+            "attackInfo": {
+              "attackProperty": {
+                "attackType": "Melee",
+                "damagePercentage": "FallingAnthem_Normal_Rank_2_Damage",
+                "damagePercentageRatio": 0,
+                "elementDurability": 25,
+                "enBreak": 150,
+                "overrideByWeapon": true,
+                "strikeType": "Blunt",
+                "__exp_arkhe": 0
+              },
+              "attackTag": "FallingAttack",
+              "attenuationGroup": "default",
+              "attenuationTag": "",
+              "cameraShake": {
+                "extension": {
+                  "baseCycle": 0.4,
+                  "cycleDamping": 0,
+                  "rangeAttenuation": 0.3
+                },
+                "shakeDir": {
+                  "y": 1,
+                  "x": 1
+                },
+                "shakeDistance": 30,
+                "shakeRange": 0.5,
+                "shakeTime": 0.2,
+                "shakeType": "CustomVector",
+                "OFGBHFBAEKK": ""
+              },
+              "forceCameraShake": true,
+              "hitPattern": {
+                "hitHaltTimeScale": 0.1,
+                "hitImpulseType": "LV7",
+                "onHitEffectName": "none",
+                "__unk_Q3893899620": ""
+              }
+            },
+            "attackPattern": {
+              "$type": "ConfigAttackCircle",
+              "born": {
+                "$type": "ConfigBornByTarget",
+                "offset": {
+                  "z": 1,
+                  "y": -0.5
+                }
+              },
+              "height": 2,
+              "radius": 5,
+              "triggerType": "TriggerNoRepeat"
+            }
+          },
+          "predicates": [
+            {
+              "$type": "ByTargetGlobalValue",
+              "forceByCaster": true,
+              "key": "_ABILITY_FallingAnthem_UseCamera",
+              "value": 1
+            }
+          ],
+          "targetType": "Enemy"
+        },
+        {
+          "$type": "FireEffect",
+          "effectPattern": "Eff_Avatar_Sword_FallAnthem_Strike_01",
+          "predicates": [
+            {
+              "$type": "ByTargetGlobalValue",
+              "compareType": "NoneOrEqual",
+              "forceByCaster": true,
+              "key": "_ABILITY_FallingAnthem_UseCamera",
+              "value": 0
+            }
+          ],
+          "scale": 1,
+          "JHAGIJGAKMK": ""
+        },
+        {
+          "$type": "FireEffect",
+          "effectPattern": "Eff_Avatar_Sword_FallAnthem_Strike_02",
+          "predicates": [
+            {
+              "$type": "ByTargetGlobalValue",
+              "forceByCaster": true,
+              "key": "_ABILITY_FallingAnthem_UseCamera",
+              "value": 1
+            }
+          ],
+          "scale": 1,
+          "JHAGIJGAKMK": ""
+        }
+      ]
     }
   }
 ]

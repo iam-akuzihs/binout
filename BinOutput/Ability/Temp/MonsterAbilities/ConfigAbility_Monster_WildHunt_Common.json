@@ -1,38 +1,227 @@
 [
   {
     "Default": {
-      "modifiers": {
-        "WindHuntBasicLogic": {
-          "onReconnect": [
+      "abilityMixins": [
+        {
+          "$type": "AttachModifierToSelfGlobalValueMixin",
+          "defaultGlobalValueOnCreate": 0,
+          "globalValueKey": "_WildHunt_INSTABLE_FakeDie",
+          "modifierNameSteps": [
+            "Alive",
+            "Instable_FakeDie"
+          ],
+          "valueSteps": [
+            -0.5,
+            0.5,
+            1.5
+          ]
+        },
+        {
+          "$type": "DoActionBySkillEventMixin",
+          "onEvent": [
             {
-              "$type": "SetAnimatorBool",
-              "boolID": "Instable",
+              "$type": "ApplyModifier",
+              "modifierName": "Instable_MoonPhase",
               "predicates": [
                 {
                   "$type": "ByTargetGlobalValue",
-                  "value": 0,
-                  "key": "_WildHunt_INSTABLE_Active"
+                  "compareType": "NoneOrEqual",
+                  "key": "_WildHunt_Disable_MoonPhase_Trigger",
+                  "value": 0
                 }
               ]
             }
           ],
-          "properties": {
-            "Actor_HpThresholdRatio": 0
-          },
-          "onKill": [
+          "JCMPGFNMDFC": "MoonPhaseSkill"
+        },
+        {
+          "$type": "AttachModifierToSelfGlobalValueMixin",
+          "defaultGlobalValueOnCreate": 0,
+          "globalValueKey": "_WildHunt_INSTABLE_Active",
+          "modifierNameSteps": [
+            "Instable_Active"
+          ],
+          "valueSteps": [
+            0.5,
+            2.5
+          ]
+        },
+        {
+          "$type": "AttachModifierToFightPropMixin",
+          "fightProp": "FIGHT_PROP_CUR_HP",
+          "GMPNFLPOFHP": [
             {
-              "$type": "SetGlobalValueV2",
-              "minValue": 0,
-              "key": "_HP_CORROSION_VALUE",
-              "maxValue": 0,
-              "value": 0
-            },
-            {
-              "$type": "SetAnimatorBool",
-              "value": true,
-              "boolID": "Instable"
+              "$type": "Predicated",
+              "successActions": [
+                {
+                  "$type": "ClearEndura"
+                },
+                {
+                  "$type": "SetGlobalValueV2",
+                  "key": "_WildHunt_FakeDie_Reason_HPDown",
+                  "maxValue": 0,
+                  "minValue": 0,
+                  "value": 1
+                },
+                {
+                  "$type": "SetGlobalValueV2",
+                  "key": "_WildHunt_INSTABLE_FakeDie",
+                  "maxValue": 0,
+                  "minValue": 0,
+                  "predicates": [
+                    {
+                      "$type": "ByTargetGlobalValue",
+                      "key": "_WildHunt_FakeDie_Reason_HPDown",
+                      "value": 1
+                    },
+                    {
+                      "$type": "ByTargetGlobalValue",
+                      "key": "_WildHunt_FakeDie_Reason_DmgReceived",
+                      "value": 1
+                    }
+                  ],
+                  "value": 1
+                }
+              ],
+              "targetPredicates": [
+                {
+                  "$type": "ByTargetGlobalValue",
+                  "key": "_WildHunt_INSTABLE_FakeDie",
+                  "value": 0
+                },
+                {
+                  "$type": "ByTargetHPValue",
+                  "HP": 1,
+                  "logic": "LesserOrEqual"
+                }
+              ]
             }
           ],
+          "OKOEHJLJBID": [
+            {
+              "$type": "LoseHP",
+              "amountByCasterMaxHPRatio": 1,
+              "limboByTargetMaxHPRatio": "_HP_CORROSION_VALUE",
+              "predicates": [
+                {
+                  "$type": "ByTargetHPRatio",
+                  "HPRatio": "_HP_CORROSION_VALUE",
+                  "target": "Self"
+                }
+              ],
+              "LEFIACDNIHL": "",
+              "PIDJPPFOCFP": ""
+            },
+            {
+              "$type": "Predicated",
+              "successActions": [
+                {
+                  "$type": "SetPoseBool",
+                  "boolID": "FakeDie"
+                },
+                {
+                  "$type": "SetAnimatorBool",
+                  "boolID": "FakeDieState"
+                },
+                {
+                  "$type": "SetGlobalValueListV2",
+                  "JNBAOPKJKFM": [
+                    {
+                      "key": "_WildHunt_INSTABLE_FakeDie",
+                      "maxValue": 0,
+                      "minValue": 0,
+                      "value": 0
+                    },
+                    {
+                      "key": "_WildHunt_FakeDie_Reason_HPDown",
+                      "maxValue": 0,
+                      "minValue": 0,
+                      "value": 0
+                    },
+                    {
+                      "key": "_WildHunt_FakeDie_Reason_DmgReceived",
+                      "maxValue": 0,
+                      "minValue": 0,
+                      "value": 0
+                    },
+                    {
+                      "key": "WildHunt_Revive_Confirm",
+                      "maxValue": 0,
+                      "minValue": 0,
+                      "value": 0
+                    }
+                  ]
+                },
+                {
+                  "$type": "ServerMonsterLog",
+                  "paramList": [
+                    0
+                  ],
+                  "predicates": [
+                    {
+                      "$type": "ByTargetGlobalValue",
+                      "key": "Monster_Sigurd_Mark",
+                      "value": 1
+                    }
+                  ]
+                },
+                {
+                  "$type": "RemoveModifier",
+                  "modifierName": "zzz_InvincibleStateDelay"
+                }
+              ],
+              "targetPredicates": [
+                {
+                  "$type": "ByTargetGlobalValue",
+                  "key": "WildHunt_Revive_Confirm",
+                  "value": 1
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "$type": "DoActionOnGlobalValueChangeMixin",
+          "actions": [
+            {
+              "$type": "LoseHP",
+              "amountByCasterMaxHPRatio": 1,
+              "limboByTargetMaxHPRatio": "_HP_CORROSION_VALUE",
+              "predicates": [
+                {
+                  "$type": "ByTargetHPRatio",
+                  "HPRatio": "_HP_CORROSION_VALUE",
+                  "target": "Self"
+                }
+              ],
+              "LEFIACDNIHL": "",
+              "PIDJPPFOCFP": ""
+            },
+            {
+              "$type": "Predicated",
+              "predicates": [
+                {
+                  "$type": "ByTargetGlobalValue",
+                  "compareType": "LessAndEqual",
+                  "key": "_HP_CORROSION_VALUE",
+                  "value": 0.01
+                }
+              ],
+              "successActions": [
+                {
+                  "$type": "KillSelf",
+                  "target": "Caster"
+                }
+              ]
+            }
+          ],
+          "globalValueKey": "_HP_CORROSION_VALUE",
+          "DHKOKKHJMHC": true
+        }
+      ],
+      "abilityName": "Monster_WildHunt_Instable_Handler",
+      "modifiers": {
+        "WindHuntBasicLogic": {
           "elementDurability": 100,
           "modifierMixins": [
             {
@@ -40,52 +229,32 @@
             },
             {
               "$type": "HPCorrosionMixin",
-              "DFOLBCDILPA": 1
+              "initialValue": 1
             },
             {
               "$type": "OnAttackReceivedMixin",
               "actions": [
                 {
                   "$type": "GetDamage",
-                  "OCDDHEEDBBH": "_Damage_Received"
+                  "globalValue": "_Damage_Received"
                 },
                 {
                   "$type": "Predicated",
                   "successActions": [
                     {
                       "$type": "GetFightProperty",
-                      "globalValueKey": "_MAX_HP",
-                      "fightProp": "FIGHT_PROP_MAX_HP"
+                      "fightProp": "FIGHT_PROP_MAX_HP",
+                      "globalValueKey": "_MAX_HP"
                     },
                     {
                       "$type": "__exp_PredicatedBySelectTarget",
-                      "successActions": [
-                        {
-                          "$type": "AddGlobalValue",
-                          "useLimitRange": true,
-                          "key": "_HP_CORROSION_VALUE",
-                          "maxValue": 1,
-                          "minValue": 0,
-                          "value": [
-                            0,
-                            1,
-                            "instable_damage_ratio_moon_team",
-                            "MUL",
-                            "_Damage_Received",
-                            "MUL",
-                            "_MAX_HP",
-                            "DIV",
-                            "SUB"
-                          ]
-                        }
-                      ],
                       "failActions": [
                         {
                           "$type": "AddGlobalValue",
-                          "useLimitRange": true,
                           "key": "_HP_CORROSION_VALUE",
                           "maxValue": 1,
                           "minValue": 0,
+                          "useLimitRange": true,
                           "value": [
                             0,
                             1,
@@ -99,13 +268,33 @@
                           ]
                         }
                       ],
+                      "successActions": [
+                        {
+                          "$type": "AddGlobalValue",
+                          "key": "_HP_CORROSION_VALUE",
+                          "maxValue": 1,
+                          "minValue": 0,
+                          "useLimitRange": true,
+                          "value": [
+                            0,
+                            1,
+                            "instable_damage_ratio_moon_team",
+                            "MUL",
+                            "_Damage_Received",
+                            "MUL",
+                            "_MAX_HP",
+                            "DIV",
+                            "SUB"
+                          ]
+                        }
+                      ],
                       "targetPredicates": [
                         {
                           "$type": "ByTargetGlobalValue",
-                          "value": 2,
                           "compareType": "MoreThanAndEqual",
                           "key": "SGV_MoonPhaseLevel",
-                          "target": "Team"
+                          "target": "Team",
+                          "value": 2
                         }
                       ]
                     }
@@ -125,33 +314,32 @@
                     },
                     {
                       "$type": "SetGlobalValueV2",
-                      "minValue": 0,
                       "key": "_WildHunt_FakeDie_Reason_DmgReceived",
                       "maxValue": 0,
+                      "minValue": 0,
                       "value": 1
                     },
                     {
                       "$type": "SetGlobalValueV2",
-                      "minValue": 0,
                       "key": "_WildHunt_INSTABLE_FakeDie",
                       "maxValue": 0,
-                      "value": 1,
+                      "minValue": 0,
                       "predicates": [
                         {
                           "$type": "ByAny",
                           "predicates": [
                             {
-                              "$type": "GOBNKFIFGFJ",
+                              "$type": "ByAnd",
                               "predicates": [
                                 {
                                   "$type": "ByTargetGlobalValue",
-                                  "value": 1,
-                                  "key": "_WildHunt_FakeDie_Reason_HPDown"
+                                  "key": "_WildHunt_FakeDie_Reason_HPDown",
+                                  "value": 1
                                 },
                                 {
                                   "$type": "ByTargetGlobalValue",
-                                  "value": 1,
-                                  "key": "_WildHunt_FakeDie_Reason_DmgReceived"
+                                  "key": "_WildHunt_FakeDie_Reason_DmgReceived",
+                                  "value": 1
                                 }
                               ]
                             },
@@ -162,14 +350,15 @@
                             }
                           ]
                         }
-                      ]
+                      ],
+                      "value": 1
                     }
                   ],
                   "targetPredicates": [
                     {
                       "$type": "ByTargetGlobalValue",
-                      "value": 0,
-                      "key": "_WildHunt_INSTABLE_FakeDie"
+                      "key": "_WildHunt_INSTABLE_FakeDie",
+                      "value": 0
                     },
                     {
                       "$type": "ByTargetHPValue",
@@ -185,11 +374,43 @@
               ]
             }
           ],
-          "state": "Limbo",
           "modifierName": "",
+          "onKill": [
+            {
+              "$type": "SetGlobalValueV2",
+              "key": "_HP_CORROSION_VALUE",
+              "maxValue": 0,
+              "minValue": 0,
+              "value": 0
+            },
+            {
+              "$type": "SetAnimatorBool",
+              "boolID": "Instable",
+              "value": true
+            }
+          ],
+          "onReconnect": [
+            {
+              "$type": "SetAnimatorBool",
+              "boolID": "Instable",
+              "predicates": [
+                {
+                  "$type": "ByTargetGlobalValue",
+                  "key": "_WildHunt_INSTABLE_Active",
+                  "value": 0
+                }
+              ]
+            }
+          ],
+          "properties": {
+            "Actor_HpThresholdRatio": 0
+          },
+          "state": "Limbo",
           "__unk_Q3323398612": 0
         },
         "Alive": {
+          "elementDurability": 100,
+          "modifierName": "",
           "onAdded": [
             {
               "$type": "SetPoseBool",
@@ -200,29 +421,19 @@
               "boolID": "FakeDieState"
             }
           ],
-          "elementDurability": 100,
-          "modifierName": "",
           "__unk_Q3323398612": 0
         },
         "Instable_MoonPhase": {
           "duration": "moon_phase_instable_duration",
-          "onRemoved": [
-            {
-              "$type": "AddGlobalValue",
-              "useLimitRange": true,
-              "key": "_WildHunt_INSTABLE_Active",
-              "maxValue": 2,
-              "minValue": 0,
-              "value": -1
-            }
-          ],
+          "elementDurability": 100,
+          "modifierName": "",
           "onAdded": [
             {
               "$type": "AddGlobalValue",
-              "useLimitRange": true,
               "key": "_WildHunt_INSTABLE_Active",
               "maxValue": 2,
               "minValue": 0,
+              "useLimitRange": true,
               "value": 1
             },
             {
@@ -230,21 +441,41 @@
               "modifierName": "zzz_InvincibleStateDelay"
             }
           ],
-          "elementDurability": 100,
-          "modifierName": "",
+          "onRemoved": [
+            {
+              "$type": "AddGlobalValue",
+              "key": "_WildHunt_INSTABLE_Active",
+              "maxValue": 2,
+              "minValue": 0,
+              "useLimitRange": true,
+              "value": -1
+            }
+          ],
           "__unk_Q3323398612": 0
         },
         "Instable_FakeDie_Unfreeze": {
-          "onReconnect": [
+          "elementDurability": 100,
+          "modifierMixins": [
             {
-              "$type": "RemoveModifier",
-              "modifierName": "Instable_FakeDie_Unfreeze"
+              "$type": "DoActionByStateIDMixin",
+              "exitActions": [
+                {
+                  "$type": "RemoveModifier",
+                  "modifierName": "Instable_FakeDie_Unfreeze"
+                }
+              ],
+              "stateIDs": [
+                "FakeDie_Loop",
+                "FakeDie_AS"
+              ],
+              "__unk_Q2081332355": ""
             }
           ],
+          "modifierName": "",
           "onAdded": [
             {
               "$type": "AttachAbilityStateResistance",
-              "LOJOPMOGIGH": [
+              "resistanceBuffDebuffs": [
                 "ElementFreeze",
                 "ElementFrozen"
               ]
@@ -254,57 +485,36 @@
               "resistanceListID": 14002
             }
           ],
+          "onReconnect": [
+            {
+              "$type": "RemoveModifier",
+              "modifierName": "Instable_FakeDie_Unfreeze"
+            }
+          ],
           "stacking": "Unique",
+          "__unk_Q3323398612": 0
+        },
+        "Instable_FakeDie": {
           "elementDurability": 100,
           "modifierMixins": [
             {
-              "$type": "DoActionByStateIDMixin",
-              "AJAPIFCKFHP": [
-                {
-                  "$type": "RemoveModifier",
-                  "modifierName": "Instable_FakeDie_Unfreeze"
-                }
-              ],
-              "__unk_Q2081332355": "",
-              "stateIDs": [
-                "FakeDie_Loop",
-                "FakeDie_AS"
+              "$type": "VelocityForceMixin",
+              "excludeForces": [
+                "RetreatAirType",
+                "RetreatType"
               ]
             }
           ],
           "modifierName": "",
-          "__unk_Q3323398612": 0
-        },
-        "Instable_FakeDie": {
-          "thinkInterval": 9.5,
-          "onRemoved": [
-            {
-              "$type": "AddGlobalValue",
-              "useLimitRange": true,
-              "key": "_WildHunt_INSTABLE_Active",
-              "maxValue": 2,
-              "minValue": 0,
-              "value": -1
-            }
-          ],
           "onAdded": [
             {
               "$type": "AttachAbilityStateResistance",
-              "LOJOPMOGIGH": [
+              "resistanceBuffDebuffs": [
                 "Struggle"
               ]
             },
             {
               "$type": "Predicated",
-              "successActions": [
-                {
-                  "$type": "SetGlobalValue",
-                  "key": "WildHunt_FakeDie_Dec_HP_Limit_Ratio",
-                  "minValue": 0,
-                  "maxValue": 0,
-                  "value": "add_hp_limit_ratio_when_fake_die"
-                }
-              ],
               "failActions": [
                 {
                   "$type": "AddGlobalValue",
@@ -314,21 +524,30 @@
                   "value": "extra_hp_limit_ratio_per_die"
                 }
               ],
+              "successActions": [
+                {
+                  "$type": "SetGlobalValue",
+                  "key": "WildHunt_FakeDie_Dec_HP_Limit_Ratio",
+                  "maxValue": 0,
+                  "minValue": 0,
+                  "value": "add_hp_limit_ratio_when_fake_die"
+                }
+              ],
               "targetPredicates": [
                 {
                   "$type": "ByTargetGlobalValue",
-                  "value": 0,
                   "compareType": "NoneOrEqual",
-                  "key": "WildHunt_FakeDie_Dec_HP_Limit_Ratio"
+                  "key": "WildHunt_FakeDie_Dec_HP_Limit_Ratio",
+                  "value": 0
                 }
               ]
             },
             {
               "$type": "AddGlobalValue",
-              "useLimitRange": true,
               "key": "_HP_CORROSION_VALUE",
               "maxValue": 1,
               "minValue": 0,
+              "useLimitRange": true,
               "value": [
                 0,
                 "WildHunt_FakeDie_Dec_HP_Limit_Ratio",
@@ -337,12 +556,6 @@
             },
             {
               "$type": "Predicated",
-              "successActions": [
-                {
-                  "$type": "KillSelf",
-                  "target": "Caster"
-                }
-              ],
               "failActions": [
                 {
                   "$type": "SetAnimatorTrigger",
@@ -350,124 +563,129 @@
                 },
                 {
                   "$type": "AddGlobalValue",
-                  "useLimitRange": true,
                   "key": "_WildHunt_INSTABLE_Active",
                   "maxValue": 2,
                   "minValue": 0,
+                  "useLimitRange": true,
                   "value": 1
+                }
+              ],
+              "successActions": [
+                {
+                  "$type": "KillSelf",
+                  "target": "Caster"
                 }
               ],
               "targetPredicates": [
                 {
                   "$type": "ByTargetGlobalValue",
-                  "value": 0.01,
                   "compareType": "LessAndEqual",
-                  "key": "_HP_CORROSION_VALUE"
+                  "key": "_HP_CORROSION_VALUE",
+                  "value": 0.01
                 }
               ]
             },
             {
               "$type": "SetPoseBool",
-              "value": true,
-              "boolID": "FakeDie"
+              "boolID": "FakeDie",
+              "value": true
             },
             {
               "$type": "SetAnimatorBool",
-              "value": true,
-              "boolID": "FakeDieState"
+              "boolID": "FakeDieState",
+              "value": true
             }
           ],
-          "properties": {
-            "Actor_EndureDelta": 0.0001,
-            "Entity_WeightRatio": 0.5
-          },
-          "elementDurability": 100,
-          "modifierMixins": [
+          "onRemoved": [
             {
-              "$type": "VelocityForceMixin",
-              "EANEEIEOBAJ": [
-                "RetreatAirType",
-                "RetreatType"
-              ]
+              "$type": "AddGlobalValue",
+              "key": "_WildHunt_INSTABLE_Active",
+              "maxValue": 2,
+              "minValue": 0,
+              "useLimitRange": true,
+              "value": -1
             }
           ],
-          "modifierName": "",
           "onThinkInterval": [
             {
               "$type": "ApplyModifier",
               "modifierName": "Instable_FakeDie_Unfreeze"
             }
           ],
+          "properties": {
+            "Actor_EndureDelta": 0.0001,
+            "Entity_WeightRatio": 0.5
+          },
+          "thinkInterval": 9.5,
           "__unk_Q3323398612": 0
         },
         "Instable_Active": {
+          "elementDurability": 100,
+          "modifierName": "",
+          "onAdded": [
+            {
+              "$type": "Predicated",
+              "predicates": [
+                {
+                  "$type": "ByTargetGlobalValue",
+                  "compareType": "MoreThan",
+                  "key": "_HP_CORROSION_VALUE",
+                  "value": 0.01
+                },
+                {
+                  "$type": "ByTargetGlobalValue",
+                  "key": "Instable_Enter_VFX_Type",
+                  "value": 1
+                }
+              ],
+              "successActions": [
+                {
+                  "$type": "FireEffect",
+                  "effectPattern": "Eff_Monster_WildHunt_Instable_Enter",
+                  "scale": 1,
+                  "JHAGIJGAKMK": ""
+                }
+              ]
+            },
+            {
+              "$type": "Predicated",
+              "predicates": [
+                {
+                  "$type": "ByTargetGlobalValue",
+                  "compareType": "MoreThan",
+                  "key": "_HP_CORROSION_VALUE",
+                  "value": 0.01
+                },
+                {
+                  "$type": "ByTargetGlobalValue",
+                  "key": "Instable_Enter_VFX_Type",
+                  "value": 2
+                }
+              ],
+              "successActions": [
+                {
+                  "$type": "FireEffect",
+                  "effectPattern": "Eff_Monster_WildHunt_Elite_Instable_Enter",
+                  "scale": 1,
+                  "JHAGIJGAKMK": ""
+                }
+              ]
+            },
+            {
+              "$type": "SetAnimatorBool",
+              "boolID": "Instable",
+              "value": true
+            }
+          ],
           "onRemoved": [
             {
               "$type": "SetAnimatorBool",
               "boolID": "Instable"
             }
           ],
-          "onAdded": [
-            {
-              "$type": "Predicated",
-              "successActions": [
-                {
-                  "$type": "FireEffect",
-                  "effectPattern": "Eff_Monster_WildHunt_Instable_Enter",
-                  "scale": 1,
-                  "ILLLPEOODKP": ""
-                }
-              ],
-              "predicates": [
-                {
-                  "$type": "ByTargetGlobalValue",
-                  "value": 0.01,
-                  "compareType": "MoreThan",
-                  "key": "_HP_CORROSION_VALUE"
-                },
-                {
-                  "$type": "ByTargetGlobalValue",
-                  "value": 1,
-                  "key": "Instable_Enter_VFX_Type"
-                }
-              ]
-            },
-            {
-              "$type": "Predicated",
-              "successActions": [
-                {
-                  "$type": "FireEffect",
-                  "effectPattern": "Eff_Monster_WildHunt_Elite_Instable_Enter",
-                  "scale": 1,
-                  "ILLLPEOODKP": ""
-                }
-              ],
-              "predicates": [
-                {
-                  "$type": "ByTargetGlobalValue",
-                  "value": 0.01,
-                  "compareType": "MoreThan",
-                  "key": "_HP_CORROSION_VALUE"
-                },
-                {
-                  "$type": "ByTargetGlobalValue",
-                  "value": 2,
-                  "key": "Instable_Enter_VFX_Type"
-                }
-              ]
-            },
-            {
-              "$type": "SetAnimatorBool",
-              "value": true,
-              "boolID": "Instable"
-            }
-          ],
-          "elementDurability": 100,
-          "modifierName": "",
           "__unk_Q3323398612": 0
         },
         "zzz_InvincibleStateDelay": {
-          "thinkInterval": 0.5,
           "duration": 6,
           "elementDurability": 100,
           "modifierName": "",
@@ -488,23 +706,24 @@
               ]
             }
           ],
+          "thinkInterval": 0.5,
           "__unk_Q3323398612": 0
         },
         "zzz_InvincibleState": {
           "duration": 6,
-          "stacking": "Unique",
           "elementDurability": 100,
-          "state": "Invincible",
           "modifierName": "",
+          "stacking": "Unique",
+          "state": "Invincible",
           "__unk_Q3323398612": 0
         }
       },
       "onAbilityStart": [
         {
           "$type": "SetGlobalValueV2",
-          "minValue": 0,
           "key": "WildHunt_Revive_Confirm",
           "maxValue": 0,
+          "minValue": 0,
           "value": 1
         },
         {
@@ -521,6 +740,125 @@
           "modifierName": "Instable_FakeDie_Unfreeze"
         }
       ],
+      "onAdded": [
+        {
+          "$type": "SetGlobalValueV2",
+          "key": "moon_phase_instable_duration",
+          "maxValue": 0,
+          "minValue": 0,
+          "predicates": [
+            {
+              "$type": "ByTargetGlobalValue",
+              "compareType": "NoneOrEqual",
+              "key": "moon_phase_instable_duration",
+              "value": 0
+            }
+          ],
+          "value": 10
+        },
+        {
+          "$type": "SetGlobalValueV2",
+          "key": "instable_damage_ratio_common",
+          "maxValue": 0,
+          "minValue": 0,
+          "predicates": [
+            {
+              "$type": "ByTargetGlobalValue",
+              "compareType": "NoneOrEqual",
+              "key": "instable_damage_ratio_common",
+              "value": 0
+            }
+          ],
+          "value": 0.65
+        },
+        {
+          "$type": "SetGlobalValueV2",
+          "key": "instable_damage_ratio_moon_team",
+          "maxValue": 0,
+          "minValue": 0,
+          "predicates": [
+            {
+              "$type": "ByTargetGlobalValue",
+              "compareType": "NoneOrEqual",
+              "key": "instable_damage_ratio_moon_team",
+              "value": 0
+            }
+          ],
+          "value": 0.9
+        },
+        {
+          "$type": "SetGlobalValueV2",
+          "key": "add_hp_limit_ratio_when_fake_die",
+          "maxValue": 0,
+          "minValue": 0,
+          "predicates": [
+            {
+              "$type": "ByTargetGlobalValue",
+              "compareType": "NoneOrEqual",
+              "key": "add_hp_limit_ratio_when_fake_die",
+              "value": 0
+            }
+          ],
+          "value": 0.1
+        },
+        {
+          "$type": "SetGlobalValueV2",
+          "key": "extra_hp_limit_ratio_per_die",
+          "maxValue": 0,
+          "minValue": 0,
+          "predicates": [
+            {
+              "$type": "ByTargetGlobalValue",
+              "compareType": "NoneOrEqual",
+              "key": "extra_hp_limit_ratio_per_die",
+              "value": 0
+            }
+          ],
+          "value": 0.08
+        },
+        {
+          "$type": "SetGlobalValueV2",
+          "key": "_WildHunt_Simplify",
+          "maxValue": 0,
+          "minValue": 0,
+          "predicates": [
+            {
+              "$type": "ByTargetGlobalValue",
+              "compareType": "NoneOrEqual",
+              "key": "_WildHunt_Simplify",
+              "value": 0
+            }
+          ],
+          "value": 0
+        },
+        {
+          "$type": "SetGlobalValueListV2",
+          "JNBAOPKJKFM": [
+            {
+              "key": "WildHunt_FakeDie_Dec_HP_Limit_Ratio",
+              "maxValue": 0,
+              "minValue": 0,
+              "value": 0
+            },
+            {
+              "key": "_HP_CORROSION_VALUE",
+              "maxValue": 0,
+              "minValue": 0,
+              "value": 1
+            },
+            {
+              "key": "WildHunt_Revive_Confirm",
+              "maxValue": 0,
+              "minValue": 0,
+              "value": 0
+            }
+          ]
+        },
+        {
+          "$type": "ApplyModifier",
+          "modifierName": "WindHuntBasicLogic"
+        }
+      ],
       "__unk_Q2830497089": [
         "moon_phase_instable_duration",
         "instable_damage_ratio_common",
@@ -531,10 +869,16 @@
         "_MAX_HP",
         "_HP_CORROSION_VALUE",
         "WildHunt_FakeDie_Dec_HP_Limit_Ratio"
-      ],
+      ]
+    }
+  },
+  {
+    "Default": {
       "abilityMixins": [
         {
           "$type": "AttachModifierToSelfGlobalValueMixin",
+          "defaultGlobalValueOnCreate": 0,
+          "globalValueKey": "_WildHunt_INSTABLE_FakeDie",
           "modifierNameSteps": [
             "Alive",
             "Instable_FakeDie"
@@ -544,8 +888,7 @@
             0.5,
             1.5
           ],
-          "globalValueKey": "_WildHunt_INSTABLE_FakeDie",
-          "defaultGlobalValueOnCreate": 0
+          "EECIIMBIDGB": true
         },
         {
           "$type": "DoActionBySkillEventMixin",
@@ -556,17 +899,19 @@
               "predicates": [
                 {
                   "$type": "ByTargetGlobalValue",
-                  "value": 0,
                   "compareType": "NoneOrEqual",
-                  "key": "_WildHunt_Disable_MoonPhase_Trigger"
+                  "key": "_WildHunt_Disable_MoonPhase_Trigger",
+                  "value": 0
                 }
               ]
             }
           ],
-          "LABOIMCPHOD": "MoonPhaseSkill"
+          "JCMPGFNMDFC": "MoonPhaseSkill"
         },
         {
           "$type": "AttachModifierToSelfGlobalValueMixin",
+          "defaultGlobalValueOnCreate": 0,
+          "globalValueKey": "_WildHunt_INSTABLE_Active",
           "modifierNameSteps": [
             "Instable_Active"
           ],
@@ -574,12 +919,12 @@
             0.5,
             2.5
           ],
-          "globalValueKey": "_WildHunt_INSTABLE_Active",
-          "defaultGlobalValueOnCreate": 0
+          "EECIIMBIDGB": true
         },
         {
           "$type": "AttachModifierToFightPropMixin",
-          "GJOPBDDHBNE": [
+          "fightProp": "FIGHT_PROP_CUR_HP",
+          "GMPNFLPOFHP": [
             {
               "$type": "Predicated",
               "successActions": [
@@ -588,36 +933,36 @@
                 },
                 {
                   "$type": "SetGlobalValueV2",
-                  "minValue": 0,
                   "key": "_WildHunt_FakeDie_Reason_HPDown",
                   "maxValue": 0,
+                  "minValue": 0,
                   "value": 1
                 },
                 {
                   "$type": "SetGlobalValueV2",
-                  "minValue": 0,
                   "key": "_WildHunt_INSTABLE_FakeDie",
                   "maxValue": 0,
-                  "value": 1,
+                  "minValue": 0,
                   "predicates": [
                     {
                       "$type": "ByTargetGlobalValue",
-                      "value": 1,
-                      "key": "_WildHunt_FakeDie_Reason_HPDown"
+                      "key": "_WildHunt_FakeDie_Reason_HPDown",
+                      "value": 1
                     },
                     {
                       "$type": "ByTargetGlobalValue",
-                      "value": 1,
-                      "key": "_WildHunt_FakeDie_Reason_DmgReceived"
+                      "key": "_WildHunt_FakeDie_Reason_DmgReceived",
+                      "value": 1
                     }
-                  ]
+                  ],
+                  "value": 1
                 }
               ],
               "targetPredicates": [
                 {
                   "$type": "ByTargetGlobalValue",
-                  "value": 0,
-                  "key": "_WildHunt_INSTABLE_FakeDie"
+                  "key": "_WildHunt_INSTABLE_FakeDie",
+                  "value": 0
                 },
                 {
                   "$type": "ByTargetHPValue",
@@ -627,21 +972,20 @@
               ]
             }
           ],
-          "fightProp": "FIGHT_PROP_CUR_HP",
-          "BLDMFADOBBI": [
+          "OKOEHJLJBID": [
             {
               "$type": "LoseHP",
-              "PBEMJNJJAFK": "",
-              "JBKJGMEJFFI": "",
-              "KHFHMJCMOHH": "_HP_CORROSION_VALUE",
               "amountByCasterMaxHPRatio": 1,
+              "limboByTargetMaxHPRatio": "_HP_CORROSION_VALUE",
               "predicates": [
                 {
                   "$type": "ByTargetHPRatio",
                   "HPRatio": "_HP_CORROSION_VALUE",
                   "target": "Self"
                 }
-              ]
+              ],
+              "LEFIACDNIHL": "",
+              "PIDJPPFOCFP": ""
             },
             {
               "$type": "Predicated",
@@ -656,30 +1000,30 @@
                 },
                 {
                   "$type": "SetGlobalValueListV2",
-                  "BGGHGEAHCGN": [
+                  "JNBAOPKJKFM": [
                     {
-                      "maxValue": 0,
-                      "value": 0,
                       "key": "_WildHunt_INSTABLE_FakeDie",
-                      "minValue": 0
+                      "maxValue": 0,
+                      "minValue": 0,
+                      "value": 0
                     },
                     {
-                      "maxValue": 0,
-                      "value": 0,
                       "key": "_WildHunt_FakeDie_Reason_HPDown",
-                      "minValue": 0
+                      "maxValue": 0,
+                      "minValue": 0,
+                      "value": 0
                     },
                     {
-                      "maxValue": 0,
-                      "value": 0,
                       "key": "_WildHunt_FakeDie_Reason_DmgReceived",
-                      "minValue": 0
+                      "maxValue": 0,
+                      "minValue": 0,
+                      "value": 0
                     },
                     {
-                      "maxValue": 0,
-                      "value": 0,
                       "key": "WildHunt_Revive_Confirm",
-                      "minValue": 0
+                      "maxValue": 0,
+                      "minValue": 0,
+                      "value": 0
                     }
                   ]
                 },
@@ -691,8 +1035,8 @@
                   "predicates": [
                     {
                       "$type": "ByTargetGlobalValue",
-                      "value": 1,
-                      "key": "Monster_Sigurd_Mark"
+                      "key": "Monster_Sigurd_Mark",
+                      "value": 1
                     }
                   ]
                 },
@@ -704,8 +1048,8 @@
               "targetPredicates": [
                 {
                   "$type": "ByTargetGlobalValue",
-                  "value": 1,
-                  "key": "WildHunt_Revive_Confirm"
+                  "key": "WildHunt_Revive_Confirm",
+                  "value": 1
                 }
               ]
             }
@@ -716,196 +1060,43 @@
           "actions": [
             {
               "$type": "LoseHP",
-              "PBEMJNJJAFK": "",
-              "JBKJGMEJFFI": "",
-              "KHFHMJCMOHH": "_HP_CORROSION_VALUE",
               "amountByCasterMaxHPRatio": 1,
+              "limboByTargetMaxHPRatio": "_HP_CORROSION_VALUE",
               "predicates": [
                 {
                   "$type": "ByTargetHPRatio",
                   "HPRatio": "_HP_CORROSION_VALUE",
                   "target": "Self"
                 }
-              ]
+              ],
+              "LEFIACDNIHL": "",
+              "PIDJPPFOCFP": ""
             },
             {
               "$type": "Predicated",
+              "predicates": [
+                {
+                  "$type": "ByTargetGlobalValue",
+                  "compareType": "LessAndEqual",
+                  "key": "_HP_CORROSION_VALUE",
+                  "value": 0.01
+                }
+              ],
               "successActions": [
                 {
                   "$type": "KillSelf",
                   "target": "Caster"
                 }
-              ],
-              "predicates": [
-                {
-                  "$type": "ByTargetGlobalValue",
-                  "value": 0.01,
-                  "compareType": "LessAndEqual",
-                  "key": "_HP_CORROSION_VALUE"
-                }
               ]
             }
           ],
-          "NBOEEIHGCPD": true,
-          "globalValueKey": "_HP_CORROSION_VALUE"
+          "globalValueKey": "_HP_CORROSION_VALUE",
+          "DHKOKKHJMHC": true
         }
       ],
-      "abilityName": "Monster_WildHunt_Instable_Handler",
-      "onAdded": [
-        {
-          "$type": "SetGlobalValueV2",
-          "minValue": 0,
-          "key": "moon_phase_instable_duration",
-          "maxValue": 0,
-          "value": 10,
-          "predicates": [
-            {
-              "$type": "ByTargetGlobalValue",
-              "value": 0,
-              "compareType": "NoneOrEqual",
-              "key": "moon_phase_instable_duration"
-            }
-          ]
-        },
-        {
-          "$type": "SetGlobalValueV2",
-          "minValue": 0,
-          "key": "instable_damage_ratio_common",
-          "maxValue": 0,
-          "value": 0.65,
-          "predicates": [
-            {
-              "$type": "ByTargetGlobalValue",
-              "value": 0,
-              "compareType": "NoneOrEqual",
-              "key": "instable_damage_ratio_common"
-            }
-          ]
-        },
-        {
-          "$type": "SetGlobalValueV2",
-          "minValue": 0,
-          "key": "instable_damage_ratio_moon_team",
-          "maxValue": 0,
-          "value": 0.9,
-          "predicates": [
-            {
-              "$type": "ByTargetGlobalValue",
-              "value": 0,
-              "compareType": "NoneOrEqual",
-              "key": "instable_damage_ratio_moon_team"
-            }
-          ]
-        },
-        {
-          "$type": "SetGlobalValueV2",
-          "minValue": 0,
-          "key": "add_hp_limit_ratio_when_fake_die",
-          "maxValue": 0,
-          "value": 0.1,
-          "predicates": [
-            {
-              "$type": "ByTargetGlobalValue",
-              "value": 0,
-              "compareType": "NoneOrEqual",
-              "key": "add_hp_limit_ratio_when_fake_die"
-            }
-          ]
-        },
-        {
-          "$type": "SetGlobalValueV2",
-          "minValue": 0,
-          "key": "extra_hp_limit_ratio_per_die",
-          "maxValue": 0,
-          "value": 0.08,
-          "predicates": [
-            {
-              "$type": "ByTargetGlobalValue",
-              "value": 0,
-              "compareType": "NoneOrEqual",
-              "key": "extra_hp_limit_ratio_per_die"
-            }
-          ]
-        },
-        {
-          "$type": "SetGlobalValueV2",
-          "minValue": 0,
-          "key": "_WildHunt_Simplify",
-          "maxValue": 0,
-          "value": 0,
-          "predicates": [
-            {
-              "$type": "ByTargetGlobalValue",
-              "value": 0,
-              "compareType": "NoneOrEqual",
-              "key": "_WildHunt_Simplify"
-            }
-          ]
-        },
-        {
-          "$type": "SetGlobalValueListV2",
-          "BGGHGEAHCGN": [
-            {
-              "maxValue": 0,
-              "value": 0,
-              "key": "WildHunt_FakeDie_Dec_HP_Limit_Ratio",
-              "minValue": 0
-            },
-            {
-              "maxValue": 0,
-              "value": 1,
-              "key": "_HP_CORROSION_VALUE",
-              "minValue": 0
-            },
-            {
-              "maxValue": 0,
-              "value": 0,
-              "key": "WildHunt_Revive_Confirm",
-              "minValue": 0
-            }
-          ]
-        },
-        {
-          "$type": "ApplyModifier",
-          "modifierName": "WindHuntBasicLogic"
-        }
-      ]
-    }
-  },
-  {
-    "Default": {
+      "abilityName": "Monster_WildHunt_Instable_Handler_LeyLineChallenge",
       "modifiers": {
         "WindHuntBasicLogic": {
-          "onReconnect": [
-            {
-              "$type": "SetAnimatorBool",
-              "boolID": "Instable",
-              "predicates": [
-                {
-                  "$type": "ByTargetGlobalValue",
-                  "value": 0,
-                  "key": "_WildHunt_INSTABLE_Active"
-                }
-              ]
-            }
-          ],
-          "properties": {
-            "Actor_HpThresholdRatio": 0
-          },
-          "onKill": [
-            {
-              "$type": "SetGlobalValueV2",
-              "minValue": 0,
-              "key": "_HP_CORROSION_VALUE",
-              "maxValue": 0,
-              "value": 0
-            },
-            {
-              "$type": "SetAnimatorBool",
-              "value": true,
-              "boolID": "Instable"
-            }
-          ],
           "elementDurability": 100,
           "modifierMixins": [
             {
@@ -913,52 +1104,32 @@
             },
             {
               "$type": "HPCorrosionMixin",
-              "DFOLBCDILPA": 1
+              "initialValue": 1
             },
             {
               "$type": "OnAttackReceivedMixin",
               "actions": [
                 {
                   "$type": "GetDamage",
-                  "OCDDHEEDBBH": "_Damage_Received"
+                  "globalValue": "_Damage_Received"
                 },
                 {
                   "$type": "Predicated",
                   "successActions": [
                     {
                       "$type": "GetFightProperty",
-                      "globalValueKey": "_MAX_HP",
-                      "fightProp": "FIGHT_PROP_MAX_HP"
+                      "fightProp": "FIGHT_PROP_MAX_HP",
+                      "globalValueKey": "_MAX_HP"
                     },
                     {
                       "$type": "__exp_PredicatedBySelectTarget",
-                      "successActions": [
-                        {
-                          "$type": "AddGlobalValue",
-                          "useLimitRange": true,
-                          "key": "_HP_CORROSION_VALUE",
-                          "maxValue": 1,
-                          "minValue": 0,
-                          "value": [
-                            0,
-                            1,
-                            "instable_damage_ratio_moon_team",
-                            "MUL",
-                            "_Damage_Received",
-                            "MUL",
-                            "_MAX_HP",
-                            "DIV",
-                            "SUB"
-                          ]
-                        }
-                      ],
                       "failActions": [
                         {
                           "$type": "AddGlobalValue",
-                          "useLimitRange": true,
                           "key": "_HP_CORROSION_VALUE",
                           "maxValue": 1,
                           "minValue": 0,
+                          "useLimitRange": true,
                           "value": [
                             0,
                             1,
@@ -972,13 +1143,33 @@
                           ]
                         }
                       ],
+                      "successActions": [
+                        {
+                          "$type": "AddGlobalValue",
+                          "key": "_HP_CORROSION_VALUE",
+                          "maxValue": 1,
+                          "minValue": 0,
+                          "useLimitRange": true,
+                          "value": [
+                            0,
+                            1,
+                            "instable_damage_ratio_moon_team",
+                            "MUL",
+                            "_Damage_Received",
+                            "MUL",
+                            "_MAX_HP",
+                            "DIV",
+                            "SUB"
+                          ]
+                        }
+                      ],
                       "targetPredicates": [
                         {
                           "$type": "ByTargetGlobalValue",
-                          "value": 2,
                           "compareType": "MoreThanAndEqual",
                           "key": "SGV_MoonPhaseLevel",
-                          "target": "Team"
+                          "target": "Team",
+                          "value": 2
                         }
                       ]
                     }
@@ -998,33 +1189,32 @@
                     },
                     {
                       "$type": "SetGlobalValueV2",
-                      "minValue": 0,
                       "key": "_WildHunt_FakeDie_Reason_DmgReceived",
                       "maxValue": 0,
+                      "minValue": 0,
                       "value": 1
                     },
                     {
                       "$type": "SetGlobalValueV2",
-                      "minValue": 0,
                       "key": "_WildHunt_INSTABLE_FakeDie",
                       "maxValue": 0,
-                      "value": 1,
+                      "minValue": 0,
                       "predicates": [
                         {
                           "$type": "ByAny",
                           "predicates": [
                             {
-                              "$type": "GOBNKFIFGFJ",
+                              "$type": "ByAnd",
                               "predicates": [
                                 {
                                   "$type": "ByTargetGlobalValue",
-                                  "value": 1,
-                                  "key": "_WildHunt_FakeDie_Reason_HPDown"
+                                  "key": "_WildHunt_FakeDie_Reason_HPDown",
+                                  "value": 1
                                 },
                                 {
                                   "$type": "ByTargetGlobalValue",
-                                  "value": 1,
-                                  "key": "_WildHunt_FakeDie_Reason_DmgReceived"
+                                  "key": "_WildHunt_FakeDie_Reason_DmgReceived",
+                                  "value": 1
                                 }
                               ]
                             },
@@ -1035,14 +1225,15 @@
                             }
                           ]
                         }
-                      ]
+                      ],
+                      "value": 1
                     }
                   ],
                   "targetPredicates": [
                     {
                       "$type": "ByTargetGlobalValue",
-                      "value": 0,
-                      "key": "_WildHunt_INSTABLE_FakeDie"
+                      "key": "_WildHunt_INSTABLE_FakeDie",
+                      "value": 0
                     },
                     {
                       "$type": "ByTargetHPValue",
@@ -1058,26 +1249,46 @@
               ]
             }
           ],
-          "state": "Limbo",
           "modifierName": "",
-          "__unk_Q3323398612": 0
-        },
-        "Alive": {
-          "onAdded": [
+          "onKill": [
             {
-              "$type": "SetPoseBool",
-              "boolID": "FakeDie"
+              "$type": "SetGlobalValueV2",
+              "key": "_HP_CORROSION_VALUE",
+              "maxValue": 0,
+              "minValue": 0,
+              "value": 0
             },
             {
               "$type": "SetAnimatorBool",
-              "boolID": "FakeDieState"
+              "boolID": "Instable",
+              "value": true
             }
           ],
+          "onReconnect": [
+            {
+              "$type": "SetAnimatorBool",
+              "boolID": "Instable",
+              "predicates": [
+                {
+                  "$type": "ByTargetGlobalValue",
+                  "key": "_WildHunt_INSTABLE_Active",
+                  "value": 0
+                }
+              ]
+            }
+          ],
+          "properties": {
+            "Actor_HpThresholdRatio": 0
+          },
+          "state": "Limbo",
+          "__unk_Q3323398612": 0
+        },
+        "Alive": {
           "elementDurability": 100,
           "modifierMixins": [
             {
               "$type": "VelocityForceMixin",
-              "MOMPMOKNBPM": [
+              "includeForces": [
                 "RushMoveType",
                 "RetreatType",
                 "FixedRushMoveType"
@@ -1085,27 +1296,29 @@
             }
           ],
           "modifierName": "",
+          "onAdded": [
+            {
+              "$type": "SetPoseBool",
+              "boolID": "FakeDie"
+            },
+            {
+              "$type": "SetAnimatorBool",
+              "boolID": "FakeDieState"
+            }
+          ],
           "__unk_Q3323398612": 0
         },
         "Instable_MoonPhase": {
           "duration": "moon_phase_instable_duration",
-          "onRemoved": [
-            {
-              "$type": "AddGlobalValue",
-              "useLimitRange": true,
-              "key": "_WildHunt_INSTABLE_Active",
-              "maxValue": 2,
-              "minValue": 0,
-              "value": -1
-            }
-          ],
+          "elementDurability": 100,
+          "modifierName": "",
           "onAdded": [
             {
               "$type": "AddGlobalValue",
-              "useLimitRange": true,
               "key": "_WildHunt_INSTABLE_Active",
               "maxValue": 2,
               "minValue": 0,
+              "useLimitRange": true,
               "value": 1
             },
             {
@@ -1113,21 +1326,41 @@
               "modifierName": "zzz_InvincibleStateDelay"
             }
           ],
-          "elementDurability": 100,
-          "modifierName": "",
+          "onRemoved": [
+            {
+              "$type": "AddGlobalValue",
+              "key": "_WildHunt_INSTABLE_Active",
+              "maxValue": 2,
+              "minValue": 0,
+              "useLimitRange": true,
+              "value": -1
+            }
+          ],
           "__unk_Q3323398612": 0
         },
         "Instable_FakeDie_Unfreeze": {
-          "onReconnect": [
+          "elementDurability": 100,
+          "modifierMixins": [
             {
-              "$type": "RemoveModifier",
-              "modifierName": "Instable_FakeDie_Unfreeze"
+              "$type": "DoActionByStateIDMixin",
+              "exitActions": [
+                {
+                  "$type": "RemoveModifier",
+                  "modifierName": "Instable_FakeDie_Unfreeze"
+                }
+              ],
+              "stateIDs": [
+                "FakeDie_Loop",
+                "FakeDie_AS"
+              ],
+              "__unk_Q2081332355": ""
             }
           ],
+          "modifierName": "",
           "onAdded": [
             {
               "$type": "AttachAbilityStateResistance",
-              "LOJOPMOGIGH": [
+              "resistanceBuffDebuffs": [
                 "ElementFreeze",
                 "ElementFrozen"
               ]
@@ -1137,57 +1370,36 @@
               "resistanceListID": 14002
             }
           ],
+          "onReconnect": [
+            {
+              "$type": "RemoveModifier",
+              "modifierName": "Instable_FakeDie_Unfreeze"
+            }
+          ],
           "stacking": "Unique",
+          "__unk_Q3323398612": 0
+        },
+        "Instable_FakeDie": {
           "elementDurability": 100,
           "modifierMixins": [
             {
-              "$type": "DoActionByStateIDMixin",
-              "AJAPIFCKFHP": [
-                {
-                  "$type": "RemoveModifier",
-                  "modifierName": "Instable_FakeDie_Unfreeze"
-                }
-              ],
-              "__unk_Q2081332355": "",
-              "stateIDs": [
-                "FakeDie_Loop",
-                "FakeDie_AS"
+              "$type": "VelocityForceMixin",
+              "excludeForces": [
+                "RetreatAirType",
+                "RetreatType"
               ]
             }
           ],
           "modifierName": "",
-          "__unk_Q3323398612": 0
-        },
-        "Instable_FakeDie": {
-          "thinkInterval": 9.5,
-          "onRemoved": [
-            {
-              "$type": "AddGlobalValue",
-              "useLimitRange": true,
-              "key": "_WildHunt_INSTABLE_Active",
-              "maxValue": 2,
-              "minValue": 0,
-              "value": -1
-            }
-          ],
           "onAdded": [
             {
               "$type": "AttachAbilityStateResistance",
-              "LOJOPMOGIGH": [
+              "resistanceBuffDebuffs": [
                 "Struggle"
               ]
             },
             {
               "$type": "Predicated",
-              "successActions": [
-                {
-                  "$type": "SetGlobalValue",
-                  "key": "WildHunt_FakeDie_Dec_HP_Limit_Ratio",
-                  "minValue": 0,
-                  "maxValue": 0,
-                  "value": "add_hp_limit_ratio_when_fake_die"
-                }
-              ],
               "failActions": [
                 {
                   "$type": "AddGlobalValue",
@@ -1197,21 +1409,30 @@
                   "value": "extra_hp_limit_ratio_per_die"
                 }
               ],
+              "successActions": [
+                {
+                  "$type": "SetGlobalValue",
+                  "key": "WildHunt_FakeDie_Dec_HP_Limit_Ratio",
+                  "maxValue": 0,
+                  "minValue": 0,
+                  "value": "add_hp_limit_ratio_when_fake_die"
+                }
+              ],
               "targetPredicates": [
                 {
                   "$type": "ByTargetGlobalValue",
-                  "value": 0,
                   "compareType": "NoneOrEqual",
-                  "key": "WildHunt_FakeDie_Dec_HP_Limit_Ratio"
+                  "key": "WildHunt_FakeDie_Dec_HP_Limit_Ratio",
+                  "value": 0
                 }
               ]
             },
             {
               "$type": "AddGlobalValue",
-              "useLimitRange": true,
               "key": "_HP_CORROSION_VALUE",
               "maxValue": 1,
               "minValue": 0,
+              "useLimitRange": true,
               "value": [
                 0,
                 "WildHunt_FakeDie_Dec_HP_Limit_Ratio",
@@ -1220,12 +1441,6 @@
             },
             {
               "$type": "Predicated",
-              "successActions": [
-                {
-                  "$type": "KillSelf",
-                  "target": "Caster"
-                }
-              ],
               "failActions": [
                 {
                   "$type": "SetAnimatorTrigger",
@@ -1233,124 +1448,129 @@
                 },
                 {
                   "$type": "AddGlobalValue",
-                  "useLimitRange": true,
                   "key": "_WildHunt_INSTABLE_Active",
                   "maxValue": 2,
                   "minValue": 0,
+                  "useLimitRange": true,
                   "value": 1
+                }
+              ],
+              "successActions": [
+                {
+                  "$type": "KillSelf",
+                  "target": "Caster"
                 }
               ],
               "targetPredicates": [
                 {
                   "$type": "ByTargetGlobalValue",
-                  "value": 0.01,
                   "compareType": "LessAndEqual",
-                  "key": "_HP_CORROSION_VALUE"
+                  "key": "_HP_CORROSION_VALUE",
+                  "value": 0.01
                 }
               ]
             },
             {
               "$type": "SetPoseBool",
-              "value": true,
-              "boolID": "FakeDie"
+              "boolID": "FakeDie",
+              "value": true
             },
             {
               "$type": "SetAnimatorBool",
-              "value": true,
-              "boolID": "FakeDieState"
+              "boolID": "FakeDieState",
+              "value": true
             }
           ],
-          "properties": {
-            "Actor_EndureDelta": 0.0001,
-            "Entity_WeightRatio": 0.5
-          },
-          "elementDurability": 100,
-          "modifierMixins": [
+          "onRemoved": [
             {
-              "$type": "VelocityForceMixin",
-              "EANEEIEOBAJ": [
-                "RetreatAirType",
-                "RetreatType"
-              ]
+              "$type": "AddGlobalValue",
+              "key": "_WildHunt_INSTABLE_Active",
+              "maxValue": 2,
+              "minValue": 0,
+              "useLimitRange": true,
+              "value": -1
             }
           ],
-          "modifierName": "",
           "onThinkInterval": [
             {
               "$type": "ApplyModifier",
               "modifierName": "Instable_FakeDie_Unfreeze"
             }
           ],
+          "properties": {
+            "Actor_EndureDelta": 0.0001,
+            "Entity_WeightRatio": 0.5
+          },
+          "thinkInterval": 9.5,
           "__unk_Q3323398612": 0
         },
         "Instable_Active": {
+          "elementDurability": 100,
+          "modifierName": "",
+          "onAdded": [
+            {
+              "$type": "Predicated",
+              "predicates": [
+                {
+                  "$type": "ByTargetGlobalValue",
+                  "compareType": "MoreThan",
+                  "key": "_HP_CORROSION_VALUE",
+                  "value": 0.01
+                },
+                {
+                  "$type": "ByTargetGlobalValue",
+                  "key": "Instable_Enter_VFX_Type",
+                  "value": 1
+                }
+              ],
+              "successActions": [
+                {
+                  "$type": "FireEffect",
+                  "effectPattern": "Eff_Monster_WildHunt_Instable_Enter",
+                  "scale": 1,
+                  "JHAGIJGAKMK": ""
+                }
+              ]
+            },
+            {
+              "$type": "Predicated",
+              "predicates": [
+                {
+                  "$type": "ByTargetGlobalValue",
+                  "compareType": "MoreThan",
+                  "key": "_HP_CORROSION_VALUE",
+                  "value": 0.01
+                },
+                {
+                  "$type": "ByTargetGlobalValue",
+                  "key": "Instable_Enter_VFX_Type",
+                  "value": 2
+                }
+              ],
+              "successActions": [
+                {
+                  "$type": "FireEffect",
+                  "effectPattern": "Eff_Monster_WildHunt_Elite_Instable_Enter",
+                  "scale": 1,
+                  "JHAGIJGAKMK": ""
+                }
+              ]
+            },
+            {
+              "$type": "SetAnimatorBool",
+              "boolID": "Instable",
+              "value": true
+            }
+          ],
           "onRemoved": [
             {
               "$type": "SetAnimatorBool",
               "boolID": "Instable"
             }
           ],
-          "onAdded": [
-            {
-              "$type": "Predicated",
-              "successActions": [
-                {
-                  "$type": "FireEffect",
-                  "effectPattern": "Eff_Monster_WildHunt_Instable_Enter",
-                  "scale": 1,
-                  "ILLLPEOODKP": ""
-                }
-              ],
-              "predicates": [
-                {
-                  "$type": "ByTargetGlobalValue",
-                  "value": 0.01,
-                  "compareType": "MoreThan",
-                  "key": "_HP_CORROSION_VALUE"
-                },
-                {
-                  "$type": "ByTargetGlobalValue",
-                  "value": 1,
-                  "key": "Instable_Enter_VFX_Type"
-                }
-              ]
-            },
-            {
-              "$type": "Predicated",
-              "successActions": [
-                {
-                  "$type": "FireEffect",
-                  "effectPattern": "Eff_Monster_WildHunt_Elite_Instable_Enter",
-                  "scale": 1,
-                  "ILLLPEOODKP": ""
-                }
-              ],
-              "predicates": [
-                {
-                  "$type": "ByTargetGlobalValue",
-                  "value": 0.01,
-                  "compareType": "MoreThan",
-                  "key": "_HP_CORROSION_VALUE"
-                },
-                {
-                  "$type": "ByTargetGlobalValue",
-                  "value": 2,
-                  "key": "Instable_Enter_VFX_Type"
-                }
-              ]
-            },
-            {
-              "$type": "SetAnimatorBool",
-              "value": true,
-              "boolID": "Instable"
-            }
-          ],
-          "elementDurability": 100,
-          "modifierName": "",
           "__unk_Q3323398612": 0
         },
         "zzz_InvincibleStateDelay": {
-          "thinkInterval": 0.5,
           "duration": 6,
           "elementDurability": 100,
           "modifierName": "",
@@ -1371,23 +1591,24 @@
               ]
             }
           ],
+          "thinkInterval": 0.5,
           "__unk_Q3323398612": 0
         },
         "zzz_InvincibleState": {
           "duration": 6,
-          "stacking": "Unique",
           "elementDurability": 100,
-          "state": "Invincible",
           "modifierName": "",
+          "stacking": "Unique",
+          "state": "Invincible",
           "__unk_Q3323398612": 0
         }
       },
       "onAbilityStart": [
         {
           "$type": "SetGlobalValueV2",
-          "minValue": 0,
           "key": "WildHunt_Revive_Confirm",
           "maxValue": 0,
+          "minValue": 0,
           "value": 1
         },
         {
@@ -1404,6 +1625,110 @@
           "modifierName": "Instable_FakeDie_Unfreeze"
         }
       ],
+      "onAdded": [
+        {
+          "$type": "SetGlobalValueV2",
+          "key": "moon_phase_instable_duration",
+          "maxValue": 0,
+          "minValue": 0,
+          "predicates": [
+            {
+              "$type": "ByTargetGlobalValue",
+              "compareType": "NoneOrEqual",
+              "key": "moon_phase_instable_duration",
+              "value": 0
+            }
+          ],
+          "value": 10
+        },
+        {
+          "$type": "SetGlobalValueV2",
+          "key": "instable_damage_ratio_common",
+          "maxValue": 0,
+          "minValue": 0,
+          "predicates": [
+            {
+              "$type": "ByTargetGlobalValue",
+              "compareType": "NoneOrEqual",
+              "key": "instable_damage_ratio_common",
+              "value": 0
+            }
+          ],
+          "value": 0.65
+        },
+        {
+          "$type": "SetGlobalValueV2",
+          "key": "instable_damage_ratio_moon_team",
+          "maxValue": 0,
+          "minValue": 0,
+          "predicates": [
+            {
+              "$type": "ByTargetGlobalValue",
+              "compareType": "NoneOrEqual",
+              "key": "instable_damage_ratio_moon_team",
+              "value": 0
+            }
+          ],
+          "value": 0.9
+        },
+        {
+          "$type": "SetGlobalValueV2",
+          "key": "add_hp_limit_ratio_when_fake_die",
+          "maxValue": 0,
+          "minValue": 0,
+          "predicates": [
+            {
+              "$type": "ByTargetGlobalValue",
+              "compareType": "NoneOrEqual",
+              "key": "add_hp_limit_ratio_when_fake_die",
+              "value": 0
+            }
+          ],
+          "value": 0.1
+        },
+        {
+          "$type": "SetGlobalValueV2",
+          "key": "extra_hp_limit_ratio_per_die",
+          "maxValue": 0,
+          "minValue": 0,
+          "predicates": [
+            {
+              "$type": "ByTargetGlobalValue",
+              "compareType": "NoneOrEqual",
+              "key": "extra_hp_limit_ratio_per_die",
+              "value": 0
+            }
+          ],
+          "value": 0.08
+        },
+        {
+          "$type": "SetGlobalValueListV2",
+          "JNBAOPKJKFM": [
+            {
+              "key": "WildHunt_FakeDie_Dec_HP_Limit_Ratio",
+              "maxValue": 0,
+              "minValue": 0,
+              "value": 0
+            },
+            {
+              "key": "_HP_CORROSION_VALUE",
+              "maxValue": 0,
+              "minValue": 0,
+              "value": 1
+            },
+            {
+              "key": "WildHunt_Revive_Confirm",
+              "maxValue": 0,
+              "minValue": 0,
+              "value": 0
+            }
+          ]
+        },
+        {
+          "$type": "ApplyModifier",
+          "modifierName": "WindHuntBasicLogic"
+        }
+      ],
       "__unk_Q2830497089": [
         "moon_phase_instable_duration",
         "instable_damage_ratio_common",
@@ -1414,331 +1739,6 @@
         "_MAX_HP",
         "_HP_CORROSION_VALUE",
         "WildHunt_FakeDie_Dec_HP_Limit_Ratio"
-      ],
-      "abilityMixins": [
-        {
-          "$type": "AttachModifierToSelfGlobalValueMixin",
-          "modifierNameSteps": [
-            "Alive",
-            "Instable_FakeDie"
-          ],
-          "DEFOFMOIAAI": true,
-          "valueSteps": [
-            -0.5,
-            0.5,
-            1.5
-          ],
-          "globalValueKey": "_WildHunt_INSTABLE_FakeDie",
-          "defaultGlobalValueOnCreate": 0
-        },
-        {
-          "$type": "DoActionBySkillEventMixin",
-          "onEvent": [
-            {
-              "$type": "ApplyModifier",
-              "modifierName": "Instable_MoonPhase",
-              "predicates": [
-                {
-                  "$type": "ByTargetGlobalValue",
-                  "value": 0,
-                  "compareType": "NoneOrEqual",
-                  "key": "_WildHunt_Disable_MoonPhase_Trigger"
-                }
-              ]
-            }
-          ],
-          "LABOIMCPHOD": "MoonPhaseSkill"
-        },
-        {
-          "$type": "AttachModifierToSelfGlobalValueMixin",
-          "modifierNameSteps": [
-            "Instable_Active"
-          ],
-          "DEFOFMOIAAI": true,
-          "valueSteps": [
-            0.5,
-            2.5
-          ],
-          "globalValueKey": "_WildHunt_INSTABLE_Active",
-          "defaultGlobalValueOnCreate": 0
-        },
-        {
-          "$type": "AttachModifierToFightPropMixin",
-          "GJOPBDDHBNE": [
-            {
-              "$type": "Predicated",
-              "successActions": [
-                {
-                  "$type": "ClearEndura"
-                },
-                {
-                  "$type": "SetGlobalValueV2",
-                  "minValue": 0,
-                  "key": "_WildHunt_FakeDie_Reason_HPDown",
-                  "maxValue": 0,
-                  "value": 1
-                },
-                {
-                  "$type": "SetGlobalValueV2",
-                  "minValue": 0,
-                  "key": "_WildHunt_INSTABLE_FakeDie",
-                  "maxValue": 0,
-                  "value": 1,
-                  "predicates": [
-                    {
-                      "$type": "ByTargetGlobalValue",
-                      "value": 1,
-                      "key": "_WildHunt_FakeDie_Reason_HPDown"
-                    },
-                    {
-                      "$type": "ByTargetGlobalValue",
-                      "value": 1,
-                      "key": "_WildHunt_FakeDie_Reason_DmgReceived"
-                    }
-                  ]
-                }
-              ],
-              "targetPredicates": [
-                {
-                  "$type": "ByTargetGlobalValue",
-                  "value": 0,
-                  "key": "_WildHunt_INSTABLE_FakeDie"
-                },
-                {
-                  "$type": "ByTargetHPValue",
-                  "HP": 1,
-                  "logic": "LesserOrEqual"
-                }
-              ]
-            }
-          ],
-          "fightProp": "FIGHT_PROP_CUR_HP",
-          "BLDMFADOBBI": [
-            {
-              "$type": "LoseHP",
-              "PBEMJNJJAFK": "",
-              "JBKJGMEJFFI": "",
-              "KHFHMJCMOHH": "_HP_CORROSION_VALUE",
-              "amountByCasterMaxHPRatio": 1,
-              "predicates": [
-                {
-                  "$type": "ByTargetHPRatio",
-                  "HPRatio": "_HP_CORROSION_VALUE",
-                  "target": "Self"
-                }
-              ]
-            },
-            {
-              "$type": "Predicated",
-              "successActions": [
-                {
-                  "$type": "SetPoseBool",
-                  "boolID": "FakeDie"
-                },
-                {
-                  "$type": "SetAnimatorBool",
-                  "boolID": "FakeDieState"
-                },
-                {
-                  "$type": "SetGlobalValueListV2",
-                  "BGGHGEAHCGN": [
-                    {
-                      "maxValue": 0,
-                      "value": 0,
-                      "key": "_WildHunt_INSTABLE_FakeDie",
-                      "minValue": 0
-                    },
-                    {
-                      "maxValue": 0,
-                      "value": 0,
-                      "key": "_WildHunt_FakeDie_Reason_HPDown",
-                      "minValue": 0
-                    },
-                    {
-                      "maxValue": 0,
-                      "value": 0,
-                      "key": "_WildHunt_FakeDie_Reason_DmgReceived",
-                      "minValue": 0
-                    },
-                    {
-                      "maxValue": 0,
-                      "value": 0,
-                      "key": "WildHunt_Revive_Confirm",
-                      "minValue": 0
-                    }
-                  ]
-                },
-                {
-                  "$type": "ServerMonsterLog",
-                  "paramList": [
-                    0
-                  ],
-                  "predicates": [
-                    {
-                      "$type": "ByTargetGlobalValue",
-                      "value": 1,
-                      "key": "Monster_Sigurd_Mark"
-                    }
-                  ]
-                },
-                {
-                  "$type": "RemoveModifier",
-                  "modifierName": "zzz_InvincibleStateDelay"
-                }
-              ],
-              "targetPredicates": [
-                {
-                  "$type": "ByTargetGlobalValue",
-                  "value": 1,
-                  "key": "WildHunt_Revive_Confirm"
-                }
-              ]
-            }
-          ]
-        },
-        {
-          "$type": "DoActionOnGlobalValueChangeMixin",
-          "actions": [
-            {
-              "$type": "LoseHP",
-              "PBEMJNJJAFK": "",
-              "JBKJGMEJFFI": "",
-              "KHFHMJCMOHH": "_HP_CORROSION_VALUE",
-              "amountByCasterMaxHPRatio": 1,
-              "predicates": [
-                {
-                  "$type": "ByTargetHPRatio",
-                  "HPRatio": "_HP_CORROSION_VALUE",
-                  "target": "Self"
-                }
-              ]
-            },
-            {
-              "$type": "Predicated",
-              "successActions": [
-                {
-                  "$type": "KillSelf",
-                  "target": "Caster"
-                }
-              ],
-              "predicates": [
-                {
-                  "$type": "ByTargetGlobalValue",
-                  "value": 0.01,
-                  "compareType": "LessAndEqual",
-                  "key": "_HP_CORROSION_VALUE"
-                }
-              ]
-            }
-          ],
-          "NBOEEIHGCPD": true,
-          "globalValueKey": "_HP_CORROSION_VALUE"
-        }
-      ],
-      "abilityName": "Monster_WildHunt_Instable_Handler_LeyLineChallenge",
-      "onAdded": [
-        {
-          "$type": "SetGlobalValueV2",
-          "minValue": 0,
-          "key": "moon_phase_instable_duration",
-          "maxValue": 0,
-          "value": 10,
-          "predicates": [
-            {
-              "$type": "ByTargetGlobalValue",
-              "value": 0,
-              "compareType": "NoneOrEqual",
-              "key": "moon_phase_instable_duration"
-            }
-          ]
-        },
-        {
-          "$type": "SetGlobalValueV2",
-          "minValue": 0,
-          "key": "instable_damage_ratio_common",
-          "maxValue": 0,
-          "value": 0.65,
-          "predicates": [
-            {
-              "$type": "ByTargetGlobalValue",
-              "value": 0,
-              "compareType": "NoneOrEqual",
-              "key": "instable_damage_ratio_common"
-            }
-          ]
-        },
-        {
-          "$type": "SetGlobalValueV2",
-          "minValue": 0,
-          "key": "instable_damage_ratio_moon_team",
-          "maxValue": 0,
-          "value": 0.9,
-          "predicates": [
-            {
-              "$type": "ByTargetGlobalValue",
-              "value": 0,
-              "compareType": "NoneOrEqual",
-              "key": "instable_damage_ratio_moon_team"
-            }
-          ]
-        },
-        {
-          "$type": "SetGlobalValueV2",
-          "minValue": 0,
-          "key": "add_hp_limit_ratio_when_fake_die",
-          "maxValue": 0,
-          "value": 0.1,
-          "predicates": [
-            {
-              "$type": "ByTargetGlobalValue",
-              "value": 0,
-              "compareType": "NoneOrEqual",
-              "key": "add_hp_limit_ratio_when_fake_die"
-            }
-          ]
-        },
-        {
-          "$type": "SetGlobalValueV2",
-          "minValue": 0,
-          "key": "extra_hp_limit_ratio_per_die",
-          "maxValue": 0,
-          "value": 0.08,
-          "predicates": [
-            {
-              "$type": "ByTargetGlobalValue",
-              "value": 0,
-              "compareType": "NoneOrEqual",
-              "key": "extra_hp_limit_ratio_per_die"
-            }
-          ]
-        },
-        {
-          "$type": "SetGlobalValueListV2",
-          "BGGHGEAHCGN": [
-            {
-              "maxValue": 0,
-              "value": 0,
-              "key": "WildHunt_FakeDie_Dec_HP_Limit_Ratio",
-              "minValue": 0
-            },
-            {
-              "maxValue": 0,
-              "value": 1,
-              "key": "_HP_CORROSION_VALUE",
-              "minValue": 0
-            },
-            {
-              "maxValue": 0,
-              "value": 0,
-              "key": "WildHunt_Revive_Confirm",
-              "minValue": 0
-            }
-          ]
-        },
-        {
-          "$type": "ApplyModifier",
-          "modifierName": "WindHuntBasicLogic"
-        }
       ]
     }
   },
@@ -1749,8 +1749,8 @@
         {
           "$type": "SetGlobalValue",
           "key": "_ABILITY_WildHunt_Tag",
-          "minValue": 0,
           "maxValue": 0,
+          "minValue": 0,
           "value": 1
         }
       ]
@@ -1758,24 +1758,42 @@
   },
   {
     "Default": {
-      "modifiers": {
-        "HeadFlameHandler": {
-          "onKill": [
+      "abilityMixins": [
+        {
+          "$type": "OverrideShaderDataMixin",
+          "DPKHILGEAEO": [
             {
-              "$type": "FireEffect",
-              "effectPattern": "Eff_Monster_WildHunt_FlameDisappear",
-              "scale": 1,
-              "ILLLPEOODKP": ""
+              "AEJJNAFGGCL": "CharacterFrozen",
+              "AKPOHGCOGGI": "WildHuntCharacterFrozen"
             },
             {
-              "$type": "RemoveModifier",
-              "modifierName": "HeadFlameHandler"
+              "AEJJNAFGGCL": "CharacterPetrifaction",
+              "AKPOHGCOGGI": "WildHuntPetrifaction"
             }
+          ]
+        },
+        {
+          "$type": "AttachModifierToSelfGlobalValueMixin",
+          "defaultGlobalValueOnCreate": 1,
+          "globalValueKey": "_Head_Flame",
+          "modifierNameSteps": [
+            "HeadFlameHandler"
           ],
+          "valueSteps": [
+            0.5,
+            1.5
+          ]
+        }
+      ],
+      "abilityName": "Monster_WildHunt_HeadFlame",
+      "modifiers": {
+        "HeadFlameHandler": {
           "elementDurability": 100,
           "modifierMixins": [
             {
               "$type": "AttachModifierToSelfGlobalValueMixin",
+              "defaultGlobalValueOnCreate": 0,
+              "globalValueKey": "_WildHunt_INSTABLE_Active",
               "modifierNameSteps": [
                 "NormalFlame",
                 "InstableFlame"
@@ -1784,87 +1802,69 @@
                 0,
                 0.5,
                 2.5
-              ],
-              "globalValueKey": "_WildHunt_INSTABLE_Active",
-              "defaultGlobalValueOnCreate": 0
+              ]
             }
           ],
           "modifierName": "",
+          "onKill": [
+            {
+              "$type": "FireEffect",
+              "effectPattern": "Eff_Monster_WildHunt_FlameDisappear",
+              "scale": 1,
+              "JHAGIJGAKMK": ""
+            },
+            {
+              "$type": "RemoveModifier",
+              "modifierName": "HeadFlameHandler"
+            }
+          ],
           "__unk_Q3323398612": 0
         },
         "NormalFlame": {
+          "elementDurability": 100,
+          "modifierName": "",
           "onAdded": [
             {
               "$type": "AttachEffect",
-              "ILLLPEOODKP": "",
+              "effectPattern": "Eff_Monster_WildHunt_Flame",
               "scale": 1,
-              "effectPattern": "Eff_Monster_WildHunt_Flame"
+              "JHAGIJGAKMK": ""
             },
             {
               "$type": "FireEffect",
               "effectPattern": "Eff_Monster_WildHunt_FlameBurst",
               "scale": 1,
-              "ILLLPEOODKP": ""
+              "JHAGIJGAKMK": ""
             }
           ],
-          "elementDurability": 100,
-          "modifierName": "",
           "__unk_Q3323398612": 0
         },
         "InstableFlame": {
+          "elementDurability": 100,
+          "modifierName": "",
           "onAdded": [
             {
               "$type": "AttachEffect",
-              "ILLLPEOODKP": "",
+              "effectPattern": "Eff_Monster_WildHunt_Flame_02",
               "scale": 1,
-              "effectPattern": "Eff_Monster_WildHunt_Flame_02"
+              "JHAGIJGAKMK": ""
             },
             {
               "$type": "FireEffect",
               "effectPattern": "Eff_Monster_WildHunt_FlameDisappear",
               "scale": 1,
-              "ILLLPEOODKP": ""
+              "JHAGIJGAKMK": ""
             }
           ],
-          "elementDurability": 100,
-          "modifierName": "",
           "__unk_Q3323398612": 0
         }
       },
-      "abilityMixins": [
-        {
-          "$type": "OverrideShaderDataMixin",
-          "LKEEIOFIMMG": [
-            {
-              "CMNGJFPJCKD": "WildHuntCharacterFrozen",
-              "CJJIGCMBFJA": "CharacterFrozen"
-            },
-            {
-              "CMNGJFPJCKD": "WildHuntPetrifaction",
-              "CJJIGCMBFJA": "CharacterPetrifaction"
-            }
-          ]
-        },
-        {
-          "$type": "AttachModifierToSelfGlobalValueMixin",
-          "modifierNameSteps": [
-            "HeadFlameHandler"
-          ],
-          "valueSteps": [
-            0.5,
-            1.5
-          ],
-          "globalValueKey": "_Head_Flame",
-          "defaultGlobalValueOnCreate": 1
-        }
-      ],
-      "abilityName": "Monster_WildHunt_HeadFlame",
       "onAdded": [
         {
           "$type": "SetGlobalValueV2",
-          "minValue": 0,
           "key": "Instable_Enter_VFX_Type",
           "maxValue": 0,
+          "minValue": 0,
           "value": 1
         }
       ]
@@ -1872,14 +1872,273 @@
   },
   {
     "Default": {
+      "abilityMixins": [
+        {
+          "$type": "SteerAttackMixin",
+          "angularSpeed": 250,
+          "attackTrigger": "",
+          "endNormalizedTime": 100,
+          "remoteSteerToLocalTarget": false,
+          "steerStateIDs": [
+            "Turn"
+          ],
+          "LEGDILBDLCB": true,
+          "__unk_Q2081332355": ""
+        },
+        {
+          "$type": "AttachToAnimatorStateIDMixin",
+          "modifierName": "DisappearLogic",
+          "stateIDs": [
+            "WildHuntBackToCenter_BS",
+            "WildMove_BS",
+            "ForceStepBack_BS",
+            "StepBack_AS1",
+            "FreeWander02",
+            "FreeWander03"
+          ],
+          "__unk_Q2081332355": ""
+        },
+        {
+          "$type": "DoActionByAnimatorStateIDMixin",
+          "enterActions": [
+            {
+              "$type": "FireEffect",
+              "effectPattern": "Eff_Monster_WildHunt_Disappear_In",
+              "scale": 1,
+              "JHAGIJGAKMK": ""
+            }
+          ],
+          "exitActions": [
+            {
+              "$type": "FireEffect",
+              "effectPattern": "Eff_Monster_WildHunt_Disappear_Out",
+              "scale": 1,
+              "JHAGIJGAKMK": ""
+            }
+          ],
+          "stateIDs": [
+            "FreeWander03"
+          ],
+          "__unk_Q2081332355": ""
+        },
+        {
+          "$type": "DoActionByAnimatorStateIDMixin",
+          "enterActions": [
+            {
+              "$type": "FixedMonsterRushMove",
+              "animatorStateIDs": [
+                "WildMove_BS",
+                "WildMove_AS"
+              ],
+              "checkAnimatorStateOnExitOnly": true,
+              "maxRange": 10,
+              "overrideMoveCollider": "",
+              "target": "SelfAttackActiveTarget",
+              "timeRange": 0.7,
+              "toPos": {
+                "$type": "ConfigBornByTargetLinearPoint",
+                "linearMax": 50,
+                "linearMin": 0,
+                "linearOffset": -1.25,
+                "onGround": true,
+                "CPNPDMBFFNB": "",
+                "MDFECMNIOEK": ""
+              },
+              "KGGGGMIMKCI": 0.25
+            }
+          ],
+          "stateIDs": [
+            "WildMove_BS"
+          ],
+          "__unk_Q2081332355": ""
+        },
+        {
+          "$type": "DoActionByAnimatorStateIDMixin",
+          "enterActions": [
+            {
+              "$type": "SetGlobalPos",
+              "born": {
+                "$type": "ConfigBornBySelf",
+                "bornRandom": {
+                  "$type": "BornRandomFromCenter",
+                  "maxRandomRange": 10,
+                  "minRandomRange": 6
+                },
+                "onGround": true,
+                "useRotation": true
+              },
+              "key": "_BLINK_POS"
+            },
+            {
+              "$type": "TurnDirectionToPos",
+              "toPos": {
+                "$type": "ConfigBornByGlobalValue",
+                "directionKey": "",
+                "positionKey": "_BLINK_POS"
+              }
+            },
+            {
+              "$type": "FixedMonsterRushMove",
+              "animatorStateIDs": [
+                "FreeWander02"
+              ],
+              "checkAnimatorStateOnExitOnly": true,
+              "maxRange": 10,
+              "overrideMoveCollider": "",
+              "timeRange": 1,
+              "toPos": {
+                "$type": "ConfigBornByGlobalValue",
+                "directionKey": "",
+                "positionKey": "_BLINK_POS"
+              },
+              "KGGGGMIMKCI": 0.3
+            }
+          ],
+          "stateIDs": [
+            "FreeWander02"
+          ],
+          "__unk_Q2081332355": ""
+        },
+        {
+          "$type": "DoActionByAnimatorStateIDMixin",
+          "exitActions": [
+            {
+              "$type": "SetGlobalPos",
+              "born": {
+                "$type": "ConfigBornByGlobalValue",
+                "bornRandom": {
+                  "$type": "BornRandomFromCenter",
+                  "maxRandomRange": 10,
+                  "minRandomRange": 5
+                },
+                "directionKey": "",
+                "onGround": true,
+                "positionKey": "_BORN_POS"
+              },
+              "key": "_BLINK_POS"
+            },
+            {
+              "$type": "TurnDirectionToPos",
+              "toPos": {
+                "$type": "ConfigBornByGlobalValue",
+                "directionKey": "",
+                "positionKey": "_BLINK_POS"
+              }
+            },
+            {
+              "$type": "DoBlinkByGlobalPos",
+              "directionKey": "",
+              "positionKey": "_BLINK_POS"
+            }
+          ],
+          "stateIDs": [
+            "FreeWander03"
+          ],
+          "__unk_Q2081332355": ""
+        },
+        {
+          "$type": "AttachToAnimatorStateIDMixin",
+          "modifierName": "WildMove_TrailVFX",
+          "stateIDs": [
+            "WildMove_BS",
+            "WildMove_AS1",
+            "WildHuntBackToCenter_BS",
+            "WildHuntBackToCenter_AS1",
+            "ForceStepBack_BS",
+            "ForceStepBack_AS1",
+            "FreeWander02"
+          ],
+          "__unk_Q2081332355": ""
+        },
+        {
+          "$type": "SteerAttackMixin",
+          "angularSpeed": 800,
+          "attackTrigger": "",
+          "steerStateIDs": [
+            "WildMove_BS",
+            "WildMove_AS",
+            "WildHuntBackToCenter_BS",
+            "WildHuntBackToCenter_AS",
+            "ForceStepBack_BS",
+            "ForceStepBack_AS",
+            "StepBack_BS",
+            "StepBack_AS"
+          ],
+          "LEGDILBDLCB": true,
+          "__unk_Q2081332355": ""
+        },
+        {
+          "$type": "SteerAttackMixin",
+          "angularSpeed": 400,
+          "attackTrigger": "",
+          "endNormalizedTime": 0.65,
+          "startNormalizedTime": 0.255,
+          "steerStateIDs": [
+            "Alert"
+          ],
+          "LEGDILBDLCB": true,
+          "__unk_Q2081332355": ""
+        },
+        {
+          "$type": "DoActionByAnimatorStateIDMixin",
+          "enterActions": [
+            {
+              "$type": "SetPoseBool",
+              "boolID": "EnsureAlert",
+              "value": true
+            }
+          ],
+          "stateIDs": [
+            "Standby",
+            "FakeDie_Loop"
+          ],
+          "__unk_Q2081332355": ""
+        },
+        {
+          "$type": "AttachToPoseIDMixin",
+          "modifierName": "ClearState",
+          "poseIDs": [
+            1901,
+            1902,
+            1903
+          ]
+        },
+        {
+          "$type": "DoActionBySkillEventMixin",
+          "onEvent": [
+            {
+              "$type": "ApplyModifier",
+              "modifierName": "WildHunt_Unlock_RushMove"
+            }
+          ],
+          "JCMPGFNMDFC": "Monster_WildHunt_Coop"
+        }
+      ],
+      "abilityName": "Monster_WildHunt_AnimatorControl",
+      "abilitySpecials": {
+        "walk_free_random_speed": 1,
+        "random_born_speed": 1
+      },
       "modifiers": {
         "RandomSpeedHandler": {
+          "elementDurability": 100,
+          "modifierMixins": [
+            {
+              "$type": "AttachToPoseIDMixin",
+              "modifierName": "RandomSpeed",
+              "poseIDs": [
+                1001,
+                1002
+              ]
+            }
+          ],
+          "modifierName": "",
           "onAdded": [
             {
               "$type": "SetRandomOverrideMapValue",
-              "valueRangeMin": 0.9,
               "overrideMapKey": "random_born_speed",
-              "valueRangeMax": 1.2
+              "valueRangeMax": 1.2,
+              "valueRangeMin": 0.9
             },
             {
               "$type": "SetAnimatorFloat",
@@ -1887,84 +2146,71 @@
               "value": "random_born_speed"
             }
           ],
-          "elementDurability": 100,
-          "modifierMixins": [
-            {
-              "$type": "AttachToPoseIDMixin",
-              "GGOLBNPLGJH": [
-                1001,
-                1002
-              ],
-              "modifierName": "RandomSpeed"
-            }
-          ],
-          "modifierName": "",
           "__unk_Q3323398612": 0
         },
         "WalkBlink": {
           "duration": 0.15,
-          "onRemoved": [
-            {
-              "$type": "SetGlobalPos",
-              "key": "_BLINK_POS",
-              "born": {
-                "$type": "ConfigBornBySelf",
-                "onGround": true,
-                "useRotation": true,
-                "offset": {
-                  "z": 1.25
-                }
-              }
-            },
-            {
-              "$type": "DoBlinkByGlobalPos",
-              "positionKey": "_BLINK_POS",
-              "directionKey": ""
-            },
-            {
-              "$type": "FireEffect",
-              "effectPattern": "Eff_Monster_WildHunt_Disappear_Out",
-              "scale": 1,
-              "ILLLPEOODKP": ""
-            }
-          ],
+          "elementDurability": 100,
+          "modifierName": "",
           "onAdded": [
             {
               "$type": "AttachModifier",
               "modifierName": "DisappearLogic"
             }
           ],
-          "elementDurability": 100,
-          "modifierName": "",
+          "onRemoved": [
+            {
+              "$type": "SetGlobalPos",
+              "born": {
+                "$type": "ConfigBornBySelf",
+                "offset": {
+                  "z": 1.25
+                },
+                "onGround": true,
+                "useRotation": true
+              },
+              "key": "_BLINK_POS"
+            },
+            {
+              "$type": "DoBlinkByGlobalPos",
+              "directionKey": "",
+              "positionKey": "_BLINK_POS"
+            },
+            {
+              "$type": "FireEffect",
+              "effectPattern": "Eff_Monster_WildHunt_Disappear_Out",
+              "scale": 1,
+              "JHAGIJGAKMK": ""
+            }
+          ],
           "__unk_Q3323398612": 0
         },
         "RandomSpeed": {
-          "thinkInterval": 3,
+          "elementDurability": 100,
+          "modifierName": "",
           "onAdded": [
             {
               "$type": "__exp_TriggerThinkInterval"
             }
           ],
-          "elementDurability": 100,
-          "modifierName": "",
           "onThinkInterval": [
             {
               "$type": "SetRandomOverrideMapValue",
-              "valueRangeMin": 0.5,
               "overrideMapKey": "walk_free_random_speed",
-              "valueRangeMax": 1.11
+              "valueRangeMax": 1.11,
+              "valueRangeMin": 0.5
             },
             {
               "$type": "SetAnimatorFloat",
               "floatID": "WalkFreeRandomSpeed",
-              "LANICPKFKBF": 1.5,
+              "transitionTime": 1.5,
               "value": "walk_free_random_speed"
             }
           ],
+          "thinkInterval": 3,
           "__unk_Q3323398612": 0
         },
         "EntityInVisibleDelay": {
-          "thinkInterval": 0.1,
           "elementDurability": 100,
           "modifierName": "",
           "onThinkInterval": [
@@ -1977,28 +2223,23 @@
               "modifierName": "EntityInVisibleDelay"
             }
           ],
+          "thinkInterval": 0.1,
           "__unk_Q3323398612": 0
         },
         "VisibleManager": {
-          "onAdded": [
-            {
-              "$type": "AttachModifier",
-              "modifierName": "DenyLockOn_State"
-            }
-          ],
           "elementDurability": 100,
           "modifierMixins": [
             {
               "$type": "EntityInVisibleMixin",
-              "AAHPKGHIPPG": true,
-              "reason": "SelfAbility"
+              "reason": "SelfAbility",
+              "HANDACPCGMF": true
             },
             {
               "$type": "AttachActionToModifierMixin",
               "onAdded": [
                 {
                   "$type": "EnableHitBoxByName",
-                  "MPHBGGFPBII": [
+                  "hitBoxNames": [
                     "HitBox",
                     "HeadBox"
                   ]
@@ -2017,7 +2258,7 @@
               "onRemoved": [
                 {
                   "$type": "EnableHitBoxByName",
-                  "MPHBGGFPBII": [
+                  "hitBoxNames": [
                     "HitBox",
                     "HeadBox"
                   ],
@@ -2025,10 +2266,10 @@
                 },
                 {
                   "$type": "EnablePushColliderName",
-                  "setEnable": true,
                   "pushColliderNames": [
                     "PushCollider"
-                  ]
+                  ],
+                  "setEnable": true
                 },
                 {
                   "$type": "HideUIBillBoard"
@@ -2036,52 +2277,36 @@
               ]
             }
           ],
-          "state": "IsGhostToEnemy",
           "modifierName": "",
+          "onAdded": [
+            {
+              "$type": "AttachModifier",
+              "modifierName": "DenyLockOn_State"
+            }
+          ],
+          "state": "IsGhostToEnemy",
           "__unk_Q3323398612": 0
         },
         "DenyLockOn_State": {
           "elementDurability": 100,
-          "state": "DenyLockOn",
           "modifierName": "",
+          "state": "DenyLockOn",
           "__unk_Q3323398612": 0
         },
         "WildMove_TrailVFX": {
+          "elementDurability": 100,
+          "modifierName": "",
           "onAdded": [
             {
               "$type": "AttachEffect",
-              "ILLLPEOODKP": "",
+              "effectPattern": "Eff_Monster_WildHunt_WildMoveTrail",
               "scale": 1,
-              "effectPattern": "Eff_Monster_WildHunt_WildMoveTrail"
+              "JHAGIJGAKMK": ""
             }
           ],
-          "elementDurability": 100,
-          "modifierName": "",
           "__unk_Q3323398612": 0
         },
         "DisappearLogic": {
-          "onRemoved": [
-            {
-              "$type": "SetGlobalValue",
-              "key": "_Head_Flame",
-              "minValue": 0,
-              "maxValue": 0,
-              "value": 1
-            }
-          ],
-          "onAdded": [
-            {
-              "$type": "AttachModifier",
-              "modifierName": "EntityInVisibleDelay"
-            },
-            {
-              "$type": "SetGlobalValue",
-              "key": "_Head_Flame",
-              "minValue": 0,
-              "maxValue": 0,
-              "value": 0
-            }
-          ],
           "elementDurability": 100,
           "modifierMixins": [
             {
@@ -2091,35 +2316,39 @@
             }
           ],
           "modifierName": "",
-          "__unk_Q3323398612": 0
-        },
-        "ClearState": {
-          "onRemoved": [
+          "onAdded": [
             {
-              "$type": "SetAnimatorTrigger",
-              "MPTriggerOnRemote": true,
-              "triggerID": "EndReturnToBorn"
-            },
-            {
-              "$type": "FireEffect",
-              "effectPattern": "Eff_Monster_WildHunt_Disappear_Out",
-              "scale": 1,
-              "ILLLPEOODKP": ""
+              "$type": "AttachModifier",
+              "modifierName": "EntityInVisibleDelay"
             },
             {
               "$type": "SetGlobalValue",
               "key": "_Head_Flame",
-              "minValue": 0,
               "maxValue": 0,
+              "minValue": 0,
+              "value": 0
+            }
+          ],
+          "onRemoved": [
+            {
+              "$type": "SetGlobalValue",
+              "key": "_Head_Flame",
+              "maxValue": 0,
+              "minValue": 0,
               "value": 1
             }
           ],
+          "__unk_Q3323398612": 0
+        },
+        "ClearState": {
+          "elementDurability": 100,
+          "modifierName": "",
           "onAdded": [
             {
               "$type": "FireEffect",
               "effectPattern": "Eff_Monster_WildHunt_Disappear_In",
               "scale": 1,
-              "ILLLPEOODKP": ""
+              "JHAGIJGAKMK": ""
             },
             {
               "$type": "AttachModifier",
@@ -2131,71 +2360,89 @@
             },
             {
               "$type": "SetGlobalValueListV2",
-              "BGGHGEAHCGN": [
+              "JNBAOPKJKFM": [
                 {
-                  "maxValue": 0,
-                  "value": 0,
                   "key": "WildHunt_FakeDie_Dec_HP_Limit_Ratio",
-                  "minValue": 0
+                  "maxValue": 0,
+                  "minValue": 0,
+                  "value": 0
                 },
                 {
-                  "maxValue": 0,
-                  "value": 1,
                   "key": "_HP_CORROSION_VALUE",
-                  "minValue": 0
+                  "maxValue": 0,
+                  "minValue": 0,
+                  "value": 1
                 },
                 {
-                  "maxValue": 0,
-                  "value": 0,
                   "key": "_Head_Flame",
-                  "minValue": 0
+                  "maxValue": 0,
+                  "minValue": 0,
+                  "value": 0
                 },
                 {
-                  "maxValue": 0,
-                  "value": 0,
                   "key": "_WildHunt_INSTABLE_FakeDie",
-                  "minValue": 0
+                  "maxValue": 0,
+                  "minValue": 0,
+                  "value": 0
                 },
                 {
-                  "maxValue": 0,
-                  "value": 0,
                   "key": "_WildHunt_FakeDie_Reason_HPDown",
-                  "minValue": 0
+                  "maxValue": 0,
+                  "minValue": 0,
+                  "value": 0
                 },
                 {
-                  "maxValue": 0,
-                  "value": 0,
                   "key": "_WildHunt_FakeDie_Reason_DmgReceived",
-                  "minValue": 0
+                  "maxValue": 0,
+                  "minValue": 0,
+                  "value": 0
                 },
                 {
-                  "maxValue": 0,
-                  "value": 0,
                   "key": "WildHunt_Revive_Confirm",
-                  "minValue": 0
+                  "maxValue": 0,
+                  "minValue": 0,
+                  "value": 0
                 }
               ]
             }
           ],
-          "elementDurability": 100,
-          "modifierName": "",
+          "onRemoved": [
+            {
+              "$type": "SetAnimatorTrigger",
+              "MPTriggerOnRemote": true,
+              "triggerID": "EndReturnToBorn"
+            },
+            {
+              "$type": "FireEffect",
+              "effectPattern": "Eff_Monster_WildHunt_Disappear_Out",
+              "scale": 1,
+              "JHAGIJGAKMK": ""
+            },
+            {
+              "$type": "SetGlobalValue",
+              "key": "_Head_Flame",
+              "maxValue": 0,
+              "minValue": 0,
+              "value": 1
+            }
+          ],
           "__unk_Q3323398612": 0
         },
         "WildHunt_Unlock_RushMove": {
           "duration": 1.25,
-          "onRemoved": [
-            {
-              "$type": "UseSkillEliteSet"
-            }
-          ],
+          "elementDurability": 100,
+          "modifierName": "",
           "onAdded": [
             {
               "$type": "UseSkillEliteSet",
               "skillEliteSetID": 1
             }
           ],
-          "elementDurability": 100,
-          "modifierName": "",
+          "onRemoved": [
+            {
+              "$type": "UseSkillEliteSet"
+            }
+          ],
           "__unk_Q3323398612": 0
         }
       },
@@ -2211,249 +2458,6 @@
           ]
         }
       ],
-      "abilityMixins": [
-        {
-          "$type": "SteerAttackMixin",
-          "__unk_Q2081332355": "",
-          "angularSpeed": 250,
-          "endNormalizedTime": 100,
-          "AAPNADMFCNO": true,
-          "HDLABDJANFN": [
-            "Turn"
-          ],
-          "IBMKLKNGDEA": false,
-          "EOHCONFEGPO": ""
-        },
-        {
-          "$type": "AttachToAnimatorStateIDMixin",
-          "__unk_Q2081332355": "",
-          "stateIDs": [
-            "WildHuntBackToCenter_BS",
-            "WildMove_BS",
-            "ForceStepBack_BS",
-            "StepBack_AS1",
-            "FreeWander02",
-            "FreeWander03"
-          ],
-          "modifierName": "DisappearLogic"
-        },
-        {
-          "$type": "DoActionByAnimatorStateIDMixin",
-          "JGJMIJEEGBP": [
-            {
-              "$type": "FireEffect",
-              "effectPattern": "Eff_Monster_WildHunt_Disappear_In",
-              "scale": 1,
-              "ILLLPEOODKP": ""
-            }
-          ],
-          "stateIDs": [
-            "FreeWander03"
-          ],
-          "__unk_Q2081332355": "",
-          "AJAPIFCKFHP": [
-            {
-              "$type": "FireEffect",
-              "effectPattern": "Eff_Monster_WildHunt_Disappear_Out",
-              "scale": 1,
-              "ILLLPEOODKP": ""
-            }
-          ]
-        },
-        {
-          "$type": "DoActionByAnimatorStateIDMixin",
-          "JGJMIJEEGBP": [
-            {
-              "$type": "FixedMonsterRushMove",
-              "overrideMoveCollider": "",
-              "PGLJIHAEIAD": 0.25,
-              "maxRange": 10,
-              "animatorStateIDs": [
-                "WildMove_BS",
-                "WildMove_AS"
-              ],
-              "toPos": {
-                "$type": "CICHINDLMOC",
-                "ODCKAFGNLOM": "",
-                "BMDIJKEHDJB": 0,
-                "DBNLPKKAPHJ": "",
-                "IPIGLPMONAD": -1.25,
-                "FGENBFBPMPJ": 50,
-                "onGround": true
-              },
-              "OHPJIHKPEMD": true,
-              "timeRange": 0.7,
-              "target": "SelfAttackActiveTarget"
-            }
-          ],
-          "stateIDs": [
-            "WildMove_BS"
-          ],
-          "__unk_Q2081332355": ""
-        },
-        {
-          "$type": "DoActionByAnimatorStateIDMixin",
-          "JGJMIJEEGBP": [
-            {
-              "$type": "SetGlobalPos",
-              "key": "_BLINK_POS",
-              "born": {
-                "$type": "ConfigBornBySelf",
-                "onGround": true,
-                "useRotation": true,
-                "bornRandom": {
-                  "$type": "BornRandomFromCenter",
-                  "minRandomRange": 6,
-                  "maxRandomRange": 10
-                }
-              }
-            },
-            {
-              "$type": "TurnDirectionToPos",
-              "toPos": {
-                "$type": "ConfigBornByGlobalValue",
-                "positionKey": "_BLINK_POS",
-                "directionKey": ""
-              }
-            },
-            {
-              "$type": "FixedMonsterRushMove",
-              "overrideMoveCollider": "",
-              "PGLJIHAEIAD": 0.3,
-              "maxRange": 10,
-              "animatorStateIDs": [
-                "FreeWander02"
-              ],
-              "toPos": {
-                "$type": "ConfigBornByGlobalValue",
-                "positionKey": "_BLINK_POS",
-                "directionKey": ""
-              },
-              "OHPJIHKPEMD": true,
-              "timeRange": 1
-            }
-          ],
-          "stateIDs": [
-            "FreeWander02"
-          ],
-          "__unk_Q2081332355": ""
-        },
-        {
-          "$type": "DoActionByAnimatorStateIDMixin",
-          "stateIDs": [
-            "FreeWander03"
-          ],
-          "__unk_Q2081332355": "",
-          "AJAPIFCKFHP": [
-            {
-              "$type": "SetGlobalPos",
-              "key": "_BLINK_POS",
-              "born": {
-                "$type": "ConfigBornByGlobalValue",
-                "positionKey": "_BORN_POS",
-                "directionKey": "",
-                "onGround": true,
-                "bornRandom": {
-                  "$type": "BornRandomFromCenter",
-                  "minRandomRange": 5,
-                  "maxRandomRange": 10
-                }
-              }
-            },
-            {
-              "$type": "TurnDirectionToPos",
-              "toPos": {
-                "$type": "ConfigBornByGlobalValue",
-                "positionKey": "_BLINK_POS",
-                "directionKey": ""
-              }
-            },
-            {
-              "$type": "DoBlinkByGlobalPos",
-              "positionKey": "_BLINK_POS",
-              "directionKey": ""
-            }
-          ]
-        },
-        {
-          "$type": "AttachToAnimatorStateIDMixin",
-          "__unk_Q2081332355": "",
-          "stateIDs": [
-            "WildMove_BS",
-            "WildMove_AS1",
-            "WildHuntBackToCenter_BS",
-            "WildHuntBackToCenter_AS1",
-            "ForceStepBack_BS",
-            "ForceStepBack_AS1",
-            "FreeWander02"
-          ],
-          "modifierName": "WildMove_TrailVFX"
-        },
-        {
-          "$type": "SteerAttackMixin",
-          "__unk_Q2081332355": "",
-          "angularSpeed": 800,
-          "AAPNADMFCNO": true,
-          "HDLABDJANFN": [
-            "WildMove_BS",
-            "WildMove_AS",
-            "WildHuntBackToCenter_BS",
-            "WildHuntBackToCenter_AS",
-            "ForceStepBack_BS",
-            "ForceStepBack_AS",
-            "StepBack_BS",
-            "StepBack_AS"
-          ],
-          "EOHCONFEGPO": ""
-        },
-        {
-          "$type": "SteerAttackMixin",
-          "__unk_Q2081332355": "",
-          "angularSpeed": 400,
-          "endNormalizedTime": 0.65,
-          "AAPNADMFCNO": true,
-          "HDLABDJANFN": [
-            "Alert"
-          ],
-          "startNormalizedTime": 0.255,
-          "EOHCONFEGPO": ""
-        },
-        {
-          "$type": "DoActionByAnimatorStateIDMixin",
-          "JGJMIJEEGBP": [
-            {
-              "$type": "SetPoseBool",
-              "value": true,
-              "boolID": "EnsureAlert"
-            }
-          ],
-          "stateIDs": [
-            "Standby",
-            "FakeDie_Loop"
-          ],
-          "__unk_Q2081332355": ""
-        },
-        {
-          "$type": "AttachToPoseIDMixin",
-          "GGOLBNPLGJH": [
-            1901,
-            1902,
-            1903
-          ],
-          "modifierName": "ClearState"
-        },
-        {
-          "$type": "DoActionBySkillEventMixin",
-          "onEvent": [
-            {
-              "$type": "ApplyModifier",
-              "modifierName": "WildHunt_Unlock_RushMove"
-            }
-          ],
-          "LABOIMCPHOD": "Monster_WildHunt_Coop"
-        }
-      ],
-      "abilityName": "Monster_WildHunt_AnimatorControl",
       "onAdded": [
         {
           "$type": "ApplyModifier",
@@ -2461,17 +2465,13 @@
         },
         {
           "$type": "SetGlobalPos",
-          "key": "_BORN_POS",
           "born": {
             "$type": "ConfigBornBySelf",
             "useRotation": true
-          }
+          },
+          "key": "_BORN_POS"
         }
-      ],
-      "abilitySpecials": {
-        "walk_free_random_speed": 1,
-        "random_born_speed": 1
-      }
+      ]
     }
   },
   {
@@ -2479,78 +2479,78 @@
       "abilityMixins": [
         {
           "$type": "SteerAttackMixin",
-          "__unk_Q2081332355": "",
           "angularSpeed": 120,
+          "attackTrigger": "",
           "endNormalizedTime": 0.34,
-          "AAPNADMFCNO": true,
-          "HDLABDJANFN": [
+          "remoteSteerToLocalTarget": false,
+          "steerStateIDs": [
             "AttackMelee01"
           ],
-          "IBMKLKNGDEA": false,
-          "EOHCONFEGPO": ""
+          "LEGDILBDLCB": true,
+          "__unk_Q2081332355": ""
         },
         {
           "$type": "SteerAttackMixin",
-          "__unk_Q2081332355": "",
           "angularSpeed": 360,
+          "attackTrigger": "",
           "endNormalizedTime": 0.2,
-          "AAPNADMFCNO": true,
-          "HDLABDJANFN": [
+          "remoteSteerToLocalTarget": false,
+          "startNormalizedTime": 0.08,
+          "steerStateIDs": [
             "AttackMelee02"
           ],
-          "startNormalizedTime": 0.08,
-          "IBMKLKNGDEA": false,
-          "EOHCONFEGPO": ""
+          "LEGDILBDLCB": true,
+          "__unk_Q2081332355": ""
         },
         {
           "$type": "SteerAttackMixin",
-          "__unk_Q2081332355": "",
           "angularSpeed": 600,
+          "attackTrigger": "",
           "endNormalizedTime": 0.175,
-          "AAPNADMFCNO": true,
-          "HDLABDJANFN": [
+          "remoteSteerToLocalTarget": false,
+          "steerStateIDs": [
             "AttackRush"
           ],
-          "IBMKLKNGDEA": false,
-          "EOHCONFEGPO": ""
+          "LEGDILBDLCB": true,
+          "__unk_Q2081332355": ""
         },
         {
           "$type": "SteerAttackMixin",
-          "__unk_Q2081332355": "",
           "angularSpeed": 480,
+          "attackTrigger": "",
           "endNormalizedTime": 0.336,
-          "CHMMMGEJCME": "Right",
-          "AAPNADMFCNO": true,
-          "HDLABDJANFN": [
-            "AttackRanged"
-          ],
           "startNormalizedTime": 0.23,
-          "EMBOAOPDDKP": 270,
-          "EOHCONFEGPO": ""
+          "steerStateIDs": [
+            "AttackRanged"
+          ],
+          "FMFBGMCOEPH": 270,
+          "LEGDILBDLCB": true,
+          "__unk_Q2081332355": "",
+          "HKABKNFAKAJ": "Right"
         },
         {
           "$type": "SteerAttackMixin",
-          "__unk_Q2081332355": "",
           "angularSpeed": 240,
+          "attackTrigger": "",
           "endNormalizedTime": 0.52,
-          "AAPNADMFCNO": true,
-          "HDLABDJANFN": [
+          "startNormalizedTime": 0.396,
+          "steerStateIDs": [
             "AttackRanged"
           ],
-          "startNormalizedTime": 0.396,
-          "EOHCONFEGPO": ""
+          "LEGDILBDLCB": true,
+          "__unk_Q2081332355": ""
         },
         {
           "$type": "SteerAttackMixin",
-          "__unk_Q2081332355": "",
           "angularSpeed": 90,
+          "attackTrigger": "",
           "endNormalizedTime": 0.92,
-          "AAPNADMFCNO": true,
-          "HDLABDJANFN": [
+          "startNormalizedTime": 0.771,
+          "steerStateIDs": [
             "AttackRanged"
           ],
-          "startNormalizedTime": 0.771,
-          "EOHCONFEGPO": ""
+          "LEGDILBDLCB": true,
+          "__unk_Q2081332355": ""
         }
       ],
       "abilityName": "Monster_WildHunt_AttackSteer"
@@ -2558,27 +2558,27 @@
   },
   {
     "Default": {
+      "abilityName": "Monster_WildHunt_AttackRush",
       "onAbilityStart": [
         {
           "$type": "FixedMonsterRushMove",
-          "overrideMoveCollider": "",
-          "PGLJIHAEIAD": 0.3,
-          "maxRange": 3.5,
           "animatorStateIDs": [
             "AttackRush"
           ],
+          "maxRange": 3.5,
+          "overrideMoveCollider": "",
+          "target": "SelfAttackActiveTarget",
+          "timeRange": 0.6,
           "toPos": {
             "$type": "ConfigBornBySelf",
-            "useRotation": true,
             "offset": {
               "z": 3.5
-            }
+            },
+            "useRotation": true
           },
-          "timeRange": 0.6,
-          "target": "SelfAttackActiveTarget"
+          "KGGGGMIMKCI": 0.3
         }
-      ],
-      "abilityName": "Monster_WildHunt_AttackRush"
+      ]
     }
   },
   {
@@ -2586,12 +2586,12 @@
       "abilityMixins": [
         {
           "$type": "DoActionByAnimatorStateIDMixin",
-          "JGJMIJEEGBP": [
+          "enterActions": [
             {
               "$type": "FireEffect",
               "effectPattern": "Eff_Monster_WildHunt_RangedAttack_Fire",
               "scale": 1,
-              "ILLLPEOODKP": ""
+              "JHAGIJGAKMK": ""
             },
             {
               "$type": "TriggerBullet",
@@ -2599,19 +2599,19 @@
                 "$type": "ConfigBornByAttachPoint",
                 "attachPointName": "FlameHand",
                 "attachPointTargetType": "Self",
-                "useRotation": true,
                 "direction": {
                   "$type": "ConfigDirectionByAttackTarget",
-                  "MJDDIMNCNAL": "",
                   "maxAngleType": "ByConfig",
-                  "FHBHCCMDINJ": {
-                    "$type": "IBKENFFDIKB",
-                    "HCHFDCNOOOF": 15,
-                    "LKBGFILKLJI": 15,
-                    "BCNFMACKCMG": 15,
-                    "AKKKAPLHNAF": 20
+                  "startPoint": "",
+                  "GDMBFDMICMJ": {
+                    "$type": "AHHALAIGBLH",
+                    "BENIFHBGGPA": 15,
+                    "HBGBIOIHHGL": 15,
+                    "IPHHAGFFFKA": 15,
+                    "KBFCFMMCFOD": 20
                   }
-                }
+                },
+                "useRotation": true
               },
               "bulletID": 42213001,
               "trackTarget": "SelfAttackActiveTarget"
@@ -2628,24 +2628,25 @@
   },
   {
     "Default": {
+      "abilityName": "Monster_WildHunt_AttackRanged_Bullet",
       "modifiers": {
         "Bullet_VFX": {
+          "elementDurability": 100,
+          "modifierName": "",
           "onAdded": [
             {
               "$type": "AttachEffect",
-              "ILLLPEOODKP": "",
+              "effectPattern": "Eff_Monster_WildHunt_RangedAttack_Bullet",
               "scale": 1,
-              "effectPattern": "Eff_Monster_WildHunt_RangedAttack_Bullet"
+              "JHAGIJGAKMK": ""
             },
             {
               "$type": "AttachEffect",
-              "ILLLPEOODKP": "",
+              "effectPattern": "Eff_Monster_WildHunt_RangedAttack_Bullet_Trail",
               "scale": 1,
-              "effectPattern": "Eff_Monster_WildHunt_RangedAttack_Bullet_Trail"
+              "JHAGIJGAKMK": ""
             }
           ],
-          "elementDurability": 100,
-          "modifierName": "",
           "__unk_Q3323398612": 0
         }
       },
@@ -2663,41 +2664,40 @@
         },
         {
           "$type": "TriggerAttackEvent",
-          "targetType": "Enemy",
           "attackEvent": {
             "attackInfo": {
               "attackProperty": {
                 "attackType": "Range",
-                "damagePercentageRatio": 0,
-                "strikeType": "Default",
-                "enBreak": 40,
                 "damagePercentage": 0.8,
+                "damagePercentageRatio": 0,
                 "elementDurability": 100,
+                "enBreak": 40,
+                "strikeType": "Default",
                 "__exp_arkhe": 0
               },
-              "OJKMIPPGDCE": "Owner",
-              "hitPattern": {
-                "__unk_Q3893899620": "",
-                "onHitEffectName": "default",
-                "hitImpulseType": "LV3"
-              },
-              "attenuationGroup": "FauneAbyssale_HermitCrab_Mature_Whirl",
-              "attenuationTag": "WildHunt_Bullet",
               "attackTag": "",
-              "canBeModifiedBy": "Owner"
+              "attenuationGroup": "FauneAbyssale_HermitCrab_Mature_Whirl",
+              "attenuationRedirect": "Owner",
+              "attenuationTag": "WildHunt_Bullet",
+              "canBeModifiedBy": "Owner",
+              "hitPattern": {
+                "hitImpulseType": "LV3",
+                "onHitEffectName": "default",
+                "__unk_Q3893899620": ""
+              }
             },
             "attackPattern": {
               "$type": "ConfigAttackSphere",
-              "radius": 1.25,
-              "triggerType": "TriggerNoRepeat",
               "born": {
                 "$type": "ConfigBornByCollisionPoint"
-              }
+              },
+              "radius": 1.25,
+              "triggerType": "TriggerNoRepeat"
             }
-          }
+          },
+          "targetType": "Enemy"
         }
       ],
-      "abilityName": "Monster_WildHunt_AttackRanged_Bullet",
       "onAdded": [
         {
           "$type": "AttachModifier",
@@ -2713,16 +2713,16 @@
       "onAdded": [
         {
           "$type": "SetGlobalValueV2",
-          "minValue": 0,
           "key": "instable_damage_ratio_common",
           "maxValue": 0,
+          "minValue": 0,
           "value": 0.8
         },
         {
           "$type": "SetGlobalValueV2",
-          "minValue": 0,
           "key": "_WildHunt_Simplify",
           "maxValue": 0,
+          "minValue": 0,
           "value": 1
         }
       ]
@@ -2735,37 +2735,37 @@
       "onAdded": [
         {
           "$type": "SetGlobalValueV2",
-          "minValue": 0,
           "key": "moon_phase_instable_duration",
           "maxValue": 0,
+          "minValue": 0,
           "value": 15
         },
         {
           "$type": "SetGlobalValueV2",
-          "minValue": 0,
           "key": "instable_damage_ratio_common",
           "maxValue": 0,
+          "minValue": 0,
           "value": 0.2
         },
         {
           "$type": "SetGlobalValueV2",
-          "minValue": 0,
           "key": "instable_damage_ratio_moon_team",
           "maxValue": 0,
+          "minValue": 0,
           "value": 0.5
         },
         {
           "$type": "SetGlobalValueV2",
-          "minValue": 0,
           "key": "add_hp_limit_ratio_when_fake_die",
           "maxValue": 0,
+          "minValue": 0,
           "value": 0.3
         },
         {
           "$type": "SetGlobalValueV2",
-          "minValue": 0,
           "key": "extra_hp_limit_ratio_per_die",
           "maxValue": 0,
+          "minValue": 0,
           "value": 0.1
         }
       ]
@@ -2773,6 +2773,52 @@
   },
   {
     "Default": {
+      "abilityMixins": [
+        {
+          "$type": "DoActionByAnimatorStateIDMixin",
+          "enterActions": [
+            {
+              "$type": "FixedMonsterRushMove",
+              "animatorStateIDs": [
+                "WildMove_BS",
+                "WildMove_AS"
+              ],
+              "checkAnimatorStateOnExitOnly": true,
+              "maxRange": 10,
+              "overrideMoveCollider": "",
+              "timeRange": 0.7,
+              "toPos": {
+                "$type": "ConfigBornBySelf",
+                "offset": {
+                  "z": 6
+                },
+                "onGround": true,
+                "useRotation": true
+              },
+              "KGGGGMIMKCI": 0.25
+            }
+          ],
+          "stateIDs": [
+            "WildMove_BS"
+          ],
+          "__unk_Q2081332355": ""
+        },
+        {
+          "$type": "AttachModifierToGlobalValueMixin",
+          "globalValueKey": "Instable_Enter_VFX_Type",
+          "modifierNameSteps": [
+            "WildHunt_Monitor_Common",
+            "WildHunt_Monitor_Elite"
+          ],
+          "valueSteps": [
+            0.5,
+            1.5,
+            2.5
+          ]
+        }
+      ],
+      "abilityName": "PointAction_Monster_WildHunt_TriggerAttack",
+      "isDynamicAbility": true,
       "modifiers": {
         "WildHunt_Monitor_Common": {
           "elementDurability": 100,
@@ -2780,21 +2826,21 @@
             {
               "$type": "AttachToMultiNormalizedTimeMixin",
               "modifierName": "LuaCallDamage",
-              "__unk_Q2081332355": "",
               "normalizedStateIDList": [
                 {
-                  "stateID": "AttackMelee01",
-                  "normalizeStart": 0.433
+                  "normalizeStart": 0.433,
+                  "stateID": "AttackMelee01"
                 },
                 {
-                  "stateID": "AttackMelee02",
-                  "normalizeStart": 0.39
+                  "normalizeStart": 0.39,
+                  "stateID": "AttackMelee02"
                 },
                 {
-                  "stateID": "AttackRanged",
-                  "normalizeStart": 0.64
+                  "normalizeStart": 0.64,
+                  "stateID": "AttackRanged"
                 }
-              ]
+              ],
+              "__unk_Q2081332355": ""
             }
           ],
           "modifierName": "",
@@ -2806,51 +2852,58 @@
             {
               "$type": "AttachToMultiNormalizedTimeMixin",
               "modifierName": "LuaCallDamage",
-              "__unk_Q2081332355": "",
               "normalizedStateIDList": [
                 {
-                  "stateID": "AttackHeavy",
-                  "normalizeStart": 0.519
+                  "normalizeStart": 0.519,
+                  "stateID": "AttackHeavy"
                 },
                 {
-                  "stateID": "ThrowAxe",
-                  "normalizeStart": 0.34
+                  "normalizeStart": 0.34,
+                  "stateID": "ThrowAxe"
                 }
-              ]
+              ],
+              "__unk_Q2081332355": ""
             }
           ],
           "modifierName": "",
           "__unk_Q3323398612": 0
         },
         "LuaCallDamage": {
+          "elementDurability": 100,
+          "modifierName": "",
           "onAdded": [
             {
               "$type": "ServerLuaCall",
-              "param1": "GV_CommandType",
-              "param2": 0,
-              "paramNum": 1,
-              "funcName": "SLC_WildHunt_Attack",
-              "AHCNJKIEMPP": 0,
-              "NPNEPKILMEK": [
+              "callParamList": [
                 220293001
               ],
-              "luaCallType": "SpecificGroup"
+              "funcName": "SLC_WildHunt_Attack",
+              "luaCallType": "SpecificGroup",
+              "param1": "GV_CommandType",
+              "param2": 0,
+              "param3": 0,
+              "paramNum": 1
             },
             {
               "$type": "NotifyUI",
-              "uiContextName": "InLevelRobotAbyssalPage",
+              "message": "Hit",
               "stringParam": "",
-              "message": "Hit"
+              "uiContextName": "InLevelRobotAbyssalPage"
             }
           ],
-          "elementDurability": 100,
-          "modifierName": "",
           "__unk_Q3323398612": 0
         }
       },
       "onAbilityStart": [
         {
           "$type": "Predicated",
+          "predicates": [
+            {
+              "$type": "ByTargetGlobalValue",
+              "key": "GV_CommandType",
+              "value": 0
+            }
+          ],
           "successActions": [
             {
               "$type": "SetAnimatorTrigger",
@@ -2861,36 +2914,36 @@
               "intID": "SkillID",
               "value": 301
             }
-          ],
-          "predicates": [
-            {
-              "$type": "ByTargetGlobalValue",
-              "value": 0,
-              "key": "GV_CommandType"
-            }
           ]
         },
         {
           "$type": "Predicated",
+          "predicates": [
+            {
+              "$type": "ByTargetGlobalValue",
+              "key": "GV_CommandType",
+              "value": 1
+            }
+          ],
           "successActions": [
             {
               "$type": "KillSelf",
-              "HIBDOLDJAKP": true,
-              "JFPOJJMMION": true,
-              "ELJJHIPAFKC": true,
-              "target": "Caster"
-            }
-          ],
-          "predicates": [
-            {
-              "$type": "ByTargetGlobalValue",
-              "value": 1,
-              "key": "GV_CommandType"
+              "banHPPercentageDrop": true,
+              "target": "Caster",
+              "FEFHBHCKEPE": true,
+              "KKIEMHEJMHG": true
             }
           ]
         },
         {
           "$type": "Predicated",
+          "predicates": [
+            {
+              "$type": "ByTargetGlobalValue",
+              "key": "GV_CommandType",
+              "value": 2
+            }
+          ],
           "successActions": [
             {
               "$type": "SetAnimatorTrigger",
@@ -2901,17 +2954,17 @@
               "intID": "SkillID",
               "value": 101
             }
-          ],
-          "predicates": [
-            {
-              "$type": "ByTargetGlobalValue",
-              "value": 2,
-              "key": "GV_CommandType"
-            }
           ]
         },
         {
           "$type": "Predicated",
+          "predicates": [
+            {
+              "$type": "ByTargetGlobalValue",
+              "key": "GV_CommandType",
+              "value": 3
+            }
+          ],
           "successActions": [
             {
               "$type": "SetAnimatorTrigger",
@@ -2922,17 +2975,17 @@
               "intID": "SkillID",
               "value": 901
             }
-          ],
-          "predicates": [
-            {
-              "$type": "ByTargetGlobalValue",
-              "value": 3,
-              "key": "GV_CommandType"
-            }
           ]
         },
         {
           "$type": "Predicated",
+          "predicates": [
+            {
+              "$type": "ByTargetGlobalValue",
+              "key": "GV_CommandType",
+              "value": 4
+            }
+          ],
           "successActions": [
             {
               "$type": "SetAnimatorTrigger",
@@ -2943,17 +2996,17 @@
               "intID": "SkillID",
               "value": 201
             }
-          ],
-          "predicates": [
-            {
-              "$type": "ByTargetGlobalValue",
-              "value": 4,
-              "key": "GV_CommandType"
-            }
           ]
         },
         {
           "$type": "Predicated",
+          "predicates": [
+            {
+              "$type": "ByTargetGlobalValue",
+              "key": "GV_CommandType",
+              "value": 5
+            }
+          ],
           "successActions": [
             {
               "$type": "SetAnimatorTrigger",
@@ -2964,65 +3017,12 @@
               "intID": "SkillID",
               "value": 501
             }
-          ],
-          "predicates": [
-            {
-              "$type": "ByTargetGlobalValue",
-              "value": 5,
-              "key": "GV_CommandType"
-            }
           ]
         }
       ],
       "__unk_Q2830497089": [
         "GV_CommandType"
-      ],
-      "abilityMixins": [
-        {
-          "$type": "DoActionByAnimatorStateIDMixin",
-          "JGJMIJEEGBP": [
-            {
-              "$type": "FixedMonsterRushMove",
-              "overrideMoveCollider": "",
-              "PGLJIHAEIAD": 0.25,
-              "maxRange": 10,
-              "animatorStateIDs": [
-                "WildMove_BS",
-                "WildMove_AS"
-              ],
-              "toPos": {
-                "$type": "ConfigBornBySelf",
-                "onGround": true,
-                "useRotation": true,
-                "offset": {
-                  "z": 6
-                }
-              },
-              "OHPJIHKPEMD": true,
-              "timeRange": 0.7
-            }
-          ],
-          "stateIDs": [
-            "WildMove_BS"
-          ],
-          "__unk_Q2081332355": ""
-        },
-        {
-          "$type": "AttachModifierToGlobalValueMixin",
-          "modifierNameSteps": [
-            "WildHunt_Monitor_Common",
-            "WildHunt_Monitor_Elite"
-          ],
-          "globalValueKey": "Instable_Enter_VFX_Type",
-          "valueSteps": [
-            0.5,
-            1.5,
-            2.5
-          ]
-        }
-      ],
-      "abilityName": "PointAction_Monster_WildHunt_TriggerAttack",
-      "isDynamicAbility": true
+      ]
     }
   },
   {
@@ -3032,9 +3032,9 @@
       "onAdded": [
         {
           "$type": "SetGlobalValueV2",
-          "minValue": 0,
           "key": "_WildHunt_Disable_MoonPhase_Trigger",
           "maxValue": 0,
+          "minValue": 0,
           "value": 1
         }
       ]

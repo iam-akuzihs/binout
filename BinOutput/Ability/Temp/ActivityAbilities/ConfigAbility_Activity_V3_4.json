@@ -1,6 +1,22 @@
 [
   {
     "Default": {
+      "abilityMixins": [
+        {
+          "$type": "AttachModifierToSelfGlobalValueMixin",
+          "defaultGlobalValueOnCreate": 0,
+          "globalValueKey": "BoatRaceV3_IsInVehicle",
+          "modifierNameSteps": [
+            "UNIQUE_BoatRaceV3_TeamHandle"
+          ],
+          "valueSteps": [
+            -0.5,
+            0.5
+          ]
+        }
+      ],
+      "abilityName": "Activity_BoatRaceV3_CoinDetect_TeamAbility",
+      "isDynamicAbility": true,
       "modifiers": {
         "Blank": {
           "elementDurability": 100,
@@ -8,87 +24,93 @@
           "__unk_Q3323398612": 0
         },
         "UNIQUE_BoatRaceV3_Billboard": {
-          "onRemoved": [
-            {
-              "$type": "HideUIBillBoard",
-              "target": "CurLocalAvatar",
-              "canBeHandledOnRecover": true
-            }
-          ],
-          "onAdded": [
-            {
-              "$type": "HideUIBillBoard",
-              "hide": true,
-              "target": "CurLocalAvatar",
-              "canBeHandledOnRecover": true
-            }
-          ],
-          "stacking": "Unique",
           "elementDurability": 100,
+          "isUnique": true,
           "modifierMixins": [
             {
               "$type": "ChangeBillboardMixin",
-              "OHJCCMCDANG": {
-                "$type": "DHJMEMHMMDB",
-                "ONKEMIDLBLB": "BoatScoreBoard",
-                "type": "LanV3BoatGame",
-                "LFOHKNPEOBF": 0.5,
-                "EJJGLFHDCCH": 80,
+              "billboard": {
+                "$type": "ConfigProgressBillboard",
+                "attachPoint": "BillboardAttach",
                 "offset": {
                   "y": 2.5,
-                  "z": -1.19
+                  "x": -1.19
                 },
-                "attachPoint": "BillboardAttach"
+                "prefabPluginName": "BoatScoreBoard",
+                "radiusOffset": 0.5,
+                "showDistance": 80,
+                "type": "LanV3BoatGame"
               }
             }
           ],
           "modifierName": "",
-          "isUnique": true,
+          "onAdded": [
+            {
+              "$type": "HideUIBillBoard",
+              "canBeHandledOnRecover": true,
+              "hide": true,
+              "target": "CurLocalAvatar"
+            }
+          ],
+          "onRemoved": [
+            {
+              "$type": "HideUIBillBoard",
+              "canBeHandledOnRecover": true,
+              "target": "CurLocalAvatar"
+            }
+          ],
+          "stacking": "Unique",
           "__unk_Q3323398612": 0
         },
         "UNIQUE_BoatRaceV3_TeamHandle": {
-          "thinkInterval": 1,
-          "stacking": "Unique",
           "elementDurability": 100,
-          "modifierName": "",
           "isUnique": true,
+          "modifierName": "",
           "onThinkInterval": [
             {
               "$type": "ApplyModifier",
+              "doOffStage": true,
               "modifierName": "UNIQUE_BoatRaceV3_ItemDetect",
-              "target": "Vehicle",
-              "doOffStage": true
+              "target": "Vehicle"
             },
             {
               "$type": "ApplyModifier",
+              "doOffStage": true,
               "modifierName": "UNIQUE_BoatRaceV3_PlayerDamage",
-              "target": "Vehicle",
-              "doOffStage": true
+              "target": "Vehicle"
             },
             {
               "$type": "ApplyModifier",
+              "doOffStage": true,
               "modifierName": "UNIQUE_BoatRaceV3_Billboard",
-              "target": "Vehicle",
-              "doOffStage": true
+              "target": "Vehicle"
             },
             {
               "$type": "ApplyModifier",
+              "doOffStage": true,
               "modifierName": "UNIQUE_BoatRaceV3_PlayerAttack",
-              "target": "Vehicle",
-              "doOffStage": true
+              "target": "Vehicle"
             }
           ],
+          "stacking": "Unique",
+          "thinkInterval": 1,
           "__unk_Q3323398612": 0
         },
         "UNIQUE_BoatRaceV3_ItemDetect": {
-          "thinkInterval": 0.1,
-          "stacking": "Unique",
           "elementDurability": 100,
-          "modifierName": "",
           "isUnique": true,
+          "modifierName": "",
           "onThinkInterval": [
             {
               "$type": "Predicated",
+              "otherTargets": {
+                "$type": "SelectTargetsByShape",
+                "campBasedOn": "Vehicle",
+                "campTargetType": "AllExceptSelf",
+                "centerBasedOn": "Vehicle",
+                "shapeName": "CircleR6H6",
+                "sizeRatio": 1
+              },
               "successActions": [
                 {
                   "$type": "DebugLog",
@@ -96,41 +118,41 @@
                 },
                 {
                   "$type": "ServerLuaCall",
+                  "funcName": "SLC_PlayerGetCoin",
                   "isTarget": true,
+                  "luaCallType": "FromGroup",
                   "param1": 6,
                   "param2": 0,
+                  "param3": 0,
                   "paramNum": 1,
-                  "funcName": "SLC_PlayerGetCoin",
-                  "AHCNJKIEMPP": 0,
-                  "luaCallType": "FromGroup",
                   "target": "Other"
                 }
               ],
               "targetPredicates": [
                 {
                   "$type": "ByTargetGlobalValue",
-                  "value": 6,
-                  "key": "ShipPVPCoin"
+                  "key": "ShipPVPCoin",
+                  "value": 6
                 },
                 {
                   "$type": "ByTargetGlobalValue",
-                  "value": 0,
                   "compareType": "NoneOrEqual",
                   "key": "SGV_BoatV3_Ghost",
-                  "target": "Team"
+                  "target": "Team",
+                  "value": 0
                 }
-              ],
-              "otherTargets": {
-                "$type": "SelectTargetsByShape",
-                "centerBasedOn": "Vehicle",
-                "campBasedOn": "Vehicle",
-                "sizeRatio": 1,
-                "campTargetType": "AllExceptSelf",
-                "shapeName": "CircleR6H6"
-              }
+              ]
             },
             {
               "$type": "Predicated",
+              "otherTargets": {
+                "$type": "SelectTargetsByShape",
+                "campBasedOn": "Vehicle",
+                "campTargetType": "AllExceptSelf",
+                "centerBasedOn": "Vehicle",
+                "shapeName": "CircleR5H4",
+                "sizeRatio": 1
+              },
               "successActions": [
                 {
                   "$type": "DebugLog",
@@ -138,41 +160,41 @@
                 },
                 {
                   "$type": "ServerLuaCall",
+                  "funcName": "SLC_PlayerGetCoin",
                   "isTarget": true,
+                  "luaCallType": "FromGroup",
                   "param1": 5,
                   "param2": 0,
+                  "param3": 0,
                   "paramNum": 1,
-                  "funcName": "SLC_PlayerGetCoin",
-                  "AHCNJKIEMPP": 0,
-                  "luaCallType": "FromGroup",
                   "target": "Other"
                 }
               ],
               "targetPredicates": [
                 {
                   "$type": "ByTargetGlobalValue",
-                  "value": 5,
-                  "key": "ShipPVPCoin"
+                  "key": "ShipPVPCoin",
+                  "value": 5
                 },
                 {
                   "$type": "ByTargetGlobalValue",
-                  "value": 0,
                   "compareType": "NoneOrEqual",
                   "key": "SGV_BoatV3_Ghost",
-                  "target": "Team"
+                  "target": "Team",
+                  "value": 0
                 }
-              ],
-              "otherTargets": {
-                "$type": "SelectTargetsByShape",
-                "centerBasedOn": "Vehicle",
-                "campBasedOn": "Vehicle",
-                "sizeRatio": 1,
-                "campTargetType": "AllExceptSelf",
-                "shapeName": "CircleR5H4"
-              }
+              ]
             },
             {
               "$type": "Predicated",
+              "otherTargets": {
+                "$type": "SelectTargetsByShape",
+                "campBasedOn": "Vehicle",
+                "campTargetType": "AllExceptSelf",
+                "centerBasedOn": "Vehicle",
+                "shapeName": "CircleR6H6",
+                "sizeRatio": 1
+              },
               "successActions": [
                 {
                   "$type": "DebugLog",
@@ -180,41 +202,41 @@
                 },
                 {
                   "$type": "ServerLuaCall",
+                  "funcName": "SLC_PlayerGetCoin",
                   "isTarget": true,
+                  "luaCallType": "FromGroup",
                   "param1": 4,
                   "param2": 0,
+                  "param3": 0,
                   "paramNum": 1,
-                  "funcName": "SLC_PlayerGetCoin",
-                  "AHCNJKIEMPP": 0,
-                  "luaCallType": "FromGroup",
                   "target": "Other"
                 }
               ],
               "targetPredicates": [
                 {
                   "$type": "ByTargetGlobalValue",
-                  "value": 4,
-                  "key": "ShipPVPCoin"
+                  "key": "ShipPVPCoin",
+                  "value": 4
                 },
                 {
                   "$type": "ByTargetGlobalValue",
-                  "value": 0,
                   "compareType": "NoneOrEqual",
                   "key": "SGV_BoatV3_Ghost",
-                  "target": "Team"
+                  "target": "Team",
+                  "value": 0
                 }
-              ],
-              "otherTargets": {
-                "$type": "SelectTargetsByShape",
-                "centerBasedOn": "Vehicle",
-                "campBasedOn": "Vehicle",
-                "sizeRatio": 1,
-                "campTargetType": "AllExceptSelf",
-                "shapeName": "CircleR6H6"
-              }
+              ]
             },
             {
               "$type": "Predicated",
+              "otherTargets": {
+                "$type": "SelectTargetsByShape",
+                "campBasedOn": "Vehicle",
+                "campTargetType": "AllExceptSelf",
+                "centerBasedOn": "Vehicle",
+                "shapeName": "CircleR6H6",
+                "sizeRatio": 1
+              },
               "successActions": [
                 {
                   "$type": "DebugLog",
@@ -222,41 +244,41 @@
                 },
                 {
                   "$type": "ServerLuaCall",
+                  "funcName": "SLC_PlayerGetCoin",
                   "isTarget": true,
+                  "luaCallType": "FromGroup",
                   "param1": 3,
                   "param2": 0,
+                  "param3": 0,
                   "paramNum": 1,
-                  "funcName": "SLC_PlayerGetCoin",
-                  "AHCNJKIEMPP": 0,
-                  "luaCallType": "FromGroup",
                   "target": "Other"
                 }
               ],
               "targetPredicates": [
                 {
                   "$type": "ByTargetGlobalValue",
-                  "value": 3,
-                  "key": "ShipPVPCoin"
+                  "key": "ShipPVPCoin",
+                  "value": 3
                 },
                 {
                   "$type": "ByTargetGlobalValue",
-                  "value": 0,
                   "compareType": "NoneOrEqual",
                   "key": "SGV_BoatV3_Ghost",
-                  "target": "Team"
+                  "target": "Team",
+                  "value": 0
                 }
-              ],
-              "otherTargets": {
-                "$type": "SelectTargetsByShape",
-                "centerBasedOn": "Vehicle",
-                "campBasedOn": "Vehicle",
-                "sizeRatio": 1,
-                "campTargetType": "AllExceptSelf",
-                "shapeName": "CircleR6H6"
-              }
+              ]
             },
             {
               "$type": "Predicated",
+              "otherTargets": {
+                "$type": "SelectTargetsByShape",
+                "campBasedOn": "Vehicle",
+                "campTargetType": "AllExceptSelf",
+                "centerBasedOn": "Vehicle",
+                "shapeName": "CircleR6H6",
+                "sizeRatio": 1
+              },
               "successActions": [
                 {
                   "$type": "DebugLog",
@@ -264,41 +286,41 @@
                 },
                 {
                   "$type": "ServerLuaCall",
+                  "funcName": "SLC_PlayerGetCoin",
                   "isTarget": true,
+                  "luaCallType": "FromGroup",
                   "param1": 2,
                   "param2": 0,
+                  "param3": 0,
                   "paramNum": 1,
-                  "funcName": "SLC_PlayerGetCoin",
-                  "AHCNJKIEMPP": 0,
-                  "luaCallType": "FromGroup",
                   "target": "Other"
                 }
               ],
               "targetPredicates": [
                 {
                   "$type": "ByTargetGlobalValue",
-                  "value": 2,
-                  "key": "ShipPVPCoin"
+                  "key": "ShipPVPCoin",
+                  "value": 2
                 },
                 {
                   "$type": "ByTargetGlobalValue",
-                  "value": 0,
                   "compareType": "NoneOrEqual",
                   "key": "SGV_BoatV3_Ghost",
-                  "target": "Team"
+                  "target": "Team",
+                  "value": 0
                 }
-              ],
-              "otherTargets": {
-                "$type": "SelectTargetsByShape",
-                "centerBasedOn": "Vehicle",
-                "campBasedOn": "Vehicle",
-                "sizeRatio": 1,
-                "campTargetType": "AllExceptSelf",
-                "shapeName": "CircleR6H6"
-              }
+              ]
             },
             {
               "$type": "Predicated",
+              "otherTargets": {
+                "$type": "SelectTargetsByShape",
+                "campBasedOn": "Vehicle",
+                "campTargetType": "AllExceptSelf",
+                "centerBasedOn": "Vehicle",
+                "shapeName": "CircleR5H4",
+                "sizeRatio": 1
+              },
               "successActions": [
                 {
                   "$type": "DebugLog",
@@ -306,41 +328,41 @@
                 },
                 {
                   "$type": "ServerLuaCall",
+                  "funcName": "SLC_PlayerGetCoin",
                   "isTarget": true,
+                  "luaCallType": "FromGroup",
                   "param1": 1,
                   "param2": 0,
+                  "param3": 0,
                   "paramNum": 1,
-                  "funcName": "SLC_PlayerGetCoin",
-                  "AHCNJKIEMPP": 0,
-                  "luaCallType": "FromGroup",
                   "target": "Other"
                 }
               ],
               "targetPredicates": [
                 {
                   "$type": "ByTargetGlobalValue",
-                  "value": 1,
-                  "key": "ShipPVPCoin"
+                  "key": "ShipPVPCoin",
+                  "value": 1
                 },
                 {
                   "$type": "ByTargetGlobalValue",
-                  "value": 0,
                   "compareType": "NoneOrEqual",
                   "key": "SGV_BoatV3_Ghost",
-                  "target": "Team"
+                  "target": "Team",
+                  "value": 0
                 }
-              ],
-              "otherTargets": {
-                "$type": "SelectTargetsByShape",
-                "centerBasedOn": "Vehicle",
-                "campBasedOn": "Vehicle",
-                "sizeRatio": 1,
-                "campTargetType": "AllExceptSelf",
-                "shapeName": "CircleR5H4"
-              }
+              ]
             },
             {
               "$type": "Predicated",
+              "otherTargets": {
+                "$type": "SelectTargetsByShape",
+                "campBasedOn": "Vehicle",
+                "campTargetType": "AllExceptSelf",
+                "centerBasedOn": "Vehicle",
+                "shapeName": "CircleR5H4",
+                "sizeRatio": 1
+              },
               "successActions": [
                 {
                   "$type": "DebugLog",
@@ -348,48 +370,39 @@
                 },
                 {
                   "$type": "ServerLuaCall",
+                  "funcName": "SLC_PlayerGetItem",
                   "isTarget": true,
+                  "luaCallType": "FromGroup",
                   "param1": 0,
                   "param2": 0,
-                  "funcName": "SLC_PlayerGetItem",
-                  "AHCNJKIEMPP": 0,
-                  "luaCallType": "FromGroup",
+                  "param3": 0,
                   "target": "Other"
                 }
               ],
               "targetPredicates": [
                 {
                   "$type": "ByTargetGlobalValue",
-                  "value": 1,
-                  "key": "ShipPVPBall"
+                  "key": "ShipPVPBall",
+                  "value": 1
                 },
                 {
                   "$type": "ByTargetGlobalValue",
-                  "value": 0,
                   "compareType": "NoneOrEqual",
                   "key": "SGV_BoatV3_Ghost",
-                  "target": "Team"
+                  "target": "Team",
+                  "value": 0
                 }
-              ],
-              "otherTargets": {
-                "$type": "SelectTargetsByShape",
-                "centerBasedOn": "Vehicle",
-                "campBasedOn": "Vehicle",
-                "sizeRatio": 1,
-                "campTargetType": "AllExceptSelf",
-                "shapeName": "CircleR5H4"
-              }
+              ]
             }
           ],
+          "stacking": "Unique",
+          "thinkInterval": 0.1,
           "__unk_Q3323398612": 0
         },
         "UNIQUE_BoatRaceV3_PlayerDamage": {
-          "stacking": "Unique",
           "elementDurability": 100,
-          "state": "LockHP",
-          "modifierName": "",
           "isUnique": true,
-          "__unk_Q3323398612": 0,
+          "modifierName": "",
           "onBeingHit": [
             {
               "$type": "ApplyModifier",
@@ -403,96 +416,108 @@
                 },
                 {
                   "$type": "ByTargetGlobalValue",
-                  "value": 0,
                   "compareType": "NoneOrEqual",
                   "key": "SGV_BoatV3_Ghost",
-                  "target": "Team"
+                  "target": "Team",
+                  "value": 0
                 },
                 {
                   "$type": "ByTargetGlobalValue",
-                  "value": 0,
                   "compareType": "NoneOrEqual",
-                  "key": "TempImmune"
+                  "key": "TempImmune",
+                  "value": 0
                 },
                 {
                   "$type": "ByTargetGlobalValue",
-                  "value": 0,
                   "compareType": "NoneOrEqual",
-                  "key": "_ABILITY_BoatV3_In_Shield_State"
+                  "key": "_ABILITY_BoatV3_In_Shield_State",
+                  "value": 0
                 }
               ]
             }
-          ]
+          ],
+          "stacking": "Unique",
+          "state": "LockHP",
+          "__unk_Q3323398612": 0
         },
         "UNIQUE_BoatRaceV3_DamageProgress": {
           "duration": 0.5,
-          "onRemoved": [
-            {
-              "$type": "SetGlobalValue",
-              "key": "TempImmune",
-              "minValue": 0,
-              "maxValue": 0,
-              "value": 0
-            }
-          ],
+          "elementDurability": 100,
+          "isUnique": true,
+          "modifierName": "",
           "onAdded": [
             {
               "$type": "SetGlobalValue",
               "key": "TempImmune",
-              "minValue": 0,
               "maxValue": 0,
+              "minValue": 0,
               "value": 1
             },
             {
               "$type": "ServerLuaCall",
+              "funcName": "SLC_PlayerDamage",
               "isTarget": true,
+              "luaCallType": "CurGalleryControlGroup",
               "param1": 0,
               "param2": 0,
-              "funcName": "SLC_PlayerDamage",
-              "AHCNJKIEMPP": 0,
-              "luaCallType": "CurGalleryControlGroup",
+              "param3": 0,
               "target": "CurLocalAvatar"
             }
           ],
+          "onRemoved": [
+            {
+              "$type": "SetGlobalValue",
+              "key": "TempImmune",
+              "maxValue": 0,
+              "minValue": 0,
+              "value": 0
+            }
+          ],
           "stacking": "Unique",
-          "elementDurability": 100,
-          "modifierName": "",
-          "isUnique": true,
           "__unk_Q3323398612": 0
         },
         "UNIQUE_BoatRaceV3_PlayerAttack": {
+          "elementDurability": 100,
+          "isUnique": true,
+          "modifierName": "",
           "onHittingOther": [
             {
               "$type": "Predicated",
               "successActions": [
                 {
                   "$type": "ServerLuaCall",
+                  "funcName": "SLC_PlayerDestroyItem",
                   "isTarget": true,
+                  "luaCallType": "FromGroup",
                   "param1": 0,
                   "param2": 0,
-                  "funcName": "SLC_PlayerDestroyItem",
-                  "AHCNJKIEMPP": 0,
-                  "luaCallType": "FromGroup",
+                  "param3": 0,
                   "target": "Other"
                 }
               ],
+              "target": "Other",
               "targetPredicates": [
                 {
                   "$type": "ByTargetGlobalValue",
-                  "value": 1,
-                  "key": "Destory_Enable"
+                  "key": "Destory_Enable",
+                  "value": 1
                 }
-              ],
-              "target": "Other"
+              ]
             }
           ],
           "stacking": "Unique",
-          "elementDurability": 100,
-          "modifierName": "",
-          "isUnique": true,
           "__unk_Q3323398612": 0
         }
       },
+      "onAdded": [
+        {
+          "$type": "SetGlobalValue",
+          "key": "BoatRaceV3_IsInVehicle",
+          "maxValue": 0,
+          "minValue": 0,
+          "value": 0
+        }
+      ],
       "onRemoved": [
         {
           "$type": "RemoveUniqueModifier",
@@ -514,31 +539,6 @@
           "modifierName": "UNIQUE_BoatRaceV3_PlayerAttack",
           "target": "Vehicle"
         }
-      ],
-      "abilityMixins": [
-        {
-          "$type": "AttachModifierToSelfGlobalValueMixin",
-          "modifierNameSteps": [
-            "UNIQUE_BoatRaceV3_TeamHandle"
-          ],
-          "valueSteps": [
-            -0.5,
-            0.5
-          ],
-          "globalValueKey": "BoatRaceV3_IsInVehicle",
-          "defaultGlobalValueOnCreate": 0
-        }
-      ],
-      "abilityName": "Activity_BoatRaceV3_CoinDetect_TeamAbility",
-      "isDynamicAbility": true,
-      "onAdded": [
-        {
-          "$type": "SetGlobalValue",
-          "key": "BoatRaceV3_IsInVehicle",
-          "minValue": 0,
-          "maxValue": 0,
-          "value": 0
-        }
       ]
     }
   },
@@ -548,46 +548,46 @@
       "onAdded": [
         {
           "$type": "EnableGadgetSpecialCamera",
-          "enable": true,
-          "canBeHandledOnRecover": true
+          "canBeHandledOnRecover": true,
+          "enable": true
         }
       ]
     }
   },
   {
     "Default": {
+      "abilityMixins": [
+        {
+          "$type": "AttachToGadgetStateMixin",
+          "gadgetState": 201,
+          "modifierName": "CoinDisappear"
+        }
+      ],
+      "abilityName": "SceneObj_Area_Ly_Property_Ani_Prop_ShipPVPCoin_01_Ability",
       "modifiers": {
         "CoinDisappear": {
+          "elementDurability": 100,
+          "modifierName": "",
           "onAdded": [
             {
               "$type": "FireEffect",
               "effectPattern": "Eff_SceneObj_GlideChampCoin_Hit",
               "scale": 1,
-              "ILLLPEOODKP": ""
+              "JHAGIJGAKMK": ""
             },
             {
               "$type": "KillSelf"
             }
           ],
-          "elementDurability": 100,
-          "modifierName": "",
           "__unk_Q3323398612": 0
         }
       },
-      "abilityMixins": [
-        {
-          "$type": "AttachToGadgetStateMixin",
-          "modifierName": "CoinDisappear",
-          "gadgetState": 201
-        }
-      ],
-      "abilityName": "SceneObj_Area_Ly_Property_Ani_Prop_ShipPVPCoin_01_Ability",
       "onAdded": [
         {
           "$type": "SetGlobalValue",
           "key": "ShipPVPCoin",
-          "minValue": 0,
           "maxValue": 0,
+          "minValue": 0,
           "value": 1
         }
       ]
@@ -595,38 +595,38 @@
   },
   {
     "Default": {
+      "abilityMixins": [
+        {
+          "$type": "AttachToGadgetStateMixin",
+          "gadgetState": 201,
+          "modifierName": "CoinDisappear"
+        }
+      ],
+      "abilityName": "SceneObj_Area_Ly_Property_Ani_Prop_ShipPVPCoinLarge_01_Ability",
       "modifiers": {
         "CoinDisappear": {
+          "elementDurability": 100,
+          "modifierName": "",
           "onAdded": [
             {
               "$type": "FireEffect",
               "effectPattern": "Eff_SceneObj_GlideChampCoin_Hit_Super",
               "scale": 1,
-              "ILLLPEOODKP": ""
+              "JHAGIJGAKMK": ""
             },
             {
               "$type": "KillSelf"
             }
           ],
-          "elementDurability": 100,
-          "modifierName": "",
           "__unk_Q3323398612": 0
         }
       },
-      "abilityMixins": [
-        {
-          "$type": "AttachToGadgetStateMixin",
-          "modifierName": "CoinDisappear",
-          "gadgetState": 201
-        }
-      ],
-      "abilityName": "SceneObj_Area_Ly_Property_Ani_Prop_ShipPVPCoinLarge_01_Ability",
       "onAdded": [
         {
           "$type": "SetGlobalValue",
           "key": "ShipPVPCoin",
-          "minValue": 0,
           "maxValue": 0,
+          "minValue": 0,
           "value": 2
         }
       ]
@@ -634,28 +634,25 @@
   },
   {
     "Default": {
+      "abilityMixins": [
+        {
+          "$type": "AttachToGadgetStateMixin",
+          "modifierName": "WoodenBoxManager"
+        },
+        {
+          "$type": "AttachToGadgetStateMixin",
+          "gadgetState": 201,
+          "modifierName": "CoinDisappear"
+        }
+      ],
+      "abilityName": "SceneObj_Area_Ly_Property_Ani_Prop_ShipPVPWoodenBox_01_Ability",
       "modifiers": {
         "WoodenBoxManager": {
-          "onAdded": [
-            {
-              "$type": "SetGlobalValue",
-              "key": "ShipPVPCoin",
-              "minValue": 0,
-              "maxValue": 0,
-              "value": 0
-            },
-            {
-              "$type": "SetGlobalValue",
-              "key": "Destory_Enable",
-              "minValue": 0,
-              "maxValue": 0,
-              "value": 1
-            }
-          ],
           "elementDurability": 100,
           "modifierMixins": [
             {
               "$type": "AttachModifierToSelfGlobalValueNoInitMixin",
+              "globalValueKey": "ShipPVPCoin",
               "modifierNameSteps": [
                 "BoxState",
                 "CoinState"
@@ -664,196 +661,127 @@
                 -1,
                 1.5,
                 2.5
-              ],
-              "globalValueKey": "ShipPVPCoin"
+              ]
             }
           ],
           "modifierName": "",
+          "onAdded": [
+            {
+              "$type": "SetGlobalValue",
+              "key": "ShipPVPCoin",
+              "maxValue": 0,
+              "minValue": 0,
+              "value": 0
+            },
+            {
+              "$type": "SetGlobalValue",
+              "key": "Destory_Enable",
+              "maxValue": 0,
+              "minValue": 0,
+              "value": 1
+            }
+          ],
           "__unk_Q3323398612": 0
         },
         "BoxState": {
+          "elementDurability": 30,
+          "elementType": "Wood",
+          "modifierName": "",
           "onAdded": [
             {
               "$type": "EnableSceneTransformByName",
               "setEnable": true,
-              "PLDFIIMNOCD": [
+              "transformNames": [
                 "Model"
               ]
             }
           ],
-          "elementDurability": 30,
-          "onCrash": [
-            {
-              "$type": "FireEffect",
-              "effectPattern": "Eff_SceneObj_WoodenObject_Broken",
-              "scale": 1,
-              "ILLLPEOODKP": ""
-            },
-            {
-              "$type": "SetGlobalValue",
-              "key": "ShipPVPCoin",
-              "minValue": 0,
-              "maxValue": 0,
-              "value": 2
-            }
-          ],
-          "elementType": "Wood",
-          "state": "Limbo",
-          "modifierName": "",
-          "__unk_Q3323398612": 0,
           "onBeingHit": [
             {
               "$type": "FireEffect",
               "effectPattern": "Eff_SceneObj_WoodenObject_Broken",
               "scale": 1,
-              "ILLLPEOODKP": ""
+              "JHAGIJGAKMK": ""
             },
             {
               "$type": "SetGlobalValue",
               "key": "ShipPVPCoin",
-              "minValue": 0,
               "maxValue": 0,
+              "minValue": 0,
               "value": 2
             }
-          ]
+          ],
+          "onCrash": [
+            {
+              "$type": "FireEffect",
+              "effectPattern": "Eff_SceneObj_WoodenObject_Broken",
+              "scale": 1,
+              "JHAGIJGAKMK": ""
+            },
+            {
+              "$type": "SetGlobalValue",
+              "key": "ShipPVPCoin",
+              "maxValue": 0,
+              "minValue": 0,
+              "value": 2
+            }
+          ],
+          "state": "Limbo",
+          "__unk_Q3323398612": 0
         },
         "CoinState": {
+          "elementDurability": 100,
+          "modifierName": "",
           "onAdded": [
             {
               "$type": "EnableSceneTransformByName",
-              "PLDFIIMNOCD": [
+              "transformNames": [
                 "Model"
               ]
             },
             {
               "$type": "AttachEffect",
-              "ILLLPEOODKP": "",
+              "effectPattern": "Eff_SceneObj_ShipPVPCoin_01_Large",
               "scale": 1,
-              "effectPattern": "Eff_SceneObj_ShipPVPCoin_01_Large"
+              "JHAGIJGAKMK": ""
             },
             {
               "$type": "SetGlobalValue",
               "key": "Destory_Enable",
-              "minValue": 0,
               "maxValue": 0,
+              "minValue": 0,
               "value": 0
             }
           ],
-          "elementDurability": 100,
           "state": "DenyLockOn",
-          "modifierName": "",
           "__unk_Q3323398612": 0
         },
         "CoinDisappear": {
+          "elementDurability": 100,
+          "modifierName": "",
           "onAdded": [
             {
               "$type": "FireEffect",
               "effectPattern": "Eff_SceneObj_GlideChampCoin_Hit_Super",
               "scale": 1,
-              "ILLLPEOODKP": ""
+              "JHAGIJGAKMK": ""
             },
             {
               "$type": "KillSelf"
             }
           ],
-          "elementDurability": 100,
           "state": "DenyLockOn",
-          "modifierName": "",
           "__unk_Q3323398612": 0
         }
-      },
-      "abilityMixins": [
-        {
-          "$type": "AttachToGadgetStateMixin",
-          "modifierName": "WoodenBoxManager"
-        },
-        {
-          "$type": "AttachToGadgetStateMixin",
-          "modifierName": "CoinDisappear",
-          "gadgetState": 201
-        }
-      ],
-      "abilityName": "SceneObj_Area_Ly_Property_Ani_Prop_ShipPVPWoodenBox_01_Ability"
+      }
     }
   },
   {
     "Default": {
-      "modifiers": {
-        "WoodState": {
-          "elementDurability": 30,
-          "onCrash": [
-            {
-              "$type": "SetGlobalValue",
-              "key": "Destory_Enable",
-              "minValue": 0,
-              "maxValue": 0,
-              "value": 0
-            }
-          ],
-          "elementType": "Wood",
-          "state": "Limbo",
-          "modifierName": "",
-          "__unk_Q3323398612": 0,
-          "onBeingHit": [
-            {
-              "$type": "SetGlobalValue",
-              "key": "Destory_Enable",
-              "minValue": 0,
-              "maxValue": 0,
-              "value": 0
-            }
-          ]
-        },
-        "Reinit": {
-          "onAdded": [
-            {
-              "$type": "EnableSceneTransformByName",
-              "setEnable": true,
-              "PLDFIIMNOCD": [
-                "Collider1",
-                "Collider2"
-              ]
-            },
-            {
-              "$type": "SetGlobalValue",
-              "key": "Destory_Enable",
-              "minValue": 0,
-              "maxValue": 0,
-              "value": 1
-            }
-          ],
-          "elementDurability": 100,
-          "modifierName": "",
-          "__unk_Q3323398612": 0
-        },
-        "DestoryState": {
-          "onAdded": [
-            {
-              "$type": "FireEffect",
-              "effectPattern": "Eff_SceneObj_RisingFence_02_Destroy",
-              "scale": 1,
-              "ILLLPEOODKP": ""
-            },
-            {
-              "$type": "EnableSceneTransformByName",
-              "PLDFIIMNOCD": [
-                "Collider1",
-                "Collider2"
-              ]
-            },
-            {
-              "$type": "ChangeGadgetState"
-            }
-          ],
-          "elementDurability": 100,
-          "state": "DenyLockOn",
-          "modifierName": "",
-          "__unk_Q3323398612": 0
-        }
-      },
       "abilityMixins": [
         {
           "$type": "AttachModifierToSelfGlobalValueNoInitMixin",
+          "globalValueKey": "Destory_Enable",
           "modifierNameSteps": [
             "DestoryState",
             "WoodState"
@@ -862,38 +790,120 @@
             -1,
             0.5,
             1.5
-          ],
-          "globalValueKey": "Destory_Enable"
+          ]
         },
         {
           "$type": "AttachToGadgetStateMixin",
-          "modifierName": "Reinit",
-          "gadgetState": 201
+          "gadgetState": 201,
+          "modifierName": "Reinit"
         }
       ],
       "abilityName": "SceneObj_Area_Ly_Property_Ani_Prop_ShipPVPWoodfence_01_Ability",
+      "modifiers": {
+        "WoodState": {
+          "elementDurability": 30,
+          "elementType": "Wood",
+          "modifierName": "",
+          "onBeingHit": [
+            {
+              "$type": "SetGlobalValue",
+              "key": "Destory_Enable",
+              "maxValue": 0,
+              "minValue": 0,
+              "value": 0
+            }
+          ],
+          "onCrash": [
+            {
+              "$type": "SetGlobalValue",
+              "key": "Destory_Enable",
+              "maxValue": 0,
+              "minValue": 0,
+              "value": 0
+            }
+          ],
+          "state": "Limbo",
+          "__unk_Q3323398612": 0
+        },
+        "Reinit": {
+          "elementDurability": 100,
+          "modifierName": "",
+          "onAdded": [
+            {
+              "$type": "EnableSceneTransformByName",
+              "setEnable": true,
+              "transformNames": [
+                "Collider1",
+                "Collider2"
+              ]
+            },
+            {
+              "$type": "SetGlobalValue",
+              "key": "Destory_Enable",
+              "maxValue": 0,
+              "minValue": 0,
+              "value": 1
+            }
+          ],
+          "__unk_Q3323398612": 0
+        },
+        "DestoryState": {
+          "elementDurability": 100,
+          "modifierName": "",
+          "onAdded": [
+            {
+              "$type": "FireEffect",
+              "effectPattern": "Eff_SceneObj_RisingFence_02_Destroy",
+              "scale": 1,
+              "JHAGIJGAKMK": ""
+            },
+            {
+              "$type": "EnableSceneTransformByName",
+              "transformNames": [
+                "Collider1",
+                "Collider2"
+              ]
+            },
+            {
+              "$type": "ChangeGadgetState"
+            }
+          ],
+          "state": "DenyLockOn",
+          "__unk_Q3323398612": 0
+        }
+      },
       "onAdded": [
         {
           "$type": "ChangeGadgetState",
-          "ANIHOKMEKHK": 201
+          "state": 201
         }
       ]
     }
   },
   {
     "Default": {
+      "abilityMixins": [
+        {
+          "$type": "AttachToGadgetStateMixin",
+          "gadgetState": 201,
+          "modifierName": "CoinDisappear"
+        }
+      ],
+      "abilityName": "SceneObj_Area_Ly_Property_Ani_Prop_ShipPVPNightLamp_01_Ability",
       "modifiers": {
         "CoinDisappear": {
+          "elementDurability": 100,
+          "modifierName": "",
           "onAdded": [
             {
               "$type": "FireEffect",
               "effectPattern": "Eff_SceneObj_ShipPVPNightlamp_02",
               "scale": 1,
-              "ILLLPEOODKP": ""
+              "JHAGIJGAKMK": ""
             },
             {
               "$type": "EnableSceneTransformByName",
-              "PLDFIIMNOCD": [
+              "transformNames": [
                 "RootNode"
               ]
             },
@@ -901,45 +911,35 @@
               "$type": "KillSelf"
             }
           ],
-          "elementDurability": 100,
-          "modifierName": "",
           "__unk_Q3323398612": 0
         }
       },
-      "abilityMixins": [
-        {
-          "$type": "AttachToGadgetStateMixin",
-          "modifierName": "CoinDisappear",
-          "gadgetState": 201
-        }
-      ],
-      "abilityName": "SceneObj_Area_Ly_Property_Ani_Prop_ShipPVPNightLamp_01_Ability",
       "onAdded": [
         {
           "$type": "FireEffect",
           "effectPattern": "Eff_SceneObj_ShipPVPNightlamp_01",
-          "scale": 1,
-          "ILLLPEOODKP": "",
           "predicates": [
             {
               "$type": "ByTargetGlobalValue",
-              "value": 0,
               "compareType": "NoneOrEqual",
-              "key": "ShipPVPCoin"
+              "key": "ShipPVPCoin",
+              "value": 0
             }
-          ]
+          ],
+          "scale": 1,
+          "JHAGIJGAKMK": ""
         },
         {
           "$type": "SetGlobalValue",
           "key": "ShipPVPCoin",
-          "minValue": 0,
           "maxValue": 0,
+          "minValue": 0,
           "value": 3
         },
         {
           "$type": "EnableSceneTransformByName",
           "setEnable": true,
-          "PLDFIIMNOCD": [
+          "transformNames": [
             "RootNode"
           ]
         }
@@ -948,26 +948,36 @@
   },
   {
     "Default": {
+      "abilityMixins": [
+        {
+          "$type": "AttachToGadgetStateMixin",
+          "gadgetState": 201,
+          "modifierName": "CoinDisappear"
+        }
+      ],
+      "abilityName": "SceneObj_Area_Ly_Property_Ani_Prop_ShipPVPDropLamp_01_Ability",
       "modifiers": {
         "StopMove": {
+          "elementDurability": 100,
+          "modifierName": "",
           "properties": {
             "Actor_BulletMoveSpeedRatio": -1
           },
-          "elementDurability": 100,
-          "modifierName": "",
           "__unk_Q3323398612": 0
         },
         "CoinDisappear": {
+          "elementDurability": 100,
+          "modifierName": "",
           "onAdded": [
             {
               "$type": "FireEffect",
               "effectPattern": "Eff_SceneObj_ShipPVPNightlamp_02",
               "scale": 1,
-              "ILLLPEOODKP": ""
+              "JHAGIJGAKMK": ""
             },
             {
               "$type": "EnableSceneTransformByName",
-              "PLDFIIMNOCD": [
+              "transformNames": [
                 "RootNode"
               ]
             },
@@ -976,8 +986,6 @@
               "hideEntity": true
             }
           ],
-          "elementDurability": 100,
-          "modifierName": "",
           "__unk_Q3323398612": 0
         }
       },
@@ -990,6 +998,7 @@
               "modifierName": "StopMove"
             }
           ],
+          "target": "Target",
           "targetPredicates": [
             {
               "$type": "ByEntityTypes",
@@ -997,36 +1006,27 @@
                 "Level"
               ]
             }
-          ],
-          "target": "Target"
+          ]
         }
       ],
-      "abilityMixins": [
-        {
-          "$type": "AttachToGadgetStateMixin",
-          "modifierName": "CoinDisappear",
-          "gadgetState": 201
-        }
-      ],
-      "abilityName": "SceneObj_Area_Ly_Property_Ani_Prop_ShipPVPDropLamp_01_Ability",
       "onAdded": [
         {
           "$type": "FireEffect",
           "effectPattern": "Eff_SceneObj_ShipPVPNightlamp_01",
           "scale": 1,
-          "ILLLPEOODKP": ""
+          "JHAGIJGAKMK": ""
         },
         {
           "$type": "SetGlobalValue",
           "key": "ShipPVPCoin",
-          "minValue": 0,
           "maxValue": 0,
+          "minValue": 0,
           "value": 4
         },
         {
           "$type": "EnableSceneTransformByName",
           "setEnable": true,
-          "PLDFIIMNOCD": [
+          "transformNames": [
             "RootNode"
           ]
         }
@@ -1035,156 +1035,6 @@
   },
   {
     "Default": {
-      "modifiers": {
-        "ShowState": {
-          "onAdded": [
-            {
-              "$type": "FireEffect",
-              "effectPattern": "Eff_SceneObj_ShipPVPNightlamp_01",
-              "scale": 1,
-              "ILLLPEOODKP": "",
-              "predicates": [
-                {
-                  "$type": "ByTargetGlobalValue",
-                  "value": 0,
-                  "compareType": "NoneOrEqual",
-                  "key": "ShipPVPCoin"
-                }
-              ]
-            },
-            {
-              "$type": "SetGlobalValue",
-              "key": "ShipPVPCoin",
-              "minValue": 0,
-              "maxValue": 0,
-              "value": 5
-            },
-            {
-              "$type": "EnableSceneTransformByName",
-              "setEnable": true,
-              "PLDFIIMNOCD": [
-                "RootNode"
-              ]
-            }
-          ],
-          "elementDurability": 100,
-          "modifierName": "",
-          "__unk_Q3323398612": 0
-        },
-        "SuccessDisappear": {
-          "onAdded": [
-            {
-              "$type": "EnableSceneTransformByName",
-              "PLDFIIMNOCD": [
-                "RootNode"
-              ]
-            },
-            {
-              "$type": "FireEffect",
-              "effectPattern": "Eff_SceneObj_ShipPVPNightlamp_02",
-              "scale": 1,
-              "ILLLPEOODKP": ""
-            },
-            {
-              "$type": "KillSelf"
-            }
-          ],
-          "elementDurability": 100,
-          "modifierName": "",
-          "__unk_Q3323398612": 0
-        },
-        "FailDisappear": {
-          "duration": 0.5,
-          "onRemoved": [
-            {
-              "$type": "KillSelf"
-            }
-          ],
-          "onAdded": [
-            {
-              "$type": "FireEffect",
-              "effectPattern": "Eff_SceneObj_ShipPVPFireworkslamp_01",
-              "scale": 1,
-              "ILLLPEOODKP": ""
-            },
-            {
-              "$type": "EnableSceneTransformByName",
-              "PLDFIIMNOCD": [
-                "RootNode"
-              ]
-            },
-            {
-              "$type": "TriggerAttackEvent",
-              "targetType": "Enemy",
-              "attackEvent": {
-                "attackInfo": {
-                  "attackProperty": {
-                    "attackType": "None",
-                    "damagePercentageRatio": 0,
-                    "enBreak": 9999999,
-                    "damageExtra": 10,
-                    "elementDurability": 0,
-                    "__exp_arkhe": 0
-                  },
-                  "cameraShake": {
-                    "shakeTime": 0.36,
-                    "MNKFEFOKFKP": "",
-                    "shakeRange": 0.36
-                  },
-                  "hitPattern": {
-                    "__unk_Q3893899620": "",
-                    "onHitEffectName": "default",
-                    "hitHaltTimeScale": 0.05,
-                    "hitImpulseType": "LV6"
-                  },
-                  "forceCameraShake": true,
-                  "attenuationGroup": "default",
-                  "attenuationTag": "",
-                  "attackTag": "BoatRaceGear"
-                },
-                "attackPattern": {
-                  "$type": "ConfigAttackSphere",
-                  "radius": 4,
-                  "triggerType": "TriggerNoRepeat",
-                  "ignoreMassive": true,
-                  "born": {
-                    "$type": "ConfigBornByTarget",
-                    "offset": {
-                      "y": 0.5
-                    }
-                  }
-                }
-              },
-              "entityTypes": [
-                "Vehicle"
-              ]
-            }
-          ],
-          "elementDurability": 100,
-          "modifierName": "",
-          "__unk_Q3323398612": 0
-        },
-        "WrongProtect": {
-          "duration": 2,
-          "onRemoved": [
-            {
-              "$type": "ChangeGadgetState"
-            }
-          ],
-          "onAdded": [
-            {
-              "$type": "SetGlobalValue",
-              "key": "ShipPVPCoin",
-              "minValue": 0,
-              "maxValue": 0,
-              "value": -1
-            }
-          ],
-          "elementDurability": 100,
-          "modifierName": "",
-          "__unk_Q3323398612": 0
-        }
-      },
       "abilityMixins": [
         {
           "$type": "AttachToGadgetStateMixin",
@@ -1192,38 +1042,198 @@
         },
         {
           "$type": "AttachToGadgetStateMixin",
-          "modifierName": "SuccessDisappear",
-          "gadgetState": 201
+          "gadgetState": 201,
+          "modifierName": "SuccessDisappear"
         },
         {
           "$type": "AttachToGadgetStateMixin",
-          "modifierName": "FailDisappear",
-          "gadgetState": 202
+          "gadgetState": 202,
+          "modifierName": "FailDisappear"
         },
         {
           "$type": "AttachToGadgetStateMixin",
-          "modifierName": "WrongProtect",
-          "gadgetState": 203
+          "gadgetState": 203,
+          "modifierName": "WrongProtect"
         }
       ],
-      "abilityName": "SceneObj_Area_Ly_Property_Ani_Prop_ShipPVPPuzzleLamp_01_Ability"
+      "abilityName": "SceneObj_Area_Ly_Property_Ani_Prop_ShipPVPPuzzleLamp_01_Ability",
+      "modifiers": {
+        "ShowState": {
+          "elementDurability": 100,
+          "modifierName": "",
+          "onAdded": [
+            {
+              "$type": "FireEffect",
+              "effectPattern": "Eff_SceneObj_ShipPVPNightlamp_01",
+              "predicates": [
+                {
+                  "$type": "ByTargetGlobalValue",
+                  "compareType": "NoneOrEqual",
+                  "key": "ShipPVPCoin",
+                  "value": 0
+                }
+              ],
+              "scale": 1,
+              "JHAGIJGAKMK": ""
+            },
+            {
+              "$type": "SetGlobalValue",
+              "key": "ShipPVPCoin",
+              "maxValue": 0,
+              "minValue": 0,
+              "value": 5
+            },
+            {
+              "$type": "EnableSceneTransformByName",
+              "setEnable": true,
+              "transformNames": [
+                "RootNode"
+              ]
+            }
+          ],
+          "__unk_Q3323398612": 0
+        },
+        "SuccessDisappear": {
+          "elementDurability": 100,
+          "modifierName": "",
+          "onAdded": [
+            {
+              "$type": "EnableSceneTransformByName",
+              "transformNames": [
+                "RootNode"
+              ]
+            },
+            {
+              "$type": "FireEffect",
+              "effectPattern": "Eff_SceneObj_ShipPVPNightlamp_02",
+              "scale": 1,
+              "JHAGIJGAKMK": ""
+            },
+            {
+              "$type": "KillSelf"
+            }
+          ],
+          "__unk_Q3323398612": 0
+        },
+        "FailDisappear": {
+          "duration": 0.5,
+          "elementDurability": 100,
+          "modifierName": "",
+          "onAdded": [
+            {
+              "$type": "FireEffect",
+              "effectPattern": "Eff_SceneObj_ShipPVPFireworkslamp_01",
+              "scale": 1,
+              "JHAGIJGAKMK": ""
+            },
+            {
+              "$type": "EnableSceneTransformByName",
+              "transformNames": [
+                "RootNode"
+              ]
+            },
+            {
+              "$type": "TriggerAttackEvent",
+              "attackEvent": {
+                "attackInfo": {
+                  "attackProperty": {
+                    "attackType": "None",
+                    "damageExtra": 10,
+                    "damagePercentageRatio": 0,
+                    "elementDurability": 0,
+                    "enBreak": 9999999,
+                    "__exp_arkhe": 0
+                  },
+                  "attackTag": "BoatRaceGear",
+                  "attenuationGroup": "default",
+                  "attenuationTag": "",
+                  "cameraShake": {
+                    "shakeRange": 0.36,
+                    "shakeTime": 0.36,
+                    "OFGBHFBAEKK": ""
+                  },
+                  "forceCameraShake": true,
+                  "hitPattern": {
+                    "hitHaltTimeScale": 0.05,
+                    "hitImpulseType": "LV6",
+                    "onHitEffectName": "default",
+                    "__unk_Q3893899620": ""
+                  }
+                },
+                "attackPattern": {
+                  "$type": "ConfigAttackSphere",
+                  "born": {
+                    "$type": "ConfigBornByTarget",
+                    "offset": {
+                      "y": 0.5
+                    }
+                  },
+                  "ignoreMassive": true,
+                  "radius": 4,
+                  "triggerType": "TriggerNoRepeat"
+                }
+              },
+              "entityTypes": [
+                "Vehicle"
+              ],
+              "targetType": "Enemy"
+            }
+          ],
+          "onRemoved": [
+            {
+              "$type": "KillSelf"
+            }
+          ],
+          "__unk_Q3323398612": 0
+        },
+        "WrongProtect": {
+          "duration": 2,
+          "elementDurability": 100,
+          "modifierName": "",
+          "onAdded": [
+            {
+              "$type": "SetGlobalValue",
+              "key": "ShipPVPCoin",
+              "maxValue": 0,
+              "minValue": 0,
+              "value": -1
+            }
+          ],
+          "onRemoved": [
+            {
+              "$type": "ChangeGadgetState"
+            }
+          ],
+          "__unk_Q3323398612": 0
+        }
+      }
     }
   },
   {
     "Default": {
+      "abilityMixins": [
+        {
+          "$type": "AttachToGadgetStateMixin",
+          "gadgetState": 201,
+          "modifierName": "SlimeFirework"
+        },
+        {
+          "$type": "AttachToGadgetStateMixin",
+          "gadgetState": 202,
+          "modifierName": "FungusFirework"
+        },
+        {
+          "$type": "AttachToGadgetStateMixin",
+          "gadgetState": 203,
+          "modifierName": "HeartFirework"
+        }
+      ],
+      "abilityName": "SceneObj_Area_Ly_Property_Ani_Prop_ShipPVPPuzzleFirework_01_Ability",
+      "abilitySpecials": {
+        "RandomTimer": 1
+      },
       "modifiers": {
         "SlimeFirework": {
-          "onAdded": [
-            {
-              "$type": "SetRandomOverrideMapValue",
-              "overrideMapKey": "RandomTimer",
-              "valueRangeMax": 2
-            },
-            {
-              "$type": "ApplyModifier",
-              "modifierName": "SlimeFireworkEffect"
-            }
-          ],
           "elementDurability": 100,
           "modifierMixins": [
             {
@@ -1243,9 +1253,6 @@
             }
           ],
           "modifierName": "",
-          "__unk_Q3323398612": 0
-        },
-        "FungusFirework": {
           "onAdded": [
             {
               "$type": "SetRandomOverrideMapValue",
@@ -1254,9 +1261,12 @@
             },
             {
               "$type": "ApplyModifier",
-              "modifierName": "FungusFireworkEffect"
+              "modifierName": "SlimeFireworkEffect"
             }
           ],
+          "__unk_Q3323398612": 0
+        },
+        "FungusFirework": {
           "elementDurability": 100,
           "modifierMixins": [
             {
@@ -1276,9 +1286,6 @@
             }
           ],
           "modifierName": "",
-          "__unk_Q3323398612": 0
-        },
-        "HeartFirework": {
           "onAdded": [
             {
               "$type": "SetRandomOverrideMapValue",
@@ -1287,9 +1294,12 @@
             },
             {
               "$type": "ApplyModifier",
-              "modifierName": "HeartFireworkEffect"
+              "modifierName": "FungusFireworkEffect"
             }
           ],
+          "__unk_Q3323398612": 0
+        },
+        "HeartFirework": {
           "elementDurability": 100,
           "modifierMixins": [
             {
@@ -1309,132 +1319,130 @@
             }
           ],
           "modifierName": "",
+          "onAdded": [
+            {
+              "$type": "SetRandomOverrideMapValue",
+              "overrideMapKey": "RandomTimer",
+              "valueRangeMax": 2
+            },
+            {
+              "$type": "ApplyModifier",
+              "modifierName": "HeartFireworkEffect"
+            }
+          ],
           "__unk_Q3323398612": 0
         },
         "SlimeFireworkEffect": {
           "duration": "RandomTimer",
+          "elementDurability": 100,
+          "modifierName": "",
           "onRemoved": [
             {
               "$type": "FireEffect",
               "effectPattern": "Eff_SceneObj_Fireworks_SeaLamp_Boat_Slime_Yellow",
               "scale": 1,
-              "ILLLPEOODKP": ""
+              "JHAGIJGAKMK": ""
             }
           ],
-          "elementDurability": 100,
-          "modifierName": "",
           "__unk_Q3323398612": 0
         },
         "FungusFireworkEffect": {
           "duration": "RandomTimer",
+          "elementDurability": 100,
+          "modifierName": "",
           "onRemoved": [
             {
               "$type": "FireEffect",
               "effectPattern": "Eff_SceneObj_Fireworks_SeaLamp_Boat_Fungus_Cyan",
               "scale": 1,
-              "ILLLPEOODKP": ""
+              "JHAGIJGAKMK": ""
             }
           ],
-          "elementDurability": 100,
-          "modifierName": "",
           "__unk_Q3323398612": 0
         },
         "HeartFireworkEffect": {
           "duration": "RandomTimer",
+          "elementDurability": 100,
+          "modifierName": "",
           "onRemoved": [
             {
               "$type": "FireEffect",
               "effectPattern": "Eff_SceneObj_Fireworks_SeaLamp_Boat_Heart_Red",
               "scale": 1,
-              "ILLLPEOODKP": ""
+              "JHAGIJGAKMK": ""
             }
           ],
-          "elementDurability": 100,
-          "modifierName": "",
           "__unk_Q3323398612": 0
         }
-      },
-      "abilityMixins": [
-        {
-          "$type": "AttachToGadgetStateMixin",
-          "modifierName": "SlimeFirework",
-          "gadgetState": 201
-        },
-        {
-          "$type": "AttachToGadgetStateMixin",
-          "modifierName": "FungusFirework",
-          "gadgetState": 202
-        },
-        {
-          "$type": "AttachToGadgetStateMixin",
-          "modifierName": "HeartFirework",
-          "gadgetState": 203
-        }
-      ],
-      "abilityName": "SceneObj_Area_Ly_Property_Ani_Prop_ShipPVPPuzzleFirework_01_Ability",
-      "abilitySpecials": {
-        "RandomTimer": 1
       }
     }
   },
   {
     "Default": {
+      "abilityMixins": [
+        {
+          "$type": "AttachToGadgetStateMixin",
+          "gadgetState": 201,
+          "modifierName": "Disappear"
+        }
+      ],
+      "abilityName": "SceneObj_Area_Ly_Property_Ani_Prop_ShipPVPAirdrop_01_Ability",
       "modifiers": {
         "Disappear": {
+          "elementDurability": 100,
+          "modifierName": "",
           "onAdded": [
             {
               "$type": "KillSelf"
             }
           ],
-          "elementDurability": 100,
-          "modifierName": "",
           "__unk_Q3323398612": 0
         }
-      },
-      "abilityMixins": [
-        {
-          "$type": "AttachToGadgetStateMixin",
-          "modifierName": "Disappear",
-          "gadgetState": 201
-        }
-      ],
-      "abilityName": "SceneObj_Area_Ly_Property_Ani_Prop_ShipPVPAirdrop_01_Ability"
+      }
     }
   },
   {
     "Default": {
+      "abilityMixins": [
+        {
+          "$type": "AttachToGadgetStateMixin",
+          "gadgetState": 201,
+          "modifierName": "CoinDisappear"
+        }
+      ],
+      "abilityName": "SceneObj_Area_Ly_Property_Ani_Prop_ShipPVPDropCoin_01_Ability",
       "modifiers": {
         "StopMove": {
+          "elementDurability": 100,
+          "modifierName": "",
           "onAdded": [
             {
               "$type": "DoBlinkByGlobalPos",
+              "directionKey": "",
               "positionKey": "_Gadget_DropCoin_Pos",
-              "useGlobalUp": true,
-              "directionKey": ""
+              "useGlobalUp": true
             }
           ],
           "properties": {
             "Actor_BulletMoveSpeedRatio": -1
           },
-          "elementDurability": 100,
-          "modifierName": "",
           "__unk_Q3323398612": 0
         },
         "CoinDisappear": {
+          "elementDurability": 100,
+          "modifierName": "",
           "onAdded": [
             {
               "$type": "FireEffect",
               "effectPattern": "Eff_SceneObj_GlideChampCoin_Hit",
               "scale": 1,
-              "ILLLPEOODKP": ""
+              "JHAGIJGAKMK": ""
             },
             {
               "$type": "KillSelf",
               "hideEntity": true
             }
           ],
-          "elementDurability": 100,
-          "modifierName": "",
           "__unk_Q3323398612": 0
         }
       },
@@ -1444,18 +1452,18 @@
           "successActions": [
             {
               "$type": "SetGlobalPos",
-              "key": "_Gadget_DropCoin_Pos",
               "born": {
                 "$type": "ConfigBornBySelf",
                 "onGround": true,
                 "useRotation": true
-              }
+              },
+              "key": "_Gadget_DropCoin_Pos"
             },
             {
               "$type": "SetGlobalValue",
               "key": "_Gadget_DropCoin_Pos_1",
-              "minValue": 0,
               "maxValue": 0,
+              "minValue": 0,
               "value": 201.5
             },
             {
@@ -1463,6 +1471,7 @@
               "modifierName": "StopMove"
             }
           ],
+          "target": "Target",
           "targetPredicates": [
             {
               "$type": "ByEntityTypes",
@@ -1470,24 +1479,15 @@
                 "Level"
               ]
             }
-          ],
-          "target": "Target"
+          ]
         }
       ],
-      "abilityMixins": [
-        {
-          "$type": "AttachToGadgetStateMixin",
-          "modifierName": "CoinDisappear",
-          "gadgetState": 201
-        }
-      ],
-      "abilityName": "SceneObj_Area_Ly_Property_Ani_Prop_ShipPVPDropCoin_01_Ability",
       "onAdded": [
         {
           "$type": "SetGlobalValue",
           "key": "ShipPVPCoin",
-          "minValue": 0,
           "maxValue": 0,
+          "minValue": 0,
           "value": 6
         }
       ]
@@ -1495,67 +1495,68 @@
   },
   {
     "Default": {
+      "abilityName": "SceneObj_Area_Ly_Property_Ani_Prop_ShipPVPDropBomb_01_Ability",
       "modifiers": {
         "BangStart": {
+          "elementDurability": 100,
+          "modifierName": "",
           "onAdded": [
             {
               "$type": "FireEffect",
-              "effectPattern": "Eff_SceneObj_ShipPVPDropBomb_01_ExplodeOnWater",
-              "scale": 1,
               "born": {
                 "$type": "ConfigBornBySelf",
                 "useRotation": true
               },
-              "ILLLPEOODKP": ""
+              "effectPattern": "Eff_SceneObj_ShipPVPDropBomb_01_ExplodeOnWater",
+              "scale": 1,
+              "JHAGIJGAKMK": ""
             },
             {
               "$type": "TriggerAttackEvent",
-              "targetType": "Enemy",
               "attackEvent": {
                 "attackInfo": {
                   "attackProperty": {
                     "attackType": "None",
-                    "damagePercentageRatio": 0,
-                    "enBreak": 9999999,
                     "damageExtra": 10,
+                    "damagePercentageRatio": 0,
                     "elementDurability": 0,
+                    "enBreak": 9999999,
                     "__exp_arkhe": 0
                   },
-                  "cameraShake": {
-                    "shakeTime": 0.36,
-                    "MNKFEFOKFKP": "",
-                    "shakeRange": 0.36
-                  },
-                  "hitPattern": {
-                    "__unk_Q3893899620": "",
-                    "onHitEffectName": "default",
-                    "hitHaltTimeScale": 0.05,
-                    "hitImpulseType": "LV6"
-                  },
-                  "forceCameraShake": true,
+                  "attackTag": "BoatRaceGear",
                   "attenuationGroup": "default",
                   "attenuationTag": "",
-                  "attackTag": "BoatRaceGear"
+                  "cameraShake": {
+                    "shakeRange": 0.36,
+                    "shakeTime": 0.36,
+                    "OFGBHFBAEKK": ""
+                  },
+                  "forceCameraShake": true,
+                  "hitPattern": {
+                    "hitHaltTimeScale": 0.05,
+                    "hitImpulseType": "LV6",
+                    "onHitEffectName": "default",
+                    "__unk_Q3893899620": ""
+                  }
                 },
                 "attackPattern": {
                   "$type": "ConfigAttackSphere",
-                  "radius": 7,
-                  "triggerType": "TriggerNoRepeat",
                   "born": {
                     "$type": "ConfigBornByCollisionPoint"
-                  }
+                  },
+                  "radius": 7,
+                  "triggerType": "TriggerNoRepeat"
                 }
               },
               "entityTypes": [
                 "Vehicle"
-              ]
+              ],
+              "targetType": "Enemy"
             },
             {
               "$type": "KillSelf"
             }
           ],
-          "elementDurability": 100,
-          "modifierName": "",
           "__unk_Q3323398612": 0
         }
       },
@@ -1568,6 +1569,7 @@
               "modifierName": "BangStart"
             }
           ],
+          "target": "Target",
           "targetPredicates": [
             {
               "$type": "ByEntityTypes",
@@ -1576,208 +1578,206 @@
                 "Vehicle"
               ]
             }
-          ],
-          "target": "Target"
-        }
-      ],
-      "abilityName": "SceneObj_Area_Ly_Property_Ani_Prop_ShipPVPDropBomb_01_Ability"
-    }
-  },
-  {
-    "Default": {
-      "modifiers": {
-        "Warning": {
-          "duration": 2,
-          "onRemoved": [
-            {
-              "$type": "KillSelf"
-            }
-          ],
-          "onAdded": [
-            {
-              "$type": "AttachEffect",
-              "ILLLPEOODKP": "",
-              "scale": 1,
-              "effectPattern": "Eff_SceneObj_ShipPVPAirdrop_Coin_01_Warning"
-            }
-          ],
-          "elementDurability": 100,
-          "modifierName": "",
-          "__unk_Q3323398612": 0
-        }
-      },
-      "abilityName": "SceneObj_Area_Ly_Property_Ani_Prop_ShipPVPDropCoinWarning_01_Ability",
-      "onAdded": [
-        {
-          "$type": "ApplyModifier",
-          "modifierName": "Warning"
-        }
-      ]
-    }
-  },
-  {
-    "Default": {
-      "modifiers": {
-        "Warning": {
-          "duration": 2,
-          "onRemoved": [
-            {
-              "$type": "KillSelf"
-            }
-          ],
-          "onAdded": [
-            {
-              "$type": "AttachEffect",
-              "ILLLPEOODKP": "",
-              "scale": 1,
-              "effectPattern": "Eff_SceneObj_ShipPVPAirdrop_BombBarrel_01_Warning"
-            }
-          ],
-          "elementDurability": 100,
-          "modifierName": "",
-          "__unk_Q3323398612": 0
-        }
-      },
-      "abilityName": "SceneObj_Area_Ly_Property_Ani_Prop_ShipPVPDropBombWarning_01_Ability",
-      "onAdded": [
-        {
-          "$type": "ApplyModifier",
-          "modifierName": "Warning"
-        }
-      ]
-    }
-  },
-  {
-    "Default": {
-      "modifiers": {
-        "BornDelay": {
-          "duration": 2,
-          "onRemoved": [
-            {
-              "$type": "ApplyModifier",
-              "modifierName": "BombBoxLoop"
-            }
-          ],
-          "elementDurability": 100,
-          "modifierName": "",
-          "__unk_Q3323398612": 0
-        },
-        "BombBoxLoop": {
-          "elementDurability": 1,
-          "onCrash": [
-            {
-              "$type": "SetGlobalValue",
-              "key": "Destory_Enable",
-              "minValue": 0,
-              "maxValue": 0,
-              "value": 1
-            }
-          ],
-          "elementType": "Fire",
-          "modifierName": "",
-          "__unk_Q3323398612": 0,
-          "onBeingHit": [
-            {
-              "$type": "SetGlobalValue",
-              "key": "Destory_Enable",
-              "minValue": 0,
-              "maxValue": 0,
-              "value": 1
-            }
           ]
-        },
-        "DestoryState": {
-          "onAdded": [
-            {
-              "$type": "EnableSceneTransformByName",
-              "PLDFIIMNOCD": [
-                "Collider"
-              ]
-            },
-            {
-              "$type": "SetGlobalValue",
-              "key": "Destory_Enable",
-              "minValue": 0,
-              "maxValue": 0,
-              "value": 0
-            },
-            {
-              "$type": "FireEffect",
-              "effectPattern": "Eff_SceneObj_BombBarrel_01_ExplodeOnWater",
-              "scale": 1,
-              "ILLLPEOODKP": ""
-            },
-            {
-              "$type": "FireAISoundEvent"
-            },
-            {
-              "$type": "TriggerAttackEvent",
-              "targetType": "Enemy",
-              "attackEvent": {
-                "attackInfo": {
-                  "attackProperty": {
-                    "attackType": "None",
-                    "damagePercentageRatio": 0,
-                    "enBreak": 9999999,
-                    "damageExtra": 10,
-                    "elementDurability": 0,
-                    "__exp_arkhe": 0
-                  },
-                  "cameraShake": {
-                    "shakeTime": 0.36,
-                    "MNKFEFOKFKP": "",
-                    "shakeRange": 0.36
-                  },
-                  "hitPattern": {
-                    "__unk_Q3893899620": "",
-                    "onHitEffectName": "default",
-                    "hitHaltTimeScale": 0.05,
-                    "hitImpulseType": "LV6"
-                  },
-                  "forceCameraShake": true,
-                  "attenuationGroup": "default",
-                  "attenuationTag": "",
-                  "attackTag": "BoatRaceGear"
-                },
-                "attackPattern": {
-                  "$type": "ConfigAttackSphere",
-                  "radius": 5,
-                  "triggerType": "TriggerNoRepeat",
-                  "ignoreMassive": true,
-                  "born": {
-                    "$type": "ConfigBornByTarget"
-                  }
-                }
-              },
-              "entityTypes": [
-                "Vehicle"
-              ]
-            },
-            {
-              "$type": "KillSelf",
-              "hideEntity": true,
-              "duration": 1
-            }
-          ],
+        }
+      ]
+    }
+  },
+  {
+    "Default": {
+      "abilityName": "SceneObj_Area_Ly_Property_Ani_Prop_ShipPVPDropCoinWarning_01_Ability",
+      "modifiers": {
+        "Warning": {
+          "duration": 2,
           "elementDurability": 100,
           "modifierName": "",
+          "onAdded": [
+            {
+              "$type": "AttachEffect",
+              "effectPattern": "Eff_SceneObj_ShipPVPAirdrop_Coin_01_Warning",
+              "scale": 1,
+              "JHAGIJGAKMK": ""
+            }
+          ],
+          "onRemoved": [
+            {
+              "$type": "KillSelf"
+            }
+          ],
           "__unk_Q3323398612": 0
         }
       },
+      "onAdded": [
+        {
+          "$type": "ApplyModifier",
+          "modifierName": "Warning"
+        }
+      ]
+    }
+  },
+  {
+    "Default": {
+      "abilityName": "SceneObj_Area_Ly_Property_Ani_Prop_ShipPVPDropBombWarning_01_Ability",
+      "modifiers": {
+        "Warning": {
+          "duration": 2,
+          "elementDurability": 100,
+          "modifierName": "",
+          "onAdded": [
+            {
+              "$type": "AttachEffect",
+              "effectPattern": "Eff_SceneObj_ShipPVPAirdrop_BombBarrel_01_Warning",
+              "scale": 1,
+              "JHAGIJGAKMK": ""
+            }
+          ],
+          "onRemoved": [
+            {
+              "$type": "KillSelf"
+            }
+          ],
+          "__unk_Q3323398612": 0
+        }
+      },
+      "onAdded": [
+        {
+          "$type": "ApplyModifier",
+          "modifierName": "Warning"
+        }
+      ]
+    }
+  },
+  {
+    "Default": {
       "abilityMixins": [
         {
           "$type": "AttachModifierToSelfGlobalValueNoInitMixin",
+          "globalValueKey": "Destory_Enable",
           "modifierNameSteps": [
             "DestoryState"
           ],
           "valueSteps": [
             -1,
             0.5
-          ],
-          "globalValueKey": "Destory_Enable"
+          ]
         }
       ],
       "abilityName": "SceneObj_Area_Ly_Property_Ani_Prop_ShipPVPBomb_01_Ability",
+      "modifiers": {
+        "BornDelay": {
+          "duration": 2,
+          "elementDurability": 100,
+          "modifierName": "",
+          "onRemoved": [
+            {
+              "$type": "ApplyModifier",
+              "modifierName": "BombBoxLoop"
+            }
+          ],
+          "__unk_Q3323398612": 0
+        },
+        "BombBoxLoop": {
+          "elementDurability": 1,
+          "elementType": "Fire",
+          "modifierName": "",
+          "onBeingHit": [
+            {
+              "$type": "SetGlobalValue",
+              "key": "Destory_Enable",
+              "maxValue": 0,
+              "minValue": 0,
+              "value": 1
+            }
+          ],
+          "onCrash": [
+            {
+              "$type": "SetGlobalValue",
+              "key": "Destory_Enable",
+              "maxValue": 0,
+              "minValue": 0,
+              "value": 1
+            }
+          ],
+          "__unk_Q3323398612": 0
+        },
+        "DestoryState": {
+          "elementDurability": 100,
+          "modifierName": "",
+          "onAdded": [
+            {
+              "$type": "EnableSceneTransformByName",
+              "transformNames": [
+                "Collider"
+              ]
+            },
+            {
+              "$type": "SetGlobalValue",
+              "key": "Destory_Enable",
+              "maxValue": 0,
+              "minValue": 0,
+              "value": 0
+            },
+            {
+              "$type": "FireEffect",
+              "effectPattern": "Eff_SceneObj_BombBarrel_01_ExplodeOnWater",
+              "scale": 1,
+              "JHAGIJGAKMK": ""
+            },
+            {
+              "$type": "FireAISoundEvent"
+            },
+            {
+              "$type": "TriggerAttackEvent",
+              "attackEvent": {
+                "attackInfo": {
+                  "attackProperty": {
+                    "attackType": "None",
+                    "damageExtra": 10,
+                    "damagePercentageRatio": 0,
+                    "elementDurability": 0,
+                    "enBreak": 9999999,
+                    "__exp_arkhe": 0
+                  },
+                  "attackTag": "BoatRaceGear",
+                  "attenuationGroup": "default",
+                  "attenuationTag": "",
+                  "cameraShake": {
+                    "shakeRange": 0.36,
+                    "shakeTime": 0.36,
+                    "OFGBHFBAEKK": ""
+                  },
+                  "forceCameraShake": true,
+                  "hitPattern": {
+                    "hitHaltTimeScale": 0.05,
+                    "hitImpulseType": "LV6",
+                    "onHitEffectName": "default",
+                    "__unk_Q3893899620": ""
+                  }
+                },
+                "attackPattern": {
+                  "$type": "ConfigAttackSphere",
+                  "born": {
+                    "$type": "ConfigBornByTarget"
+                  },
+                  "ignoreMassive": true,
+                  "radius": 5,
+                  "triggerType": "TriggerNoRepeat"
+                }
+              },
+              "entityTypes": [
+                "Vehicle"
+              ],
+              "targetType": "Enemy"
+            },
+            {
+              "$type": "KillSelf",
+              "duration": 1,
+              "hideEntity": true
+            }
+          ],
+          "__unk_Q3323398612": 0
+        }
+      },
       "onAdded": [
         {
           "$type": "ApplyModifier",
@@ -1788,80 +1788,6 @@
   },
   {
     "Default": {
-      "modifiers": {
-        "ItemAppear": {
-          "onAdded": [
-            {
-              "$type": "SetGlobalValue",
-              "key": "ShipPVPBall",
-              "minValue": 0,
-              "maxValue": 0,
-              "value": 1
-            },
-            {
-              "$type": "EnableSceneTransformByName",
-              "setEnable": true,
-              "PLDFIIMNOCD": [
-                "RootNode"
-              ]
-            },
-            {
-              "$type": "AttachEffect",
-              "ILLLPEOODKP": "",
-              "born": {
-                "$type": "ConfigBornByAttachPoint",
-                "attachPointName": "RootNode",
-                "useRotation": true
-              },
-              "scale": 1,
-              "effectPattern": "Eff_SceneObj_ShipPVPBall_01_Ided"
-            }
-          ],
-          "elementDurability": 100,
-          "modifierName": "",
-          "__unk_Q3323398612": 0
-        },
-        "ItemDisappear": {
-          "duration": 15,
-          "onRemoved": [
-            {
-              "$type": "ChangeGadgetState"
-            }
-          ],
-          "onAdded": [
-            {
-              "$type": "FireEffect",
-              "effectPattern": "Eff_SceneObj_ShipPVPBall_02_Die",
-              "scale": 1,
-              "ILLLPEOODKP": "",
-              "predicates": [
-                {
-                  "$type": "ByTargetGlobalValue",
-                  "value": 1,
-                  "compareType": "NoneOrEqual",
-                  "key": "ShipPVPBall"
-                }
-              ]
-            },
-            {
-              "$type": "EnableSceneTransformByName",
-              "PLDFIIMNOCD": [
-                "RootNode"
-              ]
-            },
-            {
-              "$type": "SetGlobalValue",
-              "key": "ShipPVPBall",
-              "minValue": 0,
-              "maxValue": 0,
-              "value": 0
-            }
-          ],
-          "elementDurability": 100,
-          "modifierName": "",
-          "__unk_Q3323398612": 0
-        }
-      },
       "abilityMixins": [
         {
           "$type": "AttachToGadgetStateMixin",
@@ -1869,43 +1795,131 @@
         },
         {
           "$type": "AttachToGadgetStateMixin",
-          "modifierName": "ItemDisappear",
-          "gadgetState": 201
+          "gadgetState": 201,
+          "modifierName": "ItemDisappear"
         }
       ],
-      "abilityName": "SceneObj_Area_Ly_Property_Ani_Prop_ShipPVPBall_01_Ability"
+      "abilityName": "SceneObj_Area_Ly_Property_Ani_Prop_ShipPVPBall_01_Ability",
+      "modifiers": {
+        "ItemAppear": {
+          "elementDurability": 100,
+          "modifierName": "",
+          "onAdded": [
+            {
+              "$type": "SetGlobalValue",
+              "key": "ShipPVPBall",
+              "maxValue": 0,
+              "minValue": 0,
+              "value": 1
+            },
+            {
+              "$type": "EnableSceneTransformByName",
+              "setEnable": true,
+              "transformNames": [
+                "RootNode"
+              ]
+            },
+            {
+              "$type": "AttachEffect",
+              "born": {
+                "$type": "ConfigBornByAttachPoint",
+                "attachPointName": "RootNode",
+                "useRotation": true
+              },
+              "effectPattern": "Eff_SceneObj_ShipPVPBall_01_Ided",
+              "scale": 1,
+              "JHAGIJGAKMK": ""
+            }
+          ],
+          "__unk_Q3323398612": 0
+        },
+        "ItemDisappear": {
+          "duration": 15,
+          "elementDurability": 100,
+          "modifierName": "",
+          "onAdded": [
+            {
+              "$type": "FireEffect",
+              "effectPattern": "Eff_SceneObj_ShipPVPBall_02_Die",
+              "predicates": [
+                {
+                  "$type": "ByTargetGlobalValue",
+                  "compareType": "NoneOrEqual",
+                  "key": "ShipPVPBall",
+                  "value": 1
+                }
+              ],
+              "scale": 1,
+              "JHAGIJGAKMK": ""
+            },
+            {
+              "$type": "EnableSceneTransformByName",
+              "transformNames": [
+                "RootNode"
+              ]
+            },
+            {
+              "$type": "SetGlobalValue",
+              "key": "ShipPVPBall",
+              "maxValue": 0,
+              "minValue": 0,
+              "value": 0
+            }
+          ],
+          "onRemoved": [
+            {
+              "$type": "ChangeGadgetState"
+            }
+          ],
+          "__unk_Q3323398612": 0
+        }
+      }
     }
   },
   {
     "Default": {
+      "abilityMixins": [
+        {
+          "$type": "AttachToGadgetStateMixin",
+          "modifierName": "Warning"
+        },
+        {
+          "$type": "AttachToGadgetStateMixin",
+          "gadgetState": 201,
+          "modifierName": "Loop"
+        }
+      ],
+      "abilityName": "SceneObj_Area_Ly_Property_Ani_Prop_ShipPVPMaelstrom_01_Ability",
       "modifiers": {
         "Warning": {
           "duration": 3,
+          "elementDurability": 100,
+          "modifierName": "",
+          "onAdded": [
+            {
+              "$type": "AttachEffect",
+              "effectPattern": "Eff_SceneObj_ShipPVPMaelstrom_01_Warning",
+              "scale": 1,
+              "JHAGIJGAKMK": ""
+            }
+          ],
           "onRemoved": [
             {
               "$type": "ChangeGadgetState",
-              "ANIHOKMEKHK": 201
+              "state": 201
             }
           ],
-          "onAdded": [
-            {
-              "$type": "AttachEffect",
-              "ILLLPEOODKP": "",
-              "scale": 1,
-              "effectPattern": "Eff_SceneObj_ShipPVPMaelstrom_01_Warning"
-            }
-          ],
-          "elementDurability": 100,
-          "modifierName": "",
           "__unk_Q3323398612": 0
         },
         "Loop": {
+          "elementDurability": 100,
+          "modifierName": "",
           "onAdded": [
             {
               "$type": "AttachEffect",
-              "ILLLPEOODKP": "",
+              "effectPattern": "Eff_SceneObj_ShipPVPMaelstrom_01",
               "scale": 1,
-              "effectPattern": "Eff_SceneObj_ShipPVPMaelstrom_01"
+              "JHAGIJGAKMK": ""
             },
             {
               "$type": "ApplyModifier",
@@ -1920,8 +1934,6 @@
               "modifierName": "SphereThree"
             }
           ],
-          "elementDurability": 100,
-          "modifierName": "",
           "__unk_Q3323398612": 0
         },
         "SphereOne": {
@@ -1932,40 +1944,40 @@
               "onThinkInterval": [
                 {
                   "$type": "TriggerAttackEvent",
-                  "targetType": "Enemy",
                   "attackEvent": {
                     "attackInfo": {
                       "attackProperty": {
                         "attackType": "None",
-                        "damagePercentageRatio": 0,
-                        "enBreak": 0,
                         "damageExtra": 10,
+                        "damagePercentageRatio": 0,
                         "elementDurability": 0,
+                        "enBreak": 0,
                         "__exp_arkhe": 0
                       },
-                      "hitPattern": {
-                        "__unk_Q3893899620": "",
-                        "onHitEffectName": "default",
-                        "muteHitText": true,
-                        "hitImpulseType": "LV1"
-                      },
+                      "attackTag": "BoatRaceGear",
                       "attenuationGroup": "default",
                       "attenuationTag": "",
-                      "attackTag": "BoatRaceGear"
+                      "hitPattern": {
+                        "hitImpulseType": "LV1",
+                        "muteHitText": true,
+                        "onHitEffectName": "default",
+                        "__unk_Q3893899620": ""
+                      }
                     },
                     "attackPattern": {
                       "$type": "ConfigAttackSphere",
-                      "radius": 6,
-                      "triggerType": "TriggerNoRepeat",
                       "born": {
                         "$type": "ConfigBornBySelf",
                         "useRotation": true
-                      }
+                      },
+                      "radius": 6,
+                      "triggerType": "TriggerNoRepeat"
                     }
                   },
                   "entityTypes": [
                     "Vehicle"
-                  ]
+                  ],
+                  "targetType": "Enemy"
                 }
               ],
               "thinkInterval": 1.5
@@ -1979,15 +1991,12 @@
           "modifierMixins": [
             {
               "$type": "WindZoneMixin",
-              "targetType": "All",
-              "modifierName": "",
+              "attenuation": 0,
               "innerRadius": 6,
+              "modifierName": "",
               "offset": {
                 "y": -1.4
               },
-              "strength": 240,
-              "attenuation": 0,
-              "shapeName": "CircleR16H3",
               "predicates": [
                 {
                   "$type": "ByEntityTypes",
@@ -1995,7 +2004,10 @@
                     "Vehicle"
                   ]
                 }
-              ]
+              ],
+              "shapeName": "CircleR16H3",
+              "strength": 240,
+              "targetType": "All"
             }
           ],
           "modifierName": "",
@@ -2006,15 +2018,12 @@
           "modifierMixins": [
             {
               "$type": "WindZoneMixin",
-              "targetType": "All",
-              "modifierName": "",
+              "attenuation": 0,
               "innerRadius": 16,
+              "modifierName": "",
               "offset": {
                 "y": -1.4
               },
-              "strength": 110,
-              "attenuation": 0,
-              "shapeName": "CircleR40H10",
               "predicates": [
                 {
                   "$type": "ByEntityTypes",
@@ -2022,7 +2031,10 @@
                     "Vehicle"
                   ]
                 }
-              ]
+              ],
+              "shapeName": "CircleR40H10",
+              "strength": 110,
+              "targetType": "All"
             }
           ],
           "modifierName": "",
@@ -2034,25 +2046,14 @@
           "$type": "FireEffect",
           "effectPattern": "Eff_SceneObj_ShipPVPMaelstrom_01_Disappear",
           "scale": 1,
-          "ILLLPEOODKP": ""
+          "JHAGIJGAKMK": ""
         }
-      ],
-      "abilityMixins": [
-        {
-          "$type": "AttachToGadgetStateMixin",
-          "modifierName": "Warning"
-        },
-        {
-          "$type": "AttachToGadgetStateMixin",
-          "modifierName": "Loop",
-          "gadgetState": 201
-        }
-      ],
-      "abilityName": "SceneObj_Area_Ly_Property_Ani_Prop_ShipPVPMaelstrom_01_Ability"
+      ]
     }
   },
   {
     "Default": {
+      "abilityName": "SceneObj_Area_Ly_Property_Ani_Prop_ShipPVPSwirl_01_Ability",
       "modifiers": {
         "SphereOne": {
           "elementDurability": 100,
@@ -2062,40 +2063,40 @@
               "onThinkInterval": [
                 {
                   "$type": "TriggerAttackEvent",
-                  "targetType": "Enemy",
                   "attackEvent": {
                     "attackInfo": {
                       "attackProperty": {
                         "attackType": "None",
-                        "damagePercentageRatio": 0,
-                        "enBreak": 0,
                         "damageExtra": 10,
+                        "damagePercentageRatio": 0,
                         "elementDurability": 0,
+                        "enBreak": 0,
                         "__exp_arkhe": 0
                       },
-                      "hitPattern": {
-                        "__unk_Q3893899620": "",
-                        "onHitEffectName": "default",
-                        "muteHitText": true,
-                        "hitImpulseType": "LV1"
-                      },
+                      "attackTag": "BoatRaceGear",
                       "attenuationGroup": "default",
                       "attenuationTag": "",
-                      "attackTag": "BoatRaceGear"
+                      "hitPattern": {
+                        "hitImpulseType": "LV1",
+                        "muteHitText": true,
+                        "onHitEffectName": "default",
+                        "__unk_Q3893899620": ""
+                      }
                     },
                     "attackPattern": {
                       "$type": "ConfigAttackSphere",
-                      "radius": 4,
-                      "triggerType": "TriggerNoRepeat",
                       "born": {
                         "$type": "ConfigBornBySelf",
                         "useRotation": true
-                      }
+                      },
+                      "radius": 4,
+                      "triggerType": "TriggerNoRepeat"
                     }
                   },
                   "entityTypes": [
                     "Vehicle"
-                  ]
+                  ],
+                  "targetType": "Enemy"
                 }
               ],
               "thinkInterval": 1.5
@@ -2109,15 +2110,12 @@
           "modifierMixins": [
             {
               "$type": "WindZoneMixin",
-              "targetType": "All",
-              "modifierName": "",
+              "attenuation": 0,
               "innerRadius": 4,
+              "modifierName": "",
               "offset": {
                 "y": -1.4
               },
-              "strength": 230,
-              "attenuation": 0,
-              "shapeName": "CircleR10H3",
               "predicates": [
                 {
                   "$type": "ByEntityTypes",
@@ -2125,7 +2123,10 @@
                     "Vehicle"
                   ]
                 }
-              ]
+              ],
+              "shapeName": "CircleR10H3",
+              "strength": 230,
+              "targetType": "All"
             }
           ],
           "modifierName": "",
@@ -2136,15 +2137,12 @@
           "modifierMixins": [
             {
               "$type": "WindZoneMixin",
-              "targetType": "All",
-              "modifierName": "",
+              "attenuation": 0,
               "innerRadius": 10,
+              "modifierName": "",
               "offset": {
                 "y": -1.4
               },
-              "strength": 110,
-              "attenuation": 0,
-              "shapeName": "CircleR20H3",
               "predicates": [
                 {
                   "$type": "ByEntityTypes",
@@ -2152,14 +2150,16 @@
                     "Vehicle"
                   ]
                 }
-              ]
+              ],
+              "shapeName": "CircleR20H3",
+              "strength": 110,
+              "targetType": "All"
             }
           ],
           "modifierName": "",
           "__unk_Q3323398612": 0
         }
       },
-      "abilityName": "SceneObj_Area_Ly_Property_Ani_Prop_ShipPVPSwirl_01_Ability",
       "onAdded": [
         {
           "$type": "ApplyModifier",
@@ -2178,36 +2178,57 @@
   },
   {
     "Default": {
+      "abilityMixins": [
+        {
+          "$type": "AttachToGadgetStateMixin",
+          "modifierName": "DefaultState"
+        },
+        {
+          "$type": "AttachToGadgetStateMixin",
+          "gadgetState": 201,
+          "modifierName": "Active"
+        },
+        {
+          "$type": "AttachModifierToSelfGlobalValueMixin",
+          "defaultGlobalValueOnCreate": 0,
+          "globalValueKey": "Activity_GadgetAB_BounceBallStep",
+          "modifierNameSteps": [
+            "Activity_GadgetAB_StandBy",
+            "Activity_GadgetAB_HoldAvatar",
+            "Activity_GadgetAB_BounceAvatar"
+          ],
+          "valueSteps": [
+            -0.5,
+            0.5,
+            1.5,
+            2.5
+          ]
+        }
+      ],
+      "abilityName": "SceneObj_Area_Ly_Property_Ani_Prop_BounceBall_01",
       "modifiers": {
         "DefaultState": {
+          "elementDurability": 100,
+          "modifierName": "",
           "onAdded": [
             {
               "$type": "EnableSceneTransformByName",
               "setEnable": true,
-              "PLDFIIMNOCD": [
+              "transformNames": [
                 "BallCollider"
               ]
             }
           ],
-          "elementDurability": 100,
-          "modifierName": "",
           "__unk_Q3323398612": 0
         },
         "Active": {
           "duration": 0.35,
-          "onRemoved": [
-            {
-              "$type": "SetGlobalValue",
-              "key": "Activity_GadgetAB_BounceBallStep",
-              "minValue": 0,
-              "maxValue": 0,
-              "value": 2
-            }
-          ],
+          "elementDurability": 100,
+          "modifierName": "",
           "onAdded": [
             {
               "$type": "EnableSceneTransformByName",
-              "PLDFIIMNOCD": [
+              "transformNames": [
                 "BallCollider"
               ]
             },
@@ -2220,59 +2241,68 @@
               "modifierName": "Activity_GadgetAB_FireEffect"
             }
           ],
-          "elementDurability": 100,
-          "modifierName": "",
+          "onRemoved": [
+            {
+              "$type": "SetGlobalValue",
+              "key": "Activity_GadgetAB_BounceBallStep",
+              "maxValue": 0,
+              "minValue": 0,
+              "value": 2
+            }
+          ],
           "__unk_Q3323398612": 0
         },
         "Activity_GadgetAB_FireEffect": {
           "duration": 0.05,
+          "elementDurability": 100,
+          "modifierName": "",
           "onRemoved": [
             {
               "$type": "FireEffect",
-              "effectPattern": "Eff_SceneObj_BounceBall_01_Fire",
-              "scale": 1,
               "born": {
                 "$type": "ConfigBornByAttachPoint",
                 "attachPointName": "FirePoint",
                 "useRotation": true
               },
-              "ILLLPEOODKP": ""
+              "effectPattern": "Eff_SceneObj_BounceBall_01_Fire",
+              "scale": 1,
+              "JHAGIJGAKMK": ""
             }
           ],
-          "elementDurability": 100,
-          "modifierName": "",
           "__unk_Q3323398612": 0
         },
         "Activity_GadgetAB_StandBy": {
+          "elementDurability": 100,
+          "modifierName": "",
           "onAdded": [
             {
               "$type": "ChangeGadgetState"
             }
           ],
-          "elementDurability": 100,
-          "modifierName": "",
           "__unk_Q3323398612": 0
         },
         "Activity_GadgetAB_HoldAvatar": {
+          "elementDurability": 100,
+          "modifierName": "",
           "onAdded": [
             {
               "$type": "ChangeGadgetState",
-              "ANIHOKMEKHK": 201
+              "state": 201
             }
           ],
-          "elementDurability": 100,
-          "modifierName": "",
           "__unk_Q3323398612": 0
         },
         "Activity_GadgetAB_BounceAvatar": {
+          "elementDurability": 100,
+          "modifierName": "",
           "onAdded": [
             {
               "$type": "SetGlobalValue",
               "key": "Activity_AvatarAB_BounceJump_Step",
-              "minValue": 0,
               "maxValue": 0,
-              "value": 2,
-              "target": "CurLocalAvatar"
+              "minValue": 0,
+              "target": "CurLocalAvatar",
+              "value": 2
             },
             {
               "$type": "ChangeGadgetState"
@@ -2280,61 +2310,59 @@
             {
               "$type": "SetGlobalValue",
               "key": "Activity_GadgetAB_BounceBallStep",
-              "minValue": 0,
               "maxValue": 0,
+              "minValue": 0,
               "value": 0
             }
           ],
-          "elementDurability": 100,
-          "modifierName": "",
           "__unk_Q3323398612": 0
         },
         "UNIQUE_Activity_AvatarAB_StateChangeHandler": {
-          "stacking": "Unique",
           "elementDurability": 100,
+          "isUnique": true,
           "modifierMixins": [
             {
               "$type": "DoActionOnGlobalValueChangeMixin",
               "actions": [
                 {
                   "$type": "Predicated",
-                  "successActions": [
-                    {
-                      "$type": "SetGlobalValue",
-                      "key": "Activity_GadgetAB_BounceBallStep",
-                      "minValue": 0,
-                      "maxValue": 0,
-                      "value": 1,
-                      "target": "Caster"
-                    },
-                    {
-                      "$type": "FireEffect",
-                      "effectPattern": "Eff_SceneObj_BounceBall_01_CharDisappear",
-                      "scale": 1,
-                      "born": {
-                        "$type": "ConfigBornByGlobalValue",
-                        "positionKey": "Activity_GadgetAB_EnterPoint",
-                        "directionKey": ""
-                      },
-                      "ILLLPEOODKP": ""
-                    },
-                    {
-                      "$type": "ClearGlobalPos",
-                      "key": "Activity_GadgetAB_EnterPoint"
-                    }
-                  ],
                   "failActions": [
                     {
                       "$type": "RemoveModifier",
                       "modifierName": "UNIQUE_Activity_AvatarAB_StateChangeHandler"
                     }
                   ],
+                  "successActions": [
+                    {
+                      "$type": "SetGlobalValue",
+                      "key": "Activity_GadgetAB_BounceBallStep",
+                      "maxValue": 0,
+                      "minValue": 0,
+                      "target": "Caster",
+                      "value": 1
+                    },
+                    {
+                      "$type": "FireEffect",
+                      "born": {
+                        "$type": "ConfigBornByGlobalValue",
+                        "directionKey": "",
+                        "positionKey": "Activity_GadgetAB_EnterPoint"
+                      },
+                      "effectPattern": "Eff_SceneObj_BounceBall_01_CharDisappear",
+                      "scale": 1,
+                      "JHAGIJGAKMK": ""
+                    },
+                    {
+                      "$type": "ClearGlobalPos",
+                      "key": "Activity_GadgetAB_EnterPoint"
+                    }
+                  ],
                   "targetPredicates": [
                     {
                       "$type": "ByTargetGlobalValue",
-                      "value": 1,
                       "key": "Activity_AvatarAB_IsDoSkillSuccess",
-                      "target": "Self"
+                      "target": "Self",
+                      "value": 1
                     }
                   ]
                 }
@@ -2355,9 +2383,9 @@
                   "targetPredicates": [
                     {
                       "$type": "ByTargetGlobalValue",
-                      "value": 0,
                       "key": "Activity_AvatarAB_IsDoSkillSuccess",
-                      "target": "Self"
+                      "target": "Self",
+                      "value": 0
                     }
                   ]
                 }
@@ -2366,59 +2394,50 @@
             }
           ],
           "modifierName": "",
-          "isUnique": true,
+          "stacking": "Unique",
           "__unk_Q3323398612": 0
         }
       },
-      "abilityMixins": [
+      "onAdded": [
         {
-          "$type": "AttachToGadgetStateMixin",
-          "modifierName": "DefaultState"
+          "$type": "SetGlobalValue",
+          "key": "Activity_GadgetAB_BounceBallStep",
+          "maxValue": 0,
+          "minValue": 0,
+          "value": 0
         },
         {
-          "$type": "AttachToGadgetStateMixin",
-          "modifierName": "Active",
-          "gadgetState": 201
-        },
-        {
-          "$type": "AttachModifierToSelfGlobalValueMixin",
-          "modifierNameSteps": [
-            "Activity_GadgetAB_StandBy",
-            "Activity_GadgetAB_HoldAvatar",
-            "Activity_GadgetAB_BounceAvatar"
-          ],
-          "valueSteps": [
-            -0.5,
-            0.5,
-            1.5,
-            2.5
-          ],
-          "globalValueKey": "Activity_GadgetAB_BounceBallStep",
-          "defaultGlobalValueOnCreate": 0
+          "$type": "SetGlobalPos",
+          "born": {
+            "$type": "ConfigBornByAttachPoint",
+            "attachPointName": "FixAvatarPoint",
+            "attachPointTargetType": "Self",
+            "useRotation": true
+          },
+          "key": "Activity_GadgetAB_GadgetPoint"
         }
       ],
-      "abilityName": "SceneObj_Area_Ly_Property_Ani_Prop_BounceBall_01",
       "onFieldEnter": [
         {
           "$type": "Predicated",
           "successActions": [
             {
               "$type": "SetGlobalPos",
-              "key": "Activity_AvatarAB_FixedPoint",
               "born": {
                 "$type": "ConfigBornByAttachPoint",
                 "attachPointName": "FixAvatarPoint",
                 "attachPointTargetType": "Self",
                 "useRotation": true
               },
+              "key": "Activity_AvatarAB_FixedPoint",
               "target": "Target"
             },
             {
               "$type": "SetGlobalPos",
-              "key": "Activity_GadgetAB_EnterPoint",
               "born": {
                 "$type": "ConfigBornByTarget"
               },
+              "key": "Activity_GadgetAB_EnterPoint",
               "target": "Target"
             },
             {
@@ -2429,12 +2448,13 @@
             {
               "$type": "SetGlobalValue",
               "key": "Activity_AvatarAB_ActiveBounceJump",
-              "minValue": 0,
               "maxValue": 0,
-              "value": 1,
-              "target": "Target"
+              "minValue": 0,
+              "target": "Target",
+              "value": 1
             }
           ],
+          "target": "Target",
           "targetPredicates": [
             {
               "$type": "ByEntityTypes",
@@ -2444,61 +2464,41 @@
             },
             {
               "$type": "ByTargetGlobalValue",
-              "value": 0,
-              "key": "Activity_AvatarAB_ActiveBounceJump"
+              "key": "Activity_AvatarAB_ActiveBounceJump",
+              "value": 0
             },
             {
-              "$type": "HPANBNKJCMI",
+              "$type": "ByTargetPosToGlobalPosDistance",
               "compareType": "XYZ",
-              "value": 5,
+              "logic": "Lesser",
               "positionKey": "Activity_GadgetAB_GadgetPoint",
-              "logic": "Lesser"
+              "value": 5
             }
-          ],
-          "target": "Target"
-        }
-      ],
-      "onAdded": [
-        {
-          "$type": "SetGlobalValue",
-          "key": "Activity_GadgetAB_BounceBallStep",
-          "minValue": 0,
-          "maxValue": 0,
-          "value": 0
-        },
-        {
-          "$type": "SetGlobalPos",
-          "key": "Activity_GadgetAB_GadgetPoint",
-          "born": {
-            "$type": "ConfigBornByAttachPoint",
-            "attachPointName": "FixAvatarPoint",
-            "attachPointTargetType": "Self",
-            "useRotation": true
-          }
+          ]
         }
       ]
     }
   },
   {
     "Default": {
+      "abilityName": "SceneObj_Area_Ly_Property_Ani_Prop_BounceBall_02",
       "modifiers": {
         "Set_Feature_GV": {
+          "elementDurability": 100,
+          "modifierName": "",
           "onAdded": [
             {
               "$type": "SetGlobalValue",
+              "canBeHandledOnRecover": true,
               "key": "_LanV3_Race_Lock_Asist_Mark",
-              "minValue": 0,
               "maxValue": 0,
-              "value": 1,
-              "canBeHandledOnRecover": true
+              "minValue": 0,
+              "value": 1
             }
           ],
-          "elementDurability": 100,
-          "modifierName": "",
           "__unk_Q3323398612": 0
         }
       },
-      "abilityName": "SceneObj_Area_Ly_Property_Ani_Prop_BounceBall_02",
       "onAdded": [
         {
           "$type": "AttachModifier",
@@ -2509,8 +2509,142 @@
   },
   {
     "Default": {
+      "abilityMixins": [
+        {
+          "$type": "DoActionOnGlobalValueChangeMixin",
+          "actions": [
+            {
+              "$type": "Predicated",
+              "successActions": [
+                {
+                  "$type": "ApplyModifier",
+                  "modifierName": "UNIQUE_Activity_AvatarAB_TryDoSkill"
+                }
+              ],
+              "targetPredicates": [
+                {
+                  "$type": "ByTargetGlobalValue",
+                  "key": "Activity_AvatarAB_ActiveBounceJump",
+                  "target": "Self",
+                  "value": 1
+                }
+              ]
+            }
+          ],
+          "globalValueKey": "Activity_AvatarAB_ActiveBounceJump"
+        },
+        {
+          "$type": "DoActionOnGlobalValueChangeMixin",
+          "actions": [
+            {
+              "$type": "Predicated",
+              "failActions": [
+                {
+                  "$type": "SetGlobalValue",
+                  "key": "Activity_AvatarAB_ActiveBounceJump",
+                  "maxValue": 0,
+                  "minValue": 0,
+                  "value": 0
+                }
+              ],
+              "successActions": [
+                {
+                  "$type": "SetGlobalValue",
+                  "key": "Activity_AvatarAB_BounceJump_Step",
+                  "maxValue": 0,
+                  "minValue": 0,
+                  "value": 1
+                }
+              ],
+              "targetPredicates": [
+                {
+                  "$type": "ByTargetGlobalValue",
+                  "key": "Activity_AvatarAB_IsDoSkillSuccess",
+                  "target": "Self",
+                  "value": 1
+                }
+              ]
+            }
+          ],
+          "globalValueKey": "Activity_AvatarAB_IsDoSkillSuccess"
+        },
+        {
+          "$type": "AttachModifierToSelfGlobalValueMixin",
+          "defaultGlobalValueOnCreate": 0,
+          "globalValueKey": "Activity_AvatarAB_BounceJump_Step",
+          "modifierNameSteps": [
+            "UNIQUE_Activity_AvatarAB_Fixplayer",
+            "UNIQUE_Activity_AvatarAB_DoFixedRushMove"
+          ],
+          "valueSteps": [
+            0.5,
+            1.5,
+            2.5
+          ]
+        },
+        {
+          "$type": "AttachToStateIDMixin",
+          "modifierName": "UNIQUE_Activity_AvatarAB_CheckAvatarState",
+          "stateIDs": [
+            "ActivitySkill_CustomSkill02"
+          ],
+          "__unk_Q2081332355": ""
+        },
+        {
+          "$type": "AttachToStateIDMixin",
+          "modifierName": "UNIQUE_Activity_AvatarAB_RemoveGravity",
+          "stateIDs": [
+            "ActivitySkill_CustomSkill02"
+          ],
+          "__unk_Q2081332355": ""
+        },
+        {
+          "$type": "AttachToStateIDMixin",
+          "modifierName": "UNIQUE_Activity_AvatarAB_InvisbleAvatar",
+          "stateIDs": [
+            "ActivitySkill_CustomSkill02"
+          ],
+          "__unk_Q2081332355": ""
+        },
+        {
+          "$type": "AttachToStateIDMixin",
+          "modifierName": "UNIQUE_Activity_AvatarAB_MakeAvatarKeepOnAir",
+          "stateIDs": [
+            "Fly"
+          ],
+          "__unk_Q2081332355": ""
+        }
+      ],
+      "abilityName": "Avatar_Player_ParkOurChallenge_RushMove",
+      "isDynamicAbility": true,
       "modifiers": {
         "UNIQUE_Activity_AvatarAB_VarManage": {
+          "elementDurability": 100,
+          "isUnique": true,
+          "modifierName": "",
+          "onAdded": [
+            {
+              "$type": "SetGlobalValue",
+              "key": "Activity_AvatarAB_ActiveBounceJump",
+              "maxValue": 0,
+              "minValue": 0,
+              "value": 0
+            },
+            {
+              "$type": "SetGlobalValue",
+              "key": "Activity_AvatarAB_BounceJump_Step",
+              "maxValue": 0,
+              "minValue": 0,
+              "value": 0
+            },
+            {
+              "$type": "SetGlobalValue",
+              "key": "Activity_AvatarAB_IsDoSkillSuccess",
+              "maxValue": 0,
+              "minValue": 0,
+              "value": 0
+            }
+          ],
           "onRemoved": [
             {
               "$type": "ClearGlobalPos",
@@ -2523,83 +2657,60 @@
             {
               "$type": "SetGlobalValue",
               "key": "Activity_AvatarAB_ActiveBounceJump",
-              "minValue": 0,
               "maxValue": 0,
+              "minValue": 0,
               "value": 0
             },
             {
               "$type": "SetGlobalValue",
               "key": "Activity_AvatarAB_BounceJump_Step",
-              "minValue": 0,
               "maxValue": 0,
+              "minValue": 0,
               "value": 0
             },
             {
               "$type": "SetGlobalValue",
               "key": "Activity_AvatarAB_IsDoSkillSuccess",
-              "minValue": 0,
               "maxValue": 0,
-              "value": 0
-            }
-          ],
-          "onAdded": [
-            {
-              "$type": "SetGlobalValue",
-              "key": "Activity_AvatarAB_ActiveBounceJump",
               "minValue": 0,
-              "maxValue": 0,
-              "value": 0
-            },
-            {
-              "$type": "SetGlobalValue",
-              "key": "Activity_AvatarAB_BounceJump_Step",
-              "minValue": 0,
-              "maxValue": 0,
-              "value": 0
-            },
-            {
-              "$type": "SetGlobalValue",
-              "key": "Activity_AvatarAB_IsDoSkillSuccess",
-              "minValue": 0,
-              "maxValue": 0,
               "value": 0
             }
           ],
           "stacking": "Unique",
-          "elementDurability": 100,
-          "modifierName": "",
-          "isUnique": true,
           "__unk_Q3323398612": 0
         },
         "UNIQUE_Activity_AvatarAB_DoSkillAirHandler": {
-          "stacking": "Unique",
           "elementDurability": 100,
+          "isUnique": true,
           "modifierMixins": [
             {
               "$type": "AvatarChangeSkillMixin",
-              "OLDBNEGFONF": 20058,
-              "index": -1,
+              "changeOnAdd": true,
               "flySkillID": 20058,
+              "index": -1,
               "priority": "Playmode",
-              "ADAHBJGFCBK": true
+              "DNONAJNPHLB": 20058
             },
             {
               "$type": "SetSkillCanUseInStateMixin",
-              "EGNAAIHCKON": [
-                "FallingAnthem_Loop",
-                "FallingAnthem_BS"
-              ],
               "skillList": [
                 20057,
                 20058
+              ],
+              "stateList": [
+                "FallingAnthem_Loop",
+                "FallingAnthem_BS"
               ]
             }
           ],
           "modifierName": "",
-          "isUnique": true,
+          "stacking": "Unique",
           "__unk_Q3323398612": 0
         },
         "UNIQUE_Activity_AvatarAB_MakeAvatarKeepOnAir": {
+          "elementDurability": 100,
+          "isUnique": true,
+          "modifierName": "",
           "onAdded": [
             {
               "$type": "Predicated",
@@ -2612,20 +2723,30 @@
               "targetPredicates": [
                 {
                   "$type": "ByTargetGlobalValue",
-                  "value": 3,
-                  "key": "Activity_AvatarAB_BounceJump_Step"
+                  "key": "Activity_AvatarAB_BounceJump_Step",
+                  "value": 3
                 }
               ]
             }
           ],
           "stacking": "Unique",
-          "elementDurability": 100,
-          "modifierName": "",
-          "isUnique": true,
           "__unk_Q3323398612": 0
         },
         "UNIQUE_Activity_AvatarAB_TryDoSkill": {
           "duration": 0.05,
+          "elementDurability": 100,
+          "isUnique": true,
+          "modifierName": "",
+          "onAdded": [
+            {
+              "$type": "EntityDoSkill",
+              "skillID": 20057
+            },
+            {
+              "$type": "EntityDoSkill",
+              "skillID": 20058
+            }
+          ],
           "onRemoved": [
             {
               "$type": "Predicated",
@@ -2633,8 +2754,8 @@
                 {
                   "$type": "SetGlobalValue",
                   "key": "Activity_AvatarAB_ActiveBounceJump",
-                  "minValue": 0,
                   "maxValue": 0,
+                  "minValue": 0,
                   "value": 0
                 },
                 {
@@ -2649,79 +2770,49 @@
               "targetPredicates": [
                 {
                   "$type": "ByTargetGlobalValue",
-                  "value": 0,
                   "key": "Activity_AvatarAB_IsDoSkillSuccess",
-                  "target": "Self"
+                  "target": "Self",
+                  "value": 0
                 }
               ]
             }
           ],
-          "onAdded": [
-            {
-              "$type": "EntityDoSkill",
-              "skillID": 20057
-            },
-            {
-              "$type": "EntityDoSkill",
-              "skillID": 20058
-            }
-          ],
           "stacking": "Unique",
-          "elementDurability": 100,
-          "modifierName": "",
-          "isUnique": true,
           "__unk_Q3323398612": 0
         },
         "UNIQUE_Activity_AvatarAB_CheckAvatarState": {
-          "onRemoved": [
-            {
-              "$type": "SetGlobalValue",
-              "key": "Activity_AvatarAB_IsDoSkillSuccess",
-              "minValue": 0,
-              "maxValue": 0,
-              "value": 0
-            }
-          ],
+          "elementDurability": 100,
+          "isUnique": true,
+          "modifierName": "",
           "onAdded": [
             {
               "$type": "SetGlobalValue",
               "key": "Activity_AvatarAB_IsDoSkillSuccess",
-              "minValue": 0,
               "maxValue": 0,
+              "minValue": 0,
               "value": 1
             }
           ],
+          "onRemoved": [
+            {
+              "$type": "SetGlobalValue",
+              "key": "Activity_AvatarAB_IsDoSkillSuccess",
+              "maxValue": 0,
+              "minValue": 0,
+              "value": 0
+            }
+          ],
           "stacking": "Unique",
-          "elementDurability": 100,
-          "modifierName": "",
-          "isUnique": true,
           "__unk_Q3323398612": 0
         },
         "UNIQUE_Activity_AvatarAB_InvisbleAvatar": {
-          "onRemoved": [
-            {
-              "$type": "EnablePushColliderName",
-              "setEnable": true,
-              "pushColliderNames": [
-                "MoveCollider"
-              ]
-            }
-          ],
-          "onAdded": [
-            {
-              "$type": "EnablePushColliderName",
-              "pushColliderNames": [
-                "MoveCollider"
-              ]
-            }
-          ],
-          "stacking": "Unique",
           "elementDurability": 100,
+          "isUnique": true,
           "modifierMixins": [
             {
               "$type": "EntityInVisibleMixin",
-              "AAHPKGHIPPG": true,
-              "reason": "Mixin"
+              "reason": "Mixin",
+              "HANDACPCGMF": true
             },
             {
               "$type": "DoActionOnGlobalValueChangeMixin",
@@ -2731,17 +2822,17 @@
                   "successActions": [
                     {
                       "$type": "AttachEffect",
-                      "ILLLPEOODKP": "",
+                      "effectPattern": "Eff_SceneObj_BounceBall_01_CharBullet",
                       "scale": 1,
-                      "effectPattern": "Eff_SceneObj_BounceBall_01_CharBullet"
+                      "JHAGIJGAKMK": ""
                     }
                   ],
                   "targetPredicates": [
                     {
                       "$type": "ByTargetGlobalValue",
-                      "value": 2,
                       "key": "Activity_AvatarAB_BounceJump_Step",
-                      "target": "Self"
+                      "target": "Self",
+                      "value": 2
                     }
                   ]
                 }
@@ -2750,15 +2841,39 @@
             }
           ],
           "modifierName": "",
-          "isUnique": true,
+          "onAdded": [
+            {
+              "$type": "EnablePushColliderName",
+              "pushColliderNames": [
+                "MoveCollider"
+              ]
+            }
+          ],
+          "onRemoved": [
+            {
+              "$type": "EnablePushColliderName",
+              "pushColliderNames": [
+                "MoveCollider"
+              ],
+              "setEnable": true
+            }
+          ],
+          "stacking": "Unique",
           "__unk_Q3323398612": 0
         },
         "UNIQUE_Activity_AvatarAB_RemoveGravity": {
-          "onRemoved": [
+          "elementDurability": 100,
+          "isUnique": true,
+          "modifierMixins": [
             {
-              "$type": "SetVelocityIgnoreAirGY"
+              "$type": "ModifyCameraMaxDistanceMixin",
+              "lerpInDuration": 0.5,
+              "lerpOutDuration": 0.7,
+              "maxDistance": 20,
+              "resetToMaxOnStart": true
             }
           ],
+          "modifierName": "",
           "onAdded": [
             {
               "$type": "SetVelocityIgnoreAirGY",
@@ -2769,22 +2884,15 @@
               "modifierName": "Activity_AvatarABCameraBlur"
             }
           ],
+          "onRemoved": [
+            {
+              "$type": "SetVelocityIgnoreAirGY"
+            }
+          ],
           "properties": {
             "Actor_AddGravityScale": -2
           },
           "stacking": "Unique",
-          "elementDurability": 100,
-          "modifierMixins": [
-            {
-              "$type": "ModifyCameraMaxDistanceMixin",
-              "resetToMaxOnStart": true,
-              "lerpInDuration": 0.5,
-              "maxDistance": 20,
-              "lerpOutDuration": 0.7
-            }
-          ],
-          "modifierName": "",
-          "isUnique": true,
           "__unk_Q3323398612": 0
         },
         "Activity_AvatarABCameraBlur": {
@@ -2803,6 +2911,9 @@
           "__unk_Q3323398612": 0
         },
         "UNIQUE_Activity_AvatarAB_Fixplayer": {
+          "elementDurability": 100,
+          "isUnique": true,
+          "modifierName": "",
           "onAdded": [
             {
               "$type": "RemoveVelocityForce",
@@ -2817,62 +2928,24 @@
             },
             {
               "$type": "FixedAvatarFlashMove",
-              "toPos": {
-                "$type": "ConfigBornByGlobalValue",
-                "positionKey": "Activity_AvatarAB_FixedPoint",
-                "directionKey": ""
-              },
               "animatorStateIDs": [
                 "ActivitySkill_CustomSkill02"
-              ]
+              ],
+              "toPos": {
+                "$type": "ConfigBornByGlobalValue",
+                "directionKey": "",
+                "positionKey": "Activity_AvatarAB_FixedPoint"
+              }
             }
           ],
           "stacking": "Unique",
-          "elementDurability": 100,
-          "modifierName": "",
-          "isUnique": true,
           "__unk_Q3323398612": 0
         },
         "UNIQUE_Activity_AvatarAB_DoFixedRushMove": {
           "duration": 0.9,
-          "onRemoved": [
-            {
-              "$type": "FixedAvatarFlashMove",
-              "toPos": {
-                "$type": "ConfigBornByGlobalValue",
-                "positionKey": "Activity_AvatarAB_FixedPoint",
-                "directionKey": "",
-                "offset": {
-                  "y": 20
-                }
-              },
-              "animatorStateIDs": [
-                "ActivitySkill_CustomSkill02"
-              ]
-            },
-            {
-              "$type": "ClearGlobalPos",
-              "key": "Activity_AvatarAB_FixedPoint"
-            },
-            {
-              "$type": "SetGlobalValue",
-              "key": "Activity_AvatarAB_ActiveBounceJump",
-              "minValue": 0,
-              "maxValue": 0,
-              "value": 0
-            },
-            {
-              "$type": "SetGlobalValue",
-              "key": "Activity_AvatarAB_BounceJump_Step",
-              "minValue": 0,
-              "maxValue": 0,
-              "value": 3
-            },
-            {
-              "$type": "SetAnimatorTrigger",
-              "triggerID": "CustomSkill02_End_Fly"
-            }
-          ],
+          "elementDurability": 100,
+          "isUnique": true,
+          "modifierName": "",
           "onAdded": [
             {
               "$type": "RemoveVelocityForce",
@@ -2887,42 +2960,68 @@
             },
             {
               "$type": "FixedAvatarRushMove",
+              "animatorStateIDs": [
+                "ActivitySkill_CustomSkill02"
+              ],
+              "maxRange": 20,
+              "overrideMoveCollider": "",
+              "timeRange": 1,
               "toPos": {
                 "$type": "ConfigBornByGlobalValue",
-                "positionKey": "Activity_AvatarAB_FixedPoint",
                 "directionKey": "",
                 "offset": {
                   "y": 20
-                }
-              },
-              "overrideMoveCollider": "",
-              "maxRange": 20,
-              "timeRange": 1,
-              "animatorStateIDs": [
-                "ActivitySkill_CustomSkill02"
-              ]
+                },
+                "positionKey": "Activity_AvatarAB_FixedPoint"
+              }
             }
           ],
-          "stacking": "Unique",
-          "elementDurability": 100,
-          "modifierName": "",
-          "isUnique": true,
-          "__unk_Q3323398612": 0
-        },
-        "UNIQUE_Activity_AvatarAB_KeepOnAir": {
-          "duration": 3,
           "onRemoved": [
             {
-              "$type": "SetVelocityIgnoreAirGY"
+              "$type": "FixedAvatarFlashMove",
+              "animatorStateIDs": [
+                "ActivitySkill_CustomSkill02"
+              ],
+              "toPos": {
+                "$type": "ConfigBornByGlobalValue",
+                "directionKey": "",
+                "offset": {
+                  "y": 20
+                },
+                "positionKey": "Activity_AvatarAB_FixedPoint"
+              }
+            },
+            {
+              "$type": "ClearGlobalPos",
+              "key": "Activity_AvatarAB_FixedPoint"
+            },
+            {
+              "$type": "SetGlobalValue",
+              "key": "Activity_AvatarAB_ActiveBounceJump",
+              "maxValue": 0,
+              "minValue": 0,
+              "value": 0
             },
             {
               "$type": "SetGlobalValue",
               "key": "Activity_AvatarAB_BounceJump_Step",
-              "minValue": 0,
               "maxValue": 0,
-              "value": 0
+              "minValue": 0,
+              "value": 3
+            },
+            {
+              "$type": "SetAnimatorTrigger",
+              "triggerID": "CustomSkill02_End_Fly"
             }
           ],
+          "stacking": "Unique",
+          "__unk_Q3323398612": 0
+        },
+        "UNIQUE_Activity_AvatarAB_KeepOnAir": {
+          "duration": 3,
+          "elementDurability": 100,
+          "isUnique": true,
+          "modifierName": "",
           "onAdded": [
             {
               "$type": "RemoveVelocityForce",
@@ -2943,164 +3042,38 @@
               "$type": "FireEffect",
               "effectPattern": "Eff_SceneObj_BounceBall_01_CharAppearFireworks",
               "scale": 1,
-              "ILLLPEOODKP": ""
+              "JHAGIJGAKMK": ""
+            }
+          ],
+          "onRemoved": [
+            {
+              "$type": "SetVelocityIgnoreAirGY"
+            },
+            {
+              "$type": "SetGlobalValue",
+              "key": "Activity_AvatarAB_BounceJump_Step",
+              "maxValue": 0,
+              "minValue": 0,
+              "value": 0
             }
           ],
           "properties": {
             "Actor_AddGravityScale": -2
           },
           "stacking": "Unique",
-          "elementDurability": 100,
-          "modifierName": "",
-          "isUnique": true,
           "__unk_Q3323398612": 0
         }
       },
-      "onRemoved": [
-        {
-          "$type": "RemoveAvatarSkillInfo",
-          "skillID": 20057,
-          "doOffStage": true
-        },
-        {
-          "$type": "RemoveAvatarSkillInfo",
-          "skillID": 20058,
-          "doOffStage": true
-        },
-        {
-          "$type": "SetVelocityIgnoreAirGY"
-        },
-        {
-          "$type": "SetAnimatorTrigger",
-          "triggerID": "CustomSkill02_End_Fly",
-          "predicates": [
-            {
-              "$type": "ByTargetGlobalValue",
-              "value": 1,
-              "key": "Activity_AvatarAB_IsDoSkillSuccess",
-              "target": "Self"
-            }
-          ]
-        }
-      ],
-      "abilityMixins": [
-        {
-          "$type": "DoActionOnGlobalValueChangeMixin",
-          "actions": [
-            {
-              "$type": "Predicated",
-              "successActions": [
-                {
-                  "$type": "ApplyModifier",
-                  "modifierName": "UNIQUE_Activity_AvatarAB_TryDoSkill"
-                }
-              ],
-              "targetPredicates": [
-                {
-                  "$type": "ByTargetGlobalValue",
-                  "value": 1,
-                  "key": "Activity_AvatarAB_ActiveBounceJump",
-                  "target": "Self"
-                }
-              ]
-            }
-          ],
-          "globalValueKey": "Activity_AvatarAB_ActiveBounceJump"
-        },
-        {
-          "$type": "DoActionOnGlobalValueChangeMixin",
-          "actions": [
-            {
-              "$type": "Predicated",
-              "successActions": [
-                {
-                  "$type": "SetGlobalValue",
-                  "key": "Activity_AvatarAB_BounceJump_Step",
-                  "minValue": 0,
-                  "maxValue": 0,
-                  "value": 1
-                }
-              ],
-              "failActions": [
-                {
-                  "$type": "SetGlobalValue",
-                  "key": "Activity_AvatarAB_ActiveBounceJump",
-                  "minValue": 0,
-                  "maxValue": 0,
-                  "value": 0
-                }
-              ],
-              "targetPredicates": [
-                {
-                  "$type": "ByTargetGlobalValue",
-                  "value": 1,
-                  "key": "Activity_AvatarAB_IsDoSkillSuccess",
-                  "target": "Self"
-                }
-              ]
-            }
-          ],
-          "globalValueKey": "Activity_AvatarAB_IsDoSkillSuccess"
-        },
-        {
-          "$type": "AttachModifierToSelfGlobalValueMixin",
-          "modifierNameSteps": [
-            "UNIQUE_Activity_AvatarAB_Fixplayer",
-            "UNIQUE_Activity_AvatarAB_DoFixedRushMove"
-          ],
-          "valueSteps": [
-            0.5,
-            1.5,
-            2.5
-          ],
-          "globalValueKey": "Activity_AvatarAB_BounceJump_Step",
-          "defaultGlobalValueOnCreate": 0
-        },
-        {
-          "$type": "AttachToStateIDMixin",
-          "__unk_Q2081332355": "",
-          "stateIDs": [
-            "ActivitySkill_CustomSkill02"
-          ],
-          "modifierName": "UNIQUE_Activity_AvatarAB_CheckAvatarState"
-        },
-        {
-          "$type": "AttachToStateIDMixin",
-          "__unk_Q2081332355": "",
-          "stateIDs": [
-            "ActivitySkill_CustomSkill02"
-          ],
-          "modifierName": "UNIQUE_Activity_AvatarAB_RemoveGravity"
-        },
-        {
-          "$type": "AttachToStateIDMixin",
-          "__unk_Q2081332355": "",
-          "stateIDs": [
-            "ActivitySkill_CustomSkill02"
-          ],
-          "modifierName": "UNIQUE_Activity_AvatarAB_InvisbleAvatar"
-        },
-        {
-          "$type": "AttachToStateIDMixin",
-          "__unk_Q2081332355": "",
-          "stateIDs": [
-            "Fly"
-          ],
-          "modifierName": "UNIQUE_Activity_AvatarAB_MakeAvatarKeepOnAir"
-        }
-      ],
-      "abilityName": "Avatar_Player_ParkOurChallenge_RushMove",
-      "isDynamicAbility": true,
       "onAdded": [
         {
           "$type": "AddAvatarSkillInfo",
-          "skillID": 20057,
-          "doOffStage": true
+          "doOffStage": true,
+          "skillID": 20057
         },
         {
           "$type": "AddAvatarSkillInfo",
-          "skillID": 20058,
-          "doOffStage": true
+          "doOffStage": true,
+          "skillID": 20058
         },
         {
           "$type": "AttachModifier",
@@ -3110,116 +3083,38 @@
           "$type": "AttachModifier",
           "modifierName": "UNIQUE_Activity_AvatarAB_VarManage"
         }
+      ],
+      "onRemoved": [
+        {
+          "$type": "RemoveAvatarSkillInfo",
+          "doOffStage": true,
+          "skillID": 20057
+        },
+        {
+          "$type": "RemoveAvatarSkillInfo",
+          "doOffStage": true,
+          "skillID": 20058
+        },
+        {
+          "$type": "SetVelocityIgnoreAirGY"
+        },
+        {
+          "$type": "SetAnimatorTrigger",
+          "predicates": [
+            {
+              "$type": "ByTargetGlobalValue",
+              "key": "Activity_AvatarAB_IsDoSkillSuccess",
+              "target": "Self",
+              "value": 1
+            }
+          ],
+          "triggerID": "CustomSkill02_End_Fly"
+        }
       ]
     }
   },
   {
     "Default": {
-      "modifiers": {
-        "UNIQUE_Activity_AttachBallonEffect": {
-          "duration": 1.5,
-          "onAdded": [
-            {
-              "$type": "AttachEffect",
-              "ILLLPEOODKP": "",
-              "born": {
-                "$type": "ConfigBornByAttachPoint",
-                "attachPointName": "RootNode",
-                "useRotation": true
-              },
-              "scale": 1,
-              "effectPattern": "Eff_SceneObject_Confetti_Balloon_Trail"
-            }
-          ],
-          "stacking": "Unique",
-          "elementDurability": 100,
-          "modifierName": "",
-          "isUnique": true,
-          "__unk_Q3323398612": 0
-        },
-        "OnHit": {
-          "elementDurability": 100,
-          "modifierName": "",
-          "__unk_Q3323398612": 0,
-          "onBeingHit": [
-            {
-              "$type": "Predicated",
-              "failActions": [
-                {
-                  "$type": "FireEffect",
-                  "effectPattern": "Eff_SceneObject_Confetti_Balloon_Break",
-                  "scale": 1,
-                  "born": {
-                    "$type": "ConfigBornByAttachPoint",
-                    "attachPointName": "AttachPoint",
-                    "attachPointTargetType": "Self",
-                    "useRotation": true
-                  },
-                  "ILLLPEOODKP": ""
-                },
-                {
-                  "$type": "KillSelf",
-                  "hideEntity": true
-                }
-              ],
-              "targetPredicates": [
-                {
-                  "$type": "ByAttackTags",
-                  "attackTags": [
-                    "LanV3_Rush_Attack"
-                  ]
-                }
-              ],
-              "target": "Target"
-            }
-          ]
-        },
-        "AttachEffect": {
-          "onAdded": [
-            {
-              "$type": "FireEffect",
-              "effectPattern": "Eff_SceneObject_Confetti_Balloon_Cover",
-              "scale": 1,
-              "born": {
-                "$type": "ConfigBornByAttachPoint",
-                "attachPointName": "AttachPoint",
-                "attachPointTargetType": "Self",
-                "useRotation": true
-              },
-              "ILLLPEOODKP": ""
-            },
-            {
-              "$type": "AttachEffect",
-              "ILLLPEOODKP": "",
-              "born": {
-                "$type": "ConfigBornByAttachPoint",
-                "attachPointName": "AttachPoint",
-                "attachPointTargetType": "Self",
-                "useRotation": true
-              },
-              "scale": 1,
-              "effectPattern": "Eff_SceneObject_Confetti_Balloon_State"
-            }
-          ],
-          "elementDurability": 100,
-          "modifierName": "",
-          "__unk_Q3323398612": 0
-        }
-      },
-      "onKill": [
-        {
-          "$type": "FireEffect",
-          "effectPattern": "Eff_SceneObject_Confetti_Balloon_Cover",
-          "scale": 1,
-          "born": {
-            "$type": "ConfigBornByAttachPoint",
-            "attachPointName": "AttachPoint",
-            "attachPointTargetType": "Self",
-            "useRotation": true
-          },
-          "ILLLPEOODKP": ""
-        }
-      ],
       "abilityMixins": [
         {
           "$type": "DoActionOnGlobalValueChangeMixin",
@@ -3229,15 +3124,15 @@
               "successActions": [
                 {
                   "$type": "FireEffect",
-                  "effectPattern": "Eff_SceneObject_Confetti_Balloon_Break",
-                  "scale": 1,
                   "born": {
                     "$type": "ConfigBornByAttachPoint",
                     "attachPointName": "AttachPoint",
                     "attachPointTargetType": "Self",
                     "useRotation": true
                   },
-                  "ILLLPEOODKP": ""
+                  "effectPattern": "Eff_SceneObject_Confetti_Balloon_Break",
+                  "scale": 1,
+                  "JHAGIJGAKMK": ""
                 },
                 {
                   "$type": "ApplyModifier",
@@ -3252,9 +3147,9 @@
               "targetPredicates": [
                 {
                   "$type": "ByTargetGlobalValue",
-                  "value": 1,
                   "key": "Activity_AttackableBallon_NeedKill",
-                  "target": "Self"
+                  "target": "Self",
+                  "value": 1
                 }
               ]
             }
@@ -3263,6 +3158,97 @@
         }
       ],
       "abilityName": "SceneObj_Area_Common_Property_Ani_Prop_Confetti_Balloon_01",
+      "modifiers": {
+        "UNIQUE_Activity_AttachBallonEffect": {
+          "duration": 1.5,
+          "elementDurability": 100,
+          "isUnique": true,
+          "modifierName": "",
+          "onAdded": [
+            {
+              "$type": "AttachEffect",
+              "born": {
+                "$type": "ConfigBornByAttachPoint",
+                "attachPointName": "RootNode",
+                "useRotation": true
+              },
+              "effectPattern": "Eff_SceneObject_Confetti_Balloon_Trail",
+              "scale": 1,
+              "JHAGIJGAKMK": ""
+            }
+          ],
+          "stacking": "Unique",
+          "__unk_Q3323398612": 0
+        },
+        "OnHit": {
+          "elementDurability": 100,
+          "modifierName": "",
+          "onBeingHit": [
+            {
+              "$type": "Predicated",
+              "failActions": [
+                {
+                  "$type": "FireEffect",
+                  "born": {
+                    "$type": "ConfigBornByAttachPoint",
+                    "attachPointName": "AttachPoint",
+                    "attachPointTargetType": "Self",
+                    "useRotation": true
+                  },
+                  "effectPattern": "Eff_SceneObject_Confetti_Balloon_Break",
+                  "scale": 1,
+                  "JHAGIJGAKMK": ""
+                },
+                {
+                  "$type": "KillSelf",
+                  "hideEntity": true
+                }
+              ],
+              "target": "Target",
+              "targetPredicates": [
+                {
+                  "$type": "ByAttackTags",
+                  "attackTags": [
+                    "LanV3_Rush_Attack"
+                  ]
+                }
+              ]
+            }
+          ],
+          "__unk_Q3323398612": 0
+        },
+        "AttachEffect": {
+          "elementDurability": 100,
+          "modifierName": "",
+          "onAdded": [
+            {
+              "$type": "FireEffect",
+              "born": {
+                "$type": "ConfigBornByAttachPoint",
+                "attachPointName": "AttachPoint",
+                "attachPointTargetType": "Self",
+                "useRotation": true
+              },
+              "effectPattern": "Eff_SceneObject_Confetti_Balloon_Cover",
+              "scale": 1,
+              "JHAGIJGAKMK": ""
+            },
+            {
+              "$type": "AttachEffect",
+              "born": {
+                "$type": "ConfigBornByAttachPoint",
+                "attachPointName": "AttachPoint",
+                "attachPointTargetType": "Self",
+                "useRotation": true
+              },
+              "effectPattern": "Eff_SceneObject_Confetti_Balloon_State",
+              "scale": 1,
+              "JHAGIJGAKMK": ""
+            }
+          ],
+          "__unk_Q3323398612": 0
+        }
+      },
       "onAdded": [
         {
           "$type": "ApplyModifier",
@@ -3274,56 +3260,70 @@
         },
         {
           "$type": "ChangeTag",
-          "tag": "Activity_AttackableBallon",
-          "isAdd": true
+          "isAdd": true,
+          "tag": "Activity_AttackableBallon"
         },
         {
           "$type": "SetGlobalValue",
           "key": "Activity_AttackableBallon_NeedKill",
-          "minValue": 0,
           "maxValue": 0,
+          "minValue": 0,
           "value": 0
+        }
+      ],
+      "onKill": [
+        {
+          "$type": "FireEffect",
+          "born": {
+            "$type": "ConfigBornByAttachPoint",
+            "attachPointName": "AttachPoint",
+            "attachPointTargetType": "Self",
+            "useRotation": true
+          },
+          "effectPattern": "Eff_SceneObject_Confetti_Balloon_Cover",
+          "scale": 1,
+          "JHAGIJGAKMK": ""
         }
       ]
     }
   },
   {
     "Default": {
+      "abilityName": "SceneObj_Area_Xm_Property_Ani_Prop_SumeruOpenWorldPlatform_01",
       "modifiers": {
         "FloorDelayEnbale": {
           "duration": 0.3,
+          "elementDurability": 100,
+          "modifierName": "",
           "onRemoved": [
             {
               "$type": "EnableSceneTransformByName",
               "setEnable": true,
-              "PLDFIIMNOCD": [
+              "transformNames": [
                 "Body"
               ]
             }
           ],
-          "elementDurability": 100,
-          "modifierName": "",
           "__unk_Q3323398612": 0
         },
         "FloorDisapperEffect": {
+          "elementDurability": 100,
+          "modifierName": "",
           "onKill": [
             {
               "$type": "FireEffect",
               "effectPattern": "Eff_SceneObj_SumeruOpenWorldPlatform_01_Disappear",
               "scale": 1,
-              "ILLLPEOODKP": ""
+              "JHAGIJGAKMK": ""
             }
           ],
-          "elementDurability": 100,
-          "modifierName": "",
           "__unk_Q3323398612": 0
         }
       },
-      "abilityName": "SceneObj_Area_Xm_Property_Ani_Prop_SumeruOpenWorldPlatform_01",
       "onAdded": [
         {
           "$type": "EnableSceneTransformByName",
-          "PLDFIIMNOCD": [
+          "transformNames": [
             "Body"
           ]
         },
@@ -3331,7 +3331,7 @@
           "$type": "FireEffect",
           "effectPattern": "Eff_SceneObj_SumeruOpenWorldPlatform_01_Appear",
           "scale": 1,
-          "ILLLPEOODKP": ""
+          "JHAGIJGAKMK": ""
         },
         {
           "$type": "ApplyModifier",
@@ -3346,114 +3346,6 @@
   },
   {
     "Default": {
-      "modifiers": {
-        "Activity_PickParkourBuff": {
-          "duration": 0.1,
-          "onAdded": [
-            {
-              "$type": "AddGlobalValue",
-              "useLimitRange": true,
-              "key": "AVATAR_LANV3RACE_ENERGY",
-              "maxValue": 300,
-              "minValue": 0,
-              "value": 100,
-              "target": "Team"
-            }
-          ],
-          "stacking": "Multiple",
-          "elementDurability": 100,
-          "modifierName": "",
-          "__unk_Q3323398612": 0
-        },
-        "Interactable": {
-          "onRemoved": [
-            {
-              "$type": "FireEffect",
-              "effectPattern": "Eff_SceneObject_ParkourSKill_Orb_Diss",
-              "scale": 1,
-              "ILLLPEOODKP": ""
-            },
-            {
-              "$type": "RemoveModifier",
-              "modifierName": "TickForAvatar"
-            }
-          ],
-          "onAdded": [
-            {
-              "$type": "AttachEffect",
-              "ILLLPEOODKP": "",
-              "scale": 1,
-              "effectPattern": "Eff_SceneObject_ParkourSKill_Orb_Active"
-            },
-            {
-              "$type": "ApplyModifier",
-              "modifierName": "TickForAvatar"
-            }
-          ],
-          "elementDurability": 100,
-          "modifierName": "",
-          "__unk_Q3323398612": 0
-        },
-        "Mute": {
-          "duration": 8,
-          "onRemoved": [
-            {
-              "$type": "ChangeGadgetState"
-            }
-          ],
-          "onAdded": [
-            {
-              "$type": "SetGlobalValue",
-              "key": "Activity_ParkourSkill_NeedAdd",
-              "minValue": 0,
-              "maxValue": 0,
-              "value": 0
-            }
-          ],
-          "elementDurability": 100,
-          "modifierName": "",
-          "__unk_Q3323398612": 0
-        },
-        "TickForAvatar": {
-          "thinkInterval": 0.1,
-          "duration": 0.15,
-          "elementDurability": 100,
-          "modifierName": "",
-          "onThinkInterval": [
-            {
-              "$type": "Predicated",
-              "successActions": [
-                {
-                  "$type": "SetGlobalValue",
-                  "key": "Activity_ParkourSkill_NeedAdd",
-                  "minValue": 0,
-                  "maxValue": 0,
-                  "value": 1
-                }
-              ],
-              "targetPredicates": [
-                {
-                  "$type": "ByEntityTypes",
-                  "entityTypes": [
-                    "Avatar"
-                  ]
-                },
-                {
-                  "$type": "ByTargetGlobalValue",
-                  "value": 0,
-                  "key": "Activity_ParkourSkill_NeedAdd",
-                  "target": "Self"
-                }
-              ],
-              "otherTargets": {
-                "$type": "SelectTargetsByLCTrigger",
-                "campTargetType": "All"
-              }
-            }
-          ],
-          "__unk_Q3323398612": 0
-        }
-      },
       "abilityMixins": [
         {
           "$type": "AttachToGadgetStateMixin",
@@ -3461,8 +3353,8 @@
         },
         {
           "$type": "AttachToGadgetStateMixin",
-          "modifierName": "Mute",
-          "gadgetState": 201
+          "gadgetState": 201,
+          "modifierName": "Mute"
         },
         {
           "$type": "DoActionOnGlobalValueChangeMixin",
@@ -3477,27 +3369,27 @@
                 },
                 {
                   "$type": "FireEffect",
-                  "effectPattern": "Eff_SceneObject_ParkourSKill_Orb_Use",
-                  "scale": 1,
                   "born": {
                     "$type": "ConfigBornByAttachPoint",
                     "attachPointName": "RootNode",
                     "useRotation": true
                   },
-                  "ILLLPEOODKP": "",
-                  "target": "CurLocalAvatar"
+                  "effectPattern": "Eff_SceneObject_ParkourSKill_Orb_Use",
+                  "scale": 1,
+                  "target": "CurLocalAvatar",
+                  "JHAGIJGAKMK": ""
                 },
                 {
                   "$type": "ChangeGadgetState",
-                  "ANIHOKMEKHK": 201
+                  "state": 201
                 }
               ],
               "targetPredicates": [
                 {
                   "$type": "ByTargetGlobalValue",
-                  "value": 1,
                   "key": "Activity_ParkourSkill_NeedAdd",
-                  "target": "Self"
+                  "target": "Self",
+                  "value": 1
                 }
               ]
             }
@@ -3506,39 +3398,114 @@
         }
       ],
       "abilityName": "SceneObj_Area_Common_Property_Ani_Prop_ParkourSKill_Orb_01",
-      "onFieldEnter": [
-        {
-          "$type": "Predicated",
-          "successActions": [
+      "modifiers": {
+        "Activity_PickParkourBuff": {
+          "duration": 0.1,
+          "elementDurability": 100,
+          "modifierName": "",
+          "onAdded": [
+            {
+              "$type": "AddGlobalValue",
+              "key": "AVATAR_LANV3RACE_ENERGY",
+              "maxValue": 300,
+              "minValue": 0,
+              "target": "Team",
+              "useLimitRange": true,
+              "value": 100
+            }
+          ],
+          "stacking": "Multiple",
+          "__unk_Q3323398612": 0
+        },
+        "Interactable": {
+          "elementDurability": 100,
+          "modifierName": "",
+          "onAdded": [
+            {
+              "$type": "AttachEffect",
+              "effectPattern": "Eff_SceneObject_ParkourSKill_Orb_Active",
+              "scale": 1,
+              "JHAGIJGAKMK": ""
+            },
+            {
+              "$type": "ApplyModifier",
+              "modifierName": "TickForAvatar"
+            }
+          ],
+          "onRemoved": [
+            {
+              "$type": "FireEffect",
+              "effectPattern": "Eff_SceneObject_ParkourSKill_Orb_Diss",
+              "scale": 1,
+              "JHAGIJGAKMK": ""
+            },
+            {
+              "$type": "RemoveModifier",
+              "modifierName": "TickForAvatar"
+            }
+          ],
+          "__unk_Q3323398612": 0
+        },
+        "Mute": {
+          "duration": 8,
+          "elementDurability": 100,
+          "modifierName": "",
+          "onAdded": [
             {
               "$type": "SetGlobalValue",
               "key": "Activity_ParkourSkill_NeedAdd",
-              "minValue": 0,
               "maxValue": 0,
-              "value": 1
+              "minValue": 0,
+              "value": 0
             }
           ],
-          "targetPredicates": [
+          "onRemoved": [
             {
-              "$type": "ByEntityTypes",
-              "entityTypes": [
-                "Avatar"
+              "$type": "ChangeGadgetState"
+            }
+          ],
+          "__unk_Q3323398612": 0
+        },
+        "TickForAvatar": {
+          "duration": 0.15,
+          "elementDurability": 100,
+          "modifierName": "",
+          "onThinkInterval": [
+            {
+              "$type": "Predicated",
+              "otherTargets": {
+                "$type": "SelectTargetsByLCTrigger",
+                "campTargetType": "All"
+              },
+              "successActions": [
+                {
+                  "$type": "SetGlobalValue",
+                  "key": "Activity_ParkourSkill_NeedAdd",
+                  "maxValue": 0,
+                  "minValue": 0,
+                  "value": 1
+                }
+              ],
+              "targetPredicates": [
+                {
+                  "$type": "ByEntityTypes",
+                  "entityTypes": [
+                    "Avatar"
+                  ]
+                },
+                {
+                  "$type": "ByTargetGlobalValue",
+                  "key": "Activity_ParkourSkill_NeedAdd",
+                  "target": "Self",
+                  "value": 0
+                }
               ]
-            },
-            {
-              "$type": "NBMIFIMDPII",
-              "target": "Self"
-            },
-            {
-              "$type": "ByTargetGlobalValue",
-              "value": 0,
-              "key": "Activity_ParkourSkill_NeedAdd",
-              "target": "Self"
             }
           ],
-          "target": "Target"
+          "thinkInterval": 0.1,
+          "__unk_Q3323398612": 0
         }
-      ],
+      },
       "onAdded": [
         {
           "$type": "AddGlobalValue",
@@ -3547,50 +3514,104 @@
           "minValue": 0,
           "value": 0
         }
+      ],
+      "onFieldEnter": [
+        {
+          "$type": "Predicated",
+          "successActions": [
+            {
+              "$type": "SetGlobalValue",
+              "key": "Activity_ParkourSkill_NeedAdd",
+              "maxValue": 0,
+              "minValue": 0,
+              "value": 1
+            }
+          ],
+          "target": "Target",
+          "targetPredicates": [
+            {
+              "$type": "ByEntityTypes",
+              "entityTypes": [
+                "Avatar"
+              ]
+            },
+            {
+              "$type": "ByTargetGadgetState",
+              "target": "Self"
+            },
+            {
+              "$type": "ByTargetGlobalValue",
+              "key": "Activity_ParkourSkill_NeedAdd",
+              "target": "Self",
+              "value": 0
+            }
+          ]
+        }
       ]
     }
   },
   {
     "Default": {
+      "abilityMixins": [
+        {
+          "$type": "AttachToGadgetStateMixin",
+          "modifierName": "Interactable"
+        },
+        {
+          "$type": "AttachToGadgetStateMixin",
+          "gadgetState": 201,
+          "modifierName": "Mute"
+        }
+      ],
+      "abilityName": "SceneObj_Area_Common_Property_Ani_Prop_ParkourSKill_Orb_02",
       "modifiers": {
         "Activity_PickParkourBuff": {
           "duration": 0.1,
+          "elementDurability": 100,
+          "modifierName": "",
           "onAdded": [
             {
               "$type": "AddGlobalValue",
-              "useLimitRange": true,
               "key": "AVATAR_LANV3RACE_ENERGY",
               "maxValue": 300,
               "minValue": 0,
-              "value": 100,
-              "target": "Team"
+              "target": "Team",
+              "useLimitRange": true,
+              "value": 100
             }
           ],
           "stacking": "Multiple",
-          "elementDurability": 100,
-          "modifierName": "",
           "__unk_Q3323398612": 0
         },
         "Interactable": {
-          "thinkInterval": 0.1,
+          "elementDurability": 100,
+          "modifierName": "",
+          "onAdded": [
+            {
+              "$type": "AttachEffect",
+              "effectPattern": "Eff_SceneObject_ParkourSKill_Orb_Active",
+              "scale": 1,
+              "JHAGIJGAKMK": ""
+            }
+          ],
           "onRemoved": [
             {
               "$type": "FireEffect",
-              "effectPattern": "Eff_SceneObject_ParkourSKill_Orb_Use",
-              "scale": 1,
               "born": {
                 "$type": "ConfigBornByAttachPoint",
                 "attachPointName": "RootNode",
                 "useRotation": true
               },
-              "ILLLPEOODKP": "",
-              "target": "CurLocalAvatar"
+              "effectPattern": "Eff_SceneObject_ParkourSKill_Orb_Use",
+              "scale": 1,
+              "target": "CurLocalAvatar",
+              "JHAGIJGAKMK": ""
             },
             {
               "$type": "FireEffect",
               "effectPattern": "Eff_SceneObject_ParkourSKill_Orb_Diss",
               "scale": 1,
-              "ILLLPEOODKP": ""
+              "JHAGIJGAKMK": ""
             },
             {
               "$type": "ApplyModifier",
@@ -3598,23 +3619,17 @@
               "target": "Team"
             }
           ],
-          "onAdded": [
-            {
-              "$type": "AttachEffect",
-              "ILLLPEOODKP": "",
-              "scale": 1,
-              "effectPattern": "Eff_SceneObject_ParkourSKill_Orb_Active"
-            }
-          ],
-          "elementDurability": 100,
-          "modifierName": "",
           "onThinkInterval": [
             {
               "$type": "Predicated",
+              "otherTargets": {
+                "$type": "SelectTargetsByLCTrigger",
+                "campTargetType": "All"
+              },
               "successActions": [
                 {
                   "$type": "ChangeGadgetState",
-                  "ANIHOKMEKHK": 201
+                  "state": 201
                 }
               ],
               "targetPredicates": [
@@ -3624,43 +3639,40 @@
                     "Avatar"
                   ]
                 }
-              ],
-              "otherTargets": {
-                "$type": "SelectTargetsByLCTrigger",
-                "campTargetType": "All"
-              }
+              ]
             }
           ],
+          "thinkInterval": 0.1,
           "__unk_Q3323398612": 0
         },
         "Mute": {
           "duration": 8,
+          "elementDurability": 100,
+          "modifierName": "",
           "onRemoved": [
             {
               "$type": "ChangeGadgetState"
             }
           ],
-          "elementDurability": 100,
-          "modifierName": "",
           "__unk_Q3323398612": 0
         }
-      },
-      "abilityMixins": [
-        {
-          "$type": "AttachToGadgetStateMixin",
-          "modifierName": "Interactable"
-        },
-        {
-          "$type": "AttachToGadgetStateMixin",
-          "modifierName": "Mute",
-          "gadgetState": 201
-        }
-      ],
-      "abilityName": "SceneObj_Area_Common_Property_Ani_Prop_ParkourSKill_Orb_02"
+      }
     }
   },
   {
     "Default": {
+      "abilityMixins": [
+        {
+          "$type": "AttachToGadgetStateMixin",
+          "modifierName": "DefaultState"
+        },
+        {
+          "$type": "AttachToGadgetStateMixin",
+          "gadgetState": 202,
+          "modifierName": "GearStop"
+        }
+      ],
+      "abilityName": "SceneObj_Level_Common_Property_Ani_Prop_ActivityTeamChainOperator_01",
       "modifiers": {
         "DefaultState": {
           "elementDurability": 100,
@@ -3672,46 +3684,15 @@
           "modifierName": "",
           "__unk_Q3323398612": 0
         }
-      },
-      "abilityMixins": [
-        {
-          "$type": "AttachToGadgetStateMixin",
-          "modifierName": "DefaultState"
-        },
-        {
-          "$type": "AttachToGadgetStateMixin",
-          "modifierName": "GearStop",
-          "gadgetState": 202
-        }
-      ],
-      "abilityName": "SceneObj_Level_Common_Property_Ani_Prop_ActivityTeamChainOperator_01"
+      }
     }
   },
   {
     "Default": {
-      "modifiers": {
-        "Touch_Handle": {
-          "duration": 0.2,
-          "onAdded": [
-            {
-              "$type": "ServerLuaCall",
-              "isTarget": true,
-              "param1": 0,
-              "param2": 0,
-              "funcName": "SLC_Activity_TeanChainChallenge_StartPlay",
-              "AHCNJKIEMPP": 0,
-              "luaCallType": "FromGroup"
-            }
-          ],
-          "elementDurability": 100,
-          "modifierName": "",
-          "__unk_Q3323398612": 0
-        }
-      },
       "abilityMixins": [
         {
           "$type": "WidgetMpSupportMixin",
-          "CMEPEHIJMPL": [
+          "succActions": [
             {
               "$type": "ApplyModifier",
               "modifierName": "Touch_Handle"
@@ -3719,158 +3700,35 @@
           ]
         }
       ],
-      "abilityName": "SceneObj_Level_Common_Property_Ani_Prop_ActivityTeamChainOperator_01_Intee"
+      "abilityName": "SceneObj_Level_Common_Property_Ani_Prop_ActivityTeamChainOperator_01_Intee",
+      "modifiers": {
+        "Touch_Handle": {
+          "duration": 0.2,
+          "elementDurability": 100,
+          "modifierName": "",
+          "onAdded": [
+            {
+              "$type": "ServerLuaCall",
+              "funcName": "SLC_Activity_TeanChainChallenge_StartPlay",
+              "isTarget": true,
+              "luaCallType": "FromGroup",
+              "param1": 0,
+              "param2": 0,
+              "param3": 0
+            }
+          ],
+          "__unk_Q3323398612": 0
+        }
+      }
     }
   },
   {
     "Default": {
-      "modifiers": {
-        "Enable_ShadowScreenArt_A": {
-          "onAdded": [
-            {
-              "$type": "EnableSceneTransformByName",
-              "setEnable": true,
-              "PLDFIIMNOCD": [
-                "ShadowArtA"
-              ]
-            },
-            {
-              "$type": "EnableSceneTransformByName",
-              "PLDFIIMNOCD": [
-                "ShadowArtA1"
-              ]
-            },
-            {
-              "$type": "EnableSceneTransformByName",
-              "PLDFIIMNOCD": [
-                "ShadowArtB"
-              ]
-            },
-            {
-              "$type": "EnableSceneTransformByName",
-              "PLDFIIMNOCD": [
-                "ShadowArtB1"
-              ]
-            },
-            {
-              "$type": "ChangeGadgetState"
-            }
-          ],
-          "elementDurability": 100,
-          "modifierName": "",
-          "__unk_Q3323398612": 0
-        },
-        "Enable_ShadowScreenArt_A1": {
-          "onAdded": [
-            {
-              "$type": "EnableSceneTransformByName",
-              "PLDFIIMNOCD": [
-                "ShadowArtA"
-              ]
-            },
-            {
-              "$type": "EnableSceneTransformByName",
-              "setEnable": true,
-              "PLDFIIMNOCD": [
-                "ShadowArtA1"
-              ]
-            },
-            {
-              "$type": "EnableSceneTransformByName",
-              "PLDFIIMNOCD": [
-                "ShadowArtB"
-              ]
-            },
-            {
-              "$type": "EnableSceneTransformByName",
-              "PLDFIIMNOCD": [
-                "ShadowArtB1"
-              ]
-            },
-            {
-              "$type": "ChangeGadgetState"
-            }
-          ],
-          "elementDurability": 100,
-          "modifierName": "",
-          "__unk_Q3323398612": 0
-        },
-        "Enable_ShadowScreenArt_B": {
-          "onAdded": [
-            {
-              "$type": "EnableSceneTransformByName",
-              "PLDFIIMNOCD": [
-                "ShadowArtA"
-              ]
-            },
-            {
-              "$type": "EnableSceneTransformByName",
-              "PLDFIIMNOCD": [
-                "ShadowArtA1"
-              ]
-            },
-            {
-              "$type": "EnableSceneTransformByName",
-              "setEnable": true,
-              "PLDFIIMNOCD": [
-                "ShadowArtB"
-              ]
-            },
-            {
-              "$type": "EnableSceneTransformByName",
-              "PLDFIIMNOCD": [
-                "ShadowArtB1"
-              ]
-            },
-            {
-              "$type": "ChangeGadgetState",
-              "ANIHOKMEKHK": 201
-            }
-          ],
-          "elementDurability": 100,
-          "modifierName": "",
-          "__unk_Q3323398612": 0
-        },
-        "Enable_ShadowScreenArt_B1": {
-          "onAdded": [
-            {
-              "$type": "EnableSceneTransformByName",
-              "PLDFIIMNOCD": [
-                "ShadowArtA"
-              ]
-            },
-            {
-              "$type": "EnableSceneTransformByName",
-              "PLDFIIMNOCD": [
-                "ShadowArtA1"
-              ]
-            },
-            {
-              "$type": "EnableSceneTransformByName",
-              "PLDFIIMNOCD": [
-                "ShadowArtB"
-              ]
-            },
-            {
-              "$type": "EnableSceneTransformByName",
-              "setEnable": true,
-              "PLDFIIMNOCD": [
-                "ShadowArtB1"
-              ]
-            },
-            {
-              "$type": "ChangeGadgetState",
-              "ANIHOKMEKHK": 201
-            }
-          ],
-          "elementDurability": 100,
-          "modifierName": "",
-          "__unk_Q3323398612": 0
-        }
-      },
       "abilityMixins": [
         {
           "$type": "AttachModifierToSelfGlobalValueMixin",
+          "defaultGlobalValueOnCreate": 0,
+          "globalValueKey": "Activity_GadgetAB_ShadowScreenID",
           "modifierNameSteps": [
             "Enable_ShadowScreenArt_A",
             "Enable_ShadowScreenArt_A1",
@@ -3883,76 +3741,190 @@
             2.5,
             3.5,
             4.5
-          ],
-          "globalValueKey": "Activity_GadgetAB_ShadowScreenID",
-          "defaultGlobalValueOnCreate": 0
+          ]
         },
         {
           "$type": "ActivityLanV3ShadowGameScreenMixin"
         }
       ],
       "abilityName": "SceneObj_Area_Ly_Property_Ani_Prop_ShadowScreen_01",
+      "modifiers": {
+        "Enable_ShadowScreenArt_A": {
+          "elementDurability": 100,
+          "modifierName": "",
+          "onAdded": [
+            {
+              "$type": "EnableSceneTransformByName",
+              "setEnable": true,
+              "transformNames": [
+                "ShadowArtA"
+              ]
+            },
+            {
+              "$type": "EnableSceneTransformByName",
+              "transformNames": [
+                "ShadowArtA1"
+              ]
+            },
+            {
+              "$type": "EnableSceneTransformByName",
+              "transformNames": [
+                "ShadowArtB"
+              ]
+            },
+            {
+              "$type": "EnableSceneTransformByName",
+              "transformNames": [
+                "ShadowArtB1"
+              ]
+            },
+            {
+              "$type": "ChangeGadgetState"
+            }
+          ],
+          "__unk_Q3323398612": 0
+        },
+        "Enable_ShadowScreenArt_A1": {
+          "elementDurability": 100,
+          "modifierName": "",
+          "onAdded": [
+            {
+              "$type": "EnableSceneTransformByName",
+              "transformNames": [
+                "ShadowArtA"
+              ]
+            },
+            {
+              "$type": "EnableSceneTransformByName",
+              "setEnable": true,
+              "transformNames": [
+                "ShadowArtA1"
+              ]
+            },
+            {
+              "$type": "EnableSceneTransformByName",
+              "transformNames": [
+                "ShadowArtB"
+              ]
+            },
+            {
+              "$type": "EnableSceneTransformByName",
+              "transformNames": [
+                "ShadowArtB1"
+              ]
+            },
+            {
+              "$type": "ChangeGadgetState"
+            }
+          ],
+          "__unk_Q3323398612": 0
+        },
+        "Enable_ShadowScreenArt_B": {
+          "elementDurability": 100,
+          "modifierName": "",
+          "onAdded": [
+            {
+              "$type": "EnableSceneTransformByName",
+              "transformNames": [
+                "ShadowArtA"
+              ]
+            },
+            {
+              "$type": "EnableSceneTransformByName",
+              "transformNames": [
+                "ShadowArtA1"
+              ]
+            },
+            {
+              "$type": "EnableSceneTransformByName",
+              "setEnable": true,
+              "transformNames": [
+                "ShadowArtB"
+              ]
+            },
+            {
+              "$type": "EnableSceneTransformByName",
+              "transformNames": [
+                "ShadowArtB1"
+              ]
+            },
+            {
+              "$type": "ChangeGadgetState",
+              "state": 201
+            }
+          ],
+          "__unk_Q3323398612": 0
+        },
+        "Enable_ShadowScreenArt_B1": {
+          "elementDurability": 100,
+          "modifierName": "",
+          "onAdded": [
+            {
+              "$type": "EnableSceneTransformByName",
+              "transformNames": [
+                "ShadowArtA"
+              ]
+            },
+            {
+              "$type": "EnableSceneTransformByName",
+              "transformNames": [
+                "ShadowArtA1"
+              ]
+            },
+            {
+              "$type": "EnableSceneTransformByName",
+              "transformNames": [
+                "ShadowArtB"
+              ]
+            },
+            {
+              "$type": "EnableSceneTransformByName",
+              "setEnable": true,
+              "transformNames": [
+                "ShadowArtB1"
+              ]
+            },
+            {
+              "$type": "ChangeGadgetState",
+              "state": 201
+            }
+          ],
+          "__unk_Q3323398612": 0
+        }
+      },
       "onAdded": [
         {
           "$type": "SetGlobalValue",
           "key": "Activity_GadgetAB_ShadowScreenID",
-          "minValue": 0,
           "maxValue": 0,
-          "value": 1,
+          "minValue": 0,
           "predicates": [
             {
-              "$type": "NBMIFIMDPII",
+              "$type": "ByTargetGadgetState",
               "target": "Self"
             }
-          ]
+          ],
+          "value": 1
         },
         {
           "$type": "SetGlobalValue",
           "key": "Activity_GadgetAB_ShadowScreenID",
-          "minValue": 0,
           "maxValue": 0,
-          "value": 3,
+          "minValue": 0,
           "predicates": [
             {
-              "$type": "NBMIFIMDPII",
+              "$type": "ByTargetGadgetState",
               "gadgetState": 201,
               "target": "Self"
             }
-          ]
+          ],
+          "value": 3
         }
       ]
     }
   },
   {
     "Default": {
-      "modifiers": {
-        "Close": {
-          "elementDurability": 100,
-          "modifierName": "",
-          "__unk_Q3323398612": 0
-        },
-        "Open": {
-          "onAdded": [
-            {
-              "$type": "FireEffect",
-              "effectPattern": "Eff_SceneObj_BounceBall_01_Fireworks",
-              "scale": 1,
-              "born": {
-                "$type": "ConfigBornByAttachPoint",
-                "attachPointName": "AttachPoint",
-                "useRotation": true
-              },
-              "ILLLPEOODKP": ""
-            },
-            {
-              "$type": "KillSelf"
-            }
-          ],
-          "elementDurability": 100,
-          "modifierName": "",
-          "__unk_Q3323398612": 0
-        }
-      },
       "abilityMixins": [
         {
           "$type": "AttachToGadgetStateMixin",
@@ -3960,28 +3932,49 @@
         },
         {
           "$type": "AttachToGadgetStateMixin",
-          "modifierName": "Open",
-          "gadgetState": 201
+          "gadgetState": 201,
+          "modifierName": "Open"
         }
       ],
-      "abilityName": "SceneObj_Area_Ly_Property_Ani_Prop_Fireworks_Challenge_01"
+      "abilityName": "SceneObj_Area_Ly_Property_Ani_Prop_Fireworks_Challenge_01",
+      "modifiers": {
+        "Close": {
+          "elementDurability": 100,
+          "modifierName": "",
+          "__unk_Q3323398612": 0
+        },
+        "Open": {
+          "elementDurability": 100,
+          "modifierName": "",
+          "onAdded": [
+            {
+              "$type": "FireEffect",
+              "born": {
+                "$type": "ConfigBornByAttachPoint",
+                "attachPointName": "AttachPoint",
+                "useRotation": true
+              },
+              "effectPattern": "Eff_SceneObj_BounceBall_01_Fireworks",
+              "scale": 1,
+              "JHAGIJGAKMK": ""
+            },
+            {
+              "$type": "KillSelf"
+            }
+          ],
+          "__unk_Q3323398612": 0
+        }
+      }
     }
   },
   {
     "Default": {
+      "abilityName": "SceneObj_Area_Ly_Property_Ani_Prop_Fireworks_Challenge_02",
+      "abilitySpecials": {
+        "RandomTimer": 1
+      },
       "modifiers": {
         "ParkOurFireWork": {
-          "onAdded": [
-            {
-              "$type": "SetRandomOverrideMapValue",
-              "overrideMapKey": "RandomTimer",
-              "valueRangeMax": 3
-            },
-            {
-              "$type": "ApplyModifier",
-              "modifierName": "ParkOurFireWorkEffect"
-            }
-          ],
           "elementDurability": 100,
           "modifierMixins": [
             {
@@ -4001,52 +3994,44 @@
             }
           ],
           "modifierName": "",
+          "onAdded": [
+            {
+              "$type": "SetRandomOverrideMapValue",
+              "overrideMapKey": "RandomTimer",
+              "valueRangeMax": 3
+            },
+            {
+              "$type": "ApplyModifier",
+              "modifierName": "ParkOurFireWorkEffect"
+            }
+          ],
           "__unk_Q3323398612": 0
         },
         "ParkOurFireWorkEffect": {
           "duration": "RandomTimer",
+          "elementDurability": 100,
+          "modifierName": "",
           "onRemoved": [
             {
               "$type": "FireEffect",
               "effectPattern": "Eff_SceneObj_BounceBall_01_Fireworks",
               "scale": 1,
-              "ILLLPEOODKP": ""
+              "JHAGIJGAKMK": ""
             }
           ],
-          "elementDurability": 100,
-          "modifierName": "",
           "__unk_Q3323398612": 0
         }
       },
-      "abilityName": "SceneObj_Area_Ly_Property_Ani_Prop_Fireworks_Challenge_02",
       "onAdded": [
         {
           "$type": "AttachModifier",
           "modifierName": "ParkOurFireWork"
         }
-      ],
-      "abilitySpecials": {
-        "RandomTimer": 1
-      }
+      ]
     }
   },
   {
     "Default": {
-      "modifiers": {
-        "ElectroherculesBattle_CurLocalAvatar": {
-          "elementDurability": 100,
-          "modifierMixins": [
-            {
-              "$type": "EntityInVisibleMixin",
-              "AAHPKGHIPPG": true,
-              "reason": "Gallary",
-              "__unk_Q207371933": true
-            }
-          ],
-          "modifierName": "",
-          "__unk_Q3323398612": 0
-        }
-      },
       "abilityMixins": [
         {
           "$type": "CurLocalAvatarMixinV2",
@@ -4054,7 +4039,22 @@
         }
       ],
       "abilityName": "Activity_ElectroherculesBattle_CurLocalAvatar_Ability",
-      "isDynamicAbility": true
+      "isDynamicAbility": true,
+      "modifiers": {
+        "ElectroherculesBattle_CurLocalAvatar": {
+          "elementDurability": 100,
+          "modifierMixins": [
+            {
+              "$type": "EntityInVisibleMixin",
+              "reason": "Gallary",
+              "__unk_Q207371933": true,
+              "HANDACPCGMF": true
+            }
+          ],
+          "modifierName": "",
+          "__unk_Q3323398612": 0
+        }
+      }
     }
   },
   {
@@ -4062,8 +4062,8 @@
       "abilityMixins": [
         {
           "$type": "ServerUpdateGlobalValueMixin",
-          "maxValue": 0,
           "key": "TeamChainChallenge_CameraShot_NeedChange",
+          "maxValue": 0,
           "minValue": 0
         },
         {
@@ -4086,24 +4086,26 @@
           "key": "TeamChainChallenge_CameraShot_NeedChange",
           "maxValue": 0,
           "minValue": 0,
-          "value": 0,
-          "target": "Team"
+          "target": "Team",
+          "value": 0
         }
       ]
     }
   },
   {
     "Default": {
+      "abilityName": "Activity_TeamChainChallenge_ExitCameraShot_AvatarAbility",
+      "isDynamicAbility": true,
       "modifiers": {
         "AvatarExitCameraShot": {
           "duration": 0.1,
+          "elementDurability": 100,
+          "modifierName": "",
           "onAdded": [
             {
               "$type": "AvatarExitCameraShot"
             }
           ],
-          "elementDurability": 100,
-          "modifierName": "",
           "__unk_Q3323398612": 0
         }
       },
@@ -4112,9 +4114,7 @@
           "$type": "ApplyModifier",
           "modifierName": "AvatarExitCameraShot"
         }
-      ],
-      "abilityName": "Activity_TeamChainChallenge_ExitCameraShot_AvatarAbility",
-      "isDynamicAbility": true
+      ]
     }
   }
 ]
