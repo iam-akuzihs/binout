@@ -1,0 +1,357 @@
+[
+  {
+    "Default": {
+      "$type": "ConfigAbility",
+      "abilityName": "ActivityAbility_CoinCollect_TestAbility",
+      "isDynamicAbility": true
+    }
+  },
+  {
+    "Default": {
+      "$type": "ConfigAbility",
+      "abilityName": "ActivityAbility_CoinCollect_MoveSpeedUp",
+      "abilityMixins": [
+        {
+          "$type": "AttachModifierToGlobalValueMixin",
+          "globalValueTarget": "Team",
+          "globalValueKey": "SGV_CoinCollect_Widget_SkillEnabled",
+          "valueSteps": [
+            0.5,
+            1.5
+          ],
+          "modifierNameSteps": [
+            "UNIQUE_CoinCollect_MoveSpeedUp"
+          ]
+        }
+      ],
+      "abilitySpecials": {
+        "SpeedUpRatio": 0
+      },
+      "modifiers": {
+        "UNIQUE_CoinCollect_MoveSpeedUp": {
+          "stacking": "Unique",
+          "modifierName": "",
+          "isUnique": true,
+          "elementDurability": 100,
+          "properties": {
+            "Animator_MoveSpeedRatio": "SpeedUpRatio"
+          },
+          "isLimitedProperties": true
+        }
+      },
+      "isDynamicAbility": true
+    }
+  },
+  {
+    "Default": {
+      "$type": "ConfigAbility",
+      "abilityName": "ActivityAbility_CoinCollect_RocketJump",
+      "abilityMixins": [
+        {
+          "$type": "AttachModifierToGlobalValueMixin",
+          "globalValueTarget": "Team",
+          "globalValueKey": "SGV_CoinCollect_Widget_SkillEnabled",
+          "valueSteps": [
+            0.5,
+            1.5
+          ],
+          "modifierNameSteps": [
+            "UNIQUE_CoinCollect_RocketJump"
+          ]
+        }
+      ],
+      "modifiers": {
+        "UNIQUE_CoinCollect_RocketJump": {
+          "stacking": "Unique",
+          "modifierName": "",
+          "isUnique": true,
+          "elementDurability": 100,
+          "onAdded": [
+            {
+              "$type": "EnableRocketJump",
+              "doOffStage": true,
+              "canBeHandledOnRecover": true,
+              "type": "DungeonJump",
+              "enable": true,
+              "extention": {
+                "xzMultiplier": 2,
+                "yMultiplier": 6
+              }
+            }
+          ],
+          "onRemoved": [
+            {
+              "$type": "EnableRocketJump",
+              "doOffStage": true,
+              "type": "DungeonJump"
+            }
+          ],
+          "onAvatarIn": [
+            {
+              "$type": "EnableRocketJump",
+              "doOffStage": true,
+              "canBeHandledOnRecover": true,
+              "type": "DungeonJump",
+              "enable": true,
+              "extention": {
+                "xzMultiplier": 2,
+                "yMultiplier": 6
+              }
+            }
+          ],
+          "isLimitedProperties": true
+        }
+      },
+      "isDynamicAbility": true
+    }
+  },
+  {
+    "Default": {
+      "$type": "ConfigAbility",
+      "abilityName": "ActivityAbility_CoinCollect_CreateWindField",
+      "abilityMixins": [
+        {
+          "$type": "AttachModifierToGlobalValueMixin",
+          "globalValueTarget": "Team",
+          "globalValueKey": "GV_WINDFIELD",
+          "valueSteps": [
+            0.5,
+            1.5
+          ],
+          "modifierNameSteps": [
+            "UNIQUE_CoinCollect_CreateWindField_ApplyTeam"
+          ]
+        }
+      ],
+      "modifiers": {
+        "UNIQUE_CoinCollect_CreateWindField_ApplyTeam": {
+          "stacking": "Unique",
+          "modifierName": "",
+          "isUnique": true,
+          "duration": 0.1,
+          "elementDurability": 100,
+          "onAdded": [
+            {
+              "$type": "SetGlobalPos",
+              "target": "Team",
+              "key": "CoinCollect_WindField_Pos",
+              "born": {
+                "$type": "ConfigBornBySelf",
+                "useRotation": true
+              }
+            },
+            {
+              "$type": "ApplyModifier",
+              "target": "Team",
+              "modifierName": "CoinCollect_CreateWindField"
+            }
+          ],
+          "onRemoved": [
+            {
+              "$type": "SetGlobalValue",
+              "target": "Team",
+              "doOffStage": true,
+              "value": 0,
+              "key": "GV_WINDFIELD",
+              "maxValue": 0,
+              "minValue": 0
+            }
+          ]
+        },
+        "CoinCollect_CreateWindField": {
+          "modifierName": "",
+          "duration": 0.1,
+          "elementDurability": 100,
+          "onAdded": [
+            {
+              "$type": "KillGadget",
+              "doOffStage": true,
+              "gadgetInfo": {
+                "configID": 44000549
+              }
+            },
+            {
+              "$type": "CreateGadget",
+              "born": {
+                "$type": "ConfigBornByGlobalValue",
+                "direction": {
+                  "$type": "ConfigDirectionByWorld",
+                  "eularAngles": {
+                    "x": 0.1,
+                    "y": 0.1,
+                    "z": 0.1
+                  }
+                },
+                "useRotation": true,
+                "positionKey": "CoinCollect_WindField_Pos",
+                "directionKey": ""
+              },
+              "gadgetID": 44000549,
+              "campID": 1001,
+              "campTargetType": "Enemy"
+            }
+          ]
+        },
+        "CoinCollect_RemoveWindField": {
+          "modifierName": "",
+          "duration": 0.1,
+          "elementDurability": 100,
+          "onAdded": [
+            {
+              "$type": "KillGadget",
+              "doOffStage": true,
+              "gadgetInfo": {
+                "configID": 44000549
+              }
+            }
+          ]
+        }
+      },
+      "onAdded": [
+        {
+          "$type": "SetGlobalValue",
+          "target": "Team",
+          "value": 0,
+          "key": "GV_WINDFIELD",
+          "maxValue": 0,
+          "minValue": 0
+        }
+      ],
+      "onRemoved": [
+        {
+          "$type": "ApplyModifier",
+          "target": "Team",
+          "modifierName": "CoinCollect_RemoveWindField"
+        }
+      ],
+      "isDynamicAbility": true
+    }
+  },
+  {
+    "Default": {
+      "$type": "ConfigAbility",
+      "abilityName": "ActivityAbility_CoinCollect_CreateWindZone",
+      "modifiers": {
+        "UNIQUE_CoinCollect_WindFiled_Effect": {
+          "modifierName": "",
+          "isUnique": true,
+          "duration": 10,
+          "elementDurability": 100,
+          "onAdded": [
+            {
+              "$type": "AttachEffect",
+              "effectPattern": "Eff_Item_WindSeed_WindField"
+            }
+          ],
+          "onRemoved": [
+            {
+              "$type": "KillSelf"
+            }
+          ]
+        }
+      },
+      "onAdded": [
+        {
+          "$type": "AttachModifier",
+          "modifierName": "UNIQUE_CoinCollect_WindFiled_Effect"
+        }
+      ],
+      "isDynamicAbility": true
+    }
+  },
+  {
+    "Default": {
+      "$type": "ConfigAbility",
+      "abilityName": "ActivityAbility_CoinCollect_CostStamina_Zero",
+      "abilityMixins": [
+        {
+          "$type": "AttachModifierToGlobalValueMixin",
+          "globalValueTarget": "Team",
+          "globalValueKey": "SGV_CoinCollect_Widget_SkillEnabled",
+          "valueSteps": [
+            0.5,
+            1.5
+          ],
+          "modifierNameSteps": [
+            "UNIQUE_CoinCollect_CostStamina_Zero"
+          ]
+        }
+      ],
+      "modifiers": {
+        "UNIQUE_CoinCollect_CostStamina_Zero": {
+          "stacking": "Unique",
+          "modifierName": "",
+          "isUnique": true,
+          "elementDurability": 100,
+          "properties": {
+            "Actor_CostStaminaRatio": -999
+          },
+          "isLimitedProperties": true
+        }
+      },
+      "isDynamicAbility": true
+    }
+  },
+  {
+    "Default": {
+      "$type": "ConfigAbility",
+      "abilityName": "ActivityAbility_CoinCollect_Range_Eff",
+      "abilityMixins": [
+        {
+          "$type": "AttachModifierToGlobalValueMixin",
+          "globalValueTarget": "Team",
+          "globalValueKey": "SGV_CoinCollect_Widget_SkillEnabled",
+          "valueSteps": [
+            0.5,
+            1.5
+          ],
+          "modifierNameSteps": [
+            "UNIQUE_CoinCollect_Range_Eff_Handler"
+          ]
+        }
+      ],
+      "modifiers": {
+        "UNIQUE_CoinCollect_Range_Eff_Handler": {
+          "stacking": "Unique",
+          "modifierName": "",
+          "isUnique": true,
+          "elementDurability": 100,
+          "onAdded": [
+            {
+              "$type": "AttachModifier",
+              "modifierName": "UNIQUE_CoinCollect_Range_Eff"
+            }
+          ],
+          "onAvatarIn": [
+            {
+              "$type": "AttachModifier",
+              "modifierName": "UNIQUE_CoinCollect_Range_Eff"
+            }
+          ],
+          "onAvatarOut": [
+            {
+              "$type": "RemoveUniqueModifier",
+              "doOffStage": true,
+              "modifierName": "UNIQUE_CoinCollect_Range_Eff"
+            }
+          ],
+          "isLimitedProperties": true
+        },
+        "UNIQUE_CoinCollect_Range_Eff": {
+          "stacking": "Unique",
+          "modifierName": "",
+          "isUnique": true,
+          "elementDurability": 100,
+          "onAdded": [
+            {
+              "$type": "AttachEffect",
+              "effectPattern": "Eff_SceneObj_DIK_BUFFC_01_Buff"
+            }
+          ],
+          "isLimitedProperties": true
+        }
+      },
+      "isDynamicAbility": true
+    }
+  }
+]

@@ -1,0 +1,171 @@
+[
+  {
+    "Default": {
+      "$type": "ConfigAbility",
+      "abilityName": "ActivityAbility_GravenCamp_GrassReaction_Impact",
+      "abilityMixins": [
+        {
+          "$type": "CurLocalAvatarMixinV2",
+          "modifierName": "UNIQUE_Activity_GravenCamp_GrassReaction_Impact"
+        }
+      ],
+      "abilitySpecials": {
+        "ImpactDamageSystemValue": 0,
+        "ImpactDamage": 6,
+        "ImpactInterval": 2
+      },
+      "modifiers": {
+        "UNIQUE_Activity_GravenCamp_GrassReaction_Impact": {
+          "stacking": "Unique",
+          "modifierName": "",
+          "isUnique": true,
+          "elementDurability": 100,
+          "modifierMixins": [
+            {
+              "$type": "DoActionByElementReactionMixin",
+              "entityTypes": [
+                "Monster"
+              ],
+              "reactionTypes": [
+                "Burning",
+                "Overdose",
+                "Overgrow",
+                "OverdoseGrass",
+                "OverdoseElectric",
+                "OvergrowMushroomElectric",
+                "OvergrowMushroomFire"
+              ],
+              "actions": [
+                {
+                  "$type": "Predicated",
+                  "target": "Other",
+                  "doOffStage": true,
+                  "targetPredicates": [
+                    {
+                      "$type": "ByTargetGlobalValue",
+                      "target": "Team",
+                      "key": "ImpactState",
+                      "value": 0,
+                      "compareType": "NoneOrEqual"
+                    }
+                  ],
+                  "successActions": [
+                    {
+                      "$type": "ApplyModifier",
+                      "target": "Other",
+                      "modifierName": "Activity_GravenCamp_GrassReaction_Handler_Delay"
+                    },
+                    {
+                      "$type": "ApplyModifier",
+                      "target": "Team",
+                      "doOffStage": true,
+                      "modifierName": "UNIQUE_Activity_GravenCamp_GrassReaction_Impact_CD"
+                    }
+                  ]
+                }
+              ]
+            }
+          ],
+          "onAdded": [
+            {
+              "$type": "SetSystemValueToOverrideMap",
+              "key": "ImpactDamageSystemValue",
+              "type": "ElementLevelCo"
+            }
+          ]
+        },
+        "Activity_GravenCamp_GrassReaction_Handler_Delay": {
+          "modifierName": "",
+          "duration": 0.05,
+          "elementDurability": 100,
+          "onAdded": [
+            {
+              "$type": "FireEffect",
+              "effectPattern": "Eff_EnergyDisk_ElementalBurst_Wave_R40"
+            },
+            {
+              "$type": "TriggerAttackEvent",
+              "target": "Applier",
+              "attackEvent": {
+                "attackPattern": {
+                  "$type": "ConfigAttackSphere",
+                  "triggerType": "TriggerNoRepeat",
+                  "born": {
+                    "$type": "ConfigBornBySelf"
+                  },
+                  "radius": 4
+                },
+                "attackInfo": {
+                  "attackTag": "",
+                  "attenuationTag": "",
+                  "attenuationGroup": "default",
+                  "attackProperty": {
+                    "damagePercentageRatio": 0,
+                    "elementDurability": 0,
+                    "ignoreAttackerProperty": true,
+                    "enBreak": 0,
+                    "attackType": "Melee",
+                    "damageExtra": [
+                      "ImpactDamage",
+                      "ImpactDamageSystemValue",
+                      "MUL"
+                    ],
+                    "trueDamage": true,
+                    "bonusCritical": true
+                  },
+                  "hitPattern": {
+                    "onHitEffectName": "default",
+                    "hitImpulseType": "LV2",
+                    "hitHaltTimeScale": 0.02
+                  },
+                  "canBeModifiedBy": "OriginOwner"
+                }
+              },
+              "targetType": "Enemy"
+            }
+          ]
+        },
+        "UNIQUE_Activity_GravenCamp_GrassReaction_Impact_CD": {
+          "stacking": "Unique",
+          "modifierName": "",
+          "isUnique": true,
+          "duration": "ImpactInterval",
+          "elementDurability": 100,
+          "onAdded": [
+            {
+              "$type": "SetGlobalValue",
+              "target": "Team",
+              "doOffStage": true,
+              "value": -1,
+              "key": "ImpactState",
+              "maxValue": 0,
+              "minValue": 0
+            }
+          ],
+          "onRemoved": [
+            {
+              "$type": "SetGlobalValue",
+              "target": "Team",
+              "doOffStage": true,
+              "value": 0,
+              "key": "ImpactState",
+              "maxValue": 0,
+              "minValue": 0
+            }
+          ]
+        }
+      },
+      "onAdded": [
+        {
+          "$type": "SetGlobalValue",
+          "target": "Team",
+          "value": 0,
+          "key": "ImpactState",
+          "maxValue": 0,
+          "minValue": 0
+        }
+      ],
+      "isDynamicAbility": true
+    }
+  }
+]

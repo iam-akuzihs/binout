@@ -1,0 +1,154 @@
+[
+  {
+    "Default": {
+      "$type": "ConfigAbility",
+      "abilityName": "Activity_GravenInnocence_Parkour_TeamAbility",
+      "abilityMixins": [
+        {
+          "$type": "AttachModifierToSelfGlobalValueMixin",
+          "globalValueKey": "GV_CoinRangeLevel",
+          "defaultGlobalValueOnCreate": 0,
+          "valueSteps": [
+            -0.5,
+            0.5,
+            1.5,
+            100
+          ],
+          "modifierNameSteps": [
+            "Blank",
+            "NormalRange",
+            "SuperRange"
+          ]
+        }
+      ],
+      "modifiers": {
+        "Blank": {
+          "modifierName": "",
+          "elementDurability": 100
+        },
+        "NormalRange": {
+          "modifierName": "",
+          "elementDurability": 100,
+          "thinkInterval": 0.1,
+          "onAdded": [
+            {
+              "$type": "DebugLog",
+              "content": "基础拾取距离"
+            }
+          ],
+          "onThinkInterval": [
+            {
+              "$type": "Predicated",
+              "otherTargets": {
+                "$type": "SelectTargetsByTag",
+                "topLimit": 6,
+                "sortType": "Nearest",
+                "tag": "IS_COIN"
+              },
+              "successActions": [
+                {
+                  "$type": "SetGlobalValue",
+                  "target": "Target",
+                  "predicates": [
+                    {
+                      "$type": "ByTargetPositionToSelfPosition",
+                      "logic": "LesserOrEqual",
+                      "compareType": "XYZ",
+                      "value": 2
+                    }
+                  ],
+                  "value": 1,
+                  "key": "GV_Picked",
+                  "maxValue": 0,
+                  "minValue": 0
+                }
+              ]
+            }
+          ]
+        },
+        "SuperRange": {
+          "modifierName": "",
+          "elementDurability": 100,
+          "thinkInterval": 0.1,
+          "modifierMixins": [
+            {
+              "$type": "CurLocalAvatarMixinV2",
+              "modifierName": "Avatar_SuperRange_Eff"
+            }
+          ],
+          "onAdded": [
+            {
+              "$type": "DebugLog",
+              "content": "超级拾取距离"
+            }
+          ],
+          "onThinkInterval": [
+            {
+              "$type": "Predicated",
+              "otherTargets": {
+                "$type": "SelectTargetsByTag",
+                "topLimit": 6,
+                "sortType": "Nearest",
+                "tag": "IS_COIN"
+              },
+              "successActions": [
+                {
+                  "$type": "SetGlobalValue",
+                  "target": "Target",
+                  "predicates": [
+                    {
+                      "$type": "ByTargetPositionToSelfPosition",
+                      "logic": "LesserOrEqual",
+                      "compareType": "XYZ",
+                      "value": 5
+                    }
+                  ],
+                  "value": 1,
+                  "key": "GV_Picked",
+                  "maxValue": 0,
+                  "minValue": 0
+                }
+              ]
+            }
+          ]
+        },
+        "Avatar_SuperRange_Eff": {
+          "modifierName": "",
+          "elementDurability": 100,
+          "onAdded": [
+            {
+              "$type": "AttachEffect",
+              "doOffStage": true,
+              "effectPattern": "Eff_SceneObj_ExpandAccessCoin_02"
+            }
+          ]
+        }
+      },
+      "onAdded": [
+        {
+          "$type": "SetGlobalValue",
+          "target": "Team",
+          "value": 1,
+          "key": "GV_CoinRangeLevel",
+          "maxValue": 0,
+          "minValue": 0
+        }
+      ],
+      "onRemoved": [
+        {
+          "$type": "RemoveUniqueModifier",
+          "target": "Team",
+          "modifierName": "UNIQUE_PickRangeBuff"
+        },
+        {
+          "$type": "SetGlobalValue",
+          "target": "Team",
+          "value": 0,
+          "key": "GV_CoinRangeLevel",
+          "maxValue": 0,
+          "minValue": 0
+        }
+      ]
+    }
+  }
+]
