@@ -1,0 +1,1700 @@
+[
+  {
+    "Default": {
+      "$type": "ConfigAbility",
+      "abilityName": "Activity_Pitch_Pot_Throw",
+      "modifiers": {
+        "UNIQUE_Activity_Pitch_Pot_Throw_ChangePlayMode_Team": {
+          "stacking": "Unique",
+          "modifierName": "",
+          "isUnique": true,
+          "elementDurability": 100,
+          "modifierMixins": [
+            {
+              "$type": "AttachActionToModifierMixin",
+              "onAdded": [
+                {
+                  "$type": "ChangePlayMode",
+                  "doOffStage": true,
+                  "canBeHandledOnRecover": true,
+                  "muteRemoteAction": true,
+                  "toPlayMode": "PitchPot"
+                }
+              ],
+              "onRemoved": [
+                {
+                  "$type": "ChangePlayMode",
+                  "doOffStage": true,
+                  "canBeHandledOnRecover": true,
+                  "muteRemoteAction": true,
+                  "KHNLBGJDMNG": "PitchPot"
+                }
+              ]
+            }
+          ]
+        },
+        "UNIQUE_Activity_Pitch_Pot_Team_Buff_Handler": {
+          "stacking": "Unique",
+          "modifierName": "",
+          "isUnique": true,
+          "elementDurability": 100,
+          "modifierMixins": [
+            {
+              "$type": "AttachModifierToGlobalValueMixin",
+              "globalValueTarget": "Team",
+              "globalValueKey": "SGV_PotThrowBuff",
+              "valueSteps": [
+                0.5,
+                1.5
+              ],
+              "modifierNameSteps": [
+                "Buff_Controller_Pitch_Pot"
+              ],
+              "GNFKMOCHGDN": true
+            }
+          ]
+        },
+        "Buff_Controller_Pitch_Pot": {
+          "modifierName": "",
+          "duration": 15,
+          "elementDurability": 100,
+          "onAdded": [
+            {
+              "$type": "AttachModifier",
+              "target": "CurTeamAvatars",
+              "doOffStage": true,
+              "modifierName": "Buff_Controller_OnAvatar"
+            }
+          ]
+        },
+        "Buff_Controller_OnAvatar": {
+          "modifierName": "",
+          "elementDurability": 100,
+          "onAdded": [
+            {
+              "$type": "SetGlobalValue",
+              "doOffStage": true,
+              "value": 1,
+              "key": "_ABILITY_Pitch_Pot_Buff_Avatar_Mark",
+              "maxValue": 0,
+              "minValue": 0
+            },
+            {
+              "$type": "AttachEffect",
+              "doOffStage": true,
+              "effectPattern": "Eff_Activity_Pitch_Pot_Bullet_Buff"
+            },
+            {
+              "$type": "AttachUIEffect",
+              "effectPattern": "Eff_UI_ActionBtn_Skill_Notice_02",
+              "effectSlot": "NormalAttack"
+            }
+          ],
+          "onRemoved": [
+            {
+              "$type": "SetGlobalValue",
+              "doOffStage": true,
+              "value": 0,
+              "key": "_ABILITY_Pitch_Pot_Buff_Avatar_Mark",
+              "maxValue": 0,
+              "minValue": 0
+            }
+          ]
+        },
+        "UNIQUE_Activity_Pitch_Pot_Throw_Add_Skill": {
+          "modifierName": "",
+          "isUnique": true,
+          "elementDurability": 100,
+          "modifierMixins": [
+            {
+              "$type": "HideTeamEnergyBtnMixin"
+            }
+          ],
+          "onAdded": [
+            {
+              "$type": "AddAvatarSkillInfo",
+              "doOffStage": true,
+              "skillID": 20362
+            }
+          ],
+          "onRemoved": [
+            {
+              "$type": "RemoveAvatarSkillInfo",
+              "doOffStage": true,
+              "skillID": 20362,
+              "refreshAfterRemove": true
+            }
+          ]
+        },
+        "UNIQUE_Activity_Pitch_Pot_Throw_Switch_Skill": {
+          "modifierName": "",
+          "isUnique": true,
+          "elementDurability": 100,
+          "modifierMixins": [
+            {
+              "$type": "SwitchSkillIDMixin",
+              "priority": "Playmode",
+              "skillID": 20362
+            }
+          ],
+          "onAdded": [
+            {
+              "$type": "AttachModifier",
+              "modifierName": "Activity_Pitch_Pot_Throw_Hold_Driver_Once"
+            }
+          ]
+        },
+        "Power_Buff_Self": {
+          "modifierName": "",
+          "elementDurability": 100,
+          "modifierMixins": [
+            {
+              "$type": "AttachToStateIDMixin",
+              "stateIDs": [
+                "Channel_BS",
+                "Channel_Loop"
+              ],
+              "modifierName": "Shoot_Conti_Delay",
+              "isCheckOnAttach": true
+            }
+          ]
+        },
+        "Activity_Pitch_Pot_Throw_Hold_Driver_Once": {
+          "modifierName": "",
+          "elementDurability": 100,
+          "modifierMixins": [
+            {
+              "$type": "AttachModifierToGlobalValueMixin",
+              "globalValueKey": "_ABILITY_Pitch_Pot_Buff_Avatar_Mark",
+              "valueSteps": [
+                0.5,
+                1.5
+              ],
+              "modifierNameSteps": [
+                "Power_Buff_Self"
+              ]
+            },
+            {
+              "$type": "AttachToStateIDMixin",
+              "stateIDs": [
+                "Channel_Loop"
+              ],
+              "modifierName": "Charge_FX"
+            },
+            {
+              "$type": "ButtonHoldChargeMixin",
+              "skillID": 20362,
+              "secondChargeTime": 0.15,
+              "onBeginCharged": [
+                {
+                  "$type": "SetGlobalValue",
+                  "doOffStage": true,
+                  "value": 0,
+                  "key": "_ABILITY_Common_Channel_IsTrigger",
+                  "maxValue": 0,
+                  "minValue": 0
+                }
+              ],
+              "onReleaseCharged": [
+                {
+                  "$type": "ApplyModifier",
+                  "doOffStage": true,
+                  "modifierName": "Shoot_Short"
+                }
+              ],
+              "onBeginSecondCharged": [
+                {
+                  "$type": "SetAnimatorTrigger",
+                  "triggerID": "StartChannelTrigger"
+                }
+              ],
+              "OnReleaseSecondCharged": [
+                {
+                  "$type": "ApplyModifier",
+                  "doOffStage": true,
+                  "predicates": [
+                    {
+                      "$type": "ByTargetGlobalValue",
+                      "key": "_ABILITY_Common_Channel_IsTrigger",
+                      "value": 0
+                    }
+                  ],
+                  "modifierName": "Shoot_Once"
+                },
+                {
+                  "$type": "SetGlobalValue",
+                  "doOffStage": true,
+                  "value": 1,
+                  "key": "_ABILITY_Common_Channel_IsTrigger",
+                  "maxValue": 0,
+                  "minValue": 0
+                }
+              ],
+              "OnCancelCharged": [
+                {
+                  "$type": "SetAnimatorTrigger",
+                  "triggerID": "EndChannelTrigger"
+                }
+              ],
+              "chargeStateIDs": [
+                "Channel_Loop"
+              ]
+            },
+            {
+              "$type": "AttachToStateIDMixin",
+              "stateIDs": [
+                "Channel_BS",
+                "Channel_Loop"
+              ],
+              "modifierName": "Focus"
+            }
+          ]
+        },
+        "Trigger_OnExit": {
+          "modifierName": "",
+          "elementDurability": 100,
+          "onRemoved": [
+            {
+              "$type": "ApplyModifier",
+              "doOffStage": true,
+              "predicates": [
+                {
+                  "$type": "ByTargetGlobalValue",
+                  "key": "_ABILITY_Common_Channel_IsTrigger",
+                  "value": 0
+                }
+              ],
+              "modifierName": "Shoot_Short"
+            },
+            {
+              "$type": "SetGlobalValue",
+              "doOffStage": true,
+              "value": 1,
+              "key": "_ABILITY_Common_Channel_IsTrigger",
+              "maxValue": 0,
+              "minValue": 0
+            }
+          ]
+        },
+        "Focus": {
+          "modifierName": "",
+          "elementDurability": 100,
+          "onAdded": [
+            {
+              "$type": "AttachEffect",
+              "effectPattern": "Eff_Activity_Pitch_Pot_Charging"
+            },
+            {
+              "$type": "AvatarEnterFocus",
+              "cameraFollowLower": {
+                "x": 0.8,
+                "y": 1.9,
+                "z": -4.5
+              },
+              "cameraFollowUpper": {
+                "x": 0.5,
+                "y": 0.6,
+                "z": -2.5
+              },
+              "cameraFollowMaxDegree": 40,
+              "cameraFollowMinDegree": -35,
+              "cameraFastFocusMode": true,
+              "dragButtonName": "Skill1",
+              "assistance": {
+                "other": {
+                  "useGyro": true
+                }
+              },
+              "canMove": false,
+              "showCrosshair": false,
+              "vcamFov": 40,
+              "NFKEPICLOCG": ""
+            },
+            {
+              "$type": "SetAnimatorBool",
+              "boolID": "LockMotionFlagExitChannel",
+              "value": true
+            },
+            {
+              "$type": "SetGlobalValue",
+              "value": 1,
+              "key": "_ABILITY_Common_IsChannelState",
+              "maxValue": 0,
+              "minValue": 0
+            }
+          ],
+          "onRemoved": [
+            {
+              "$type": "AvatarExitFocus",
+              "doOffStage": true,
+              "keepRotation": true,
+              "BDKJOOGGPBK": 4.8
+            },
+            {
+              "$type": "SetAnimatorBool",
+              "doOffStage": true,
+              "boolID": "LockMotionFlagExitChannel"
+            },
+            {
+              "$type": "SetGlobalValue",
+              "doOffStage": true,
+              "value": 0,
+              "key": "_ABILITY_Common_IsChannelState",
+              "maxValue": 0,
+              "minValue": 0
+            }
+          ]
+        },
+        "Shoot_Short": {
+          "stacking": "Unique",
+          "modifierName": "",
+          "duration": 0.5,
+          "elementDurability": 100,
+          "onAdded": [
+            {
+              "$type": "AvatarSkillStart",
+              "doOffStage": true,
+              "skillID": 20362,
+              "cdRatio": 1,
+              "costStaminaRatio": 1
+            },
+            {
+              "$type": "FireEffect",
+              "predicates": [
+                {
+                  "$type": "ByAny",
+                  "predicates": [
+                    {
+                      "$type": "ByHasFeatureTag",
+                      "featureTagIDs": [
+                        1043
+                      ]
+                    },
+                    {
+                      "$type": "ByHasFeatureTag",
+                      "featureTagIDs": [
+                        1044
+                      ]
+                    }
+                  ]
+                }
+              ],
+              "effectPattern": "Eff_Activity_Pitch_Pot_Shoot_Short"
+            },
+            {
+              "$type": "FireEffect",
+              "predicates": [
+                {
+                  "$type": "ByAny",
+                  "predicates": [
+                    {
+                      "$type": "ByHasFeatureTag",
+                      "featureTagIDs": [
+                        1041
+                      ]
+                    },
+                    {
+                      "$type": "ByHasFeatureTag",
+                      "featureTagIDs": [
+                        1042
+                      ]
+                    }
+                  ]
+                }
+              ],
+              "effectPattern": "Eff_Activity_Pitch_Pot_Shoot_Short_MaleLady"
+            },
+            {
+              "$type": "FireEffect",
+              "predicates": [
+                {
+                  "$type": "ByHasFeatureTag",
+                  "featureTagIDs": [
+                    1045
+                  ]
+                }
+              ],
+              "effectPattern": "Eff_Activity_Pitch_Pot_Shoot_Short_Loli"
+            },
+            {
+              "$type": "TriggerBullet",
+              "predicates": [
+                {
+                  "$type": "ByAny",
+                  "predicates": [
+                    {
+                      "$type": "ByHasFeatureTag",
+                      "featureTagIDs": [
+                        1043
+                      ]
+                    },
+                    {
+                      "$type": "ByHasFeatureTag",
+                      "featureTagIDs": [
+                        1044
+                      ]
+                    }
+                  ]
+                }
+              ],
+              "bulletID": 42000003,
+              "born": {
+                "$type": "ConfigBornBySelf",
+                "offset": {
+                  "y": 1.2,
+                  "z": 0.5
+                },
+                "direction": {
+                  "$type": "ConfigDirectionByAttachPoint",
+                  "attachPointName": "FocusAnchor",
+                  "attachPointTargetType": "Self"
+                },
+                "useRotation": true
+              }
+            },
+            {
+              "$type": "TriggerBullet",
+              "predicates": [
+                {
+                  "$type": "ByAny",
+                  "predicates": [
+                    {
+                      "$type": "ByHasFeatureTag",
+                      "featureTagIDs": [
+                        1041
+                      ]
+                    },
+                    {
+                      "$type": "ByHasFeatureTag",
+                      "featureTagIDs": [
+                        1042
+                      ]
+                    }
+                  ]
+                }
+              ],
+              "bulletID": 42000003,
+              "born": {
+                "$type": "ConfigBornBySelf",
+                "offset": {
+                  "y": 1.4,
+                  "z": 0.5
+                },
+                "direction": {
+                  "$type": "ConfigDirectionByAttachPoint",
+                  "attachPointName": "FocusAnchor",
+                  "attachPointTargetType": "Self"
+                },
+                "useRotation": true
+              }
+            },
+            {
+              "$type": "TriggerBullet",
+              "predicates": [
+                {
+                  "$type": "ByHasFeatureTag",
+                  "featureTagIDs": [
+                    1045
+                  ]
+                }
+              ],
+              "bulletID": 42000003,
+              "born": {
+                "$type": "ConfigBornBySelf",
+                "offset": {
+                  "y": 0.85,
+                  "z": 0.5
+                },
+                "direction": {
+                  "$type": "ConfigDirectionByAttachPoint",
+                  "attachPointName": "FocusAnchor",
+                  "attachPointTargetType": "Self"
+                },
+                "useRotation": true
+              }
+            }
+          ]
+        },
+        "Shoot_Once": {
+          "stacking": "Multiple",
+          "modifierName": "",
+          "duration": 0.1,
+          "elementDurability": 100,
+          "onAdded": [
+            {
+              "$type": "AvatarSkillStart",
+              "doOffStage": true,
+              "skillID": 20362,
+              "cdRatio": 1,
+              "costStaminaRatio": 1
+            },
+            {
+              "$type": "FireEffect",
+              "effectPattern": "Eff_Activity_Pitch_Pot_Shoot"
+            },
+            {
+              "$type": "SetGlobalPos",
+              "doOffStage": true,
+              "key": "_ABILITY_Pitch_Pot_Throw_Pos",
+              "born": {
+                "$type": "ConfigBornByAttachPoint",
+                "useRotation": true,
+                "attachPointName": "WeaponR"
+              },
+              "setTarget": false
+            },
+            {
+              "$type": "SetGlobalDir",
+              "doOffStage": true,
+              "key": "_ABILITY_Pitch_Pot_Throw_Dir",
+              "born": {
+                "$type": "JNPLPMFFCCB",
+                "direction": {
+                  "$type": "GIOACNMDBHA",
+                  "angleOffset": {
+                    "x": -40,
+                    "y": 5
+                  },
+                  "PAFBKFELPKE": true
+                }
+              },
+              "setTarget": false
+            },
+            {
+              "$type": "TriggerBullet",
+              "bulletID": 42000003,
+              "born": {
+                "$type": "ConfigBornByGlobalValue",
+                "positionKey": "_ABILITY_Pitch_Pot_Throw_Pos",
+                "directionKey": "_ABILITY_Pitch_Pot_Throw_Dir"
+              }
+            }
+          ],
+          "onRemoved": [
+            {
+              "$type": "SetAnimatorTrigger",
+              "doOffStage": true,
+              "triggerID": "EndChannelTrigger"
+            }
+          ]
+        },
+        "Shoot_Conti_Delay": {
+          "modifierName": "",
+          "elementDurability": 100,
+          "thinkInterval": 0.3,
+          "onThinkInterval": [
+            {
+              "$type": "AttachModifier",
+              "modifierName": "Shoot_Conti"
+            }
+          ]
+        },
+        "Shoot_Conti": {
+          "stacking": "Unique",
+          "modifierName": "",
+          "elementDurability": 100,
+          "thinkInterval": 0.33,
+          "onThinkInterval": [
+            {
+              "$type": "SetGlobalPos",
+              "doOffStage": true,
+              "key": "_ABILITY_Pitch_Pot_Throw_Pos",
+              "born": {
+                "$type": "ConfigBornByAttachPoint",
+                "useRotation": true,
+                "attachPointName": "WeaponR"
+              },
+              "setTarget": false
+            },
+            {
+              "$type": "SetGlobalDir",
+              "doOffStage": true,
+              "key": "_ABILITY_Pitch_Pot_Throw_Dir",
+              "born": {
+                "$type": "JNPLPMFFCCB",
+                "direction": {
+                  "$type": "GIOACNMDBHA",
+                  "angleOffset": {
+                    "x": -40,
+                    "y": 5
+                  },
+                  "PAFBKFELPKE": true
+                }
+              },
+              "setTarget": false
+            },
+            {
+              "$type": "TriggerBullet",
+              "bulletID": 42000003,
+              "born": {
+                "$type": "ConfigBornByGlobalValue",
+                "positionKey": "_ABILITY_Pitch_Pot_Throw_Pos",
+                "directionKey": "_ABILITY_Pitch_Pot_Throw_Dir"
+              }
+            }
+          ]
+        },
+        "Charge_FX": {
+          "modifierName": "",
+          "elementDurability": 100,
+          "onAdded": [
+            {
+              "$type": "AttachEffect",
+              "effectPattern": "Eff_Activity_Pitch_Pot_Aim_Line"
+            }
+          ]
+        }
+      },
+      "onAdded": [
+        {
+          "$type": "AttachModifier",
+          "modifierName": "UNIQUE_Activity_Pitch_Pot_Throw_ChangePlayMode_Team"
+        },
+        {
+          "$type": "AttachModifier",
+          "modifierName": "UNIQUE_Activity_Pitch_Pot_Throw_Add_Skill"
+        },
+        {
+          "$type": "AttachModifier",
+          "modifierName": "UNIQUE_Activity_Pitch_Pot_Throw_Switch_Skill"
+        },
+        {
+          "$type": "AttachModifier",
+          "target": "Team",
+          "modifierName": "UNIQUE_Activity_Pitch_Pot_Team_Buff_Handler"
+        }
+      ],
+      "isDynamicAbility": true
+    }
+  },
+  {
+    "Default": {
+      "$type": "ConfigAbility",
+      "abilityName": "Activity_Pitch_Pot_Throw_Bullet",
+      "abilityMixins": [
+        {
+          "$type": "DoActionOnGlobalValueChangeMixin",
+          "globalValueKey": "Mark_Bullet_Triggered",
+          "actions": [
+            {
+              "$type": "FireEffect",
+              "predicates": [
+                {
+                  "$type": "ByTargetGlobalValue",
+                  "target": "Self",
+                  "key": "Mark_Bullet_Triggered",
+                  "value": 0,
+                  "compareType": "MoreThan"
+                }
+              ],
+              "effectPattern": "Eff_Arrow_Hit_Monster"
+            },
+            {
+              "$type": "ApplyModifier",
+              "predicates": [
+                {
+                  "$type": "ByTargetGlobalValue",
+                  "target": "Self",
+                  "key": "Mark_Bullet_Triggered",
+                  "value": 0,
+                  "compareType": "MoreThan"
+                }
+              ],
+              "modifierName": "Bullet_Killself_Handler"
+            }
+          ]
+        },
+        {
+          "$type": "HittingOtherMixin",
+          "onHittingOther": [
+            {
+              "$type": "SetGlobalValueV2",
+              "value": 1,
+              "key": "_Explode_Hit",
+              "maxValue": 0,
+              "minValue": 0
+            },
+            {
+              "$type": "SetGlobalValueToOverrideMap",
+              "globalValueKey": "_Explode_Hit",
+              "overrideMapKey": "_Explode_Call"
+            },
+            {
+              "$type": "Predicated",
+              "target": "Target",
+              "targetPredicates": [
+                {
+                  "$type": "ByAny",
+                  "predicates": [
+                    {
+                      "$type": "EEFCDGNBLPM",
+                      "tag": "Is_NormalPot"
+                    },
+                    {
+                      "$type": "EEFCDGNBLPM",
+                      "tag": "Is_HugePot"
+                    },
+                    {
+                      "$type": "EEFCDGNBLPM",
+                      "tag": "Is_Board"
+                    },
+                    {
+                      "$type": "EEFCDGNBLPM",
+                      "tag": "Is_Predictable"
+                    }
+                  ]
+                }
+              ],
+              "successActions": [
+                {
+                  "$type": "DebugLog",
+                  "content": "[JarDestory]:HitOtherNormalJar"
+                },
+                {
+                  "$type": "ApplyModifier",
+                  "target": "Target",
+                  "modifierName": "UNIQUE_Pot_To_Avatar_SLC_Handler"
+                }
+              ]
+            },
+            {
+              "$type": "Predicated",
+              "target": "Target",
+              "targetPredicates": [
+                {
+                  "$type": "EEFCDGNBLPM",
+                  "tag": "Is_ExplodePot"
+                }
+              ],
+              "successActions": [
+                {
+                  "$type": "DebugLog",
+                  "content": "[JarDestory]:HitOtherExplodeJar"
+                },
+                {
+                  "$type": "ApplyModifier",
+                  "target": "Target",
+                  "modifierName": "UNIQUE_ExpPot_Attack_Handler"
+                },
+                {
+                  "$type": "ApplyModifier",
+                  "target": "Target",
+                  "modifierName": "UNIQUE_Pot_To_Avatar_SLC_Handler"
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "abilitySpecials": {
+        "Ratio_Update_Gallery": 1,
+        "Explode_Call": 0
+      },
+      "modifiers": {
+        "Bullet_Killself_Handler": {
+          "modifierName": "",
+          "duration": 0.2,
+          "elementDurability": 100,
+          "onRemoved": [
+            {
+              "$type": "DebugLog",
+              "content": "Jar Bullet Triggered"
+            },
+            {
+              "$type": "KillSelf"
+            }
+          ]
+        },
+        "Bullet_Eff": {
+          "modifierName": "",
+          "elementDurability": 100,
+          "onAdded": [
+            {
+              "$type": "AttachEffect",
+              "predicates": [
+                {
+                  "$type": "ByTargetGlobalValue",
+                  "target": "Self",
+                  "key": "_ABILITY_Pitch_Pot_Buff_Bullet_Mark",
+                  "value": 0,
+                  "compareType": "NoneOrEqual"
+                }
+              ],
+              "effectPattern": "Eff_Activity_Pitch_Pot_Bullet_02"
+            },
+            {
+              "$type": "AttachEffect",
+              "predicates": [
+                {
+                  "$type": "ByTargetGlobalValue",
+                  "target": "Self",
+                  "key": "_ABILITY_Pitch_Pot_Buff_Bullet_Mark",
+                  "value": 1
+                }
+              ],
+              "effectPattern": "Eff_Activity_Pitch_Pot_Bullet_01"
+            }
+          ]
+        },
+        "UNIQUE_Pot_To_Avatar_SLC_Handler": {
+          "stacking": "Unique",
+          "modifierName": "",
+          "isUnique": true,
+          "duration": 0.2,
+          "elementDurability": 100,
+          "onAdded": [
+            {
+              "$type": "ApplyModifier",
+              "target": "ApplierOriginOnwer",
+              "modifierName": "Pot_Call_From_Avatar"
+            }
+          ]
+        },
+        "Pot_Call_From_Avatar": {
+          "stacking": "MultipleRefresh",
+          "modifierName": "",
+          "duration": 0.2,
+          "elementDurability": 100,
+          "onAdded": [
+            {
+              "$type": "DebugLog",
+              "content": "[JarDestory]:PlayerSLC"
+            },
+            {
+              "$type": "ServerLuaCall",
+              "target": "Applier",
+              "luaCallType": "CurGalleryControlGroup",
+              "funcName": "SLC_Submit_Score_Ratio",
+              "paramNum": 2,
+              "EGNMFDKFFII": "_Ratio_Update_Gallery",
+              "param2": "_Explode_Call",
+              "param3": 0
+            }
+          ]
+        },
+        "UNIQUE_ExpPot_Attack_Handler": {
+          "stacking": "Unique",
+          "modifierName": "",
+          "isUnique": true,
+          "duration": 1,
+          "elementDurability": 100,
+          "onAdded": [
+            {
+              "$type": "TriggerAttackEvent",
+              "target": "Applier",
+              "attackEvent": {
+                "attackPattern": {
+                  "$type": "ConfigAttackSphere",
+                  "triggerType": "TriggerNoRepeat",
+                  "born": {
+                    "$type": "ConfigBornByAttachPoint",
+                    "useRotation": true,
+                    "attachPointName": "RootNode",
+                    "attachPointTargetType": "Self"
+                  },
+                  "radius": 3
+                },
+                "attackInfo": {
+                  "attackTag": "",
+                  "attenuationTag": "",
+                  "attenuationGroup": "default",
+                  "attackProperty": {
+                    "damagePercentage": 0,
+                    "damagePercentageRatio": 0,
+                    "elementDurability": 0,
+                    "strikeType": "Blunt",
+                    "enBreak": 0,
+                    "__exp_arkhe": 0
+                  }
+                }
+              },
+              "targetType": "All"
+            }
+          ]
+        }
+      },
+      "onAdded": [
+        {
+          "$type": "CopyGlobalValue",
+          "srcTarget": "OriginOwner",
+          "dstTarget": "Self",
+          "srcKey": "_ABILITY_Pitch_Pot_Buff_Avatar_Mark",
+          "dstKey": "_ABILITY_Pitch_Pot_Buff_Bullet_Mark"
+        },
+        {
+          "$type": "AttachModifier",
+          "modifierName": "Bullet_Eff"
+        },
+        {
+          "$type": "SetGlobalValueV2",
+          "value": 0,
+          "key": "Mark_Bullet_Triggered",
+          "maxValue": 0,
+          "minValue": 0
+        },
+        {
+          "$type": "SetGlobalValueV2",
+          "value": 1,
+          "key": "_Ratio_Jar_Score",
+          "maxValue": 0,
+          "minValue": 0
+        },
+        {
+          "$type": "SetGlobalValueV2",
+          "value": 0,
+          "key": "_Explode_Hit",
+          "maxValue": 0,
+          "minValue": 0
+        }
+      ],
+      "onAbilityStart": [
+        {
+          "$type": "Predicated",
+          "target": "Other",
+          "targetPredicates": [
+            {
+              "$type": "EEFCDGNBLPM",
+              "tag": "Is_ScoreRing"
+            }
+          ],
+          "successActions": [
+            {
+              "$type": "DebugLog",
+              "content": "[JarDestory]:HitAddRing,AddRatio"
+            },
+            {
+              "$type": "SetGlobalValueV2",
+              "value": 2,
+              "key": "_Ratio_Jar_Score",
+              "maxValue": 0,
+              "minValue": 0
+            }
+          ]
+        },
+        {
+          "$type": "Predicated",
+          "target": "Target",
+          "targetPredicates": [
+            {
+              "$type": "ByAny",
+              "predicates": [
+                {
+                  "$type": "EEFCDGNBLPM",
+                  "tag": "Is_ScoreRing"
+                },
+                {
+                  "$type": "EEFCDGNBLPM",
+                  "tag": "Is_NormalPot"
+                },
+                {
+                  "$type": "EEFCDGNBLPM",
+                  "tag": "Is_HugePot"
+                },
+                {
+                  "$type": "EEFCDGNBLPM",
+                  "tag": "Is_Board"
+                },
+                {
+                  "$type": "EEFCDGNBLPM",
+                  "tag": "Is_Predictable"
+                }
+              ]
+            },
+            {
+              "$type": "ByTargetGlobalValue",
+              "target": "Self",
+              "key": "Mark_Bullet_Triggered",
+              "value": 0
+            }
+          ],
+          "successActions": [
+            {
+              "$type": "DebugLog",
+              "content": "[JarDestory]:HitNormalJar"
+            },
+            {
+              "$type": "SetGlobalValueToOverrideMap",
+              "globalValueKey": "_Ratio_Jar_Score",
+              "overrideMapKey": "_Ratio_Update_Gallery"
+            },
+            {
+              "$type": "ApplyModifier",
+              "target": "Target",
+              "modifierName": "UNIQUE_Pot_To_Avatar_SLC_Handler"
+            }
+          ]
+        },
+        {
+          "$type": "Predicated",
+          "target": "Target",
+          "targetPredicates": [
+            {
+              "$type": "EEFCDGNBLPM",
+              "tag": "Is_ExplodePot"
+            },
+            {
+              "$type": "ByTargetGlobalValue",
+              "target": "Self",
+              "key": "Mark_Bullet_Triggered",
+              "value": 0
+            }
+          ],
+          "successActions": [
+            {
+              "$type": "DebugLog",
+              "content": "[JarDestory]:HitExplodeJar"
+            },
+            {
+              "$type": "SetGlobalValueToOverrideMap",
+              "globalValueKey": "_Ratio_Jar_Score",
+              "overrideMapKey": "_Ratio_Update_Gallery"
+            },
+            {
+              "$type": "DoActionsLocal",
+              "actionList": [
+                {
+                  "$type": "TriggerAudio",
+                  "operation": {
+                    "$type": "ConfigAudioEventOp",
+                    "operation": {
+                      "text": "Play_motion_amb_scnerObj_gear_CannonTarget_07"
+                    }
+                  }
+                }
+              ]
+            },
+            {
+              "$type": "ApplyModifier",
+              "target": "Target",
+              "modifierName": "UNIQUE_ExpPot_Attack_Handler"
+            },
+            {
+              "$type": "ApplyModifier",
+              "target": "Target",
+              "modifierName": "UNIQUE_Pot_To_Avatar_SLC_Handler"
+            }
+          ]
+        },
+        {
+          "$type": "Predicated",
+          "target": "Other",
+          "targetPredicates": [
+            {
+              "$type": "ByAny",
+              "predicates": [
+                {
+                  "$type": "EEFCDGNBLPM",
+                  "tag": "Is_NormalPot"
+                },
+                {
+                  "$type": "EEFCDGNBLPM",
+                  "tag": "Is_HugePot"
+                },
+                {
+                  "$type": "EEFCDGNBLPM",
+                  "tag": "Is_Board"
+                },
+                {
+                  "$type": "EEFCDGNBLPM",
+                  "tag": "Is_ExplodePot"
+                },
+                {
+                  "$type": "EEFCDGNBLPM",
+                  "tag": "Is_Predictable"
+                },
+                {
+                  "$type": "ByEntityTypes",
+                  "entityTypes": [
+                    "Level"
+                  ]
+                }
+              ]
+            }
+          ],
+          "successActions": [
+            {
+              "$type": "SetGlobalValueV2",
+              "value": 1,
+              "key": "Mark_Bullet_Triggered",
+              "maxValue": 0,
+              "minValue": 0
+            }
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "Default": {
+      "$type": "ConfigAbility",
+      "abilityName": "Activity_Pitch_Pot_Throw_WQ",
+      "modifiers": {
+        "UNIQUE_Activity_Pitch_Pot_Throw_ChangePlayMode_WQ_Team": {
+          "stacking": "Unique",
+          "modifierName": "",
+          "isUnique": true,
+          "elementDurability": 100,
+          "modifierMixins": [
+            {
+              "$type": "AttachActionToModifierMixin",
+              "onAdded": [
+                {
+                  "$type": "ChangePlayMode",
+                  "doOffStage": true,
+                  "muteRemoteAction": true,
+                  "toPlayMode": "PitchPot"
+                }
+              ],
+              "onRemoved": [
+                {
+                  "$type": "ChangePlayMode",
+                  "doOffStage": true,
+                  "canBeHandledOnRecover": true,
+                  "muteRemoteAction": true,
+                  "KHNLBGJDMNG": "PitchPot"
+                }
+              ]
+            },
+            {
+              "$type": "HideTeamEnergyBtnMixin"
+            }
+          ]
+        },
+        "UNIQUE_Activity_Pitch_Pot_Throw_Add_Skill_WQ": {
+          "stacking": "Unique",
+          "modifierName": "",
+          "isUnique": true,
+          "elementDurability": 100,
+          "onAdded": [
+            {
+              "$type": "AddAvatarSkillInfo",
+              "doOffStage": true,
+              "skillID": 20365
+            }
+          ],
+          "onRemoved": [
+            {
+              "$type": "RemoveAvatarSkillInfo",
+              "doOffStage": true,
+              "skillID": 20365,
+              "refreshAfterRemove": true
+            }
+          ]
+        },
+        "UNIQUE_Activity_Pitch_Pot_Throw_Switch_Skill_WQ": {
+          "stacking": "Unique",
+          "modifierName": "",
+          "isUnique": true,
+          "elementDurability": 100,
+          "modifierMixins": [
+            {
+              "$type": "SwitchSkillIDMixin",
+              "priority": "PlaymodeExtra1",
+              "skillID": 20365
+            }
+          ],
+          "onAdded": [
+            {
+              "$type": "AttachModifier",
+              "modifierName": "Activity_Pitch_Pot_Throw_Hold_Driver_Once_WQ"
+            }
+          ]
+        },
+        "Activity_Pitch_Pot_Throw_Hold_Driver_Once_WQ": {
+          "modifierName": "",
+          "elementDurability": 100,
+          "modifierMixins": [
+            {
+              "$type": "AttachToStateIDMixin",
+              "stateIDs": [
+                "Channel_Loop"
+              ],
+              "modifierName": "Charge_FX"
+            },
+            {
+              "$type": "ButtonHoldChargeMixin",
+              "skillID": 20365,
+              "secondChargeTime": 0.15,
+              "onBeginCharged": [
+                {
+                  "$type": "SetGlobalValue",
+                  "doOffStage": true,
+                  "value": 0,
+                  "key": "_ABILITY_Common_Channel_IsTrigger",
+                  "maxValue": 0,
+                  "minValue": 0
+                }
+              ],
+              "onReleaseCharged": [
+                {
+                  "$type": "ApplyModifier",
+                  "doOffStage": true,
+                  "modifierName": "Shoot_Short"
+                }
+              ],
+              "onBeginSecondCharged": [
+                {
+                  "$type": "SetAnimatorTrigger",
+                  "triggerID": "StartChannelTrigger"
+                }
+              ],
+              "OnReleaseSecondCharged": [
+                {
+                  "$type": "ApplyModifier",
+                  "doOffStage": true,
+                  "predicates": [
+                    {
+                      "$type": "ByTargetGlobalValue",
+                      "key": "_ABILITY_Common_Channel_IsTrigger",
+                      "value": 0
+                    }
+                  ],
+                  "modifierName": "Shoot_Once"
+                },
+                {
+                  "$type": "SetGlobalValue",
+                  "doOffStage": true,
+                  "value": 1,
+                  "key": "_ABILITY_Common_Channel_IsTrigger",
+                  "maxValue": 0,
+                  "minValue": 0
+                }
+              ],
+              "OnCancelCharged": [
+                {
+                  "$type": "SetAnimatorTrigger",
+                  "triggerID": "EndChannelTrigger"
+                }
+              ],
+              "chargeStateIDs": [
+                "Channel_Loop"
+              ]
+            },
+            {
+              "$type": "AttachToStateIDMixin",
+              "stateIDs": [
+                "Channel_BS",
+                "Channel_Loop"
+              ],
+              "modifierName": "Focus"
+            }
+          ]
+        },
+        "Trigger_OnExit": {
+          "modifierName": "",
+          "elementDurability": 100,
+          "onRemoved": [
+            {
+              "$type": "ApplyModifier",
+              "doOffStage": true,
+              "predicates": [
+                {
+                  "$type": "ByTargetGlobalValue",
+                  "key": "_ABILITY_Common_Channel_IsTrigger",
+                  "value": 0
+                }
+              ],
+              "modifierName": "Shoot_Short"
+            },
+            {
+              "$type": "SetGlobalValue",
+              "doOffStage": true,
+              "value": 1,
+              "key": "_ABILITY_Common_Channel_IsTrigger",
+              "maxValue": 0,
+              "minValue": 0
+            }
+          ]
+        },
+        "Focus": {
+          "modifierName": "",
+          "elementDurability": 100,
+          "onAdded": [
+            {
+              "$type": "AttachEffect",
+              "effectPattern": "Eff_Activity_Pitch_Pot_Charging"
+            },
+            {
+              "$type": "AvatarEnterFocus",
+              "cameraFollowLower": {
+                "x": 0.8,
+                "y": 1.9,
+                "z": -4.5
+              },
+              "cameraFollowUpper": {
+                "x": 0.5,
+                "y": 0.6,
+                "z": -2.5
+              },
+              "cameraFollowMaxDegree": 40,
+              "cameraFollowMinDegree": -35,
+              "cameraFastFocusMode": true,
+              "dragButtonName": "Skill1",
+              "assistance": {
+                "other": {
+                  "useGyro": true
+                }
+              },
+              "canMove": false,
+              "showCrosshair": false,
+              "vcamFov": 40,
+              "NFKEPICLOCG": ""
+            },
+            {
+              "$type": "SetAnimatorBool",
+              "boolID": "LockMotionFlagExitChannel",
+              "value": true
+            },
+            {
+              "$type": "SetGlobalValue",
+              "value": 1,
+              "key": "_ABILITY_Common_IsChannelState",
+              "maxValue": 0,
+              "minValue": 0
+            }
+          ],
+          "onRemoved": [
+            {
+              "$type": "AvatarExitFocus",
+              "doOffStage": true,
+              "keepRotation": true,
+              "BDKJOOGGPBK": 4.8
+            },
+            {
+              "$type": "SetAnimatorBool",
+              "doOffStage": true,
+              "boolID": "LockMotionFlagExitChannel"
+            },
+            {
+              "$type": "SetGlobalValue",
+              "doOffStage": true,
+              "value": 0,
+              "key": "_ABILITY_Common_IsChannelState",
+              "maxValue": 0,
+              "minValue": 0
+            }
+          ]
+        },
+        "Shoot_Short": {
+          "stacking": "Unique",
+          "modifierName": "",
+          "duration": 0.5,
+          "elementDurability": 100,
+          "onAdded": [
+            {
+              "$type": "AvatarSkillStart",
+              "doOffStage": true,
+              "skillID": 20365,
+              "cdRatio": 1,
+              "costStaminaRatio": 1
+            },
+            {
+              "$type": "FireEffect",
+              "predicates": [
+                {
+                  "$type": "ByAny",
+                  "predicates": [
+                    {
+                      "$type": "ByHasFeatureTag",
+                      "featureTagIDs": [
+                        1043
+                      ]
+                    },
+                    {
+                      "$type": "ByHasFeatureTag",
+                      "featureTagIDs": [
+                        1044
+                      ]
+                    }
+                  ]
+                }
+              ],
+              "effectPattern": "Eff_Activity_Pitch_Pot_Shoot_Short"
+            },
+            {
+              "$type": "FireEffect",
+              "predicates": [
+                {
+                  "$type": "ByAny",
+                  "predicates": [
+                    {
+                      "$type": "ByHasFeatureTag",
+                      "featureTagIDs": [
+                        1041
+                      ]
+                    },
+                    {
+                      "$type": "ByHasFeatureTag",
+                      "featureTagIDs": [
+                        1042
+                      ]
+                    }
+                  ]
+                }
+              ],
+              "effectPattern": "Eff_Activity_Pitch_Pot_Shoot_Short_MaleLady"
+            },
+            {
+              "$type": "FireEffect",
+              "predicates": [
+                {
+                  "$type": "ByHasFeatureTag",
+                  "featureTagIDs": [
+                    1045
+                  ]
+                }
+              ],
+              "effectPattern": "Eff_Activity_Pitch_Pot_Shoot_Short_Loli"
+            },
+            {
+              "$type": "TriggerBullet",
+              "predicates": [
+                {
+                  "$type": "ByAny",
+                  "predicates": [
+                    {
+                      "$type": "ByHasFeatureTag",
+                      "featureTagIDs": [
+                        1043
+                      ]
+                    },
+                    {
+                      "$type": "ByHasFeatureTag",
+                      "featureTagIDs": [
+                        1044
+                      ]
+                    }
+                  ]
+                }
+              ],
+              "bulletID": 42000004,
+              "born": {
+                "$type": "ConfigBornBySelf",
+                "offset": {
+                  "y": 1.2,
+                  "z": 0.5
+                },
+                "direction": {
+                  "$type": "ConfigDirectionByAttachPoint",
+                  "attachPointName": "FocusAnchor",
+                  "attachPointTargetType": "Self"
+                },
+                "useRotation": true
+              }
+            },
+            {
+              "$type": "TriggerBullet",
+              "predicates": [
+                {
+                  "$type": "ByAny",
+                  "predicates": [
+                    {
+                      "$type": "ByHasFeatureTag",
+                      "featureTagIDs": [
+                        1041
+                      ]
+                    },
+                    {
+                      "$type": "ByHasFeatureTag",
+                      "featureTagIDs": [
+                        1042
+                      ]
+                    }
+                  ]
+                }
+              ],
+              "bulletID": 42000004,
+              "born": {
+                "$type": "ConfigBornBySelf",
+                "offset": {
+                  "y": 1.4,
+                  "z": 0.5
+                },
+                "direction": {
+                  "$type": "ConfigDirectionByAttachPoint",
+                  "attachPointName": "FocusAnchor",
+                  "attachPointTargetType": "Self"
+                },
+                "useRotation": true
+              }
+            },
+            {
+              "$type": "TriggerBullet",
+              "predicates": [
+                {
+                  "$type": "ByHasFeatureTag",
+                  "featureTagIDs": [
+                    1045
+                  ]
+                }
+              ],
+              "bulletID": 42000004,
+              "born": {
+                "$type": "ConfigBornBySelf",
+                "offset": {
+                  "y": 0.85,
+                  "z": 0.5
+                },
+                "direction": {
+                  "$type": "ConfigDirectionByAttachPoint",
+                  "attachPointName": "FocusAnchor",
+                  "attachPointTargetType": "Self"
+                },
+                "useRotation": true
+              }
+            }
+          ]
+        },
+        "Shoot_Once": {
+          "stacking": "Multiple",
+          "modifierName": "",
+          "duration": 0.1,
+          "elementDurability": 100,
+          "onAdded": [
+            {
+              "$type": "AvatarSkillStart",
+              "doOffStage": true,
+              "skillID": 20365,
+              "cdRatio": 1,
+              "costStaminaRatio": 1
+            },
+            {
+              "$type": "FireEffect",
+              "effectPattern": "Eff_Activity_Pitch_Pot_Shoot"
+            },
+            {
+              "$type": "SetGlobalPos",
+              "doOffStage": true,
+              "key": "_ABILITY_Pitch_Pot_Throw_Pos",
+              "born": {
+                "$type": "ConfigBornByAttachPoint",
+                "useRotation": true,
+                "attachPointName": "WeaponR"
+              },
+              "setTarget": false
+            },
+            {
+              "$type": "SetGlobalDir",
+              "doOffStage": true,
+              "key": "_ABILITY_Pitch_Pot_Throw_Dir",
+              "born": {
+                "$type": "JNPLPMFFCCB",
+                "direction": {
+                  "$type": "GIOACNMDBHA",
+                  "angleOffset": {
+                    "x": -40,
+                    "y": 5
+                  },
+                  "PAFBKFELPKE": true
+                }
+              },
+              "setTarget": false
+            },
+            {
+              "$type": "TriggerBullet",
+              "bulletID": 42000004,
+              "born": {
+                "$type": "ConfigBornByGlobalValue",
+                "positionKey": "_ABILITY_Pitch_Pot_Throw_Pos",
+                "directionKey": "_ABILITY_Pitch_Pot_Throw_Dir"
+              }
+            }
+          ],
+          "onRemoved": [
+            {
+              "$type": "SetAnimatorTrigger",
+              "doOffStage": true,
+              "triggerID": "EndChannelTrigger"
+            }
+          ]
+        },
+        "Charge_FX": {
+          "modifierName": "",
+          "elementDurability": 100,
+          "onAdded": [
+            {
+              "$type": "AttachEffect",
+              "effectPattern": "Eff_Activity_Pitch_Pot_Aim_Line"
+            }
+          ]
+        }
+      },
+      "onAdded": [
+        {
+          "$type": "AttachModifier",
+          "target": "Team",
+          "modifierName": "UNIQUE_Activity_Pitch_Pot_Throw_ChangePlayMode_WQ_Team"
+        },
+        {
+          "$type": "AttachModifier",
+          "modifierName": "UNIQUE_Activity_Pitch_Pot_Throw_Add_Skill_WQ"
+        },
+        {
+          "$type": "AttachModifier",
+          "modifierName": "UNIQUE_Activity_Pitch_Pot_Throw_Switch_Skill_WQ"
+        }
+      ],
+      "isDynamicAbility": true
+    }
+  },
+  {
+    "Default": {
+      "$type": "ConfigAbility",
+      "abilityName": "Activity_Pitch_Pot_Throw_Bullet_02",
+      "modifiers": {
+        "Bullet_Eff": {
+          "modifierName": "",
+          "elementDurability": 100,
+          "onAdded": [
+            {
+              "$type": "AttachEffect",
+              "effectPattern": "Eff_Activity_Pitch_Pot_Bullet_Pebble"
+            }
+          ]
+        }
+      },
+      "onAdded": [
+        {
+          "$type": "AttachModifier",
+          "modifierName": "Bullet_Eff"
+        }
+      ],
+      "onAbilityStart": [
+        {
+          "$type": "TriggerAttackEvent",
+          "attackEvent": {
+            "attackPattern": {
+              "$type": "ConfigAttackSphere",
+              "triggerType": "TriggerNoRepeat",
+              "JDMFAFBPJKJ": "IgnoreSceneProp",
+              "born": {
+                "$type": "ConfigBornBySelf",
+                "useRotation": true
+              },
+              "radius": 1
+            },
+            "attackInfo": {
+              "attackTag": "TrainingJar",
+              "attenuationTag": "",
+              "attenuationGroup": "default",
+              "attackProperty": {
+                "damagePercentage": 0,
+                "damagePercentageRatio": 0,
+                "elementDurability": 0,
+                "strikeType": "Blunt",
+                "enBreak": 0,
+                "ignoreModifyDamage": true,
+                "__exp_arkhe": 0
+              },
+              "hitPattern": {
+                "onHitEffectName": "default",
+                "hitImpulseType": "LV1"
+              }
+            }
+          },
+          "targetType": "Enemy"
+        }
+      ]
+    }
+  }
+]

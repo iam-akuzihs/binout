@@ -1,0 +1,913 @@
+[
+  {
+    "Default": {
+      "$type": "ConfigAbility",
+      "abilityName": "BoxMatch_Pole_CoreLogic",
+      "abilityMixins": [
+        {
+          "$type": "AttachToPoseIDMixin",
+          "poseIDs": [
+            101,
+            102,
+            801
+          ],
+          "modifierName": "Pole_Level_1"
+        },
+        {
+          "$type": "AttachToPoseIDMixin",
+          "poseIDs": [
+            201,
+            202
+          ],
+          "modifierName": "Pole_Level_2"
+        },
+        {
+          "$type": "AttachToPoseIDMixin",
+          "poseIDs": [
+            301,
+            302,
+            901
+          ],
+          "modifierName": "Pole_Level_3"
+        },
+        {
+          "$type": "AttachModifierToSelfGlobalValueMixin",
+          "globalValueKey": "GV_BoxMatch_StartBurst",
+          "defaultGlobalValueOnCreate": 0,
+          "valueSteps": [
+            -0.5,
+            0.5,
+            1.5
+          ],
+          "modifierNameSteps": [
+            "Dummy",
+            "StartBurst"
+          ]
+        }
+      ],
+      "modifiers": {
+        "Dummy": {
+          "modifierName": "",
+          "elementDurability": 100
+        },
+        "StartBurst": {
+          "modifierName": "",
+          "elementDurability": 100,
+          "thinkInterval": 0.5,
+          "onAdded": [
+            {
+              "$type": "SetAnimatorTrigger",
+              "triggerID": "BurstImmediately"
+            },
+            {
+              "$type": "FireEffect",
+              "effectPattern": "Eff_Monster_FungusFight_UnionBurstGlitter"
+            },
+            {
+              "$type": "ServerLuaCall",
+              "luaCallType": "CurGalleryControlGroup",
+              "funcName": "SLC_BoxMatch_ShowReminder",
+              "paramNum": 1,
+              "EGNMFDKFFII": 5,
+              "param2": 0,
+              "param3": 0
+            }
+          ],
+          "onThinkInterval": [
+            {
+              "$type": "SetGlobalValue",
+              "value": 0,
+              "key": "GV_BoxMatch_StartBurst",
+              "maxValue": 0,
+              "minValue": 0
+            }
+          ]
+        },
+        "Pole_Level_1": {
+          "modifierName": "",
+          "elementDurability": 100,
+          "onAdded": [
+            {
+              "$type": "SetAnimatorBool",
+              "boolID": "BombCombo"
+            }
+          ]
+        },
+        "Pole_Level_2": {
+          "modifierName": "",
+          "elementDurability": 100,
+          "onAdded": [
+            {
+              "$type": "SetAnimatorBool",
+              "boolID": "BombCombo",
+              "value": true
+            }
+          ]
+        },
+        "Pole_Level_3": {
+          "modifierName": "",
+          "elementDurability": 100,
+          "onAdded": [
+            {
+              "$type": "SetAnimatorBool",
+              "boolID": "BombCombo",
+              "value": true
+            }
+          ]
+        }
+      }
+    }
+  },
+  {
+    "Default": {
+      "$type": "ConfigAbility",
+      "abilityName": "BoxMatch_Pole_Equip_Display_Manager",
+      "abilityMixins": [
+        {
+          "$type": "AttachModifierToSelfGlobalValueMixin",
+          "globalValueKey": "_SHEATH_WEAPON",
+          "defaultGlobalValueOnCreate": 1,
+          "valueSteps": [
+            -0.5,
+            0.5,
+            1.5
+          ],
+          "modifierNameSteps": [
+            "BoxMatch_ShowWeapon",
+            "BoxMatch_SheathWeapon"
+          ]
+        },
+        {
+          "$type": "DoActionByAnimatorStateIDMixin",
+          "stateIDs": [
+            "ThrowBomb_BS",
+            "ThrowBomb"
+          ],
+          "enterActions": [
+            {
+              "$type": "SetGlobalValue",
+              "value": 1,
+              "key": "_SHEATH_WEAPON",
+              "maxValue": 0,
+              "minValue": 0
+            }
+          ]
+        },
+        {
+          "$type": "DoActionByAnimatorStateIDMixin",
+          "stateIDs": [
+            "Standby"
+          ],
+          "enterActions": [
+            {
+              "$type": "SetGlobalValue",
+              "predicates": [
+                {
+                  "$type": "ByTargetGlobalValue",
+                  "key": "_SHEATH_WEAPON",
+                  "value": 1
+                }
+              ],
+              "value": 0,
+              "key": "_SHEATH_WEAPON",
+              "maxValue": 0,
+              "minValue": 0
+            }
+          ]
+        }
+      ],
+      "modifiers": {
+        "BoxMatch_SheathWeapon": {
+          "modifierName": "",
+          "elementDurability": 100,
+          "onAdded": [
+            {
+              "$type": "SetWeaponAttachPointRealName",
+              "canBeHandledOnRecover": true,
+              "partName": "equip01",
+              "realName": "WeaponSheathPoint"
+            }
+          ],
+          "onRemoved": [
+            {
+              "$type": "FireEffect",
+              "otherTargets": {
+                "$type": "SelectTargetsByEquipParts",
+                "equipPartNames": [
+                  "equip01"
+                ]
+              },
+              "effectPattern": "Eff_Monster_Eremite_Weapon_Disappear"
+            }
+          ],
+          "onReconnect": [
+            {
+              "$type": "SetWeaponAttachPointRealName",
+              "partName": "equip01",
+              "realName": "WeaponSheathPoint"
+            }
+          ],
+          "onChangeAuthority": [
+            {
+              "$type": "SetWeaponAttachPointRealName",
+              "partName": "equip01",
+              "realName": "WeaponSheathPoint"
+            }
+          ]
+        },
+        "BoxMatch_ShowWeapon": {
+          "modifierName": "",
+          "elementDurability": 100,
+          "onAdded": [
+            {
+              "$type": "SetWeaponAttachPointRealName",
+              "partName": "equip01",
+              "realName": ""
+            }
+          ],
+          "onRemoved": [
+            {
+              "$type": "FireEffect",
+              "otherTargets": {
+                "$type": "SelectTargetsByEquipParts",
+                "equipPartNames": [
+                  "equip01"
+                ]
+              },
+              "effectPattern": "Eff_Monster_Eremite_Weapon_Disappear"
+            }
+          ]
+        }
+      },
+      "onAbilityStart": [
+        {
+          "$type": "SetGlobalValue",
+          "value": 0,
+          "key": "_SHEATH_WEAPON",
+          "maxValue": 0,
+          "minValue": 0
+        }
+      ]
+    }
+  },
+  {
+    "Default": {
+      "$type": "ConfigAbility",
+      "abilityName": "BoxMatch_Equip_SheathWeapon",
+      "onAbilityStart": [
+        {
+          "$type": "SetGlobalValue",
+          "value": 1,
+          "key": "_SHEATH_WEAPON",
+          "maxValue": 0,
+          "minValue": 0
+        }
+      ]
+    }
+  },
+  {
+    "Default": {
+      "$type": "ConfigAbility",
+      "abilityName": "BoxMatch_Distance_Calc",
+      "onAbilityStart": [
+        {
+          "$type": "Predicated",
+          "target": "Target",
+          "targetPredicates": [
+            {
+              "$type": "ByTargetPositionToSelfPosition",
+              "target": "SelfAttackTarget",
+              "value": 4
+            }
+          ],
+          "successActions": [
+            {
+              "$type": "SetAnimatorBool",
+              "boolID": "TargetFar",
+              "value": true
+            }
+          ],
+          "failActions": [
+            {
+              "$type": "SetAnimatorBool",
+              "boolID": "TargetFar"
+            }
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "Default": {
+      "$type": "ConfigAbility",
+      "abilityName": "BoxMatch_IceBomb_Point_Accurate",
+      "abilityMixins": [
+        {
+          "$type": "DoActionByAnimatorStateIDMixin",
+          "stateIDs": [
+            "ThrowBomb_BS",
+            "ThrowBomb_Combo_BS"
+          ],
+          "enterActions": [
+            {
+              "$type": "FireEffect",
+              "effectPattern": "Eff_Monster_BoxMatch_IceBomb_OnEnter"
+            }
+          ]
+        },
+        {
+          "$type": "AttachToAnimatorStateIDMixin",
+          "stateIDs": [
+            "ThrowBomb_BS",
+            "ThrowBomb_Combo_BS",
+            "ThrowBomb",
+            "ThrowBomb_Combo"
+          ],
+          "modifierName": "IceBomb_HandTrail"
+        }
+      ],
+      "modifiers": {
+        "IceBomb_HandTrail": {
+          "modifierName": "",
+          "elementDurability": 100,
+          "onAdded": [
+            {
+              "$type": "AttachEffect",
+              "effectPattern": "Eff_Monster_BoxMatch_IceBomb_HandTrail"
+            }
+          ]
+        }
+      },
+      "onAbilityStart": [
+        {
+          "$type": "Predicated",
+          "targetPredicates": [
+            {
+              "$type": "ByHasAttackTarget"
+            }
+          ],
+          "successActions": [
+            {
+              "$type": "CreateGadget",
+              "target": "SelfAttackActiveTarget",
+              "born": {
+                "$type": "ConfigBornByTarget",
+                "onGround": true,
+                "useRotation": true
+              },
+              "gadgetID": 42501012
+            }
+          ],
+          "failActions": [
+            {
+              "$type": "CreateGadget",
+              "born": {
+                "$type": "ConfigBornBySelf",
+                "offset": {
+                  "z": 6
+                },
+                "onGround": true,
+                "useRotation": true
+              },
+              "gadgetID": 42501012
+            }
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "Default": {
+      "$type": "ConfigAbility",
+      "abilityName": "BoxMatch_IceBomb_BulletTarget",
+      "modifiers": {
+        "Trigger_IceBomb": {
+          "stacking": "Multiple",
+          "modifierName": "",
+          "duration": 0.1,
+          "elementDurability": 100,
+          "onAdded": [
+            {
+              "$type": "FireEffect",
+              "effectPattern": "Eff_Monster_BoxMatch_IceBomb_OnFire"
+            },
+            {
+              "$type": "Predicated",
+              "targetPredicates": [
+                {
+                  "$type": "ByHasModifier",
+                  "modifierName": "Pole_Level_3"
+                }
+              ],
+              "successActions": [
+                {
+                  "$type": "TriggerBullet",
+                  "target": "Applier",
+                  "bulletID": 42501014,
+                  "born": {
+                    "$type": "ConfigBornByAttachPoint",
+                    "direction": {
+                      "$type": "ConfigDirectionByLookAtEntity",
+                      "PAFBKFELPKE": true
+                    },
+                    "useRotation": true,
+                    "attachPointName": "WeaponR",
+                    "attachPointTargetType": "Self"
+                  },
+                  "trackTarget": "Applier"
+                }
+              ],
+              "failActions": [
+                {
+                  "$type": "TriggerBullet",
+                  "target": "Applier",
+                  "bulletID": 42501013,
+                  "born": {
+                    "$type": "ConfigBornByAttachPoint",
+                    "direction": {
+                      "$type": "ConfigDirectionByLookAtEntity",
+                      "PAFBKFELPKE": true
+                    },
+                    "useRotation": true,
+                    "attachPointName": "WeaponR",
+                    "attachPointTargetType": "Self"
+                  },
+                  "trackTarget": "Applier"
+                }
+              ]
+            }
+          ]
+        }
+      },
+      "onAdded": [
+        {
+          "$type": "ApplyModifier",
+          "target": "Owner",
+          "modifierName": "Trigger_IceBomb"
+        }
+      ]
+    }
+  },
+  {
+    "Default": {
+      "$type": "ConfigAbility",
+      "abilityName": "BoxMatch_IceBomb_Bullet",
+      "modifiers": {
+        "IceBomb_VFX": {
+          "modifierName": "",
+          "elementType": "Ice",
+          "elementDurability": 25,
+          "isElementDurabilityMutable": false,
+          "onAdded": [
+            {
+              "$type": "AttachEffect",
+              "effectPattern": "Eff_Monster_Thoarder_Bomb_Ice_01_Bullet"
+            },
+            {
+              "$type": "AttachEffect",
+              "effectPattern": "Eff_Monster_Thoarder_Bomb_Ice_01_Bullet_Trail"
+            }
+          ]
+        }
+      },
+      "onAdded": [
+        {
+          "$type": "AttachModifier",
+          "modifierName": "IceBomb_VFX"
+        }
+      ],
+      "onAbilityStart": [
+        {
+          "$type": "RemoveModifier",
+          "modifierName": "IceBomb_VFX"
+        },
+        {
+          "$type": "FireEffect",
+          "effectPattern": "Eff_Monster_BoxMatch_Bomb_Ice_01_Explode",
+          "born": {
+            "$type": "ConfigBornBySelf",
+            "useRotation": true
+          }
+        },
+        {
+          "$type": "TriggerAttackEvent",
+          "attackEvent": {
+            "attackPattern": {
+              "$type": "ConfigAttackSphere",
+              "triggerType": "TriggerNoRepeat",
+              "born": {
+                "$type": "ConfigBornBySelf",
+                "onGround": true,
+                "useRotation": true
+              },
+              "radius": 1.8
+            },
+            "attackInfo": {
+              "attackTag": "",
+              "attenuationTag": "",
+              "attenuationGroup": "default",
+              "attackProperty": {
+                "damagePercentage": 1.5,
+                "damagePercentageRatio": 0,
+                "elementType": "Ice",
+                "elementDurability": 50,
+                "strikeType": "Default",
+                "enBreak": 100,
+                "attackType": "Range",
+                "__exp_arkhe": 0
+              },
+              "hitPattern": {
+                "onHitEffectName": "default",
+                "hitImpulseType": "LV3"
+              }
+            }
+          },
+          "targetType": "Enemy"
+        }
+      ]
+    }
+  },
+  {
+    "Default": {
+      "$type": "ConfigAbility",
+      "abilityName": "BoxMatch_IceBomb_Bullet_WithArkhe",
+      "modifiers": {
+        "IceBomb_VFX": {
+          "modifierName": "",
+          "elementType": "Ice",
+          "elementDurability": 25,
+          "isElementDurabilityMutable": false,
+          "onAdded": [
+            {
+              "$type": "AttachEffect",
+              "effectPattern": "Eff_Monster_Thoarder_Bomb_Ice_01_Bullet"
+            },
+            {
+              "$type": "AttachEffect",
+              "effectPattern": "Eff_Monster_BoxMatch_Bomb_Ice_01_Bullet_Pneuma_Trail"
+            }
+          ]
+        }
+      },
+      "onAdded": [
+        {
+          "$type": "AttachModifier",
+          "modifierName": "IceBomb_VFX"
+        }
+      ],
+      "onAbilityStart": [
+        {
+          "$type": "RemoveModifier",
+          "modifierName": "IceBomb_VFX"
+        },
+        {
+          "$type": "FireEffect",
+          "effectPattern": "Eff_Monster_BoxMatch_Bomb_Ice_01_Explode_Pneuma",
+          "born": {
+            "$type": "ConfigBornBySelf",
+            "onGround": true,
+            "useRotation": true
+          }
+        },
+        {
+          "$type": "TriggerAttackEvent",
+          "attackEvent": {
+            "attackPattern": {
+              "$type": "ConfigAttackSphere",
+              "triggerType": "TriggerNoRepeat",
+              "born": {
+                "$type": "ConfigBornBySelf",
+                "useRotation": true
+              },
+              "radius": 1.8
+            },
+            "attackInfo": {
+              "attackTag": "",
+              "attenuationTag": "",
+              "attenuationGroup": "default",
+              "attackProperty": {
+                "damagePercentage": 1.5,
+                "damagePercentageRatio": 0,
+                "elementType": "Ice",
+                "elementDurability": 50,
+                "strikeType": "Default",
+                "enBreak": 100,
+                "attackType": "Range",
+                "__exp_arkhe": -1
+              },
+              "hitPattern": {
+                "onHitEffectName": "default",
+                "hitImpulseType": "LV3"
+              }
+            }
+          },
+          "targetType": "Enemy"
+        }
+      ]
+    }
+  },
+  {
+    "Default": {
+      "$type": "ConfigAbility",
+      "abilityName": "BoxMatch_Pole_AttackSteer",
+      "abilityMixins": [
+        {
+          "$type": "SteerAttackMixin",
+          "steerStateIDs": [
+            "NormalAttack_Attack02"
+          ],
+          "startNormalizedTime": 0.15,
+          "endNormalizedTime": 0.34,
+          "angularSpeed": 150,
+          "attackTrigger": "",
+          "CEGIGILPOFE": true
+        },
+        {
+          "$type": "SteerAttackMixin",
+          "steerStateIDs": [
+            "NormalAttack_Combo01"
+          ],
+          "endNormalizedTime": 0.25,
+          "angularSpeed": 75,
+          "attackTrigger": "",
+          "CEGIGILPOFE": true
+        },
+        {
+          "$type": "SteerAttackMixin",
+          "steerStateIDs": [
+            "NormalAttack_Combo01"
+          ],
+          "startNormalizedTime": 0.25,
+          "endNormalizedTime": 0.37,
+          "angularSpeed": 340,
+          "attackTrigger": "",
+          "CEGIGILPOFE": true
+        },
+        {
+          "$type": "SteerAttackMixin",
+          "steerStateIDs": [
+            "NormalAttack_Combo01"
+          ],
+          "startNormalizedTime": 0.39,
+          "endNormalizedTime": 0.7,
+          "angularSpeed": 75,
+          "attackTrigger": "",
+          "CEGIGILPOFE": true
+        },
+        {
+          "$type": "SteerAttackMixin",
+          "steerStateIDs": [
+            "NormalAttack_Combo02"
+          ],
+          "startNormalizedTime": 0.14,
+          "endNormalizedTime": 0.25,
+          "angularSpeed": 120,
+          "attackTrigger": "",
+          "CEGIGILPOFE": true
+        },
+        {
+          "$type": "SteerAttackMixin",
+          "steerStateIDs": [
+            "NormalAttack_Combo02"
+          ],
+          "startNormalizedTime": 0.33,
+          "endNormalizedTime": 0.37,
+          "angularSpeed": 400,
+          "attackTrigger": "",
+          "CEGIGILPOFE": true
+        },
+        {
+          "$type": "SteerAttackMixin",
+          "steerStateIDs": [
+            "NormalAttack_Combo02"
+          ],
+          "startNormalizedTime": 0.44,
+          "endNormalizedTime": 0.48,
+          "angularSpeed": 400,
+          "attackTrigger": "",
+          "CEGIGILPOFE": true
+        },
+        {
+          "$type": "SteerAttackMixin",
+          "steerStateIDs": [
+            "NormalAttack_Combo02"
+          ],
+          "startNormalizedTime": 0.768,
+          "endNormalizedTime": 0.83,
+          "angularSpeed": 75,
+          "attackTrigger": "",
+          "CEGIGILPOFE": true
+        },
+        {
+          "$type": "SteerAttackMixin",
+          "steerStateIDs": [
+            "NormalAttack_Rush_Transition"
+          ],
+          "angularSpeed": 400,
+          "attackTrigger": "",
+          "CEGIGILPOFE": true
+        },
+        {
+          "$type": "SteerAttackMixin",
+          "steerStateIDs": [
+            "ThrowBomb"
+          ],
+          "angularSpeed": 180,
+          "attackTrigger": "",
+          "CEGIGILPOFE": true
+        }
+      ]
+    }
+  },
+  {
+    "Default": {
+      "$type": "ConfigAbility",
+      "abilityName": "BoxMatch_NoWeapon_AttackSteer",
+      "abilityMixins": [
+        {
+          "$type": "SteerAttackMixin",
+          "steerStateIDs": [
+            "NormalAttack"
+          ],
+          "angularSpeed": 90,
+          "attackTrigger": "",
+          "CEGIGILPOFE": true
+        },
+        {
+          "$type": "SteerAttackMixin",
+          "steerStateIDs": [
+            "BirdieKick"
+          ],
+          "angularSpeed": 90,
+          "attackTrigger": "",
+          "CEGIGILPOFE": true
+        },
+        {
+          "$type": "SteerAttackMixin",
+          "steerStateIDs": [
+            "ThrowBomb"
+          ],
+          "angularSpeed": 180,
+          "attackTrigger": "",
+          "CEGIGILPOFE": true
+        }
+      ]
+    }
+  },
+  {
+    "Default": {
+      "$type": "ConfigAbility",
+      "abilityName": "BoxMatch_MascleMan_NoWeapon_ElementalWeak",
+      "abilityMixins": [
+        {
+          "$type": "AttachToAnimatorStateIDMixin",
+          "stateIDs": [
+            "UltStrike_Charge"
+          ],
+          "modifierName": "ElementWeak_Monitor"
+        }
+      ],
+      "modifiers": {
+        "EndureState": {
+          "modifierName": "",
+          "elementDurability": 100,
+          "properties": {
+            "Actor_EndureDelta": 0.001
+          }
+        },
+        "ElementWeak_Monitor": {
+          "modifierName": "",
+          "elementDurability": 100,
+          "onBeingHit": [
+            {
+              "$type": "Predicated",
+              "targetPredicates": [
+                {
+                  "$type": "ByNot",
+                  "predicates": [
+                    {
+                      "$type": "ByHitElement"
+                    }
+                  ]
+                }
+              ],
+              "successActions": [
+                {
+                  "$type": "SetAnimatorTrigger",
+                  "triggerID": "Break",
+                  "MPTriggerOnRemote": true
+                },
+                {
+                  "$type": "Predicated",
+                  "targetPredicates": [
+                    {
+                      "$type": "ByTargetGlobalValue",
+                      "target": "Self",
+                      "key": "_IS_IN_BOX_MATCH",
+                      "value": 1
+                    }
+                  ],
+                  "successActions": [
+                    {
+                      "$type": "ServerLuaCall",
+                      "predicates": [
+                        {
+                          "$type": "ByHitElement",
+                          "element": "Fire"
+                        }
+                      ],
+                      "luaCallType": "CurGalleryControlGroup",
+                      "funcName": "SLC_BoxMatch_ShowReminder",
+                      "paramNum": 1,
+                      "EGNMFDKFFII": 10,
+                      "param2": 0,
+                      "param3": 0
+                    },
+                    {
+                      "$type": "ServerLuaCall",
+                      "predicates": [
+                        {
+                          "$type": "ByHitElement",
+                          "element": "Ice"
+                        }
+                      ],
+                      "luaCallType": "CurGalleryControlGroup",
+                      "funcName": "SLC_BoxMatch_ShowReminder",
+                      "paramNum": 1,
+                      "EGNMFDKFFII": 11,
+                      "param2": 0,
+                      "param3": 0
+                    },
+                    {
+                      "$type": "TriggerAudio",
+                      "operation": {
+                        "$type": "ConfigAudioEventOp",
+                        "operation": {
+                          "text": "Play_ui_activity_BoxMatch_InLevel_Jubilate"
+                        }
+                      }
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      },
+      "onAdded": [
+        {
+          "$type": "ApplyModifier",
+          "modifierName": "EndureState"
+        }
+      ]
+    }
+  },
+  {
+    "Default": {
+      "$type": "ConfigAbility",
+      "abilityName": "BoxMatch_Common_Crit",
+      "modifiers": {
+        "BoxMatch_Crit_100": {
+          "modifierName": "",
+          "elementDurability": 100,
+          "properties": {
+            "Actor_CriticalDelta": 1
+          }
+        }
+      },
+      "onAdded": [
+        {
+          "$type": "ApplyModifier",
+          "modifierName": "BoxMatch_Crit_100"
+        }
+      ]
+    }
+  },
+  {
+    "Default": {
+      "$type": "ConfigAbility",
+      "abilityName": "BoxMatch_ForQuest_LockPosition",
+      "abilityMixins": [
+        {
+          "$type": "AttachToPoseIDMixin",
+          "poseIDs": [
+            801,
+            901
+          ],
+          "modifierName": "FreezeRigidBody"
+        }
+      ],
+      "modifiers": {
+        "FreezeRigidBody": {
+          "modifierName": "",
+          "elementDurability": 100,
+          "modifierMixins": [
+            {
+              "$type": "RigidBodyFreezeMixin"
+            }
+          ]
+        }
+      }
+    }
+  }
+]

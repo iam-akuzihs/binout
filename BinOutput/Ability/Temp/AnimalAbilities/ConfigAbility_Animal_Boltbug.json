@@ -67,7 +67,7 @@
             },
             "onGround": true,
             "onGroundRaycastUpDist": 0.5,
-            "JNDJNDJCGGC": true
+            "DLAKDMCDFDK": true
           },
           "gadgetID": 42805001,
           "campID": 4001
@@ -128,6 +128,155 @@
         {
           "$type": "RemoveModifier",
           "modifierName": "Boltbug_Scarab_Ball"
+        }
+      ]
+    }
+  },
+  {
+    "Default": {
+      "$type": "ConfigAbility",
+      "abilityName": "BoltBug_MachinaIustitia_LogicHandler",
+      "abilityMixins": [
+        {
+          "$type": "AttachToPoseIDMixin",
+          "poseIDs": [
+            99
+          ],
+          "modifierName": "Broken_Spark_VFX"
+        },
+        {
+          "$type": "AttachToAnimatorStateIDMixin",
+          "stateIDs": [
+            "WorkingFly"
+          ],
+          "modifierName": "ScanLight_VFX"
+        },
+        {
+          "$type": "AttachToStateIDMixin",
+          "stateIDs": [
+            "Fly"
+          ],
+          "modifierName": "Wings_VFX"
+        },
+        {
+          "$type": "DoActionByStateIDMixin",
+          "stateIDs": [
+            "BeHitAir",
+            "BeHit"
+          ],
+          "enterActions": [
+            {
+              "$type": "Predicated",
+              "targetPredicates": [
+                {
+                  "$type": "ByTargetGlobalValue",
+                  "key": "_BROKEN_STATE_",
+                  "value": 1
+                }
+              ],
+              "successActions": [
+                {
+                  "$type": "SetPoseInt",
+                  "intID": "BrokenState",
+                  "ratio": 2
+                },
+                {
+                  "$type": "SetGlobalValue",
+                  "value": 2,
+                  "key": "_BROKEN_STATE_",
+                  "maxValue": 0,
+                  "minValue": 0
+                },
+                {
+                  "$type": "FireEffect",
+                  "effectPattern": "Eff_Animal_Boltbug_MachinaIustitia_Break"
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "modifiers": {
+        "BeHit_Monitor": {
+          "modifierName": "",
+          "elementDurability": 100,
+          "properties": {
+            "Actor_EndureDelta": 20
+          },
+          "onBeingHit": [
+            {
+              "$type": "Randomed",
+              "predicates": [
+                {
+                  "$type": "ByTargetGlobalValue",
+                  "key": "_BROKEN_STATE_",
+                  "value": 2
+                }
+              ],
+              "chance": 0.33,
+              "successActions": [
+                {
+                  "$type": "SetPoseInt",
+                  "intID": "BrokenState",
+                  "ratio": 3
+                },
+                {
+                  "$type": "FireEffect",
+                  "effectPattern": "Eff_Animal_Boltbug_MachinaIustitia_Break"
+                },
+                {
+                  "$type": "SetGlobalValue",
+                  "value": 3,
+                  "key": "_BROKEN_STATE_",
+                  "maxValue": 0,
+                  "minValue": 0
+                }
+              ]
+            }
+          ]
+        },
+        "Broken_Spark_VFX": {
+          "modifierName": "",
+          "elementDurability": 100,
+          "onAdded": [
+            {
+              "$type": "AttachEffect",
+              "effectPattern": "Eff_Animal_Boltbug_MachinaIustitia_Broken"
+            }
+          ]
+        },
+        "ScanLight_VFX": {
+          "modifierName": "",
+          "elementDurability": 100,
+          "onAdded": [
+            {
+              "$type": "AttachEffect",
+              "effectPattern": "Eff_Animal_Boltbug_MachinaIustitia_ScanLight"
+            }
+          ]
+        },
+        "Wings_VFX": {
+          "modifierName": "",
+          "elementDurability": 100,
+          "onAdded": [
+            {
+              "$type": "AttachEffect",
+              "effectPattern": "Eff_Animal_Boltbug_MachinaIustitia_Wings"
+            }
+          ]
+        }
+      },
+      "onAdded": [
+        {
+          "$type": "SetGlobalValue",
+          "value": 1,
+          "key": "_BROKEN_STATE_",
+          "maxValue": 0,
+          "minValue": 0
+        },
+        {
+          "$type": "ApplyModifier",
+          "modifierName": "BeHit_Monitor"
         }
       ]
     }

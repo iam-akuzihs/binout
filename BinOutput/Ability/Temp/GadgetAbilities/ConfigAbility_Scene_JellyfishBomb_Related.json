@@ -1,0 +1,1749 @@
+[
+  {
+    "Default": {
+      "$type": "ConfigAbility",
+      "abilityName": "SceneObj_Area_Fd_Property_Ani_Prop_UnderseaBac_01",
+      "abilityMixins": [
+        {
+          "$type": "FieldEntityCountChangeMixin",
+          "campTargetType": "All",
+          "targetPredicates": [
+            {
+              "$type": "ByEntityTypes",
+              "entityTypes": [
+                "Avatar"
+              ]
+            }
+          ],
+          "simpleCountGlobaValueKey": "AvatarCount",
+          "simpleCountMaxValue": 0,
+          "simpleCountMinValue": 0
+        },
+        {
+          "$type": "AttachModifierToSelfGlobalValueNoInitMixin",
+          "globalValueKey": "AttackCD",
+          "valueSteps": [
+            -0.5,
+            0.5,
+            1.5
+          ],
+          "modifierNameSteps": [
+            "TryTrigger",
+            "CDTimer"
+          ],
+          "removeAppliedModifier": false
+        },
+        {
+          "$type": "AttachToGadgetStateMixin",
+          "modifierName": "Normal"
+        },
+        {
+          "$type": "AttachToGadgetStateMixin",
+          "gadgetState": 201,
+          "modifierName": "FakeDeath"
+        },
+        {
+          "$type": "AttachToGadgetStateMixin",
+          "gadgetState": 901,
+          "modifierName": "TrueDeath"
+        }
+      ],
+      "modifiers": {
+        "CDTimer": {
+          "modifierName": "",
+          "duration": 2.9,
+          "elementDurability": 100,
+          "onRemoved": [
+            {
+              "$type": "SetGlobalValue",
+              "value": 0,
+              "key": "AttackCD",
+              "maxValue": 0,
+              "minValue": 0
+            }
+          ]
+        },
+        "TryTrigger": {
+          "modifierName": "",
+          "duration": 0.1,
+          "elementDurability": 100,
+          "onRemoved": [
+            {
+              "$type": "Predicated",
+              "targetPredicates": [
+                {
+                  "$type": "ByTargetGlobalValue",
+                  "key": "AvatarCount",
+                  "value": 1,
+                  "compareType": "MoreThanAndEqual"
+                },
+                {
+                  "$type": "ByTargetGlobalValue",
+                  "key": "_IS_Fake_Death",
+                  "value": 0
+                }
+              ],
+              "successActions": [
+                {
+                  "$type": "SetAnimatorTrigger",
+                  "triggerID": "Attack",
+                  "MPTriggerOnRemote": true
+                },
+                {
+                  "$type": "SetGlobalValue",
+                  "value": 1,
+                  "key": "AttackCD",
+                  "maxValue": 0,
+                  "minValue": 0
+                },
+                {
+                  "$type": "TriggerAbility",
+                  "abilityName": "SceneObj_Area_Fd_Property_Ani_Prop_UnderseaBac_01_Attack01"
+                },
+                {
+                  "$type": "FireEffect",
+                  "effectPattern": "Eff_SceneObj_Area_Fd_Property_Ani_Prop_UnderseaBac_01_Attack"
+                }
+              ]
+            }
+          ]
+        },
+        "AttackManager": {
+          "modifierName": "",
+          "elementDurability": 100,
+          "modifierMixins": [
+            {
+              "$type": "AttachModifierToSelfGlobalValueNoInitMixin",
+              "globalValueKey": "AvatarCount",
+              "valueSteps": [
+                -0.5,
+                0.5,
+                4.5
+              ],
+              "modifierNameSteps": [
+                "NoAvatar",
+                "HasAvatar"
+              ]
+            }
+          ]
+        },
+        "NoAvatar": {
+          "modifierName": "",
+          "elementDurability": 100,
+          "onAdded": [
+            {
+              "$type": "SetAnimatorInt",
+              "intID": "FieldEnter",
+              "value": 0
+            },
+            {
+              "$type": "ResetAnimatorTrigger",
+              "triggerID": "Attack"
+            }
+          ]
+        },
+        "HasAvatar": {
+          "modifierName": "",
+          "elementDurability": 100,
+          "onAdded": [
+            {
+              "$type": "SetAnimatorInt",
+              "intID": "FieldEnter",
+              "value": 1
+            },
+            {
+              "$type": "Predicated",
+              "targetPredicates": [
+                {
+                  "$type": "ByTargetGlobalValue",
+                  "key": "AttackCD",
+                  "value": 0
+                },
+                {
+                  "$type": "ByTargetGlobalValue",
+                  "key": "_IS_Fake_Death",
+                  "value": 0
+                }
+              ],
+              "successActions": [
+                {
+                  "$type": "SetAnimatorTrigger",
+                  "triggerID": "Attack",
+                  "MPTriggerOnRemote": true
+                },
+                {
+                  "$type": "SetGlobalValue",
+                  "value": 1,
+                  "key": "AttackCD",
+                  "maxValue": 0,
+                  "minValue": 0
+                },
+                {
+                  "$type": "TriggerAbility",
+                  "abilityName": "SceneObj_Area_Fd_Property_Ani_Prop_UnderseaBac_01_Attack01"
+                },
+                {
+                  "$type": "FireEffect",
+                  "effectPattern": "Eff_SceneObj_Area_Fd_Property_Ani_Prop_UnderseaBac_01_Attack"
+                }
+              ]
+            }
+          ]
+        },
+        "HitManager": {
+          "modifierName": "",
+          "elementDurability": 100,
+          "onBeingHit": [
+            {
+              "$type": "Predicated",
+              "targetPredicates": [
+                {
+                  "$type": "ByTargetGlobalValue",
+                  "key": "_IS_Fake_Death",
+                  "value": 0
+                }
+              ],
+              "successActions": [
+                {
+                  "$type": "ChangeGadgetState",
+                  "state": 201
+                },
+                {
+                  "$type": "ServerLuaCall",
+                  "luaCallType": "FromGroup",
+                  "isTarget": true,
+                  "funcName": "SLC_player_hit_UnderseaBac_success",
+                  "EGNMFDKFFII": 0,
+                  "param2": 0,
+                  "param3": 0
+                }
+              ]
+            },
+            {
+              "$type": "DoWatcherSystemAction",
+              "target": "Target",
+              "watcherId": 10160
+            }
+          ]
+        },
+        "BallManager": {
+          "modifierName": "",
+          "elementDurability": 100,
+          "onAdded": [
+            {
+              "$type": "AttachEffect",
+              "effectPattern": "Eff_SceneObj_Area_Fd_Property_Ani_Prop_UnderseaBac_01_Idle",
+              "born": {
+                "$type": "ConfigBornByAttachPoint",
+                "useRotation": true,
+                "attachPointName": "AttachPoint"
+              }
+            },
+            {
+              "$type": "SendEffectTrigger",
+              "parameter": "GadgetState",
+              "attachPoint": "",
+              "type": "Int",
+              "effectPattern": "Eff_SceneObj_Area_Fd_Property_Ani_Prop_UnderseaBac_01_Idle"
+            }
+          ]
+        },
+        "Normal": {
+          "modifierName": "",
+          "elementDurability": 100,
+          "modifierMixins": [
+            {
+              "$type": "ShaderStateMachineSwitchMixin",
+              "EEFMFPNPCBA": ""
+            }
+          ],
+          "onAdded": [
+            {
+              "$type": "SetGlobalValue",
+              "value": 0,
+              "key": "_IS_Fake_Death",
+              "maxValue": 0,
+              "minValue": 0
+            },
+            {
+              "$type": "SetGlobalValue",
+              "value": 1,
+              "key": "AttackCD",
+              "maxValue": 0,
+              "minValue": 0
+            },
+            {
+              "$type": "SendEffectTrigger",
+              "parameter": "GadgetState",
+              "attachPoint": "",
+              "type": "Int",
+              "effectPattern": "Eff_SceneObj_Area_Fd_Property_Ani_Prop_UnderseaBac_01_Idle"
+            },
+            {
+              "$type": "SetAnimatorInt",
+              "intID": "GadgetState",
+              "value": 0
+            },
+            {
+              "$type": "Predicated",
+              "targetPredicates": [
+                {
+                  "$type": "ByTargetGlobalValue",
+                  "key": "Already_FakeDeath",
+                  "value": 1
+                }
+              ],
+              "failActions": [
+                {
+                  "$type": "FireEffect",
+                  "effectPattern": "Eff_SceneObj_Area_Fd_Property_Ani_Prop_UnderseaBac_01_Create"
+                }
+              ]
+            }
+          ]
+        },
+        "FakeDeath": {
+          "modifierName": "",
+          "duration": 2,
+          "elementDurability": 100,
+          "modifierMixins": [
+            {
+              "$type": "ShaderStateMachineSwitchMixin",
+              "BBMMNKFMLDL": 1,
+              "EEFMFPNPCBA": ""
+            }
+          ],
+          "onAdded": [
+            {
+              "$type": "SetGlobalValue",
+              "value": 1,
+              "key": "_IS_Fake_Death",
+              "maxValue": 0,
+              "minValue": 0
+            },
+            {
+              "$type": "SetGlobalValue",
+              "value": 1,
+              "key": "Already_FakeDeath",
+              "maxValue": 0,
+              "minValue": 0
+            },
+            {
+              "$type": "SendEffectTrigger",
+              "parameter": "GadgetState",
+              "attachPoint": "",
+              "type": "Int",
+              "ratio": 2,
+              "effectPattern": "Eff_SceneObj_Area_Fd_Property_Ani_Prop_UnderseaBac_01_Idle"
+            },
+            {
+              "$type": "AttachEffect",
+              "effectPattern": "Eff_SceneObj_UnderseaBac_01_Remnant",
+              "born": {
+                "$type": "ConfigBornByAttachPoint",
+                "useRotation": true,
+                "attachPointName": "RootNode"
+              }
+            },
+            {
+              "$type": "AttachEffect",
+              "effectPattern": "Eff_SceneObj_UnderseaBac_01_RemnantParticles",
+              "born": {
+                "$type": "ConfigBornByAttachPoint",
+                "useRotation": true,
+                "attachPointName": "RootNode"
+              }
+            }
+          ],
+          "onRemoved": [
+            {
+              "$type": "Predicated",
+              "targetPredicates": [
+                {
+                  "$type": "ByTargetGlobalValue",
+                  "key": "SGV_TrueDeath",
+                  "value": 0
+                }
+              ],
+              "successActions": [
+                {
+                  "$type": "ChangeGadgetState"
+                }
+              ]
+            }
+          ]
+        },
+        "TrueDeath": {
+          "modifierName": "",
+          "duration": 2,
+          "elementDurability": 100,
+          "modifierMixins": [
+            {
+              "$type": "ShaderStateMachineSwitchMixin",
+              "BBMMNKFMLDL": 2,
+              "EEFMFPNPCBA": ""
+            }
+          ],
+          "onAdded": [
+            {
+              "$type": "SetGlobalValue",
+              "value": 1,
+              "key": "_IS_Fake_Death",
+              "maxValue": 0,
+              "minValue": 0
+            },
+            {
+              "$type": "SetGlobalValue",
+              "value": 1,
+              "key": "Already_FakeDeath",
+              "maxValue": 0,
+              "minValue": 0
+            },
+            {
+              "$type": "SendEffectTrigger",
+              "parameter": "GadgetState",
+              "attachPoint": "",
+              "type": "Int",
+              "ratio": 1,
+              "effectPattern": "Eff_SceneObj_Area_Fd_Property_Ani_Prop_UnderseaBac_01_Idle"
+            },
+            {
+              "$type": "FireEffect",
+              "effectPattern": "Eff_SceneObj_Area_Fd_Property_Ani_Prop_UnderseaBac_01_PlayDead"
+            },
+            {
+              "$type": "SetLightColorIntensity",
+              "PJLFDFBPNAL": "Light",
+              "JKLKKJHNFHI": {
+                "r": 1,
+                "g": 0.545,
+                "b": 0.545,
+                "a": 1
+              },
+              "IIIGCNPMAFN": true,
+              "JNFONKGPMBA": true,
+              "CFGNAMMOFFC": true,
+              "lerpTime": 1
+            }
+          ],
+          "onRemoved": [
+            {
+              "$type": "KillSelf"
+            }
+          ]
+        }
+      },
+      "onAdded": [
+        {
+          "$type": "SetGlobalValue",
+          "value": 1,
+          "key": "AttackCD",
+          "maxValue": 0,
+          "minValue": 0
+        },
+        {
+          "$type": "SetGlobalValue",
+          "value": 0,
+          "key": "_IS_Fake_Death",
+          "maxValue": 0,
+          "minValue": 0
+        },
+        {
+          "$type": "SetGlobalValue",
+          "value": 0,
+          "key": "Already_FakeDeath",
+          "maxValue": 0,
+          "minValue": 0
+        },
+        {
+          "$type": "ApplyModifier",
+          "modifierName": "BallManager"
+        },
+        {
+          "$type": "ApplyModifier",
+          "modifierName": "AttackManager"
+        },
+        {
+          "$type": "ApplyModifier",
+          "modifierName": "HitManager"
+        }
+      ]
+    }
+  },
+  {
+    "Default": {
+      "$type": "ConfigAbility",
+      "abilityName": "SceneObj_Area_Fd_Property_Ani_Prop_UnderseaBac_01_Attack01",
+      "abilitySpecials": {
+        "AvatarDamageValue": 0.4,
+        "MonsterDamageValue": 0.4,
+        "DamageSystemValue": 1
+      },
+      "modifiers": {
+        "AttackWait": {
+          "modifierName": "",
+          "duration": 0.1,
+          "elementDurability": 100,
+          "onRemoved": [
+            {
+              "$type": "ApplyModifier",
+              "modifierName": "UnderseaBacAttack01"
+            }
+          ]
+        },
+        "UnderseaBacAttack01": {
+          "stacking": "MultipleRefresh",
+          "stackingOption": {
+            "abilitySpecialName": "",
+            "maxModifierNumForMultipleType": 1
+          },
+          "modifierName": "",
+          "elementDurability": 100,
+          "onAdded": [
+            {
+              "$type": "TriggerAttackEvent",
+              "attackEvent": {
+                "attackPattern": {
+                  "$type": "ConfigAttackSphere",
+                  "triggerType": "TriggerNoRepeat",
+                  "radius": 4
+                },
+                "attackInfo": {
+                  "attackTag": "",
+                  "attenuationTag": "",
+                  "attenuationGroup": "default",
+                  "attackProperty": {
+                    "damagePercentage": 1,
+                    "damagePercentageRatio": 0,
+                    "elementDurability": 100,
+                    "strikeType": "Default",
+                    "enBreak": 0,
+                    "attackType": "Range",
+                    "__exp_arkhe": 0
+                  },
+                  "hitPattern": {
+                    "onHitEffectName": "default",
+                    "hitImpulseType": "LV6"
+                  }
+                }
+              },
+              "targetType": "Enemy",
+              "entityTypes": [
+                "Avatar"
+              ]
+            }
+          ]
+        }
+      },
+      "onAdded": [
+        {
+          "$type": "SetSystemValueToOverrideMap",
+          "key": "DamageSystemValue",
+          "type": "ElementLevelCo"
+        }
+      ],
+      "onAbilityStart": [
+        {
+          "$type": "ApplyModifier",
+          "modifierName": "AttackWait"
+        }
+      ]
+    }
+  },
+  {
+    "Default": {
+      "$type": "ConfigAbility",
+      "abilityName": "SceneObj_Area_Fd_Property_Ani_Prop_UnderseaBac_02",
+      "abilityMixins": [
+        {
+          "$type": "FieldEntityCountChangeMixin",
+          "campTargetType": "All",
+          "targetPredicates": [
+            {
+              "$type": "ByEntityTypes",
+              "entityTypes": [
+                "Avatar"
+              ]
+            }
+          ],
+          "simpleCountGlobaValueKey": "AvatarCount",
+          "simpleCountMaxValue": 0,
+          "simpleCountMinValue": 0
+        },
+        {
+          "$type": "AttachModifierToSelfGlobalValueNoInitMixin",
+          "globalValueKey": "AttackCD",
+          "valueSteps": [
+            -0.5,
+            0.5,
+            1.5
+          ],
+          "modifierNameSteps": [
+            "TryTrigger",
+            "CDTimer"
+          ],
+          "removeAppliedModifier": false
+        },
+        {
+          "$type": "AttachToGadgetStateMixin",
+          "modifierName": "Normal"
+        },
+        {
+          "$type": "AttachToGadgetStateMixin",
+          "gadgetState": 201,
+          "modifierName": "FakeDeath"
+        },
+        {
+          "$type": "AttachToGadgetStateMixin",
+          "gadgetState": 901,
+          "modifierName": "TrueDeath"
+        }
+      ],
+      "modifiers": {
+        "CDTimer": {
+          "modifierName": "",
+          "duration": 2.9,
+          "elementDurability": 100,
+          "onRemoved": [
+            {
+              "$type": "SetGlobalValue",
+              "value": 0,
+              "key": "AttackCD",
+              "maxValue": 0,
+              "minValue": 0
+            }
+          ]
+        },
+        "TryTrigger": {
+          "modifierName": "",
+          "duration": 0.1,
+          "elementDurability": 100,
+          "onRemoved": [
+            {
+              "$type": "Predicated",
+              "targetPredicates": [
+                {
+                  "$type": "ByTargetGlobalValue",
+                  "key": "AvatarCount",
+                  "value": 1,
+                  "compareType": "MoreThanAndEqual"
+                },
+                {
+                  "$type": "ByTargetGlobalValue",
+                  "key": "_IS_Fake_Death",
+                  "value": 0
+                }
+              ],
+              "successActions": [
+                {
+                  "$type": "SetAnimatorTrigger",
+                  "triggerID": "Attack",
+                  "MPTriggerOnRemote": true
+                },
+                {
+                  "$type": "SetGlobalValue",
+                  "value": 1,
+                  "key": "AttackCD",
+                  "maxValue": 0,
+                  "minValue": 0
+                },
+                {
+                  "$type": "TriggerAbility",
+                  "abilityName": "SceneObj_Area_Fd_Property_Ani_Prop_UnderseaBac_02_Attack01"
+                },
+                {
+                  "$type": "FireEffect",
+                  "effectPattern": "Eff_SceneObj_Area_Fd_Property_Ani_Prop_UnderseaBac_01_Attack"
+                }
+              ]
+            }
+          ]
+        },
+        "AttackManager": {
+          "modifierName": "",
+          "elementDurability": 100,
+          "modifierMixins": [
+            {
+              "$type": "AttachModifierToSelfGlobalValueNoInitMixin",
+              "globalValueKey": "AvatarCount",
+              "valueSteps": [
+                -0.5,
+                0.5,
+                4.5
+              ],
+              "modifierNameSteps": [
+                "NoAvatar",
+                "HasAvatar"
+              ]
+            }
+          ]
+        },
+        "NoAvatar": {
+          "modifierName": "",
+          "elementDurability": 100,
+          "onAdded": [
+            {
+              "$type": "SetAnimatorInt",
+              "intID": "FieldEnter",
+              "value": 0
+            },
+            {
+              "$type": "ResetAnimatorTrigger",
+              "triggerID": "Attack"
+            }
+          ]
+        },
+        "HasAvatar": {
+          "modifierName": "",
+          "elementDurability": 100,
+          "onAdded": [
+            {
+              "$type": "SetAnimatorInt",
+              "intID": "FieldEnter",
+              "value": 1
+            },
+            {
+              "$type": "Predicated",
+              "targetPredicates": [
+                {
+                  "$type": "ByTargetGlobalValue",
+                  "key": "AttackCD",
+                  "value": 0
+                },
+                {
+                  "$type": "ByTargetGlobalValue",
+                  "key": "_IS_Fake_Death",
+                  "value": 0
+                }
+              ],
+              "successActions": [
+                {
+                  "$type": "SetAnimatorTrigger",
+                  "triggerID": "Attack",
+                  "MPTriggerOnRemote": true
+                },
+                {
+                  "$type": "SetGlobalValue",
+                  "value": 1,
+                  "key": "AttackCD",
+                  "maxValue": 0,
+                  "minValue": 0
+                },
+                {
+                  "$type": "TriggerAbility",
+                  "abilityName": "SceneObj_Area_Fd_Property_Ani_Prop_UnderseaBac_02_Attack01"
+                },
+                {
+                  "$type": "FireEffect",
+                  "effectPattern": "Eff_SceneObj_Area_Fd_Property_Ani_Prop_UnderseaBac_01_Attack"
+                }
+              ]
+            }
+          ]
+        },
+        "HitManager": {
+          "modifierName": "",
+          "elementDurability": 100,
+          "onBeingHit": [
+            {
+              "$type": "Predicated",
+              "targetPredicates": [
+                {
+                  "$type": "ByTargetGlobalValue",
+                  "key": "_IS_Fake_Death",
+                  "value": 0
+                }
+              ],
+              "successActions": [
+                {
+                  "$type": "ChangeGadgetState",
+                  "state": 201
+                },
+                {
+                  "$type": "ServerLuaCall",
+                  "luaCallType": "FromGroup",
+                  "isTarget": true,
+                  "funcName": "SLC_player_hit_UnderseaBac_success",
+                  "EGNMFDKFFII": 0,
+                  "param2": 0,
+                  "param3": 0
+                }
+              ]
+            },
+            {
+              "$type": "DoWatcherSystemAction",
+              "target": "Target",
+              "watcherId": 10160
+            }
+          ]
+        },
+        "BallManager": {
+          "modifierName": "",
+          "elementDurability": 100,
+          "onAdded": [
+            {
+              "$type": "AttachEffect",
+              "effectPattern": "Eff_SceneObj_Area_Fd_Property_Ani_Prop_UnderseaBac_01_Idle",
+              "born": {
+                "$type": "ConfigBornByAttachPoint",
+                "useRotation": true,
+                "attachPointName": "AttachPoint"
+              },
+              "scale": 1.5
+            },
+            {
+              "$type": "SendEffectTrigger",
+              "parameter": "GadgetState",
+              "attachPoint": "",
+              "type": "Int",
+              "effectPattern": "Eff_SceneObj_Area_Fd_Property_Ani_Prop_UnderseaBac_01_Idle"
+            }
+          ]
+        },
+        "Normal": {
+          "modifierName": "",
+          "elementDurability": 100,
+          "modifierMixins": [
+            {
+              "$type": "ShaderStateMachineSwitchMixin",
+              "EEFMFPNPCBA": ""
+            }
+          ],
+          "onAdded": [
+            {
+              "$type": "SetGlobalValue",
+              "value": 0,
+              "key": "_IS_Fake_Death",
+              "maxValue": 0,
+              "minValue": 0
+            },
+            {
+              "$type": "SetGlobalValue",
+              "value": 1,
+              "key": "AttackCD",
+              "maxValue": 0,
+              "minValue": 0
+            },
+            {
+              "$type": "SendEffectTrigger",
+              "parameter": "GadgetState",
+              "attachPoint": "",
+              "type": "Int",
+              "effectPattern": "Eff_SceneObj_Area_Fd_Property_Ani_Prop_UnderseaBac_01_Idle"
+            },
+            {
+              "$type": "SetAnimatorInt",
+              "intID": "GadgetState",
+              "value": 0
+            },
+            {
+              "$type": "Predicated",
+              "targetPredicates": [
+                {
+                  "$type": "ByTargetGlobalValue",
+                  "key": "Already_FakeDeath",
+                  "value": 1
+                }
+              ],
+              "failActions": [
+                {
+                  "$type": "FireEffect",
+                  "effectPattern": "Eff_SceneObj_Area_Fd_Property_Ani_Prop_UnderseaBac_01_Create"
+                }
+              ]
+            }
+          ]
+        },
+        "FakeDeath": {
+          "modifierName": "",
+          "duration": 2,
+          "elementDurability": 100,
+          "modifierMixins": [
+            {
+              "$type": "ShaderStateMachineSwitchMixin",
+              "BBMMNKFMLDL": 1,
+              "EEFMFPNPCBA": ""
+            }
+          ],
+          "onAdded": [
+            {
+              "$type": "SetGlobalValue",
+              "value": 1,
+              "key": "_IS_Fake_Death",
+              "maxValue": 0,
+              "minValue": 0
+            },
+            {
+              "$type": "SetGlobalValue",
+              "value": 1,
+              "key": "Already_FakeDeath",
+              "maxValue": 0,
+              "minValue": 0
+            },
+            {
+              "$type": "SendEffectTrigger",
+              "parameter": "GadgetState",
+              "attachPoint": "",
+              "type": "Int",
+              "ratio": 2,
+              "effectPattern": "Eff_SceneObj_Area_Fd_Property_Ani_Prop_UnderseaBac_01_Idle"
+            },
+            {
+              "$type": "AttachEffect",
+              "effectPattern": "Eff_SceneObj_UnderseaBac_01_Remnant",
+              "born": {
+                "$type": "ConfigBornByAttachPoint",
+                "useRotation": true,
+                "attachPointName": "RootNode"
+              },
+              "scale": 1.5
+            },
+            {
+              "$type": "AttachEffect",
+              "effectPattern": "Eff_SceneObj_UnderseaBac_01_RemnantParticles",
+              "born": {
+                "$type": "ConfigBornByAttachPoint",
+                "useRotation": true,
+                "attachPointName": "RootNode"
+              },
+              "scale": 1.5
+            }
+          ],
+          "onRemoved": [
+            {
+              "$type": "Predicated",
+              "targetPredicates": [
+                {
+                  "$type": "ByTargetGlobalValue",
+                  "key": "SGV_TrueDeath",
+                  "value": 0
+                }
+              ],
+              "successActions": [
+                {
+                  "$type": "ChangeGadgetState"
+                }
+              ]
+            }
+          ]
+        },
+        "TrueDeath": {
+          "modifierName": "",
+          "duration": 2,
+          "elementDurability": 100,
+          "modifierMixins": [
+            {
+              "$type": "ShaderStateMachineSwitchMixin",
+              "BBMMNKFMLDL": 2,
+              "EEFMFPNPCBA": ""
+            }
+          ],
+          "onAdded": [
+            {
+              "$type": "SetGlobalValue",
+              "value": 1,
+              "key": "_IS_Fake_Death",
+              "maxValue": 0,
+              "minValue": 0
+            },
+            {
+              "$type": "SetGlobalValue",
+              "value": 1,
+              "key": "Already_FakeDeath",
+              "maxValue": 0,
+              "minValue": 0
+            },
+            {
+              "$type": "SendEffectTrigger",
+              "parameter": "GadgetState",
+              "attachPoint": "",
+              "type": "Int",
+              "ratio": 1,
+              "effectPattern": "Eff_SceneObj_Area_Fd_Property_Ani_Prop_UnderseaBac_01_Idle"
+            },
+            {
+              "$type": "FireEffect",
+              "effectPattern": "Eff_SceneObj_Area_Fd_Property_Ani_Prop_UnderseaBac_01_PlayDead"
+            },
+            {
+              "$type": "SetLightColorIntensity",
+              "PJLFDFBPNAL": "Light",
+              "JKLKKJHNFHI": {
+                "r": 1,
+                "g": 0.545,
+                "b": 0.545,
+                "a": 1
+              },
+              "IIIGCNPMAFN": true,
+              "JNFONKGPMBA": true,
+              "CFGNAMMOFFC": true,
+              "lerpTime": 1
+            }
+          ],
+          "onRemoved": [
+            {
+              "$type": "KillSelf"
+            }
+          ]
+        }
+      },
+      "onAdded": [
+        {
+          "$type": "SetGlobalValue",
+          "value": 1,
+          "key": "AttackCD",
+          "maxValue": 0,
+          "minValue": 0
+        },
+        {
+          "$type": "SetGlobalValue",
+          "value": 0,
+          "key": "_IS_Fake_Death",
+          "maxValue": 0,
+          "minValue": 0
+        },
+        {
+          "$type": "SetGlobalValue",
+          "value": 0,
+          "key": "Already_FakeDeath",
+          "maxValue": 0,
+          "minValue": 0
+        },
+        {
+          "$type": "ApplyModifier",
+          "modifierName": "BallManager"
+        },
+        {
+          "$type": "ApplyModifier",
+          "modifierName": "AttackManager"
+        },
+        {
+          "$type": "ApplyModifier",
+          "modifierName": "HitManager"
+        }
+      ]
+    }
+  },
+  {
+    "Default": {
+      "$type": "ConfigAbility",
+      "abilityName": "SceneObj_Area_Fd_Property_Ani_Prop_UnderseaBac_02_Attack01",
+      "abilitySpecials": {
+        "AvatarDamageValue": 0.4,
+        "MonsterDamageValue": 0.4,
+        "DamageSystemValue": 1
+      },
+      "modifiers": {
+        "AttackWait": {
+          "modifierName": "",
+          "duration": 0.1,
+          "elementDurability": 100,
+          "onRemoved": [
+            {
+              "$type": "ApplyModifier",
+              "modifierName": "UnderseaBacAttack01"
+            }
+          ]
+        },
+        "UnderseaBacAttack01": {
+          "stacking": "MultipleRefresh",
+          "stackingOption": {
+            "abilitySpecialName": "",
+            "maxModifierNumForMultipleType": 1
+          },
+          "modifierName": "",
+          "elementDurability": 100,
+          "onAdded": [
+            {
+              "$type": "TriggerAttackEvent",
+              "attackEvent": {
+                "attackPattern": {
+                  "$type": "ConfigAttackSphere",
+                  "triggerType": "TriggerNoRepeat",
+                  "radius": 4
+                },
+                "attackInfo": {
+                  "attackTag": "",
+                  "attenuationTag": "",
+                  "attenuationGroup": "default",
+                  "attackProperty": {
+                    "damagePercentage": 1,
+                    "damagePercentageRatio": 0,
+                    "elementDurability": 100,
+                    "strikeType": "Default",
+                    "enBreak": 0,
+                    "attackType": "Range",
+                    "__exp_arkhe": 0
+                  },
+                  "hitPattern": {
+                    "onHitEffectName": "default",
+                    "hitImpulseType": "LV6"
+                  }
+                }
+              },
+              "targetType": "Enemy",
+              "entityTypes": [
+                "Avatar"
+              ]
+            }
+          ]
+        }
+      },
+      "onAbilityStart": [
+        {
+          "$type": "ApplyModifier",
+          "modifierName": "AttackWait"
+        }
+      ]
+    }
+  },
+  {
+    "Default": {
+      "$type": "ConfigAbility",
+      "abilityName": "SceneObj_Area_Fd_Property_Ani_Prop_UnderseaBacDoor_01",
+      "abilityMixins": [
+        {
+          "$type": "AttachToGadgetStateMixin",
+          "modifierName": "Close"
+        },
+        {
+          "$type": "AttachToGadgetStateMixin",
+          "gadgetState": 201,
+          "modifierName": "Open"
+        }
+      ],
+      "modifiers": {
+        "Close": {
+          "modifierName": "",
+          "elementDurability": 100,
+          "onAdded": [
+            {
+              "$type": "EnableSceneTransformByName",
+              "transformNames": [
+                "AirWall"
+              ],
+              "setEnable": true
+            }
+          ],
+          "onRemoved": [
+            {
+              "$type": "FireEffect",
+              "effectPattern": "Eff_SceneObj_UnderseaBacDoor_01_Die",
+              "born": {
+                "$type": "ConfigBornByAttachPoint",
+                "useRotation": true,
+                "attachPointName": "RootNode"
+              }
+            }
+          ]
+        },
+        "Open": {
+          "modifierName": "",
+          "elementDurability": 100,
+          "onAdded": [
+            {
+              "$type": "SetAnimatorInt",
+              "intID": "Disappear",
+              "value": 201
+            },
+            {
+              "$type": "EnableSceneTransformByName",
+              "transformNames": [
+                "AirWall"
+              ]
+            }
+          ]
+        }
+      }
+    }
+  },
+  {
+    "Default": {
+      "$type": "ConfigAbility",
+      "abilityName": "SceneObj_Area_Fd_Property_Ani_Prop_UnderseaBacDoor_02",
+      "abilityMixins": [
+        {
+          "$type": "AttachToGadgetStateMixin",
+          "modifierName": "Close"
+        },
+        {
+          "$type": "AttachToGadgetStateMixin",
+          "gadgetState": 201,
+          "modifierName": "Open"
+        }
+      ],
+      "modifiers": {
+        "Close": {
+          "modifierName": "",
+          "elementDurability": 100,
+          "onAdded": [
+            {
+              "$type": "EnableSceneTransformByName",
+              "transformNames": [
+                "AirWall"
+              ],
+              "setEnable": true
+            }
+          ],
+          "onRemoved": [
+            {
+              "$type": "FireEffect",
+              "effectPattern": "Eff_SceneObj_UnderseaBacDoor_01_Die",
+              "born": {
+                "$type": "ConfigBornByAttachPoint",
+                "useRotation": true,
+                "attachPointName": "RootNode"
+              }
+            }
+          ]
+        },
+        "Open": {
+          "modifierName": "",
+          "elementDurability": 100,
+          "onAdded": [
+            {
+              "$type": "SetAnimatorInt",
+              "intID": "Disappear",
+              "value": 201
+            },
+            {
+              "$type": "EnableSceneTransformByName",
+              "transformNames": [
+                "AirWall"
+              ]
+            }
+          ]
+        }
+      }
+    }
+  },
+  {
+    "Default": {
+      "$type": "ConfigAbility",
+      "abilityName": "SceneObj_Area_Fd_Property_Ani_Prop_UnderseaBacDoor_03",
+      "abilityMixins": [
+        {
+          "$type": "AttachToGadgetStateMixin",
+          "modifierName": "Close"
+        },
+        {
+          "$type": "AttachToGadgetStateMixin",
+          "gadgetState": 201,
+          "modifierName": "Open"
+        }
+      ],
+      "modifiers": {
+        "Close": {
+          "modifierName": "",
+          "elementDurability": 100,
+          "onAdded": [
+            {
+              "$type": "SetAnimatorInt",
+              "intID": "Disappear",
+              "value": 0
+            },
+            {
+              "$type": "EnableSceneTransformByName",
+              "transformNames": [
+                "AirWall"
+              ],
+              "setEnable": true
+            }
+          ],
+          "onRemoved": [
+            {
+              "$type": "FireEffect",
+              "effectPattern": "Eff_SceneObj_UnderseaBacDoor_01_Die",
+              "born": {
+                "$type": "ConfigBornByAttachPoint",
+                "useRotation": true,
+                "attachPointName": "RootNode"
+              }
+            }
+          ]
+        },
+        "Open": {
+          "modifierName": "",
+          "elementDurability": 100,
+          "onAdded": [
+            {
+              "$type": "SetAnimatorInt",
+              "intID": "Disappear",
+              "value": 201
+            },
+            {
+              "$type": "EnableSceneTransformByName",
+              "transformNames": [
+                "AirWall"
+              ]
+            }
+          ]
+        }
+      }
+    }
+  },
+  {
+    "Default": {
+      "$type": "ConfigAbility",
+      "abilityName": "SceneObj_Area_Fd_Property_Ani_Prop_UnderseaBacRes_01",
+      "abilityMixins": [
+        {
+          "$type": "AttachToGadgetStateMixin",
+          "modifierName": "NormalState"
+        },
+        {
+          "$type": "AttachToGadgetStateMixin",
+          "gadgetState": 201,
+          "modifierName": "FakeDeath"
+        }
+      ],
+      "modifiers": {
+        "NormalState": {
+          "modifierName": "",
+          "elementDurability": 100
+        },
+        "FakeDeath": {
+          "modifierName": "",
+          "duration": 5,
+          "elementDurability": 100,
+          "onAdded": [
+            {
+              "$type": "AttachEffect",
+              "effectPattern": "Eff_Item_SpecialTreasureBox_LockIdle",
+              "born": {
+                "$type": "ConfigBornByAttachPoint",
+                "useRotation": true,
+                "attachPointName": "AttachPoint"
+              }
+            }
+          ],
+          "onRemoved": [
+            {
+              "$type": "FireEffect",
+              "effectPattern": "Eff_Item_SpecialTreasureBox_Unlock",
+              "born": {
+                "$type": "ConfigBornByAttachPoint",
+                "useRotation": true,
+                "attachPointName": "AttachPoint"
+              }
+            },
+            {
+              "$type": "ChangeGadgetState"
+            }
+          ]
+        },
+        "HitManager": {
+          "modifierName": "",
+          "elementDurability": 100,
+          "onBeingHit": [
+            {
+              "$type": "Predicated",
+              "targetPredicates": [
+                {
+                  "$type": "ByAttackTags",
+                  "attackTags": [
+                    "JellyFish_Bomb_Special"
+                  ]
+                }
+              ],
+              "successActions": [
+                {
+                  "$type": "ChangeGadgetState",
+                  "state": 201
+                }
+              ],
+              "failActions": [
+                {
+                  "$type": "FireEffect",
+                  "effectPattern": "Eff_SceneObj_ChargingStation_01_Building",
+                  "born": {
+                    "$type": "ConfigBornByAttachPoint",
+                    "useRotation": true,
+                    "attachPointName": "RootNode"
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      },
+      "onAdded": [
+        {
+          "$type": "SetGlobalValue",
+          "value": 1,
+          "key": "_IS_InUnderseaBacRes",
+          "maxValue": 0,
+          "minValue": 0
+        },
+        {
+          "$type": "ApplyModifier",
+          "modifierName": "HitManager"
+        }
+      ]
+    }
+  },
+  {
+    "Default": {
+      "$type": "ConfigAbility",
+      "abilityName": "SceneObj_Area_Fd_Property_Ani_Prop_FDFacPipeValve_01",
+      "abilityMixins": [
+        {
+          "$type": "AttachToGadgetStateMixin",
+          "modifierName": "Lock"
+        },
+        {
+          "$type": "AttachToGadgetStateMixin",
+          "gadgetState": 101,
+          "modifierName": "0Degree"
+        },
+        {
+          "$type": "AttachToGadgetStateMixin",
+          "gadgetState": 102,
+          "modifierName": "90Degree"
+        },
+        {
+          "$type": "AttachToGadgetStateMixin",
+          "gadgetState": 103,
+          "modifierName": "180Degree"
+        },
+        {
+          "$type": "AttachToGadgetStateMixin",
+          "gadgetState": 104,
+          "modifierName": "270Degree"
+        },
+        {
+          "$type": "AttachToGadgetStateMixin",
+          "gadgetState": 201,
+          "modifierName": "LackValve"
+        },
+        {
+          "$type": "AttachToGadgetStateMixin",
+          "gadgetState": 901,
+          "modifierName": "SuccessState"
+        }
+      ],
+      "modifiers": {
+        "Lock": {
+          "modifierName": "",
+          "elementDurability": 100,
+          "modifierMixins": [
+            {
+              "$type": "ShaderStateMachineSwitchMixin",
+              "BBMMNKFMLDL": 2,
+              "EEFMFPNPCBA": ""
+            }
+          ],
+          "onAdded": [
+            {
+              "$type": "EnableSceneTransformByName",
+              "transformNames": [
+                "Valve"
+              ],
+              "setEnable": true
+            }
+          ]
+        },
+        "0Degree": {
+          "modifierName": "",
+          "elementDurability": 100,
+          "modifierMixins": [
+            {
+              "$type": "ShaderStateMachineSwitchMixin",
+              "EEFMFPNPCBA": ""
+            }
+          ],
+          "onAdded": [
+            {
+              "$type": "EnableSceneTransformByName",
+              "transformNames": [
+                "Valve"
+              ],
+              "setEnable": true
+            },
+            {
+              "$type": "SetAnimatorInt",
+              "intID": "degree",
+              "value": 0
+            },
+            {
+              "$type": "Predicated",
+              "targetPredicates": [
+                {
+                  "$type": "ByTargetGlobalValue",
+                  "target": "Self",
+                  "key": "SGV_PipeDegree",
+                  "value": 1
+                }
+              ],
+              "successActions": [
+                {
+                  "$type": "AttachModifier",
+                  "modifierName": "UNIQUE_Pipe_RightState"
+                }
+              ]
+            }
+          ]
+        },
+        "90Degree": {
+          "modifierName": "",
+          "elementDurability": 100,
+          "modifierMixins": [
+            {
+              "$type": "ShaderStateMachineSwitchMixin",
+              "EEFMFPNPCBA": ""
+            }
+          ],
+          "onAdded": [
+            {
+              "$type": "SetAnimatorInt",
+              "intID": "degree",
+              "value": 90
+            },
+            {
+              "$type": "Predicated",
+              "targetPredicates": [
+                {
+                  "$type": "ByTargetGlobalValue",
+                  "target": "Self",
+                  "key": "SGV_PipeDegree",
+                  "value": 2
+                }
+              ],
+              "successActions": [
+                {
+                  "$type": "AttachModifier",
+                  "modifierName": "UNIQUE_Pipe_RightState"
+                }
+              ]
+            }
+          ]
+        },
+        "180Degree": {
+          "modifierName": "",
+          "elementDurability": 100,
+          "modifierMixins": [
+            {
+              "$type": "ShaderStateMachineSwitchMixin",
+              "EEFMFPNPCBA": ""
+            }
+          ],
+          "onAdded": [
+            {
+              "$type": "SetAnimatorInt",
+              "intID": "degree",
+              "value": 180
+            },
+            {
+              "$type": "Predicated",
+              "targetPredicates": [
+                {
+                  "$type": "ByTargetGlobalValue",
+                  "target": "Self",
+                  "key": "SGV_PipeDegree",
+                  "value": 3
+                }
+              ],
+              "successActions": [
+                {
+                  "$type": "AttachModifier",
+                  "modifierName": "UNIQUE_Pipe_RightState"
+                }
+              ]
+            }
+          ]
+        },
+        "270Degree": {
+          "modifierName": "",
+          "elementDurability": 100,
+          "modifierMixins": [
+            {
+              "$type": "ShaderStateMachineSwitchMixin",
+              "EEFMFPNPCBA": ""
+            }
+          ],
+          "onAdded": [
+            {
+              "$type": "SetAnimatorInt",
+              "intID": "degree",
+              "value": 270
+            },
+            {
+              "$type": "Predicated",
+              "targetPredicates": [
+                {
+                  "$type": "ByTargetGlobalValue",
+                  "target": "Self",
+                  "key": "SGV_PipeDegree",
+                  "value": 4
+                }
+              ],
+              "successActions": [
+                {
+                  "$type": "AttachModifier",
+                  "modifierName": "UNIQUE_Pipe_RightState"
+                }
+              ]
+            }
+          ]
+        },
+        "LackValve": {
+          "modifierName": "",
+          "elementDurability": 100,
+          "onAdded": [
+            {
+              "$type": "EnableSceneTransformByName",
+              "transformNames": [
+                "Valve"
+              ]
+            }
+          ]
+        },
+        "SuccessState": {
+          "modifierName": "",
+          "elementDurability": 100,
+          "modifierMixins": [
+            {
+              "$type": "ShaderStateMachineSwitchMixin",
+              "BBMMNKFMLDL": 3,
+              "EEFMFPNPCBA": ""
+            }
+          ]
+        },
+        "UNIQUE_Pipe_RightState": {
+          "modifierName": "",
+          "isUnique": true,
+          "elementDurability": 100
+        }
+      }
+    }
+  },
+  {
+    "Default": {
+      "$type": "ConfigAbility",
+      "abilityName": "SceneObj_Area_Fd_Property_Ani_Prop_TransparentEel_01_Ability",
+      "abilityMixins": [
+        {
+          "$type": "AttachToGadgetStateMixin",
+          "modifierName": "MoveState"
+        },
+        {
+          "$type": "AttachToGadgetStateMixin",
+          "gadgetState": 202,
+          "modifierName": "DeadState"
+        },
+        {
+          "$type": "AttachToGadgetStateMixin",
+          "gadgetState": 203,
+          "modifierName": "AfterDeadState"
+        }
+      ],
+      "modifiers": {
+        "MoveState": {
+          "modifierName": "",
+          "elementDurability": 100,
+          "onAdded": [
+            {
+              "$type": "AttachEffect",
+              "effectPattern": "Eff_SceneObj_Area_Fd_Property_Ani_Prop_TransparentEel_01",
+              "born": {
+                "$type": "ConfigBornByAttachPoint",
+                "useRotation": true,
+                "attachPointName": "RootNode"
+              }
+            }
+          ],
+          "onBeingHit": [
+            {
+              "$type": "Predicated",
+              "target": "Other",
+              "targetPredicates": [
+                {
+                  "$type": "ByAttackTags",
+                  "attackTags": [
+                    "JellyFish_Bomb",
+                    "CrabShieldBlunt",
+                    "Dive_Echo_Detect",
+                    "Dive_Echo_Bullet",
+                    "Dive_Slash"
+                  ]
+                }
+              ],
+              "successActions": [
+                {
+                  "$type": "ChangeGadgetState",
+                  "state": 202
+                },
+                {
+                  "$type": "Predicated",
+                  "target": "Target",
+                  "targetPredicates": [
+                    {
+                      "$type": "ByEntityTypes",
+                      "entityTypes": [
+                        "Avatar"
+                      ]
+                    }
+                  ],
+                  "successActions": [
+                    {
+                      "$type": "ApplyModifier",
+                      "target": "Target",
+                      "modifierName": "TransparentEel_Watcher"
+                    }
+                  ],
+                  "failActions": [
+                    {
+                      "$type": "ApplyModifier",
+                      "target": "TargetOriginOwner",
+                      "modifierName": "TransparentEel_Watcher"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        "TransparentEel_Watcher": {
+          "modifierName": "",
+          "duration": 1,
+          "elementDurability": 100,
+          "onAdded": [
+            {
+              "$type": "DoWatcherSystemAction",
+              "watcherId": 10161,
+              "authorityOnly": true
+            }
+          ]
+        },
+        "DeadState": {
+          "modifierName": "",
+          "elementDurability": 100,
+          "onAdded": [
+            {
+              "$type": "FireEffect",
+              "effectPattern": "Eff_SceneObj_Area_Fd_Property_Ani_Prop_TransparentEel_02",
+              "born": {
+                "$type": "ConfigBornByAttachPoint",
+                "useRotation": true,
+                "attachPointName": "RootNode"
+              }
+            },
+            {
+              "$type": "ChangeGadgetState",
+              "state": 203
+            }
+          ]
+        },
+        "AfterDeadState": {
+          "modifierName": "",
+          "elementDurability": 100,
+          "onAdded": [
+            {
+              "$type": "KillSelf"
+            }
+          ]
+        }
+      }
+    }
+  }
+]
