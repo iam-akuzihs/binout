@@ -1,0 +1,1185 @@
+[
+  {
+    "Default": {
+      "$type": "ConfigAbility",
+      "abilityName": "Drake_Primo_Rock_BossEvent_ElementExplode_CreateLogicGadget",
+      "abilityMixins": [
+        {
+          "$type": "MoleMole.Config.DoActionByStateIDMixin",
+          "stateIDs": [
+            "ElementExplode"
+          ],
+          "enterActions": [
+            {
+              "$type": "MoleMole.Config.ShowReminder",
+              "id": 31030003
+            },
+            {
+              "$type": "SetGlobalValue",
+              "value": 0,
+              "key": "_HIT_LEVEL",
+              "maxValue": 0,
+              "minValue": 0
+            },
+            {
+              "$type": "SetGlobalValueV2",
+              "value": 4,
+              "key": "_CAMERA_STATE",
+              "maxValue": 0,
+              "minValue": 0
+            }
+          ],
+          "__unk_Q2081332355": ""
+        }
+      ],
+      "onAbilityStart": [
+        {
+          "$type": "CreateGadget",
+          "born": {
+            "$type": "ConfigBornBySelf",
+            "offset": {
+              "z": 1.6
+            },
+            "onGround": true,
+            "useRotation": true
+          },
+          "lifeByOwnerV2": true,
+          "gadgetID": 42605058
+        },
+        {
+          "$type": "SetGlobalValue",
+          "predicates": [
+            {
+              "$type": "ByTargetGlobalValue",
+              "key": "EX_PASS_COUNT",
+              "value": 3,
+              "compareType": "MoreThanAndEqual"
+            }
+          ],
+          "value": -1,
+          "key": "EX_PASS_COUNT",
+          "maxValue": 0,
+          "minValue": 0
+        },
+        {
+          "$type": "SetGlobalValueV2",
+          "value": 0,
+          "key": "_CAMERA_STATE",
+          "maxValue": 0,
+          "minValue": 0
+        },
+        {
+          "$type": "SetGlobalValueV2",
+          "value": 0,
+          "key": "_ELEMENT_EXPLODE_ENABLE",
+          "maxValue": 0,
+          "minValue": 0
+        }
+      ]
+    }
+  },
+  {
+    "Default": {
+      "$type": "ConfigAbility",
+      "abilityName": "Drake_Primo_Rock_BossEvent_ElementExplode_LogicGadget",
+      "abilityMixins": [
+        {
+          "$type": "AttachModifierToGlobalValueMixin",
+          "globalValueTarget": "Owner",
+          "globalValueKey": "_DRAKE_PRIMO_STATE",
+          "valueSteps": [
+            0.5,
+            2.5,
+            4.5
+          ],
+          "modifierNameSteps": [
+            "IceExplode",
+            "WaterExplode"
+          ]
+        }
+      ],
+      "modifiers": {
+        "IceExplode": {
+          "modifierName": "",
+          "elementDurability": 100,
+          "onAdded": [
+            {
+              "$type": "ApplyModifier",
+              "modifierName": "ElementExplode_Hit_Ice_Monitor"
+            },
+            {
+              "$type": "FireEffect",
+              "effectPattern": "Eff_Monster_Drake_Primo_Rock_ElementExplode_Ice"
+            },
+            {
+              "$type": "ApplyModifier",
+              "target": "AllPlayerAvatars",
+              "modifierName": "Explode_AvatarDamage_Ice"
+            },
+            {
+              "$type": "MoleMole.Config.ServerMonsterLog",
+              "target": "Owner",
+              "paramList": [
+                2,
+                0,
+                0
+              ]
+            }
+          ]
+        },
+        "ElementExplode_Hit_Ice_Monitor": {
+          "modifierName": "",
+          "elementDurability": 100,
+          "onAttackLanded": [
+            {
+              "$type": "ApplyModifier",
+              "target": "Target",
+              "predicates": [
+                {
+                  "$type": "ByAttackTags",
+                  "attackTags": [
+                    "Primo_ElementExplode_Ice"
+                  ]
+                },
+                {
+                  "$type": "ByEntityTypes",
+                  "entityTypes": [
+                    "Avatar"
+                  ]
+                }
+              ],
+              "modifierName": "ShieldDetect_Ice"
+            }
+          ]
+        },
+        "Explode_AvatarDamage_Ice": {
+          "modifierName": "",
+          "duration": 0.2,
+          "elementDurability": 100,
+          "onAdded": [
+            {
+              "$type": "Predicated",
+              "target": "Applier",
+              "targetPredicates": [
+                {
+                  "$type": "ByTargetPositionToSelfPosition",
+                  "logic": "Lesser",
+                  "value": 20,
+                  "PHMALDNHHLD": ""
+                },
+                {
+                  "$type": "ByTargetPositionToSelfPosition",
+                  "logic": "Lesser",
+                  "compareType": "Y",
+                  "value": 3,
+                  "PHMALDNHHLD": ""
+                }
+              ],
+              "successActions": [
+                {
+                  "$type": "Predicated",
+                  "targetPredicates": [
+                    {
+                      "$type": "ByHasShield",
+                      "type": "All"
+                    }
+                  ],
+                  "successActions": [
+                    {
+                      "$type": "DamageByAttackValue",
+                      "attackInfo": {
+                        "attackTag": "Primo_ElementExplode_Ice",
+                        "attenuationTag": "",
+                        "attenuationGroup": "default",
+                        "attackProperty": {
+                          "damagePercentage": 0.4,
+                          "damagePercentageRatio": 0,
+                          "elementType": "Ice",
+                          "elementDurability": 100,
+                          "strikeType": "Default",
+                          "damage": 500,
+                          "attackType": "Range",
+                          "__exp_arkhe": 0
+                        },
+                        "hitPattern": {
+                          "onHitEffectName": "default",
+                          "hitImpulseType": "LV7"
+                        }
+                      }
+                    }
+                  ],
+                  "failActions": [
+                    {
+                      "$type": "DamageByAttackValue",
+                      "attackInfo": {
+                        "attackTag": "Primo_ElementExplode_Ice",
+                        "attenuationTag": "",
+                        "attenuationGroup": "default",
+                        "attackProperty": {
+                          "damagePercentage": 2,
+                          "damagePercentageRatio": 0,
+                          "elementType": "Ice",
+                          "elementDurability": 100,
+                          "strikeType": "Default",
+                          "damage": 500,
+                          "attackType": "Range",
+                          "__exp_arkhe": 0
+                        },
+                        "hitPattern": {
+                          "onHitEffectName": "default",
+                          "hitImpulseType": "LV7"
+                        }
+                      }
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        "ShieldDetect_Ice": {
+          "modifierName": "",
+          "duration": 0.2,
+          "elementDurability": 100,
+          "onAdded": [
+            {
+              "$type": "Predicated",
+              "targetPredicates": [
+                {
+                  "$type": "ByHasShield",
+                  "type": "All"
+                }
+              ],
+              "successActions": [
+                {
+                  "$type": "Predicated",
+                  "targetPredicates": [
+                    {
+                      "$type": "ByHasShield",
+                      "type": "All",
+                      "usePotentShield": true,
+                      "potentShieldType": "Ice"
+                    }
+                  ],
+                  "successActions": [
+                    {
+                      "$type": "FireEffect",
+                      "effectPattern": "Eff_Monster_Drake_Primo_Rock_ElementExplodeHitH_Ice"
+                    },
+                    {
+                      "$type": "SetGlobalPos",
+                      "target": "CasterOriginOwner",
+                      "key": "_MONSTER_DRAKE_PRIMO_ROCK_BROKEN_POS",
+                      "born": {
+                        "$type": "ConfigBornBySelf",
+                        "useRotation": true
+                      }
+                    },
+                    {
+                      "$type": "ApplyModifier",
+                      "target": "CasterOriginOwner",
+                      "modifierName": "BeHitBrokenH"
+                    }
+                  ],
+                  "failActions": [
+                    {
+                      "$type": "FireEffect",
+                      "effectPattern": "Eff_Monster_Drake_Primo_Rock_ElementExplodeHitL"
+                    },
+                    {
+                      "$type": "SetGlobalPos",
+                      "target": "CasterOriginOwner",
+                      "key": "_MONSTER_DRAKE_PRIMO_ROCK_BROKEN_POS",
+                      "born": {
+                        "$type": "ConfigBornBySelf",
+                        "useRotation": true
+                      }
+                    },
+                    {
+                      "$type": "ApplyModifier",
+                      "target": "CasterOriginOwner",
+                      "modifierName": "BeHitBrokenL"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        "WaterExplode": {
+          "modifierName": "",
+          "elementDurability": 100,
+          "onAdded": [
+            {
+              "$type": "ApplyModifier",
+              "modifierName": "ElementExplode_Hit_Water_Monitor"
+            },
+            {
+              "$type": "FireEffect",
+              "effectPattern": "Eff_Monster_Drake_Primo_Rock_ElementExplode_Water"
+            },
+            {
+              "$type": "ApplyModifier",
+              "target": "AllPlayerAvatars",
+              "modifierName": "Explode_AvatarDamage_Water"
+            },
+            {
+              "$type": "MoleMole.Config.ServerMonsterLog",
+              "target": "Owner",
+              "paramList": [
+                2,
+                0,
+                1
+              ]
+            }
+          ]
+        },
+        "Explode_AvatarDamage_Water": {
+          "modifierName": "",
+          "duration": 0.2,
+          "elementDurability": 100,
+          "onAdded": [
+            {
+              "$type": "Predicated",
+              "target": "Applier",
+              "targetPredicates": [
+                {
+                  "$type": "ByTargetPositionToSelfPosition",
+                  "logic": "Lesser",
+                  "value": 20,
+                  "PHMALDNHHLD": ""
+                },
+                {
+                  "$type": "ByTargetPositionToSelfPosition",
+                  "logic": "Lesser",
+                  "compareType": "Y",
+                  "value": 3,
+                  "PHMALDNHHLD": ""
+                }
+              ],
+              "successActions": [
+                {
+                  "$type": "Predicated",
+                  "targetPredicates": [
+                    {
+                      "$type": "ByHasShield",
+                      "type": "All"
+                    }
+                  ],
+                  "successActions": [
+                    {
+                      "$type": "DamageByAttackValue",
+                      "attackInfo": {
+                        "attackTag": "Primo_ElementExplode_Water",
+                        "attenuationTag": "",
+                        "attenuationGroup": "default",
+                        "attackProperty": {
+                          "damagePercentage": 0.4,
+                          "damagePercentageRatio": 0,
+                          "elementType": "Water",
+                          "elementDurability": 100,
+                          "strikeType": "Default",
+                          "damage": 500,
+                          "attackType": "Range",
+                          "__exp_arkhe": 0
+                        },
+                        "hitPattern": {
+                          "onHitEffectName": "default",
+                          "hitImpulseType": "LV7"
+                        }
+                      }
+                    }
+                  ],
+                  "failActions": [
+                    {
+                      "$type": "DamageByAttackValue",
+                      "attackInfo": {
+                        "attackTag": "Primo_ElementExplode_Water",
+                        "attenuationTag": "",
+                        "attenuationGroup": "default",
+                        "attackProperty": {
+                          "damagePercentage": 2,
+                          "damagePercentageRatio": 0,
+                          "elementType": "Water",
+                          "elementDurability": 100,
+                          "strikeType": "Default",
+                          "damage": 500,
+                          "attackType": "Range",
+                          "__exp_arkhe": 0
+                        },
+                        "hitPattern": {
+                          "onHitEffectName": "default",
+                          "hitImpulseType": "LV7"
+                        }
+                      }
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        "ElementExplode_Hit_Water_Monitor": {
+          "modifierName": "",
+          "elementDurability": 100,
+          "onAttackLanded": [
+            {
+              "$type": "ApplyModifier",
+              "target": "Target",
+              "predicates": [
+                {
+                  "$type": "ByAttackTags",
+                  "attackTags": [
+                    "Primo_ElementExplode_Water"
+                  ]
+                },
+                {
+                  "$type": "ByEntityTypes",
+                  "entityTypes": [
+                    "Avatar"
+                  ]
+                }
+              ],
+              "modifierName": "ShieldDetect_Water"
+            }
+          ]
+        },
+        "ShieldDetect_Water": {
+          "modifierName": "",
+          "duration": 0.2,
+          "elementDurability": 100,
+          "onAdded": [
+            {
+              "$type": "Predicated",
+              "targetPredicates": [
+                {
+                  "$type": "ByHasShield",
+                  "type": "All"
+                }
+              ],
+              "successActions": [
+                {
+                  "$type": "Predicated",
+                  "targetPredicates": [
+                    {
+                      "$type": "ByHasShield",
+                      "type": "All",
+                      "usePotentShield": true,
+                      "potentShieldType": "Water"
+                    }
+                  ],
+                  "successActions": [
+                    {
+                      "$type": "FireEffect",
+                      "effectPattern": "Eff_Monster_Drake_Primo_Rock_ElementExplodeHitH_Water"
+                    },
+                    {
+                      "$type": "ApplyModifier",
+                      "target": "CasterOriginOwner",
+                      "modifierName": "BeHitBrokenH"
+                    }
+                  ],
+                  "failActions": [
+                    {
+                      "$type": "FireEffect",
+                      "effectPattern": "Eff_Monster_Drake_Primo_Rock_ElementExplodeHitL"
+                    },
+                    {
+                      "$type": "ApplyModifier",
+                      "target": "CasterOriginOwner",
+                      "modifierName": "BeHitBrokenL"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        "BeHitBrokenL": {
+          "stacking": "Unique",
+          "modifierName": "",
+          "duration": 2,
+          "elementDurability": 100,
+          "onAdded": [
+            {
+              "$type": "SetGlobalValue",
+              "predicates": [
+                {
+                  "$type": "ByTargetGlobalValue",
+                  "key": "_HIT_LEVEL",
+                  "value": 0
+                }
+              ],
+              "value": 1,
+              "key": "_HIT_LEVEL",
+              "maxValue": 0,
+              "minValue": 0
+            },
+            {
+              "$type": "TriggerAbility",
+              "abilityName": "Drake_Primo_Rock_BossEvent_HitShield"
+            },
+            {
+              "$type": "SetGlobalPos",
+              "key": "_MONSTER_DRAKE_PRIMO_ROCK_BROKEN_POS",
+              "born": {
+                "$type": "ConfigBornByAttachPoint",
+                "useRotation": true,
+                "attachPointName": "RootNode",
+                "attachPointTargetType": "Applier"
+              }
+            }
+          ]
+        },
+        "BeHitBrokenH": {
+          "stacking": "Unique",
+          "modifierName": "",
+          "duration": 2,
+          "elementDurability": 100,
+          "onAdded": [
+            {
+              "$type": "SetGlobalValue",
+              "predicates": [
+                {
+                  "$type": "ByTargetGlobalValue",
+                  "key": "_HIT_LEVEL",
+                  "value": 1,
+                  "compareType": "LessAndEqual"
+                }
+              ],
+              "value": 2,
+              "key": "_HIT_LEVEL",
+              "maxValue": 0,
+              "minValue": 0
+            },
+            {
+              "$type": "TriggerAbility",
+              "abilityName": "Drake_Primo_Rock_BossEvent_HitShield"
+            },
+            {
+              "$type": "SetGlobalPos",
+              "key": "_MONSTER_DRAKE_PRIMO_ROCK_BROKEN_POS",
+              "born": {
+                "$type": "ConfigBornByAttachPoint",
+                "useRotation": true,
+                "attachPointName": "RootNode",
+                "attachPointTargetType": "Applier"
+              }
+            }
+          ]
+        }
+      },
+      "onAdded": [
+        {
+          "$type": "ActCameraRadialBlur",
+          "cameraRadialBlur": {
+            "power": 2.8,
+            "blurTime": 0.5,
+            "fadeTime": 0.4
+          }
+        },
+        {
+          "$type": "ActCameraShake",
+          "cameraShake": {
+            "shakeRange": 3.75,
+            "shakeTime": 1.44,
+            "shakeDistance": 70,
+            "extension": {
+              "baseCycle": 0.36,
+              "cycleDamping": 0,
+              "rangeAttenuation": 0.12
+            }
+          }
+        }
+      ]
+    }
+  },
+  {
+    "Default": {
+      "$type": "ConfigAbility",
+      "abilityName": "Drake_Primo_Rock_BossEvent_ScaleBurst_Bullet_Ice",
+      "modifiers": {
+        "Bullet_VFX": {
+          "modifierName": "",
+          "elementDurability": 100,
+          "onAdded": [
+            {
+              "$type": "AttachEffect",
+              "effectPattern": "Eff_Monster_Drake_Primo_Rock_ScaleBullet_Ice"
+            }
+          ]
+        }
+      },
+      "onAdded": [
+        {
+          "$type": "ApplyModifier",
+          "modifierName": "Bullet_VFX"
+        }
+      ],
+      "onAbilityStart": [
+        {
+          "$type": "FireEffect",
+          "effectPattern": "Eff_Monster_Drake_Primo_Rock_ScaleGadgetBS_Ice",
+          "born": {
+            "$type": "ConfigBornByCollisionPoint",
+            "onGround": true,
+            "alongGround": true
+          }
+        },
+        {
+          "$type": "CreateGadget",
+          "target": "CasterOriginOwner",
+          "ownerIsTarget": true,
+          "ownerIs": "CasterOriginOwner",
+          "born": {
+            "$type": "ConfigBornByCollisionPoint",
+            "onGround": true,
+            "alongGround": true
+          },
+          "sightGroupWithOwner": true,
+          "lifeByOwnerV2": true,
+          "gadgetID": 42605054,
+          "byServer": true
+        }
+      ]
+    }
+  },
+  {
+    "Default": {
+      "$type": "ConfigAbility",
+      "abilityName": "Drake_Primo_Rock_BossEvent_ScaleBurst_Bullet_Water",
+      "modifiers": {
+        "Bullet_VFX": {
+          "modifierName": "",
+          "elementDurability": 100,
+          "onAdded": [
+            {
+              "$type": "AttachEffect",
+              "effectPattern": "Eff_Monster_Drake_Primo_Rock_ScaleBullet_Water"
+            }
+          ]
+        }
+      },
+      "onAdded": [
+        {
+          "$type": "ApplyModifier",
+          "modifierName": "Bullet_VFX"
+        }
+      ],
+      "onAbilityStart": [
+        {
+          "$type": "FireEffect",
+          "effectPattern": "Eff_Monster_Drake_Primo_Rock_ScaleGadgetBS_Water",
+          "born": {
+            "$type": "ConfigBornByCollisionPoint",
+            "onGround": true,
+            "alongGround": true
+          }
+        },
+        {
+          "$type": "CreateGadget",
+          "target": "CasterOriginOwner",
+          "ownerIsTarget": true,
+          "ownerIs": "CasterOriginOwner",
+          "born": {
+            "$type": "ConfigBornByCollisionPoint",
+            "onGround": true,
+            "alongGround": true
+          },
+          "sightGroupWithOwner": true,
+          "lifeByOwnerV2": true,
+          "gadgetID": 42605055,
+          "byServer": true
+        }
+      ]
+    }
+  },
+  {
+    "Default": {
+      "$type": "ConfigAbility",
+      "abilityName": "Drake_Primo_Rock_BossEvent_ScaleGadget_Ice",
+      "modifiers": {
+        "Calm_Timer": {
+          "modifierName": "",
+          "duration": 3.75,
+          "elementDurability": 100
+        },
+        "Kill_Timer": {
+          "modifierName": "",
+          "elementDurability": 100,
+          "thinkInterval": 6.2,
+          "onThinkInterval": [
+            {
+              "$type": "AddGlobalValue",
+              "value": 1,
+              "key": "_TICK_TIMER",
+              "maxValue": 0,
+              "minValue": 0
+            },
+            {
+              "$type": "KillSelf",
+              "predicates": [
+                {
+                  "$type": "ByTargetGlobalValue",
+                  "target": "Self",
+                  "key": "_TICK_TIMER",
+                  "value": 5,
+                  "compareType": "MoreThanAndEqual"
+                }
+              ]
+            }
+          ]
+        },
+        "Gadget_CheckAvatar_Position": {
+          "modifierName": "",
+          "elementDurability": 100,
+          "thinkInterval": 0.67,
+          "onAdded": [
+            {
+              "$type": "AttachEffect",
+              "effectPattern": "Eff_Monster_Drake_Primo_Rock_ScaleGadget_Ice"
+            }
+          ],
+          "onThinkInterval": [
+            {
+              "$type": "Predicated",
+              "target": "AllPlayerAvatars",
+              "predicates": [
+                {
+                  "$type": "ByNot",
+                  "predicates": [
+                    {
+                      "$type": "ByHasModifier",
+                      "target": "Self",
+                      "modifierName": "Calm_Timer"
+                    }
+                  ]
+                }
+              ],
+              "targetPredicates": [
+                {
+                  "$type": "ByTargetPositionToSelfPosition",
+                  "logic": "Lesser",
+                  "value": 5,
+                  "PHMALDNHHLD": ""
+                }
+              ],
+              "successActions": [
+                {
+                  "$type": "ApplyModifier",
+                  "modifierName": "Gadget_AttackHandler"
+                }
+              ]
+            }
+          ]
+        },
+        "Gadget_AttackHandler": {
+          "stacking": "Unique",
+          "modifierName": "",
+          "duration": 3.75,
+          "elementDurability": 100,
+          "onAdded": [
+            {
+              "$type": "ApplyModifier",
+              "modifierName": "Attack_Alert_VFX"
+            }
+          ]
+        },
+        "Attack_Alert_VFX": {
+          "modifierName": "",
+          "duration": 0.8,
+          "elementDurability": 100,
+          "onAdded": [
+            {
+              "$type": "FireEffect",
+              "effectPattern": "Eff_Monster_Drake_Primo_Rock_BossEvent_ScaleExplosionBS_Ice"
+            }
+          ],
+          "onRemoved": [
+            {
+              "$type": "FireEffect",
+              "effectPattern": "Eff_Monster_Drake_Primo_Rock_ScaleExplosion_Ice"
+            },
+            {
+              "$type": "ApplyModifier",
+              "modifierName": "Drake_Primo_Rock_ScaleExplosion_Ice_1st"
+            }
+          ]
+        },
+        "Drake_Primo_Rock_ScaleExplosion_Ice_1st": {
+          "modifierName": "",
+          "duration": 0.48,
+          "elementDurability": 100,
+          "onAdded": [
+            {
+              "$type": "TriggerAttackEvent",
+              "attackEvent": {
+                "attackPattern": {
+                  "$type": "ConfigAttackCircle",
+                  "triggerType": "TriggerNoRepeat",
+                  "height": 1,
+                  "radius": 2.4
+                },
+                "attackInfo": {
+                  "attackTag": "",
+                  "attenuationTag": "",
+                  "attenuationGroup": "default",
+                  "attackProperty": {
+                    "damagePercentage": 0.25,
+                    "damagePercentageRatio": 0,
+                    "elementType": "Ice",
+                    "elementDurability": 50,
+                    "strikeType": "Default",
+                    "damage": 1,
+                    "__exp_arkhe": 0
+                  },
+                  "hitPattern": {
+                    "onHitEffectName": "default",
+                    "hitImpulseType": "LV3"
+                  },
+                  "canBeModifiedBy": "OriginOwner"
+                }
+              },
+              "targetType": "Enemy"
+            }
+          ],
+          "onRemoved": [
+            {
+              "$type": "ApplyModifier",
+              "modifierName": "Drake_Primo_Rock_ScaleExplosion_Ice_2nd"
+            }
+          ]
+        },
+        "Drake_Primo_Rock_ScaleExplosion_Ice_2nd": {
+          "modifierName": "",
+          "duration": 0.4,
+          "elementDurability": 100,
+          "onAdded": [
+            {
+              "$type": "TriggerAttackEvent",
+              "attackEvent": {
+                "attackPattern": {
+                  "$type": "ConfigAttackCircle",
+                  "triggerType": "TriggerNoRepeat",
+                  "height": 1.5,
+                  "radius": 4.8,
+                  "innerRadius": 2.4
+                },
+                "attackInfo": {
+                  "attackTag": "",
+                  "attenuationTag": "",
+                  "attenuationGroup": "default",
+                  "attackProperty": {
+                    "damagePercentage": 0.25,
+                    "damagePercentageRatio": 0,
+                    "elementType": "Ice",
+                    "elementDurability": 50,
+                    "strikeType": "Default",
+                    "damage": 1,
+                    "__exp_arkhe": 0
+                  },
+                  "hitPattern": {
+                    "onHitEffectName": "default",
+                    "hitImpulseType": "LV3"
+                  },
+                  "canBeModifiedBy": "OriginOwner"
+                }
+              },
+              "targetType": "Enemy"
+            }
+          ],
+          "onRemoved": [
+            {
+              "$type": "TriggerAttackEvent",
+              "attackEvent": {
+                "attackPattern": {
+                  "$type": "ConfigAttackCircle",
+                  "triggerType": "TriggerNoRepeat",
+                  "height": 2,
+                  "radius": 6,
+                  "innerRadius": 4
+                },
+                "attackInfo": {
+                  "attackTag": "",
+                  "attenuationTag": "",
+                  "attenuationGroup": "default",
+                  "attackProperty": {
+                    "damagePercentage": 0.375,
+                    "damagePercentageRatio": 0,
+                    "elementType": "Ice",
+                    "elementDurability": 50,
+                    "strikeType": "Default",
+                    "damage": 1,
+                    "__exp_arkhe": 0
+                  },
+                  "hitPattern": {
+                    "onHitEffectName": "default",
+                    "hitImpulseType": "",
+                    "overrideHitImpulse": {
+                      "hitLevel": "Heavy",
+                      "hitImpulseX": 200
+                    }
+                  },
+                  "canBeModifiedBy": "OriginOwner"
+                }
+              },
+              "targetType": "Enemy"
+            }
+          ]
+        }
+      },
+      "onAdded": [
+        {
+          "$type": "ApplyModifier",
+          "modifierName": "Gadget_CheckAvatar_Position"
+        },
+        {
+          "$type": "ApplyModifier",
+          "modifierName": "Kill_Timer"
+        },
+        {
+          "$type": "ApplyModifier",
+          "modifierName": "Calm_Timer"
+        },
+        {
+          "$type": "SetGlobalValue",
+          "value": 0,
+          "key": "_TICK_TIMER",
+          "maxValue": 0,
+          "minValue": 0
+        }
+      ]
+    }
+  },
+  {
+    "Default": {
+      "$type": "ConfigAbility",
+      "abilityName": "Drake_Primo_Rock_BossEvent_ScaleGadget_Water",
+      "modifiers": {
+        "Calm_Timer": {
+          "modifierName": "",
+          "duration": 3.75,
+          "elementDurability": 100
+        },
+        "Kill_Timer": {
+          "modifierName": "",
+          "elementDurability": 100,
+          "thinkInterval": 6.2,
+          "onThinkInterval": [
+            {
+              "$type": "AddGlobalValue",
+              "value": 1,
+              "key": "_TICK_TIMER",
+              "maxValue": 0,
+              "minValue": 0
+            },
+            {
+              "$type": "KillSelf",
+              "predicates": [
+                {
+                  "$type": "ByTargetGlobalValue",
+                  "target": "Self",
+                  "key": "_TICK_TIMER",
+                  "value": 5,
+                  "compareType": "MoreThanAndEqual"
+                }
+              ]
+            }
+          ]
+        },
+        "Gadget_CheckAvatar_Position": {
+          "modifierName": "",
+          "elementDurability": 100,
+          "thinkInterval": 0.67,
+          "onAdded": [
+            {
+              "$type": "AttachEffect",
+              "effectPattern": "Eff_Monster_Drake_Primo_Rock_ScaleGadget_Water"
+            }
+          ],
+          "onThinkInterval": [
+            {
+              "$type": "Predicated",
+              "target": "AllPlayerAvatars",
+              "predicates": [
+                {
+                  "$type": "ByNot",
+                  "predicates": [
+                    {
+                      "$type": "ByHasModifier",
+                      "target": "Self",
+                      "modifierName": "Calm_Timer"
+                    }
+                  ]
+                }
+              ],
+              "targetPredicates": [
+                {
+                  "$type": "ByTargetPositionToSelfPosition",
+                  "logic": "Lesser",
+                  "value": 5,
+                  "PHMALDNHHLD": ""
+                }
+              ],
+              "successActions": [
+                {
+                  "$type": "ApplyModifier",
+                  "modifierName": "Gadget_AttackHandler"
+                }
+              ]
+            }
+          ]
+        },
+        "Gadget_AttackHandler": {
+          "stacking": "Unique",
+          "modifierName": "",
+          "duration": 3.75,
+          "elementDurability": 100,
+          "onAdded": [
+            {
+              "$type": "ApplyModifier",
+              "modifierName": "Attack_Alert_VFX"
+            }
+          ]
+        },
+        "Attack_Alert_VFX": {
+          "modifierName": "",
+          "duration": 0.5,
+          "elementDurability": 100,
+          "onAdded": [
+            {
+              "$type": "FireEffect",
+              "effectPattern": "Eff_Monster_Drake_Primo_Rock_BossEvent_ScaleExplosionBS_Water"
+            }
+          ],
+          "onRemoved": [
+            {
+              "$type": "SetSelfAttackTarget",
+              "otherTargets": {
+                "$type": "SelectTargetsByShape",
+                "topLimit": 1,
+                "entityTypePriority": [
+                  "Avatar"
+                ],
+                "sortType": "Nearest",
+                "shapeName": "CircleR12H5",
+                "campTargetType": "Enemy",
+                "sizeRatio": 1
+              }
+            },
+            {
+              "$type": "TriggerBullet",
+              "target": "OriginOwner",
+              "bulletID": 42605059,
+              "born": {
+                "$type": "ConfigBornBySelf",
+                "direction": {
+                  "$type": "ConfigDirectionByAttackTarget",
+                  "useCorrectDir": true,
+                  "PDKJDHJIEJB": ""
+                },
+                "useRotation": true
+              },
+              "ownerIsTarget": true,
+              "ownerIs": "OriginOwner"
+            }
+          ]
+        }
+      },
+      "onAdded": [
+        {
+          "$type": "ApplyModifier",
+          "modifierName": "Gadget_CheckAvatar_Position"
+        },
+        {
+          "$type": "ApplyModifier",
+          "modifierName": "Kill_Timer"
+        },
+        {
+          "$type": "ApplyModifier",
+          "modifierName": "Calm_Timer"
+        },
+        {
+          "$type": "SetGlobalValue",
+          "value": 0,
+          "key": "_TICK_TIMER",
+          "maxValue": 0,
+          "minValue": 0
+        }
+      ]
+    }
+  },
+  {
+    "Default": {
+      "$type": "ConfigAbility",
+      "abilityName": "Drake_Primo_Rock_BossEvent_ScaleGadget_Water_Bullet",
+      "modifiers": {
+        "Bullet_TriggerDamage": {
+          "modifierName": "",
+          "duration": 1.9,
+          "elementDurability": 100,
+          "thinkInterval": 0.3,
+          "onThinkInterval": [
+            {
+              "$type": "FireEffect",
+              "effectPattern": "Eff_Monster_Drake_Primo_Rock_ScaleExplosion_Water",
+              "born": {
+                "$type": "ConfigBornBySelf",
+                "onGround": true,
+                "alongGround": true,
+                "useRotation": true
+              },
+              "useRemoteSelfPos": true
+            },
+            {
+              "$type": "TriggerAttackEvent",
+              "attackEvent": {
+                "attackPattern": {
+                  "$type": "ConfigAttackCircle",
+                  "triggerType": "TriggerNoRepeat",
+                  "born": {
+                    "$type": "ConfigBornBySelf",
+                    "offset": {
+                      "y": -0.5
+                    },
+                    "onGround": true,
+                    "alongGround": true,
+                    "useRotation": true
+                  },
+                  "height": 3,
+                  "radius": 1.2
+                },
+                "attackInfo": {
+                  "attackTag": "",
+                  "attenuationTag": "",
+                  "attenuationGroup": "default",
+                  "attackProperty": {
+                    "damagePercentage": 0.16,
+                    "damagePercentageRatio": 0,
+                    "elementType": "Water",
+                    "elementDurability": 50,
+                    "strikeType": "Default",
+                    "damage": 1,
+                    "__exp_arkhe": 0
+                  },
+                  "hitPattern": {
+                    "onHitEffectName": "default",
+                    "hitImpulseType": "LV3"
+                  },
+                  "canBeModifiedBy": "OriginOwner"
+                }
+              },
+              "targetType": "Enemy"
+            }
+          ]
+        }
+      },
+      "onAdded": [
+        {
+          "$type": "ApplyModifier",
+          "modifierName": "Bullet_TriggerDamage"
+        }
+      ]
+    }
+  }
+]

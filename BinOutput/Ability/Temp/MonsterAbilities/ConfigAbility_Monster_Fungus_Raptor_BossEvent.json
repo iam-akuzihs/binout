@@ -1,0 +1,1717 @@
+[
+  {
+    "Default": {
+      "$type": "ConfigAbility",
+      "abilityName": "Monster_Fungus_Raptor_BossEvent_StateManager",
+      "abilityMixins": [
+        {
+          "$type": "AttachModifierToSelfGlobalValueMixin",
+          "globalValueKey": "_RAPTOR_STATE",
+          "defaultGlobalValueOnCreate": 1,
+          "valueSteps": [
+            -0.5,
+            0.5,
+            1.5,
+            2.5,
+            3.5
+          ],
+          "modifierNameSteps": [
+            "Stage_0_Decay",
+            "Stage_1_Normal",
+            "Stage_2_OverdoseStun",
+            "Stage_3_ReadyForRecovery"
+          ]
+        },
+        {
+          "$type": "AttachToStateIDMixin",
+          "stateIDs": [
+            "Stun",
+            "Stun_RopeBound"
+          ],
+          "modifierName": "Stun_Timer",
+          "__unk_Q2081332355": ""
+        },
+        {
+          "$type": "AttachToAnimatorStateIDMixin",
+          "stateIDs": [
+            "Stun",
+            "Stun_RopeBound"
+          ],
+          "modifierName": "Prop_Stun_State",
+          "__unk_Q2081332355": ""
+        },
+        {
+          "$type": "AttachToAnimatorStateIDMixin",
+          "stateIDs": [
+            "Stun",
+            "Stun_RopeBound",
+            "RopeBound_Loop",
+            "RopeBound_BS"
+          ],
+          "modifierName": "Fall_State",
+          "__unk_Q2081332355": ""
+        },
+        {
+          "$type": "MoleMole.Config.DoActionByAnimatorStateIDMixin",
+          "stateIDs": [
+            "Recovery_RopeBound",
+            "Recovery"
+          ],
+          "exitActions": [
+            {
+              "$type": "SetGlobalValue",
+              "value": 1,
+              "key": "_RAPTOR_STATE",
+              "maxValue": 0,
+              "minValue": 0
+            }
+          ],
+          "__unk_Q2081332355": ""
+        },
+        {
+          "$type": "AttachToAnimatorStateIDMixin",
+          "stateIDs": [
+            "RopeBound_BS",
+            "RopeBound_Loop",
+            "RopeBound_Overdose_BS"
+          ],
+          "modifierName": "TemporaryRemoveSkin",
+          "__unk_Q2081332355": ""
+        }
+      ],
+      "abilitySpecials": {
+        "electric_charge": 2,
+        "overdose_charge": 15,
+        "overdose_attenuation_timer": 3,
+        "overdose_attenuation_ratio": 0.2,
+        "charge_global_adjust": 1,
+        "stun_time": 16,
+        "sub_hurt_delta": -0.3,
+        "dendro_skin_sub_hurt_delta": 0,
+        "dendro_skin_sub_hurt_delta_grass": 0,
+        "cache_element": 250
+      },
+      "modifiers": {
+        "Fall_State": {
+          "modifierName": "",
+          "elementDurability": 100,
+          "onAdded": [
+            {
+              "$type": "SetGlobalValue",
+              "value": 1,
+              "key": "GV_EffigyChallenge_V5_Boss_Fall",
+              "maxValue": 0,
+              "minValue": 0
+            },
+            {
+              "$type": "SetGlobalValue",
+              "value": 1,
+              "key": "GV_EffigyChallenge_V5_Boss_DisableButtonT",
+              "maxValue": 0,
+              "minValue": 0
+            },
+            {
+              "$type": "SetGlobalValueV2",
+              "value": 1,
+              "key": "_CAMERA_STATE",
+              "maxValue": 0,
+              "minValue": 0
+            }
+          ],
+          "onRemoved": [
+            {
+              "$type": "SetGlobalValue",
+              "value": 0,
+              "key": "GV_EffigyChallenge_V5_Boss_Fall",
+              "maxValue": 0,
+              "minValue": 0
+            },
+            {
+              "$type": "SetGlobalValue",
+              "value": 0,
+              "key": "GV_EffigyChallenge_V5_Boss_DisableButtonT",
+              "maxValue": 0,
+              "minValue": 0
+            },
+            {
+              "$type": "SetGlobalValueV2",
+              "value": 0,
+              "key": "_CAMERA_STATE",
+              "maxValue": 0,
+              "minValue": 0
+            }
+          ]
+        },
+        "Stun_Timer": {
+          "modifierName": "",
+          "elementDurability": 100,
+          "thinkInterval": "stun_time",
+          "onThinkInterval": [
+            {
+              "$type": "SetGlobalValue",
+              "value": 3,
+              "key": "_RAPTOR_STATE",
+              "maxValue": 0,
+              "minValue": 0
+            }
+          ]
+        },
+        "Stage_0_Decay": {
+          "modifierName": "",
+          "elementDurability": 100,
+          "modifierMixins": [
+            {
+              "$type": "MoleMole.Config.OverrideMonsterMoveSpeedRatioMixin",
+              "minValue": -0.8,
+              "maxValue": -0.2
+            }
+          ],
+          "properties": {
+            "Animator_MoveSpeedRatio": 0.5
+          },
+          "onAdded": [
+            {
+              "$type": "SetGlobalValue",
+              "value": 0,
+              "key": "_CHARGEBAR_VALUE",
+              "maxValue": 0,
+              "minValue": 0
+            },
+            {
+              "$type": "MoleMole.Config.SetPoseInt",
+              "intID": "BattleStage"
+            },
+            {
+              "$type": "AttachEffect",
+              "effectPattern": "Eff_Monster_Fungus_Raptor_DecayState"
+            }
+          ],
+          "onRemoved": [
+            {
+              "$type": "RemoveModifier",
+              "modifierName": "Decay_CD_Timer"
+            },
+            {
+              "$type": "ApplyModifier",
+              "modifierName": "Decay_CD_Timer"
+            }
+          ]
+        },
+        "Decay_CD_Timer": {
+          "modifierName": "",
+          "elementDurability": 100,
+          "thinkInterval": 18,
+          "onAdded": [
+            {
+              "$type": "SetGlobalValueV2",
+              "value": 1,
+              "key": "_RAPTOR_DECAY_IN_CD",
+              "maxValue": 0,
+              "minValue": 0
+            }
+          ],
+          "onThinkInterval": [
+            {
+              "$type": "SetGlobalValueV2",
+              "value": 0,
+              "key": "_RAPTOR_DECAY_IN_CD",
+              "maxValue": 0,
+              "minValue": 0
+            },
+            {
+              "$type": "RemoveModifier",
+              "modifierName": "Decay_CD_Timer"
+            }
+          ]
+        },
+        "Stage_1_Normal": {
+          "modifierName": "",
+          "elementDurability": 100,
+          "modifierMixins": [
+            {
+              "$type": "MoleMole.Config.ChargeBarMixin",
+              "chargeBarElementType": "Electric",
+              "chargeBarIconID": 2,
+              "initialValue": 0,
+              "maxValue": 100
+            },
+            {
+              "$type": "AttachModifierToSelfGlobalValueMixin",
+              "globalValueKey": "_CHARGEBAR_VALUE",
+              "defaultGlobalValueOnCreate": 0,
+              "valueSteps": [
+                99.5,
+                100.5
+              ],
+              "modifierNameSteps": [
+                "ChargeBar_OnFull"
+              ]
+            },
+            {
+              "$type": "AttachModifierToSelfGlobalValueMixin",
+              "globalValueKey": "_OVERDOSE_CHARGE_ATTENUATION",
+              "defaultGlobalValueOnCreate": 0,
+              "valueSteps": [
+                0.5,
+                1.5
+              ],
+              "modifierNameSteps": [
+                "Overdose_Hit_Timer"
+              ]
+            },
+            {
+              "$type": "AttachModifierToGlobalValueMixin",
+              "globalValueKey": "SGV_EffigyChallenge_V5_AssistOptionSelected_4",
+              "valueSteps": [
+                -0.1,
+                0.5,
+                1.5
+              ],
+              "modifierNameSteps": [
+                "AssistOption_4_Cancel",
+                "AssistOption_4_Selected"
+              ],
+              "MFJNNNHGMJD": true
+            },
+            {
+              "$type": "DoActionBySelfElementReactionMixin",
+              "reactionTypes": [
+                "OverdoseElectric",
+                "OverdoseGrass"
+              ],
+              "actionQueue": [
+                {
+                  "$type": "Predicated",
+                  "targetPredicates": [
+                    {
+                      "$type": "ByTargetGlobalValue",
+                      "key": "_OVERDOSE_CHARGE_ATTENUATION",
+                      "value": 0
+                    }
+                  ],
+                  "successActions": [
+                    {
+                      "$type": "SetGlobalValueV2",
+                      "value": 1,
+                      "key": "_OVERDOSE_CHARGE_ATTENUATION",
+                      "maxValue": 0,
+                      "minValue": 0
+                    },
+                    {
+                      "$type": "AddGlobalValue",
+                      "value": [
+                        "overdose_charge",
+                        "charge_global_adjust",
+                        "MUL"
+                      ],
+                      "key": "_CHARGEBAR_VALUE",
+                      "useLimitRange": true,
+                      "maxValue": 100,
+                      "minValue": 0
+                    }
+                  ],
+                  "failActions": [
+                    {
+                      "$type": "AddGlobalValue",
+                      "value": [
+                        "overdose_charge",
+                        "overdose_attenuation_ratio",
+                        "MUL",
+                        "charge_global_adjust",
+                        "MUL"
+                      ],
+                      "key": "_CHARGEBAR_VALUE",
+                      "useLimitRange": true,
+                      "maxValue": 100,
+                      "minValue": 0
+                    }
+                  ]
+                }
+              ]
+            }
+          ],
+          "onAdded": [
+            {
+              "$type": "MoleMole.Config.SetPoseInt",
+              "intID": "BattleStage",
+              "triggerID": 1
+            }
+          ],
+          "onBeingHit": [
+            {
+              "$type": "Predicated",
+              "targetPredicates": [
+                {
+                  "$type": "ByHitElement",
+                  "element": "Electric"
+                }
+              ],
+              "successActions": [
+                {
+                  "$type": "AddGlobalValue",
+                  "value": [
+                    "electric_charge",
+                    "charge_global_adjust",
+                    "MUL"
+                  ],
+                  "key": "_CHARGEBAR_VALUE",
+                  "useLimitRange": true,
+                  "maxValue": 100,
+                  "minValue": 0
+                }
+              ],
+              "failActions": [
+                {
+                  "$type": "Predicated",
+                  "targetPredicates": [
+                    {
+                      "$type": "ByHitElement",
+                      "element": "Fire"
+                    }
+                  ],
+                  "successActions": [
+                    {
+                      "$type": "AddGlobalValue",
+                      "value": -34,
+                      "key": "_CHARGEBAR_VALUE",
+                      "useLimitRange": true,
+                      "maxValue": 100,
+                      "minValue": 0
+                    },
+                    {
+                      "$type": "Predicated",
+                      "targetPredicates": [
+                        {
+                          "$type": "ByTargetGlobalValue",
+                          "key": "_RAPTOR_DECAY_IN_CD",
+                          "value": 0,
+                          "compareType": "NoneOrEqual"
+                        },
+                        {
+                          "$type": "ByTargetGlobalValue",
+                          "key": "_RAPTOR_STATE",
+                          "value": 0,
+                          "compareType": "MoreThan"
+                        }
+                      ],
+                      "successActions": [
+                        {
+                          "$type": "MoleMole.Config.ServerMonsterLog",
+                          "paramList": [
+                            3,
+                            1,
+                            0
+                          ]
+                        },
+                        {
+                          "$type": "SetGlobalValue",
+                          "value": 0,
+                          "key": "_RAPTOR_STATE",
+                          "maxValue": 0,
+                          "minValue": 0
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        "Overdose_Hit_Timer": {
+          "modifierName": "",
+          "elementDurability": 100,
+          "thinkInterval": "overdose_attenuation_timer",
+          "onThinkInterval": [
+            {
+              "$type": "SetGlobalValue",
+              "value": 0,
+              "key": "_OVERDOSE_CHARGE_ATTENUATION",
+              "maxValue": 0,
+              "minValue": 0
+            }
+          ]
+        },
+        "Stage_2_OverdoseStun": {
+          "modifierName": "",
+          "elementDurability": 100,
+          "modifierMixins": [
+            {
+              "$type": "MoleMole.Config.OverrideMonsterMoveSpeedRatioMixin",
+              "minValue": 0,
+              "maxValue": 1
+            }
+          ],
+          "onAdded": [
+            {
+              "$type": "MoleMole.Config.SetPoseInt",
+              "intID": "BattleStage",
+              "triggerID": 2
+            },
+            {
+              "$type": "AttachEffect",
+              "effectPattern": "Eff_Monster_Fungus_Raptor_OverdoseState"
+            },
+            {
+              "$type": "RemoveModifier",
+              "modifierName": "DendroSkin"
+            }
+          ]
+        },
+        "Stage_3_ReadyForRecovery": {
+          "modifierName": "",
+          "elementDurability": 100,
+          "onAdded": [
+            {
+              "$type": "MoleMole.Config.SetPoseInt",
+              "intID": "BattleStage",
+              "triggerID": 3
+            }
+          ]
+        },
+        "ChargeBar_OnFull": {
+          "modifierName": "",
+          "elementDurability": 100,
+          "onAdded": [
+            {
+              "$type": "SetGlobalValue",
+              "value": 0,
+              "key": "_CACHE_ELEMENT",
+              "maxValue": 0,
+              "minValue": 0
+            },
+            {
+              "$type": "SetAnimatorTrigger",
+              "triggerID": "EnterOverdoseTrigger"
+            },
+            {
+              "$type": "MoleMole.Config.ServerMonsterLog",
+              "paramList": [
+                3,
+                0,
+                0
+              ]
+            },
+            {
+              "$type": "SetGlobalValue",
+              "value": 2,
+              "key": "_RAPTOR_STATE",
+              "maxValue": 0,
+              "minValue": 0
+            }
+          ]
+        },
+        "Prop_Stun_State": {
+          "modifierName": "",
+          "elementDurability": 100,
+          "properties": {
+            "Actor_PhysicalSubHurtDelta": "sub_hurt_delta",
+            "Actor_FireSubHurtDelta": "sub_hurt_delta",
+            "Actor_ElecSubHurtDelta": "sub_hurt_delta",
+            "Actor_WaterSubHurtDelta": "sub_hurt_delta",
+            "Actor_GrassSubHurtDelta": "sub_hurt_delta",
+            "Actor_WindSubHurtDelta": "sub_hurt_delta",
+            "Actor_IceSubHurtDelta": "sub_hurt_delta",
+            "Actor_RockSubHurtDelta": "sub_hurt_delta"
+          }
+        },
+        "AssistOption_4_Selected": {
+          "modifierName": "",
+          "elementDurability": 100,
+          "modifierMixins": [
+            {
+              "$type": "AttachModifierToSelfGlobalValueMixin",
+              "globalValueKey": "_MONSTER_FUNGUS_RAPTOR_ISCHARGED_",
+              "defaultGlobalValueOnCreate": 0,
+              "valueSteps": [
+                0.5,
+                1.5
+              ],
+              "modifierNameSteps": [
+                "GrassAttach"
+              ]
+            }
+          ],
+          "onReconnect": [
+            {
+              "$type": "SetGlobalValue",
+              "value": 0,
+              "key": "_MONSTER_FUNGUS_RAPTOR_ISCHARGED_",
+              "maxValue": 0,
+              "minValue": 0
+            }
+          ]
+        },
+        "GrassAttach": {
+          "modifierName": "",
+          "elementType": "Grass",
+          "elementDurability": 100,
+          "onAdded": [
+            {
+              "$type": "AttachEffect",
+              "effectPattern": "Eff_Monster_Fungus_Raptor_Charged"
+            }
+          ]
+        },
+        "AssistOption_4_Cancel": {
+          "modifierName": "",
+          "elementDurability": 100,
+          "onAdded": [
+            {
+              "$type": "SetGlobalValue",
+              "value": 1,
+              "key": "_ENABLE_SHIELD",
+              "maxValue": 0,
+              "minValue": 0
+            },
+            {
+              "$type": "SetGlobalValue",
+              "value": 250,
+              "key": "_CACHE_ELEMENT",
+              "maxValue": 0,
+              "minValue": 0
+            },
+            {
+              "$type": "ApplyModifier",
+              "modifierName": "DendroSkin"
+            }
+          ]
+        },
+        "TemporaryRemoveSkin": {
+          "modifierName": "",
+          "elementDurability": 100,
+          "onAdded": [
+            {
+              "$type": "Predicated",
+              "targetPredicates": [
+                {
+                  "$type": "ByHasModifier",
+                  "modifierName": "DendroSkin"
+                }
+              ],
+              "successActions": [
+                {
+                  "$type": "SetElementDurabilityToGlobalValue",
+                  "globalValueKey": "_CACHE_ELEMENT",
+                  "maxValue": 0,
+                  "minValue": 0,
+                  "modifierName": "DendroSkin"
+                }
+              ],
+              "failActions": [
+                {
+                  "$type": "SetGlobalValue",
+                  "value": 0,
+                  "key": "_CACHE_ELEMENT",
+                  "maxValue": 0,
+                  "minValue": 0
+                }
+              ]
+            },
+            {
+              "$type": "RemoveModifier",
+              "modifierName": "DendroSkin"
+            }
+          ],
+          "onRemoved": [
+            {
+              "$type": "ApplyModifier",
+              "predicates": [
+                {
+                  "$type": "ByTargetGlobalValue",
+                  "key": "_CACHE_ELEMENT",
+                  "value": 0,
+                  "compareType": "MoreThan"
+                },
+                {
+                  "$type": "ByTargetGlobalValue",
+                  "key": "SGV_EffigyChallenge_V5_AssistOptionSelected_4",
+                  "value": 0
+                }
+              ],
+              "modifierName": "DendroSkin"
+            }
+          ]
+        },
+        "DendroSkin": {
+          "modifierName": "",
+          "elementType": "Grass",
+          "elementDurability": 250,
+          "modifierMixins": [
+            {
+              "$type": "MoleMole.Config.ShieldBarMixin",
+              "showDamageText": "",
+              "barElementType": "Grass"
+            }
+          ],
+          "properties": {
+            "Actor_PhysicalSubHurtDelta": "dendro_skin_sub_hurt_delta",
+            "Actor_FireSubHurtDelta": "dendro_skin_sub_hurt_delta",
+            "Actor_ElecSubHurtDelta": "dendro_skin_sub_hurt_delta",
+            "Actor_WaterSubHurtDelta": "dendro_skin_sub_hurt_delta",
+            "Actor_GrassSubHurtDelta": "dendro_skin_sub_hurt_delta_grass",
+            "Actor_WindSubHurtDelta": "dendro_skin_sub_hurt_delta",
+            "Actor_IceSubHurtDelta": "dendro_skin_sub_hurt_delta",
+            "Actor_RockSubHurtDelta": "dendro_skin_sub_hurt_delta"
+          },
+          "onAdded": [
+            {
+              "$type": "AttachEffect",
+              "effectPattern": "Eff_Monster_Fungus_Raptor_Charged"
+            },
+            {
+              "$type": "SetGlobalValueToOverrideMap",
+              "globalValueKey": "_CACHE_ELEMENT",
+              "overrideMapKey": "cache_element"
+            },
+            {
+              "$type": "AddElementDurability",
+              "value": "cache_element",
+              "modifierName": "DendroSkin",
+              "maxValue": 3.4028234663852886e+38
+            },
+            {
+              "$type": "SetGlobalValue",
+              "value": 0,
+              "key": "_NOT_IN_DENDRO_SKIN",
+              "maxValue": 0,
+              "minValue": 0
+            }
+          ],
+          "onRemoved": [
+            {
+              "$type": "SetGlobalValue",
+              "value": 1,
+              "key": "_NOT_IN_DENDRO_SKIN",
+              "maxValue": 0,
+              "minValue": 0
+            }
+          ]
+        }
+      },
+      "onAdded": [
+        {
+          "$type": "AttachAbilityStateResistance",
+          "doOffStage": true,
+          "resistanceBuffDebuffs": [
+            "ElementFreeze",
+            "Struggle",
+            "ElementPetrifaction"
+          ]
+        },
+        {
+          "$type": "SetGlobalValue",
+          "value": 0,
+          "key": "_RAPTOR_DECAY_IN_CD",
+          "maxValue": 0,
+          "minValue": 0
+        },
+        {
+          "$type": "SetGlobalValue",
+          "value": 0,
+          "key": "GV_EffigyChallenge_V5_Boss_Fall",
+          "maxValue": 0,
+          "minValue": 0
+        },
+        {
+          "$type": "SetGlobalValue",
+          "value": 0,
+          "key": "GV_EffigyChallenge_V5_Boss_DisableButtonT",
+          "maxValue": 0,
+          "minValue": 0
+        },
+        {
+          "$type": "SetGlobalValue",
+          "value": 0,
+          "key": "_MONSTER_FUNGUS_RAPTOR_ISCHARGED_",
+          "maxValue": 0,
+          "minValue": 0
+        },
+        {
+          "$type": "SetGlobalValue",
+          "value": 0,
+          "key": "_ENABLE_SHIELD",
+          "maxValue": 0,
+          "minValue": 0
+        },
+        {
+          "$type": "SetGlobalValue",
+          "value": 1,
+          "key": "_NOT_IN_DENDRO_SKIN",
+          "maxValue": 0,
+          "minValue": 0
+        },
+        {
+          "$type": "SetGlobalValue",
+          "value": 250,
+          "key": "_CACHE_ELEMENT",
+          "maxValue": 0,
+          "minValue": 0
+        }
+      ],
+      "onAbilityStart": [
+        {
+          "$type": "SetGlobalValue",
+          "value": 250,
+          "key": "_CACHE_ELEMENT",
+          "maxValue": 0,
+          "minValue": 0
+        },
+        {
+          "$type": "ApplyModifier",
+          "modifierName": "DendroSkin"
+        }
+      ]
+    }
+  },
+  {
+    "Default": {
+      "$type": "ConfigAbility",
+      "abilityName": "Monster_Fungus_Raptor_BossEvent_ColliderManager",
+      "abilityMixins": [
+        {
+          "$type": "AttachToStateIDMixin",
+          "stateIDs": [
+            "Stun"
+          ],
+          "modifierName": "Stun_State",
+          "__unk_Q2081332355": ""
+        },
+        {
+          "$type": "AttachToAnimatorStateIDMixin",
+          "stateIDs": [
+            "RopeBound_Loop",
+            "Stun_RopeBound"
+          ],
+          "modifierName": "RopeBound_State",
+          "__unk_Q2081332355": ""
+        },
+        {
+          "$type": "AttachToMultiNormalizedTimeMixin",
+          "normalizedStateIDList": [
+            {
+              "stateID": "ConfusedJumpAttack_1",
+              "normalizeStart": 0.115,
+              "normalizeEnd": 0.352
+            },
+            {
+              "stateID": "ConfusedJumpAttack_2",
+              "normalizeStart": 0.115,
+              "normalizeEnd": 0.352
+            },
+            {
+              "stateID": "ConfusedJumpAttack_2",
+              "normalizeStart": 0.115,
+              "normalizeEnd": 0.352
+            },
+            {
+              "stateID": "MeleeAttack03",
+              "normalizeStart": 0.1,
+              "normalizeEnd": 0.35
+            },
+            {
+              "stateID": "PowerJump01",
+              "normalizeStart": 0.1,
+              "normalizeEnd": 0.35
+            },
+            {
+              "stateID": "PowerJump02",
+              "normalizeStart": 0.1,
+              "normalizeEnd": 0.35
+            }
+          ],
+          "modifierName": "Jump_State",
+          "__unk_Q2081332355": ""
+        }
+      ],
+      "modifiers": {
+        "Stun_State": {
+          "modifierName": "",
+          "elementDurability": 100,
+          "onAdded": [
+            {
+              "$type": "EnablePushColliderName",
+              "pushColliderNames": [
+                "PushColliderStun",
+                "PushColliderStun_Extra"
+              ],
+              "setEnable": true
+            },
+            {
+              "$type": "EnablePushColliderName",
+              "pushColliderNames": [
+                "PushCollider",
+                "PushCollider_Extra",
+                "PushColliderRopeBound",
+                "PushColliderRopeBound_Extra"
+              ]
+            }
+          ],
+          "onRemoved": [
+            {
+              "$type": "TriggerAbility",
+              "abilityName": "Monster_Fungus_Raptor_BossEvent_ColliderManager"
+            }
+          ]
+        },
+        "RopeBound_State": {
+          "modifierName": "",
+          "elementDurability": 100,
+          "onAdded": [
+            {
+              "$type": "EnablePushColliderName",
+              "pushColliderNames": [
+                "PushColliderRopeBound",
+                "PushColliderRopeBound_Extra"
+              ],
+              "setEnable": true
+            },
+            {
+              "$type": "EnablePushColliderName",
+              "pushColliderNames": [
+                "PushCollider",
+                "PushCollider_Extra",
+                "PushColliderStun",
+                "PushColliderStun_Extra"
+              ]
+            }
+          ],
+          "onRemoved": [
+            {
+              "$type": "TriggerAbility",
+              "abilityName": "Monster_Fungus_Raptor_BossEvent_ColliderManager"
+            }
+          ]
+        },
+        "Jump_State": {
+          "modifierName": "",
+          "elementDurability": 100,
+          "onAdded": [
+            {
+              "$type": "EnablePushColliderName",
+              "pushColliderNames": [
+                "PushCollider",
+                "PushCollider_Extra",
+                "PushColliderStun",
+                "PushColliderStun_Extra",
+                "PushColliderRopeBound",
+                "PushColliderRopeBound_Extra"
+              ]
+            },
+            {
+              "$type": "SetGlobalValue",
+              "value": 1,
+              "key": "_IN_AIR",
+              "maxValue": 0,
+              "minValue": 0
+            }
+          ],
+          "onRemoved": [
+            {
+              "$type": "TriggerAbility",
+              "abilityName": "Monster_Fungus_Raptor_BossEvent_ColliderManager"
+            },
+            {
+              "$type": "SetGlobalValue",
+              "value": 0,
+              "key": "_IN_AIR",
+              "maxValue": 0,
+              "minValue": 0
+            }
+          ]
+        }
+      },
+      "onAdded": [
+        {
+          "$type": "TriggerAbility",
+          "abilityName": "Monster_Fungus_Raptor_BossEvent_ColliderManager"
+        },
+        {
+          "$type": "SetGlobalValue",
+          "value": 0,
+          "key": "_IN_AIR",
+          "maxValue": 0,
+          "minValue": 0
+        }
+      ],
+      "onAbilityStart": [
+        {
+          "$type": "EnablePushColliderName",
+          "pushColliderNames": [
+            "PushCollider",
+            "PushCollider_Extra"
+          ],
+          "setEnable": true
+        },
+        {
+          "$type": "EnablePushColliderName",
+          "pushColliderNames": [
+            "PushColliderStun",
+            "PushColliderStun_Extra",
+            "PushColliderRopeBound",
+            "PushColliderRopeBound_Extra"
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "Default": {
+      "$type": "ConfigAbility",
+      "abilityName": "Monster_Fungus_Raptor_BossEvent_SteerAttack",
+      "abilityMixins": [
+        {
+          "$type": "MoleMole.Config.SteerAttackMixin",
+          "steerStateIDs": [
+            "ToJump"
+          ],
+          "angularSpeed": 240,
+          "attackTrigger": "",
+          "__unk_Q2081332355": ""
+        },
+        {
+          "$type": "MoleMole.Config.SteerAttackMixin",
+          "steerStateIDs": [
+            "StartMeleeAttack",
+            "StartChargeAttack"
+          ],
+          "angularSpeed": 180,
+          "attackTrigger": "",
+          "__unk_Q2081332355": ""
+        },
+        {
+          "$type": "MoleMole.Config.SteerAttackMixin",
+          "steerStateIDs": [
+            "ChargeAttack_AS"
+          ],
+          "startNormalizedTime": 0.36,
+          "endNormalizedTime": 0.65,
+          "angularSpeed": 360,
+          "attackTrigger": "",
+          "__unk_Q2081332355": ""
+        },
+        {
+          "$type": "MoleMole.Config.SteerAttackMixin",
+          "steerStateIDs": [
+            "ChangeState"
+          ],
+          "endNormalizedTime": 0.64,
+          "angularSpeed": 120,
+          "attackTrigger": "",
+          "__unk_Q2081332355": ""
+        },
+        {
+          "$type": "MoleMole.Config.SteerAttackMixin",
+          "steerStateIDs": [
+            "TurnLeft"
+          ],
+          "startNormalizedTime": 0.4,
+          "endNormalizedTime": 0.64,
+          "angularSpeed": 460,
+          "attackTrigger": "",
+          "__unk_Q2081332355": ""
+        },
+        {
+          "$type": "MoleMole.Config.SteerAttackMixin",
+          "steerStateIDs": [
+            "TurnRight"
+          ],
+          "startNormalizedTime": 0.4,
+          "endNormalizedTime": 0.64,
+          "angularSpeed": 460,
+          "attackTrigger": "",
+          "__unk_Q2081332355": ""
+        },
+        {
+          "$type": "MoleMole.Config.SteerAttackMixin",
+          "steerStateIDs": [
+            "Warning"
+          ],
+          "startNormalizedTime": 0.74,
+          "endNormalizedTime": 0.84,
+          "angularSpeed": 240,
+          "attackTrigger": "",
+          "__unk_Q2081332355": ""
+        },
+        {
+          "$type": "MoleMole.Config.SteerAttackMixin",
+          "steerStateIDs": [
+            "MeleeAttack01_BS"
+          ],
+          "startNormalizedTime": 0.5,
+          "angularSpeed": 240,
+          "attackTrigger": "",
+          "__unk_Q2081332355": ""
+        },
+        {
+          "$type": "MoleMole.Config.SteerAttackMixin",
+          "steerStateIDs": [
+            "MeleeAttack02_BS"
+          ],
+          "startNormalizedTime": 0.3,
+          "angularSpeed": 240,
+          "attackTrigger": "",
+          "__unk_Q2081332355": ""
+        },
+        {
+          "$type": "MoleMole.Config.SteerAttackMixin",
+          "steerStateIDs": [
+            "SporeAttack_BS"
+          ],
+          "endNormalizedTime": 0.6,
+          "angularSpeed": 240,
+          "attackTrigger": "",
+          "__unk_Q2081332355": ""
+        },
+        {
+          "$type": "MoleMole.Config.SteerAttackMixin",
+          "steerStateIDs": [
+            "ShootAttack_BS"
+          ],
+          "angularSpeed": 240,
+          "attackTrigger": "",
+          "__unk_Q2081332355": ""
+        },
+        {
+          "$type": "MoleMole.Config.SteerAttackMixin",
+          "steerStateIDs": [
+            "PowerAttack_BS"
+          ],
+          "angularSpeed": 240,
+          "attackTrigger": "",
+          "__unk_Q2081332355": ""
+        },
+        {
+          "$type": "MoleMole.Config.SteerAttackMixin",
+          "steerStateIDs": [
+            "ChargeAttack_BS"
+          ],
+          "angularSpeed": 30,
+          "attackTrigger": "",
+          "__unk_Q2081332355": ""
+        },
+        {
+          "$type": "MoleMole.Config.SteerAttackMixin",
+          "steerStateIDs": [
+            "ChargeAttack_RushLoop"
+          ],
+          "endNormalizedTime": 99,
+          "angularSpeed": 15,
+          "attackTrigger": "",
+          "__unk_Q2081332355": ""
+        },
+        {
+          "$type": "MoleMole.Config.SteerAttackMixin",
+          "steerStateIDs": [
+            "ChargeAttack_TurnLeft"
+          ],
+          "endNormalizedTime": 0.33,
+          "angularSpeed": 15,
+          "attackTrigger": "",
+          "__unk_Q2081332355": ""
+        },
+        {
+          "$type": "MoleMole.Config.SteerAttackMixin",
+          "steerStateIDs": [
+            "ChargeAttack_TurnLeft"
+          ],
+          "startNormalizedTime": 0.33,
+          "angularSpeed": 180,
+          "attackTrigger": "",
+          "__unk_Q2081332355": ""
+        },
+        {
+          "$type": "MoleMole.Config.SteerAttackMixin",
+          "steerStateIDs": [
+            "ChargeAttack_TurnRight"
+          ],
+          "endNormalizedTime": 0.33,
+          "angularSpeed": 15,
+          "attackTrigger": "",
+          "__unk_Q2081332355": ""
+        },
+        {
+          "$type": "MoleMole.Config.SteerAttackMixin",
+          "steerStateIDs": [
+            "ChargeAttack_TurnRight"
+          ],
+          "startNormalizedTime": 0.33,
+          "angularSpeed": 180,
+          "attackTrigger": "",
+          "__unk_Q2081332355": ""
+        },
+        {
+          "$type": "MoleMole.Config.SteerAttackMixin",
+          "steerStateIDs": [
+            "BackStep"
+          ],
+          "startNormalizedTime": 0.3,
+          "endNormalizedTime": 0.6,
+          "angularSpeed": 240,
+          "attackTrigger": "",
+          "__unk_Q2081332355": ""
+        },
+        {
+          "$type": "MoleMole.Config.SteerAttackMixin",
+          "steerStateIDs": [
+            "ShootAttackBackStep"
+          ],
+          "startNormalizedTime": 0.3,
+          "endNormalizedTime": 0.6,
+          "angularSpeed": 240,
+          "attackTrigger": "",
+          "__unk_Q2081332355": ""
+        },
+        {
+          "$type": "MoleMole.Config.SteerAttackMixin",
+          "steerStateIDs": [
+            "LeftStep"
+          ],
+          "startNormalizedTime": 0.3,
+          "endNormalizedTime": 0.6,
+          "angularSpeed": 240,
+          "attackTrigger": "",
+          "__unk_Q2081332355": ""
+        },
+        {
+          "$type": "MoleMole.Config.SteerAttackMixin",
+          "steerStateIDs": [
+            "RightStep"
+          ],
+          "startNormalizedTime": 0.3,
+          "endNormalizedTime": 0.6,
+          "angularSpeed": 240,
+          "attackTrigger": "",
+          "__unk_Q2081332355": ""
+        },
+        {
+          "$type": "MoleMole.Config.SteerAttackMixin",
+          "steerStateIDs": [
+            "MeleeAttackLeftStep"
+          ],
+          "startNormalizedTime": 0.3,
+          "endNormalizedTime": 0.6,
+          "angularSpeed": 240,
+          "attackTrigger": "",
+          "__unk_Q2081332355": ""
+        },
+        {
+          "$type": "MoleMole.Config.SteerAttackMixin",
+          "steerStateIDs": [
+            "MeleeAttackRightStep"
+          ],
+          "startNormalizedTime": 0.3,
+          "endNormalizedTime": 0.6,
+          "angularSpeed": 240,
+          "attackTrigger": "",
+          "__unk_Q2081332355": ""
+        },
+        {
+          "$type": "MoleMole.Config.SteerAttackMixin",
+          "steerStateIDs": [
+            "ShootAttackLeftStep"
+          ],
+          "startNormalizedTime": 0.3,
+          "endNormalizedTime": 0.6,
+          "angularSpeed": 240,
+          "attackTrigger": "",
+          "__unk_Q2081332355": ""
+        },
+        {
+          "$type": "MoleMole.Config.SteerAttackMixin",
+          "steerStateIDs": [
+            "ShootAttackRightStep"
+          ],
+          "startNormalizedTime": 0.3,
+          "endNormalizedTime": 0.6,
+          "angularSpeed": 240,
+          "attackTrigger": "",
+          "__unk_Q2081332355": ""
+        },
+        {
+          "$type": "MoleMole.Config.SteerAttackMixin",
+          "steerStateIDs": [
+            "ConfusedMeleeAttack"
+          ],
+          "angularSpeed": 190,
+          "attackTrigger": "",
+          "__unk_Q2081332355": ""
+        }
+      ]
+    }
+  },
+  {
+    "Default": {
+      "$type": "ConfigAbility",
+      "abilityName": "Monster_Fungus_Raptor_BossEvent_RopeBoundLogic",
+      "abilityMixins": [
+        {
+          "$type": "AttachModifierToGlobalValueMixin",
+          "globalValueKey": "SGV_EffigyChallenge_V5_AssistSkillUsed",
+          "valueSteps": [
+            -0.5,
+            0.5,
+            1.5
+          ],
+          "modifierNameSteps": [
+            "RopeBound_Ready",
+            "RopeBound_Start"
+          ],
+          "MFJNNNHGMJD": true
+        },
+        {
+          "$type": "AttachToAnimatorStateIDMixin",
+          "stateIDs": [
+            "RopeBound_BS",
+            "RopeBound_Loop",
+            "RopeBound_Overdose_BS",
+            "Stun_RopeBound"
+          ],
+          "modifierName": "RopeBound_State_VFX",
+          "__unk_Q2081332355": ""
+        }
+      ],
+      "abilitySpecials": {
+        "sub_hurt_delta": -0.15
+      },
+      "modifiers": {
+        "RopeBound_Ready": {
+          "modifierName": "",
+          "elementDurability": 100
+        },
+        "RopeBound_Start": {
+          "modifierName": "",
+          "elementDurability": 100,
+          "onAdded": [
+            {
+              "$type": "TriggerAbility",
+              "abilityName": "Monster_Fungus_Raptor_BossEvent_RopeBoundLogic"
+            }
+          ]
+        },
+        "RopeBound_Monitor": {
+          "stacking": "Unique",
+          "modifierName": "",
+          "elementDurability": 100,
+          "thinkInterval": 0.05,
+          "onThinkInterval": [
+            {
+              "$type": "Predicated",
+              "targetPredicates": [
+                {
+                  "$type": "ByTargetGlobalValue",
+                  "key": "_IN_AIR",
+                  "value": 0,
+                  "compareType": "NoneOrEqual"
+                }
+              ],
+              "successActions": [
+                {
+                  "$type": "ApplyModifier",
+                  "modifierName": "Dummy_Bullet_Timer"
+                },
+                {
+                  "$type": "RemoveModifier",
+                  "modifierName": "RopeBound_Monitor"
+                }
+              ]
+            }
+          ]
+        },
+        "Dummy_Bullet_Timer": {
+          "modifierName": "",
+          "duration": 0.2,
+          "elementDurability": 100,
+          "onAdded": [
+            {
+              "$type": "FireEffect",
+              "effectPattern": "Eff_Monster_Fungus_Raptor_BossEvent_BidingRope_BS"
+            }
+          ],
+          "onRemoved": [
+            {
+              "$type": "SetAnimatorTrigger",
+              "triggerID": "RopeBound"
+            },
+            {
+              "$type": "MoleMole.Config.ServerMonsterLog",
+              "paramList": [
+                3,
+                2,
+                0
+              ]
+            }
+          ]
+        },
+        "RopeBound_State_VFX": {
+          "modifierName": "",
+          "elementDurability": 100,
+          "properties": {
+            "Actor_PhysicalSubHurtDelta": "sub_hurt_delta",
+            "Actor_FireSubHurtDelta": "sub_hurt_delta",
+            "Actor_ElecSubHurtDelta": "sub_hurt_delta",
+            "Actor_WaterSubHurtDelta": "sub_hurt_delta",
+            "Actor_GrassSubHurtDelta": "sub_hurt_delta",
+            "Actor_WindSubHurtDelta": "sub_hurt_delta",
+            "Actor_IceSubHurtDelta": "sub_hurt_delta",
+            "Actor_RockSubHurtDelta": "sub_hurt_delta"
+          },
+          "onAdded": [
+            {
+              "$type": "AttachEffect",
+              "effectPattern": "Eff_Monster_Fungus_Raptor_BossEvent_BidingRope_Loop",
+              "setSelfAsEffectPluginTarget": true
+            }
+          ],
+          "onRemoved": [
+            {
+              "$type": "FireEffect",
+              "effectPattern": "Eff_Monster_Fungus_Raptor_BossEvent_BidingRope_AS"
+            }
+          ]
+        }
+      },
+      "onAbilityStart": [
+        {
+          "$type": "RemoveModifier",
+          "modifierName": "RopeBound_Monitor"
+        },
+        {
+          "$type": "ApplyModifier",
+          "modifierName": "RopeBound_Monitor"
+        }
+      ]
+    }
+  },
+  {
+    "Default": {
+      "$type": "ConfigAbility",
+      "abilityName": "Monster_Fungus_Raptor_BossEvent_ChargeAttack",
+      "abilityMixins": [
+        {
+          "$type": "AttachToStateIDMixin",
+          "stateIDs": [
+            "ChargeAttack_BS",
+            "ChargeAttack_RushLoop"
+          ],
+          "modifierName": "ChargeLoop_VFX",
+          "__unk_Q2081332355": ""
+        }
+      ],
+      "modifiers": {
+        "ChargeLoop_VFX": {
+          "modifierName": "",
+          "elementDurability": 100,
+          "onAdded": [
+            {
+              "$type": "AttachEffect",
+              "effectPattern": "Eff_Monster_Fungus_Raptor_ChargeAttack_RushLoop_01"
+            }
+          ]
+        }
+      }
+    }
+  },
+  {
+    "Default": {
+      "$type": "ConfigAbility",
+      "abilityName": "Monster_Fungus_Raptor_BossEvent_CameraManager",
+      "abilityMixins": [
+        {
+          "$type": "AttachModifierToSelfGlobalValueMixin",
+          "globalValueKey": "_CAMERA_STATE",
+          "defaultGlobalValueOnCreate": -1,
+          "valueSteps": [
+            -0.5,
+            0.5,
+            1.5,
+            2.5,
+            3.5
+          ],
+          "modifierNameSteps": [
+            "Camera_Default",
+            "Camera_StunView",
+            "Camera_UltView",
+            "Camera_JumpView"
+          ]
+        },
+        {
+          "$type": "MoleMole.Config.AttachToAIAlertnessMixin",
+          "alertness": [
+            2,
+            3
+          ],
+          "modifierName": "Camera_Manager"
+        }
+      ],
+      "modifiers": {
+        "Camera_Manager": {
+          "modifierName": "",
+          "elementDurability": 100,
+          "modifierMixins": [
+            {
+              "$type": "MoleMole.Config.DoActionByStateIDMixin",
+              "stateIDs": [
+                "NormalIdle"
+              ],
+              "enterActions": [
+                {
+                  "$type": "SetGlobalValueV2",
+                  "predicates": [
+                    {
+                      "$type": "ByNot",
+                      "predicates": [
+                        {
+                          "$type": "ByTargetGlobalValue",
+                          "key": "_CAMERA_STATE",
+                          "value": 0
+                        }
+                      ]
+                    }
+                  ],
+                  "value": 0,
+                  "key": "_CAMERA_STATE",
+                  "maxValue": 0,
+                  "minValue": 0
+                }
+              ],
+              "__unk_Q2081332355": ""
+            },
+            {
+              "$type": "MoleMole.Config.DoActionByStateIDMixin",
+              "stateIDs": [
+                "StartChargeAttack",
+                "StartMeleeAttack",
+                "ChangeState"
+              ],
+              "enterActions": [
+                {
+                  "$type": "SetGlobalValueV2",
+                  "value": 2,
+                  "key": "_CAMERA_STATE",
+                  "maxValue": 0,
+                  "minValue": 0
+                }
+              ],
+              "__unk_Q2081332355": ""
+            }
+          ],
+          "onAdded": [
+            {
+              "$type": "SetGlobalValueV2",
+              "value": 0,
+              "key": "_CAMERA_STATE",
+              "maxValue": 0,
+              "minValue": 0
+            }
+          ],
+          "onReconnect": [
+            {
+              "$type": "MoleMole.Config.SetLockingV3Config",
+              "enable": true,
+              "specialCameraName": "BasicView",
+              "frameDelay": 1,
+              "lockTrans": ""
+            },
+            {
+              "$type": "SetGlobalValueV2",
+              "value": 0,
+              "key": "_CAMERA_STATE",
+              "maxValue": 0,
+              "minValue": 0
+            }
+          ]
+        },
+        "Camera_Default": {
+          "modifierName": "",
+          "elementDurability": 100,
+          "onAdded": [
+            {
+              "$type": "MoleMole.Config.SetLockingV3Config",
+              "enable": true,
+              "specialCameraName": "BasicView",
+              "frameDelay": 1,
+              "lockTrans": ""
+            }
+          ]
+        },
+        "Camera_StunView": {
+          "modifierName": "",
+          "elementDurability": 100,
+          "onAdded": [
+            {
+              "$type": "MoleMole.Config.SetLockingV3Config",
+              "enable": true,
+              "specialCameraName": "StunView",
+              "frameDelay": 1,
+              "lockTrans": ""
+            }
+          ]
+        },
+        "Camera_UltView": {
+          "modifierName": "",
+          "elementDurability": 100,
+          "onAdded": [
+            {
+              "$type": "MoleMole.Config.SetLockingV3Config",
+              "enable": true,
+              "specialCameraName": "UltView",
+              "frameDelay": 1,
+              "lockTrans": ""
+            }
+          ]
+        },
+        "Camera_JumpView": {
+          "modifierName": "",
+          "elementDurability": 100,
+          "onAdded": [
+            {
+              "$type": "MoleMole.Config.SetLockingV3Config",
+              "enable": true,
+              "specialCameraName": "JumpView",
+              "frameDelay": 1,
+              "lockTrans": ""
+            }
+          ]
+        }
+      },
+      "onAbilityStart": [
+        {
+          "$type": "SetGlobalValueV2",
+          "value": 0,
+          "key": "_CAMERA_STATE",
+          "maxValue": 0,
+          "minValue": 0
+        }
+      ]
+    }
+  },
+  {
+    "Default": {
+      "$type": "ConfigAbility",
+      "abilityName": "Monster_Fungus_Raptor_BossEvent_Camera_JumpView",
+      "onAbilityStart": [
+        {
+          "$type": "SetGlobalValueV2",
+          "value": 3,
+          "key": "_CAMERA_STATE",
+          "maxValue": 0,
+          "minValue": 0
+        }
+      ]
+    }
+  },
+  {
+    "Default": {
+      "$type": "ConfigAbility",
+      "abilityName": "Monster_Fungus_Raptor_BossEvent_Camera_UltView",
+      "onAbilityStart": [
+        {
+          "$type": "SetGlobalValueV2",
+          "value": 2,
+          "key": "_CAMERA_STATE",
+          "maxValue": 0,
+          "minValue": 0
+        }
+      ]
+    }
+  },
+  {
+    "Default": {
+      "$type": "ConfigAbility",
+      "abilityName": "Monster_Fungus_Raptor_BossEvent_JumpWarning",
+      "abilityMixins": [
+        {
+          "$type": "MoleMole.Config.SteerAttackTraceToPosMixin",
+          "steerStateIDs": [
+            "PowerJump",
+            "ConfusedJumpAttack"
+          ],
+          "startNormalizedTime": 0.1,
+          "endNormalizedTime": 0.15,
+          "angularSpeed": 800,
+          "attackTrigger": "",
+          "__unk_Q2081332355": "",
+          "globalPosKey": "_JUMP_POS"
+        }
+      ],
+      "onAdded": [
+        {
+          "$type": "SetGlobalPos",
+          "key": "_JUMP_POS",
+          "born": {
+            "$type": "ConfigBornBySelf",
+            "useRotation": true
+          }
+        }
+      ],
+      "onAbilityStart": [
+        {
+          "$type": "SetGlobalPos",
+          "target": "SelfAttackActiveTarget",
+          "key": "_JUMP_POS",
+          "born": {
+            "$type": "MNCJACPDDLK",
+            "linearOffset": 0.5,
+            "linearMin": 0,
+            "linearMax": 12
+          },
+          "setTarget": false
+        },
+        {
+          "$type": "FireEffect",
+          "effectPattern": "Eff_Monster_Fungus_Raptor_BossEvent_JumpAttack_Alert",
+          "born": {
+            "$type": "ConfigBornByGlobalValue",
+            "positionKey": "_JUMP_POS",
+            "directionKey": ""
+          }
+        },
+        {
+          "$type": "MoleMole.Config.FixedMonsterRushMove",
+          "toPos": {
+            "$type": "ConfigBornByGlobalValue",
+            "positionKey": "_JUMP_POS",
+            "directionKey": ""
+          },
+          "timeRange": 0.84,
+          "maxRange": -1,
+          "animatorStateIDs": [
+            "ConfusedJumpAttack_1",
+            "ConfusedJumpAttack_2",
+            "PowerJump01",
+            "PowerJump02"
+          ],
+          "overrideMoveCollider": ""
+        }
+      ]
+    }
+  },
+  {
+    "Default": {
+      "$type": "ConfigAbility",
+      "abilityName": "Monster_Fungus_Raptor_BossEvent_ToNormalState",
+      "modifiers": {
+        "PutOutFire": {
+          "modifierName": "",
+          "duration": 0.2,
+          "elementType": "AntiFire",
+          "elementDurability": 100
+        }
+      },
+      "onAbilityStart": [
+        {
+          "$type": "SetGlobalValue",
+          "value": 1,
+          "key": "_RAPTOR_STATE",
+          "maxValue": 0,
+          "minValue": 0
+        },
+        {
+          "$type": "ApplyModifier",
+          "modifierName": "PutOutFire"
+        }
+      ]
+    }
+  }
+]
