@@ -160,7 +160,7 @@
               "target": "SelfAttackTarget",
               "key": "_ABILITY_Eula_ElementalArt_ExtraAttack_Pos_1",
               "born": {
-                "$type": "ConfigBornByTarget",
+                "$type": "ConfigBornBySelectedPoint",
                 "onGround": true
               },
               "setTarget": false
@@ -335,36 +335,10 @@
     "Default": {
       "$type": "ConfigAbility",
       "abilityName": "Avatar_Eula_ElementalArt_ExtraAttack_2",
-      "abilityMixins": [
-        {
-          "$type": "ModifyDamageMixin",
-          "ignoreEventInfo": true,
-          "damagePercentageRatio": "Eula_Constellation_4_DamagePercentage",
-          "predicates": [
-            {
-              "$type": "ByTargetHPRatio",
-              "logic": "LesserOrEqual",
-              "HPRatio": "HPRatio"
-            },
-            {
-              "$type": "ByAttackTags",
-              "attackTags": [
-                "Elemental_Burst"
-              ]
-            },
-            {
-              "$type": "ByUnlockTalentParam",
-              "talentParam": "Eula_Constellation_4"
-            }
-          ]
-        }
-      ],
       "abilitySpecials": {
         "ElementalArt_Extra_Damage": 0,
         "Elemental_Burst_Judgment_BaseDamage": 0,
-        "PermanentSkill_1_Judgment_Ratio": 0,
-        "Eula_Constellation_4_DamagePercentage": 0,
-        "HPRatio": 0.5
+        "PermanentSkill_1_Judgment_Ratio": 0
       },
       "modifiers": {
         "HasTarget": {
@@ -378,7 +352,7 @@
               "target": "SelfAttackTarget",
               "key": "_ABILITY_Eula_ElementalArt_ExtraAttack_Pos_2",
               "born": {
-                "$type": "ConfigBornByTarget",
+                "$type": "ConfigBornBySelectedPoint",
                 "onGround": true
               },
               "setTarget": false
@@ -556,7 +530,7 @@
               "target": "SelfAttackTarget",
               "key": "_ABILITY_Eula_PermanentSkill_1_Attack_Pos",
               "born": {
-                "$type": "ConfigBornByTarget",
+                "$type": "ConfigBornBySelectedPoint",
                 "onGround": true
               },
               "setTarget": false
@@ -573,6 +547,7 @@
             },
             {
               "$type": "TriggerAttackEvent",
+              "target": "OriginOwner",
               "attackEvent": {
                 "attackPattern": {
                   "$type": "ConfigAttackSphere",
@@ -600,7 +575,7 @@
                     "elementDurability": 50,
                     "strikeType": "Blunt",
                     "enBreak": 180,
-                    "attackType": "Melee"
+                    "attackType": "Range"
                   },
                   "hitPattern": {
                     "onHitEffectName": "default",
@@ -616,7 +591,7 @@
                       "z": 1
                     }
                   },
-                  "canBeModifiedBy": "Owner"
+                  "canBeModifiedBy": "OriginOwner"
                 }
               },
               "targetType": "Enemy"
@@ -641,6 +616,7 @@
             },
             {
               "$type": "TriggerAttackEvent",
+              "target": "OriginOwner",
               "attackEvent": {
                 "attackPattern": {
                   "$type": "ConfigAttackSphere",
@@ -669,7 +645,7 @@
                     "elementDurability": 50,
                     "strikeType": "Blunt",
                     "enBreak": 180,
-                    "attackType": "Melee"
+                    "attackType": "Range"
                   },
                   "hitPattern": {
                     "onHitEffectName": "default",
@@ -685,7 +661,7 @@
                       "z": 1
                     }
                   },
-                  "canBeModifiedBy": "Owner"
+                  "canBeModifiedBy": "OriginOwner"
                 }
               },
               "targetType": "Enemy"
@@ -778,14 +754,13 @@
         "BaseDuration": 0,
         "DefenceDown_MaxDuration": 0,
         "Eula_ElementalArt_MaxCount": 2,
-        "PhysicalAddHurt_BaseDuration": 6,
+        "PhysicalAddHurt_BaseDuration": 0,
         "Elemental_Burst_Judgment_BaseDamage": 0,
         "PermanentSkill_1_Judgment_Ratio": 0,
         "Eula_Constellation_2_PhysicalAddHurtDelta": 0,
         "Eula_ElementalArt_PhysicalSubHurtDelta": 0,
         "Eula_ElementalArt_IceSubHurtDelta": 0,
-        "PhysicalAddHurt_MaxDuration": 0,
-        "PermanentSkill_2_cdDelta": 0
+        "PhysicalAddHurt_MaxDuration": 0
       },
       "modifiers": {
         "UNIQUE_Eula_ElementalArt_Burst_DefenceDown": {
@@ -805,14 +780,23 @@
           "stacking": "Unique",
           "modifierName": "",
           "isUnique": true,
-          "duration": "PhysicalAddHurt_BaseDuration",
-          "elementDurability": "PhysicalAddHurt_BaseDuration",
+          "duration": [
+            "PhysicalAddHurt_BaseDuration",
+            6,
+            "Add"
+          ],
+          "elementDurability": [
+            "PhysicalAddHurt_BaseDuration",
+            6,
+            "Add"
+          ],
+          "thinkInterval": 0.5,
           "properties": {
             "Actor_PhysicalAddHurtDelta": "Eula_Constellation_2_PhysicalAddHurtDelta"
           },
           "onAdded": [
             {
-              "$type": "AttachEffect",
+              "$type": "AttachModifier",
               "otherTargets": {
                 "$type": "SelectTargetsByEquipParts",
                 "equipPartNames": [
@@ -821,10 +805,36 @@
                   "sheathPoint"
                 ]
               },
-              "effectPattern": "Eff_Avatar_Lady_Claymore_Eula_Talent_Weapon"
+              "modifierName": "UNIQUE_Eula_Talent_Weapon_Fx"
+            }
+          ],
+          "onThinkInterval": [
+            {
+              "$type": "AttachModifier",
+              "otherTargets": {
+                "$type": "SelectTargetsByEquipParts",
+                "equipPartNames": [
+                  "equip01",
+                  "equip02",
+                  "sheathPoint"
+                ]
+              },
+              "modifierName": "UNIQUE_Eula_Talent_Weapon_Fx"
             }
           ],
           "isLimitedProperties": true
+        },
+        "UNIQUE_Eula_Talent_Weapon_Fx": {
+          "modifierName": "",
+          "isUnique": true,
+          "duration": 0.6,
+          "elementDurability": 100,
+          "onAdded": [
+            {
+              "$type": "AttachEffect",
+              "effectPattern": "Eff_Avatar_Lady_Claymore_Eula_Talent_Weapon"
+            }
+          ]
         },
         "Eula_ElementalArt_ExtraAttack_1": {
           "modifierName": "",
@@ -951,76 +961,8 @@
               "campTargetType": "Enemy"
             }
           ]
-        },
-        "PermanentSkill_2_ModifySkillCD_Handler": {
-          "modifierName": "",
-          "elementDurability": 100,
-          "onAttackLanded": [
-            {
-              "$type": "Predicated",
-              "target": "Target",
-              "targetPredicates": [
-                {
-                  "$type": "ByAttackTags",
-                  "attackTags": [
-                    "NormalAttack_01",
-                    "NormalAttack_02",
-                    "NormalAttack_03",
-                    "NormalAttack_04",
-                    "NormalAttack_05"
-                  ]
-                },
-                {
-                  "$type": "ByHitCritical"
-                },
-                {
-                  "$type": "ByEntityTypes",
-                  "entityTypes": [
-                    "Monster"
-                  ]
-                },
-                {
-                  "$type": "ByTargetGlobalValue",
-                  "key": "_ANIMAL_ENTITY_TYPE",
-                  "value": 0,
-                  "compareType": "NoneOrEqual"
-                }
-              ],
-              "successActions": [
-                {
-                  "$type": "ApplyModifier",
-                  "modifierName": "Eula_PermanentSkill_ModifySkillCD"
-                }
-              ]
-            }
-          ]
-        },
-        "Eula_PermanentSkill_ModifySkillCD": {
-          "stacking": "Unique",
-          "modifierName": "",
-          "duration": 0.1,
-          "elementDurability": 100,
-          "onAdded": [
-            {
-              "$type": "ModifyAvatarSkillCD",
-              "skillID": 10512,
-              "cdDelta": "PermanentSkill_2_cdDelta"
-            }
-          ]
         }
       },
-      "onAdded": [
-        {
-          "$type": "ApplyModifier",
-          "predicates": [
-            {
-              "$type": "ByUnlockTalentParam",
-              "talentParam": "Eula_PermanentSkill_2"
-            }
-          ],
-          "modifierName": "PermanentSkill_2_ModifySkillCD_Handler"
-        }
-      ],
       "onAbilityStart": [
         {
           "$type": "ApplyModifier",
@@ -1204,7 +1146,9 @@
             {
               "$type": "SetAnimatorTrigger",
               "doOffStage": true,
-              "triggerID": "Mark_1"
+              "canBeHandledOnRecover": true,
+              "triggerID": "Mark_1",
+              "MPTriggerOnRemote": true
             },
             {
               "$type": "FireEffect",
@@ -1219,7 +1163,8 @@
             {
               "$type": "SetAnimatorTrigger",
               "doOffStage": true,
-              "triggerID": "Mark_End"
+              "triggerID": "Mark_End_1",
+              "MPTriggerOnRemote": true
             }
           ],
           "isLimitedProperties": true
@@ -1239,7 +1184,9 @@
             {
               "$type": "SetAnimatorTrigger",
               "doOffStage": true,
-              "triggerID": "Mark_2"
+              "canBeHandledOnRecover": true,
+              "triggerID": "Mark_2",
+              "MPTriggerOnRemote": true
             },
             {
               "$type": "FireEffect",
@@ -1258,7 +1205,45 @@
             {
               "$type": "SetAnimatorTrigger",
               "doOffStage": true,
-              "triggerID": "Mark_End"
+              "triggerID": "Mark_End_2",
+              "MPTriggerOnRemote": true
+            }
+          ],
+          "onAttackLanded": [
+            {
+              "$type": "Predicated",
+              "target": "Target",
+              "targetPredicates": [
+                {
+                  "$type": "ByAttackTags",
+                  "attackTags": [
+                    "Elemental_Art"
+                  ]
+                },
+                {
+                  "$type": "ByTargetGlobalValue",
+                  "key": "_ANIMAL_ENTITY_TYPE",
+                  "value": 0,
+                  "compareType": "NoneOrEqual"
+                },
+                {
+                  "$type": "ByEntityTypes",
+                  "entityTypes": [
+                    "Monster"
+                  ]
+                },
+                {
+                  "$type": "ByHitEnBreak",
+                  "logic": "Equal",
+                  "enBreak": 120
+                }
+              ],
+              "successActions": [
+                {
+                  "$type": "FireEffect",
+                  "effectPattern": "Eff_Avatar_Lady_Claymore_Eula_CoolHeart_Head_2"
+                }
+              ]
             }
           ],
           "isLimitedProperties": true
@@ -1269,20 +1254,6 @@
           "properties": {
             "Actor_DefenceRatio": "Eula_ElementalArt_Mark_DefencekUp_3"
           },
-          "onAdded": [
-            {
-              "$type": "AttachEffect",
-              "effectPattern": "Eff_Avatar_Lady_Claymore_Eula_ElementalArt_Mark_1"
-            },
-            {
-              "$type": "AttachEffect",
-              "effectPattern": "Eff_Avatar_Lady_Claymore_Eula_ElementalArt_Mark_2"
-            },
-            {
-              "$type": "AttachEffect",
-              "effectPattern": "Eff_Avatar_Lady_Claymore_Eula_ElementalArt_Mark_3"
-            }
-          ],
           "isLimitedProperties": true
         },
         "Eula_ElementalArt_Mark_4": {
@@ -1291,24 +1262,6 @@
           "properties": {
             "Actor_DefenceRatio": "Eula_ElementalArt_Mark_DefencekUp_4"
           },
-          "onAdded": [
-            {
-              "$type": "AttachEffect",
-              "effectPattern": "Eff_Avatar_Lady_Claymore_Eula_ElementalArt_Mark_1"
-            },
-            {
-              "$type": "AttachEffect",
-              "effectPattern": "Eff_Avatar_Lady_Claymore_Eula_ElementalArt_Mark_2"
-            },
-            {
-              "$type": "AttachEffect",
-              "effectPattern": "Eff_Avatar_Lady_Claymore_Eula_ElementalArt_Mark_3"
-            },
-            {
-              "$type": "AttachEffect",
-              "effectPattern": "Eff_Avatar_Lady_Claymore_Eula_ElementalArt_Mark_4"
-            }
-          ],
           "isLimitedProperties": true
         },
         "SetRenderersEnable_Mdoifier": {
@@ -1345,6 +1298,42 @@
           "modifierName": "SetRenderersEnable_Mdoifier"
         }
       ],
+      "onAbilityStart": [
+        {
+          "$type": "ApplyModifier",
+          "modifierName": "UNIQUE_Eula_ElementalArt_Mark_Count"
+        }
+      ],
+      "onKill": [
+        {
+          "$type": "SetAnimatorTrigger",
+          "doOffStage": true,
+          "predicates": [
+            {
+              "$type": "ByTargetGlobalValue",
+              "key": "_ABILITY_Eula_ElementalArt_Mark_Count",
+              "value": 1,
+              "forceByCaster": true
+            }
+          ],
+          "triggerID": "Mark_End_1",
+          "MPTriggerOnRemote": true
+        },
+        {
+          "$type": "SetAnimatorTrigger",
+          "doOffStage": true,
+          "predicates": [
+            {
+              "$type": "ByTargetGlobalValue",
+              "key": "_ABILITY_Eula_ElementalArt_Mark_Count",
+              "value": 2,
+              "forceByCaster": true
+            }
+          ],
+          "triggerID": "Mark_End_2",
+          "MPTriggerOnRemote": true
+        }
+      ],
       "onAvatarIn": [
         {
           "$type": "SetAnimatorTrigger",
@@ -1356,7 +1345,20 @@
               "forceByCaster": true
             }
           ],
-          "triggerID": "Mark_1"
+          "triggerID": "Mark_1",
+          "MPTriggerOnRemote": true
+        },
+        {
+          "$type": "FireEffect",
+          "predicates": [
+            {
+              "$type": "ByTargetGlobalValue",
+              "key": "_ABILITY_Eula_ElementalArt_Mark_Count",
+              "value": 1,
+              "forceByCaster": true
+            }
+          ],
+          "effectPattern": "Eff_Avatar_Lady_Claymore_Eula_CoolHeart_Head_1"
         },
         {
           "$type": "SetAnimatorTrigger",
@@ -1368,7 +1370,20 @@
               "forceByCaster": true
             }
           ],
-          "triggerID": "Mark_2"
+          "triggerID": "Mark_2",
+          "MPTriggerOnRemote": true
+        },
+        {
+          "$type": "FireEffect",
+          "predicates": [
+            {
+              "$type": "ByTargetGlobalValue",
+              "key": "_ABILITY_Eula_ElementalArt_Mark_Count",
+              "value": 2,
+              "forceByCaster": true
+            }
+          ],
+          "effectPattern": "Eff_Avatar_Lady_Claymore_Eula_CoolHeart_Head_2"
         }
       ]
     }
@@ -1693,6 +1708,14 @@
         {
           "$type": "AttachToStateIDMixin",
           "stateIDs": [
+            "Eula_ElementalBurst",
+            "Eula_ElementalBurst_AS"
+          ],
+          "modifierName": "Emotion_Controller"
+        },
+        {
+          "$type": "AttachToStateIDMixin",
+          "stateIDs": [
             "Eula_ElementalBurst"
           ],
           "modifierName": "Eula_ElementalBurst_Push"
@@ -1726,11 +1749,39 @@
             "Eula_ElementalBurst"
           ],
           "modifierName": "Elemental_Burst_Invincible"
+        },
+        {
+          "$type": "ModifyDamageMixin",
+          "ignoreEventInfo": true,
+          "damagePercentageRatio": "Eula_Constellation_4_DamagePercentage",
+          "predicates": [
+            {
+              "$type": "ByTargetHPRatio",
+              "logic": "LesserOrEqual",
+              "HPRatio": "HPRatio"
+            },
+            {
+              "$type": "ByAttackType",
+              "attackType": "Range"
+            },
+            {
+              "$type": "ByAttackTags",
+              "attackTags": [
+                "Elemental_Burst"
+              ]
+            },
+            {
+              "$type": "ByUnlockTalentParam",
+              "talentParam": "Eula_Constellation_4"
+            }
+          ]
         }
       ],
       "abilitySpecials": {
         "DamoclesSword_Max_Damage_Ratio": 0,
-        "Chance": 0
+        "Chance": 0,
+        "Eula_Constellation_4_DamagePercentage": 0,
+        "HPRatio": 0.5
       },
       "modifiers": {
         "Eula_ElementalBurst_Judgment_Handler": {
@@ -1768,6 +1819,16 @@
                   "key": "_ANIMAL_ENTITY_TYPE",
                   "value": 0,
                   "compareType": "NoneOrEqual"
+                },
+                {
+                  "$type": "ByNot",
+                  "predicates": [
+                    {
+                      "$type": "ByHitEnBreak",
+                      "logic": "Equal",
+                      "enBreak": 0
+                    }
+                  ]
                 }
               ],
               "successActions": [
@@ -1822,16 +1883,6 @@
           "modifierName": "",
           "elementDurability": 100,
           "onAdded": [
-            {
-              "$type": "ControlEmotion",
-              "toggleEmoSync": false,
-              "toggleBlink": false,
-              "toggleEyeKey": false
-            },
-            {
-              "$type": "EnableHeadControl",
-              "blend": false
-            },
             {
               "$type": "AvatarEnterCameraShot",
               "predicates": [
@@ -1896,16 +1947,34 @@
               "doOffStage": true
             },
             {
-              "$type": "ControlEmotion",
-              "doOffStage": true
-            },
-            {
               "$type": "AvatarCameraParam",
               "cameraParam": {
                 "forceRadius": 6,
                 "forceRadiusDuration": 0,
                 "shouldKeepForceRadius": true
               }
+            }
+          ]
+        },
+        "Emotion_Controller": {
+          "modifierName": "",
+          "elementDurability": 100,
+          "onAdded": [
+            {
+              "$type": "ControlEmotion",
+              "toggleEmoSync": false,
+              "toggleBlink": false,
+              "toggleEyeKey": false
+            },
+            {
+              "$type": "EnableHeadControl",
+              "blend": false
+            }
+          ],
+          "onRemoved": [
+            {
+              "$type": "ControlEmotion",
+              "doOffStage": true
             },
             {
               "$type": "EnableHeadControl",
@@ -2025,6 +2094,15 @@
         {
           "$type": "ApplyModifier",
           "modifierName": "Eula_ElementalBurst_Judgment_Handler"
+        },
+        {
+          "$type": "AddGlobalValue",
+          "doOffStage": true,
+          "value": 1,
+          "key": "_Is_Eula",
+          "useLimitRange": true,
+          "maxValue": 1,
+          "minValue": 0
         }
       ],
       "onAbilityStart": [
@@ -2036,17 +2114,35 @@
           "gadgetID": 41051002,
           "campID": 1001,
           "campTargetType": "Enemy"
+        },
+        {
+          "$type": "ModifyAvatarSkillCD",
+          "predicates": [
+            {
+              "$type": "ByUnlockTalentParam",
+              "talentParam": "Eula_PermanentSkill_2"
+            }
+          ],
+          "skillID": 10512,
+          "cdRatio": -1
+        },
+        {
+          "$type": "TriggerAbility",
+          "predicates": [
+            {
+              "$type": "ByUnlockTalentParam",
+              "talentParam": "Eula_PermanentSkill_2"
+            }
+          ],
+          "abilityName": "Avatar_Eula_ElementalArt_SetMark"
         }
       ],
       "onKill": [
         {
-          "$type": "RemoveUniqueModifier",
-          "otherTargets": {
-            "$type": "SelectTargetsByChildren",
+          "$type": "KillGadget",
+          "gadgetInfo": {
             "configID": 41051002
-          },
-          "doOffStage": true,
-          "modifierName": "UNIQUE_DamoclesSword_Timer"
+          }
         }
       ],
       "onAvatarOut": [
@@ -2231,41 +2327,31 @@
             ]
           ],
           "removeAppliedModifier": false
-        },
-        {
-          "$type": "ModifyDamageMixin",
-          "ignoreEventInfo": true,
-          "damagePercentageRatio": "Eula_Constellation_4_DamagePercentage",
-          "predicates": [
-            {
-              "$type": "ByTargetHPRatio",
-              "logic": "LesserOrEqual",
-              "HPRatio": "HPRatio"
-            },
-            {
-              "$type": "ByAttackTags",
-              "attackTags": [
-                "Elemental_Burst"
-              ]
-            },
-            {
-              "$type": "ByUnlockTalentParam",
-              "talentParam": "Eula_Constellation_4"
-            }
-          ]
         }
       ],
       "abilitySpecials": {
         "Elemental_Burst_Judgment_BaseDamage": 0,
         "Elemental_Burst_Judgment_Ratio": 0,
         "Elemental_Burst_Judgment_Damage_Factor": 0,
-        "Eula_Constellation_4_DamagePercentage": 0,
-        "HPRatio": 0.5,
         "Eula_Constellation_6_DamoclesSword_Ratio": 0,
         "ComboCount": 0,
         "DamoclesSword_Max_Damage_Ratio": 0
       },
       "modifiers": {
+        "DamoclesSword_Fx": {
+          "modifierName": "",
+          "elementDurability": 100,
+          "onAdded": [
+            {
+              "$type": "AttachEffect",
+              "effectPattern": "Eff_Avatar_Lady_Claymore_Eula_EelementalBurst_DamoclesSword"
+            },
+            {
+              "$type": "AttachEffect",
+              "effectPattern": "Eff_Avatar_Lady_Claymore_Eula_EelementalBurst_DamoclesSword_Explode"
+            }
+          ]
+        },
         "Blank": {
           "modifierName": "",
           "elementDurability": 100
@@ -2273,7 +2359,7 @@
         "UNIQUE_DamoclesSword_Timer": {
           "modifierName": "",
           "isUnique": true,
-          "duration": 7,
+          "duration": 7.5,
           "elementDurability": 100,
           "onRemoved": [
             {
@@ -2342,8 +2428,8 @@
               "effectPattern": "Eff_Avatar_Lady_Claymore_Eula_EelementalBurst_DamoclesSword_Explode"
             },
             {
-              "$type": "KillSelf",
-              "duration": 1.5
+              "$type": "DummyAction",
+              "doOffStage": true
             }
           ]
         },
@@ -2355,6 +2441,7 @@
           "onThinkInterval": [
             {
               "$type": "TriggerAttackEvent",
+              "target": "Owner",
               "attackEvent": {
                 "attackPattern": {
                   "$type": "ConfigAttackSphere",
@@ -2380,16 +2467,11 @@
                     "elementDurability": 50,
                     "strikeType": "Blunt",
                     "enBreak": 400,
-                    "attackType": "Melee"
+                    "attackType": "Range"
                   },
                   "hitPattern": {
                     "onHitEffectName": "default",
                     "hitImpulseType": "LV6",
-                    "overrideHitImpulse": {
-                      "hitLevel": "Air",
-                      "hitImpulseX": 0,
-                      "hitImpulseY": 800
-                    },
                     "hitHaltTimeScale": 0.02
                   },
                   "forceCameraShake": true,
@@ -2406,6 +2488,14 @@
                 }
               },
               "targetType": "Enemy"
+            },
+            {
+              "$type": "KillSelf",
+              "duration": 0.5
+            },
+            {
+              "$type": "RemoveModifier",
+              "modifierName": "DamoclesSword_Damage"
             }
           ]
         },
@@ -2602,16 +2692,50 @@
               "PositionDampTime": 0.2
             }
           ]
+        },
+        "Eula_EelementalBurst_ClearEndura": {
+          "modifierName": "",
+          "duration": 8,
+          "elementDurability": 100,
+          "properties": {
+            "Actor_EndureDelta": 0
+          },
+          "onAdded": [
+            {
+              "$type": "ClearEndura"
+            }
+          ]
+        },
+        "Eula_Detector": {
+          "modifierName": "",
+          "elementDurability": 100,
+          "thinkInterval": 1,
+          "onThinkInterval": [
+            {
+              "$type": "Predicated",
+              "target": "CurLocalAvatar",
+              "targetPredicates": [
+                {
+                  "$type": "ByTargetGlobalValue",
+                  "key": "_Is_Eula",
+                  "value": 0,
+                  "compareType": "NoneOrEqual"
+                }
+              ],
+              "successActions": [
+                {
+                  "$type": "KillSelf",
+                  "duration": 2
+                }
+              ]
+            }
+          ]
         }
       },
       "onAdded": [
         {
-          "$type": "AttachEffect",
-          "effectPattern": "Eff_Avatar_Lady_Claymore_Eula_EelementalBurst_DamoclesSword"
-        },
-        {
-          "$type": "AttachEffect",
-          "effectPattern": "Eff_Avatar_Lady_Claymore_Eula_EelementalBurst_DamoclesSword_Explode"
+          "$type": "AttachModifier",
+          "modifierName": "DamoclesSword_Fx"
         },
         {
           "$type": "ApplyModifier",
@@ -2643,6 +2767,15 @@
           "useLimitRange": true,
           "maxValue": "DamoclesSword_Max_Damage_Ratio",
           "minValue": 0
+        },
+        {
+          "$type": "AttachModifier",
+          "target": "Owner",
+          "modifierName": "Eula_EelementalBurst_ClearEndura"
+        },
+        {
+          "$type": "ApplyModifier",
+          "modifierName": "Eula_Detector"
         }
       ]
     }
