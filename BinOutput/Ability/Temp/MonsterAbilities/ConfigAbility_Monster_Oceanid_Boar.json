@@ -512,6 +512,195 @@
   {
     "Default": {
       "$type": "ConfigAbility",
+      "abilityName": "Monster_Boar_Immortal_RushAtk",
+      "abilityMixins": [
+        {
+          "$type": "AttachToStateIDMixin",
+          "stateIDs": [
+            "PowerRushAtk"
+          ],
+          "modifierName": "Monster_Oceanid_Boar_02_RushAtk"
+        }
+      ],
+      "modifiers": {
+        "Monster_Oceanid_Boar_02_RushAtk": {
+          "modifierName": "",
+          "elementDurability": 100,
+          "thinkInterval": 0.15,
+          "onAdded": [
+            {
+              "$type": "AttachEffect",
+              "effectPattern": "Eff_Animal_Boar_Immortal_RushAtk"
+            },
+            {
+              "$type": "TriggerAttackEvent",
+              "attackEvent": {
+                "attackPattern": {
+                  "$type": "ConfigAttackSphere",
+                  "triggerType": "TriggerNoRepeat",
+                  "born": {
+                    "$type": "ConfigBornBySelf",
+                    "offset": {
+                      "y": 0.75,
+                      "z": 1
+                    },
+                    "useRotation": true
+                  },
+                  "radius": 1.75
+                },
+                "attackInfo": {
+                  "attackTag": "",
+                  "attenuationTag": "",
+                  "attenuationGroup": "default",
+                  "attackProperty": {
+                    "damagePercentage": 0,
+                    "damagePercentageRatio": 0,
+                    "elementDurability": 100,
+                    "__exp_arkhe": 0
+                  },
+                  "hitPattern": {
+                    "onHitEffectName": "none",
+                    "hitImpulseType": "LV0",
+                    "canBeDefenceHalt": true,
+                    "muteHitText": true
+                  }
+                }
+              },
+              "targetType": "Enemy"
+            }
+          ],
+          "onAttackLanded": [
+            {
+              "$type": "ApplyModifier",
+              "target": "Target",
+              "modifierName": "Oceanid_Boar_RushAtkFlag"
+            },
+            {
+              "$type": "Predicated",
+              "target": "Target",
+              "targetPredicates": [
+                {
+                  "$type": "ByEntityTypes",
+                  "entityTypes": [
+                    "Avatar"
+                  ]
+                }
+              ],
+              "successActions": [
+                {
+                  "$type": "SetAnimatorTrigger",
+                  "triggerID": "RushAtkStop"
+                }
+              ]
+            }
+          ],
+          "onThinkInterval": [
+            {
+              "$type": "TriggerAttackEvent",
+              "attackEvent": {
+                "attackPattern": {
+                  "$type": "ConfigAttackSphere",
+                  "triggerType": "TriggerNoRepeat",
+                  "born": {
+                    "$type": "ConfigBornBySelf",
+                    "offset": {
+                      "y": 0.75,
+                      "z": 1
+                    },
+                    "useRotation": true
+                  },
+                  "radius": 1.75
+                },
+                "attackInfo": {
+                  "attackTag": "",
+                  "attenuationTag": "",
+                  "attenuationGroup": "default",
+                  "attackProperty": {
+                    "damagePercentage": 0,
+                    "damagePercentageRatio": 0,
+                    "elementDurability": 100,
+                    "__exp_arkhe": 0
+                  },
+                  "hitPattern": {
+                    "onHitEffectName": "none",
+                    "hitImpulseType": "LV0",
+                    "canBeDefenceHalt": true,
+                    "muteHitText": true
+                  }
+                }
+              },
+              "targetType": "Enemy"
+            }
+          ]
+        },
+        "Oceanid_Boar_RushAtkFlag": {
+          "modifierName": "",
+          "duration": 3,
+          "elementDurability": 100,
+          "onAdded": [
+            {
+              "$type": "DamageByAttackValue",
+              "predicates": [
+                {
+                  "$type": "ByTargetGlobalValue",
+                  "target": "Self",
+                  "key": "_OCEANID_BOAR_RUSHED_",
+                  "value": 0,
+                  "compareType": "NoneOrEqual"
+                }
+              ],
+              "born": {
+                "$type": "ConfigBornBySelf",
+                "useRotation": true
+              },
+              "attackInfo": {
+                "attackTag": "",
+                "attenuationTag": "",
+                "attenuationGroup": "default",
+                "attackProperty": {
+                  "damagePercentage": 1,
+                  "damagePercentageRatio": 0,
+                  "elementType": "Water",
+                  "elementDurability": 25,
+                  "strikeType": "Blunt",
+                  "enBreak": 200,
+                  "attackType": "Melee",
+                  "__exp_arkhe": 0
+                },
+                "hitPattern": {
+                  "onHitEffectName": "default",
+                  "hitImpulseType": "LV4",
+                  "retreatType": "ByTangent",
+                  "canBeDefenceHalt": true
+                }
+              }
+            },
+            {
+              "$type": "AddGlobalValue",
+              "value": 1,
+              "key": "_OCEANID_BOAR_RUSHED_",
+              "useLimitRange": true,
+              "maxValue": 1,
+              "minValue": 1
+            }
+          ],
+          "onRemoved": [
+            {
+              "$type": "AddGlobalValue",
+              "value": 0,
+              "key": "_OCEANID_BOAR_RUSHED_",
+              "useLimitRange": true,
+              "maxValue": 0,
+              "minValue": 0
+            }
+          ]
+        }
+      }
+    }
+  },
+  {
+    "Default": {
+      "$type": "ConfigAbility",
       "abilityName": "Animal_Oceanid_Boar_02_ThrowBall",
       "onAbilityStart": [
         {
@@ -538,18 +727,53 @@
           "elementDurability": 100,
           "onAdded": [
             {
-              "$type": "AttachEffect",
-              "effectPattern": "Eff_Monster_Oceanid_Boar_WaterBall"
-            },
-            {
-              "$type": "AttachEffect",
-              "effectPattern": "Eff_Monster_Oceanid_Boar_WaterBallTail"
+              "$type": "Predicated",
+              "target": "Owner",
+              "targetPredicates": [
+                {
+                  "$type": "ByTargetGlobalValue",
+                  "key": "_ANIMAL_Boar_Immortal_Tag",
+                  "value": 0,
+                  "compareType": "NoneOrEqual"
+                }
+              ],
+              "successActions": [
+                {
+                  "$type": "AttachEffect",
+                  "effectPattern": "Eff_Monster_Oceanid_Boar_WaterBall"
+                },
+                {
+                  "$type": "AttachEffect",
+                  "effectPattern": "Eff_Monster_Oceanid_Boar_WaterBallTail"
+                }
+              ],
+              "failActions": [
+                {
+                  "$type": "AttachEffect",
+                  "effectPattern": "Eff_Animal_Boar_Immortal_WaterBall"
+                },
+                {
+                  "$type": "AttachEffect",
+                  "effectPattern": "Eff_Animal_Boar_Immortal_WaterBallTail"
+                }
+              ]
             }
           ]
         },
         "Animal_Oceanid_Boar_02_BallExplode_OpenColliderDelay": {
           "modifierName": "",
           "duration": 0.2,
+          "elementDurability": 100,
+          "onRemoved": [
+            {
+              "$type": "EnableBulletCollisionPluginTrigger",
+              "setEnable": true
+            }
+          ]
+        },
+        "Animal_Oceanid_Boar_02_BallExplode_OpenColliderDelay_Fast": {
+          "modifierName": "",
+          "duration": 0.1,
           "elementDurability": 100,
           "onRemoved": [
             {
@@ -565,8 +789,28 @@
           "modifierName": "Animal_Oceanid_Boar_02_BallExplode_Trail"
         },
         {
-          "$type": "AttachModifier",
-          "modifierName": "Animal_Oceanid_Boar_02_BallExplode_OpenColliderDelay"
+          "$type": "Predicated",
+          "targetPredicates": [
+            {
+              "$type": "ByTargetGlobalValue",
+              "target": "Owner",
+              "key": "_ANIMAL_Boar_Immortal_Tag",
+              "value": 0,
+              "compareType": "NoneOrEqual"
+            }
+          ],
+          "successActions": [
+            {
+              "$type": "AttachModifier",
+              "modifierName": "Animal_Oceanid_Boar_02_BallExplode_OpenColliderDelay"
+            }
+          ],
+          "failActions": [
+            {
+              "$type": "AttachModifier",
+              "modifierName": "Animal_Oceanid_Boar_02_BallExplode_OpenColliderDelay_Fast"
+            }
+          ]
         }
       ],
       "onAbilityStart": [
@@ -611,10 +855,35 @@
         },
         {
           "$type": "FireEffect",
+          "predicates": [
+            {
+              "$type": "ByTargetGlobalValue",
+              "target": "Owner",
+              "key": "_ANIMAL_Boar_Immortal_Tag",
+              "value": 0,
+              "compareType": "NoneOrEqual"
+            }
+          ],
           "effectPattern": "Eff_Monster_Oceanid_Boar_WaterBallExplode",
           "born": {
             "$type": "ConfigBornByCollisionPoint",
-            "OLIAGPMOBLE": true
+            "PDCEFGKJHIH": true
+          }
+        },
+        {
+          "$type": "FireEffect",
+          "predicates": [
+            {
+              "$type": "ByTargetGlobalValue",
+              "target": "Owner",
+              "key": "_ANIMAL_Boar_Immortal_Tag",
+              "value": 1
+            }
+          ],
+          "effectPattern": "Eff_Animal_Boar_Immortal_WaterBallExplode",
+          "born": {
+            "$type": "ConfigBornByCollisionPoint",
+            "PDCEFGKJHIH": true
           }
         }
       ]
@@ -947,6 +1216,261 @@
           "born": {
             "$type": "ConfigBornBySelf"
           }
+        }
+      ]
+    }
+  },
+  {
+    "Default": {
+      "$type": "ConfigAbility",
+      "abilityName": "Monster_Oceanid_Boar_CreateWaterDrop",
+      "abilityMixins": [
+        {
+          "$type": "AttachModifierToHPPercentMixinV2",
+          "valueSteps": [
+            0.6
+          ],
+          "modifierNameSteps": [
+            "Empty",
+            "Oceanid_Boar_LowHP"
+          ]
+        }
+      ],
+      "modifiers": {
+        "Immortal_Effect": {
+          "modifierName": "",
+          "elementDurability": 100,
+          "onAdded": [
+            {
+              "$type": "AttachEffect",
+              "effectPattern": "Eff_Animal_Boar_Immortal_Idle"
+            },
+            {
+              "$type": "AttachEffect",
+              "effectPattern": "Eff_Animal_Boar_Immortal_Left"
+            },
+            {
+              "$type": "AttachEffect",
+              "effectPattern": "Eff_Animal_Boar_Immortal_Right"
+            }
+          ]
+        },
+        "Empty": {
+          "modifierName": "",
+          "elementDurability": 100
+        },
+        "Oceanid_Boar_LowHP": {
+          "modifierName": "",
+          "elementDurability": 100,
+          "onAdded": [
+            {
+              "$type": "SetPoseBool",
+              "boolID": "LowHP",
+              "value": true
+            }
+          ],
+          "onRemoved": [
+            {
+              "$type": "SetPoseBool",
+              "boolID": "LowHP"
+            }
+          ]
+        }
+      },
+      "onAdded": [
+        {
+          "$type": "AttachModifier",
+          "modifierName": "Immortal_Effect"
+        }
+      ],
+      "onAbilityStart": [
+        {
+          "$type": "CreateGadget",
+          "target": "SelfAttackTarget",
+          "born": {
+            "$type": "MIBALMLLMOK",
+            "onGround": true,
+            "PCBHMKPEMJK": 0.5
+          },
+          "gadgetID": 42802007,
+          "campID": 4001
+        },
+        {
+          "$type": "CreateGadget",
+          "born": {
+            "$type": "ConfigBornBySelf",
+            "bornRandom": {
+              "$type": "BornRandomFromCenter",
+              "minRandomRange": 5,
+              "maxRandomRange": 15
+            },
+            "onGround": true,
+            "useRotation": true
+          },
+          "gadgetID": 42802007,
+          "campID": 4001
+        },
+        {
+          "$type": "CreateGadget",
+          "born": {
+            "$type": "ConfigBornBySelf",
+            "bornRandom": {
+              "$type": "BornRandomFromCenter",
+              "minRandomRange": 5,
+              "maxRandomRange": 15
+            },
+            "onGround": true,
+            "useRotation": true
+          },
+          "gadgetID": 42802007,
+          "campID": 4001
+        },
+        {
+          "$type": "CreateGadget",
+          "born": {
+            "$type": "ConfigBornBySelf",
+            "bornRandom": {
+              "$type": "BornRandomFromCenter",
+              "minRandomRange": 5,
+              "maxRandomRange": 15
+            },
+            "onGround": true,
+            "useRotation": true
+          },
+          "gadgetID": 42802007,
+          "campID": 4001
+        }
+      ]
+    }
+  },
+  {
+    "Default": {
+      "$type": "ConfigAbility",
+      "abilityName": "Monster_Oceanid_Boar_WaterDropAttack",
+      "modifiers": {
+        "Monster_Oceanid_Boar_WaterDropAttackDelay": {
+          "modifierName": "",
+          "duration": 2,
+          "elementDurability": 100,
+          "onAdded": [
+            {
+              "$type": "FireEffect",
+              "effectPattern": "Eff_Animal_Boar_Immortal_WaterDrop_Warning"
+            },
+            {
+              "$type": "ApplyModifier",
+              "modifierName": "Monster_Oceanid_Boar_WaterDropEffect"
+            }
+          ],
+          "onRemoved": [
+            {
+              "$type": "TriggerAttackEvent",
+              "attackEvent": {
+                "attackPattern": {
+                  "$type": "ConfigAttackCircle",
+                  "triggerType": "TriggerNoRepeat",
+                  "born": {
+                    "$type": "ConfigBornBySelf",
+                    "useRotation": true
+                  },
+                  "height": 3,
+                  "radius": 3
+                },
+                "attackInfo": {
+                  "attackTag": "",
+                  "attenuationTag": "",
+                  "attenuationGroup": "default",
+                  "attackProperty": {
+                    "damagePercentage": 1,
+                    "damagePercentageRatio": 0,
+                    "elementType": "Water",
+                    "elementDurability": 50,
+                    "strikeType": "Blunt",
+                    "enBreak": 101,
+                    "__exp_arkhe": 0
+                  },
+                  "hitPattern": {
+                    "onHitEffectName": "default",
+                    "hitImpulseType": "LV3"
+                  }
+                }
+              },
+              "targetType": "Enemy"
+            }
+          ]
+        },
+        "Monster_Oceanid_Boar_WaterDropEffect": {
+          "modifierName": "",
+          "duration": 1.8,
+          "elementDurability": 100,
+          "onRemoved": [
+            {
+              "$type": "FireEffect",
+              "effectPattern": "Eff_Animal_Boar_Immortal_WaterDrop"
+            }
+          ]
+        }
+      },
+      "onAdded": [
+        {
+          "$type": "ApplyModifier",
+          "modifierName": "Monster_Oceanid_Boar_WaterDropAttackDelay"
+        }
+      ]
+    }
+  },
+  {
+    "Default": {
+      "$type": "ConfigAbility",
+      "abilityName": "Monster_Oceanid_Boar_JumpAttack",
+      "onAbilityStart": [
+        {
+          "$type": "ActCameraShake",
+          "cameraShake": {
+            "shakeRange": 2,
+            "shakeTime": 0.2,
+            "shakeDistance": 40
+          },
+          "born": {
+            "$type": "ConfigBornBySelf",
+            "useRotation": true
+          }
+        },
+        {
+          "$type": "TriggerAttackEvent",
+          "attackEvent": {
+            "attackPattern": {
+              "$type": "ConfigAttackCircle",
+              "triggerType": "TriggerNoRepeat",
+              "born": {
+                "$type": "ConfigBornBySelf",
+                "useRotation": true
+              },
+              "height": 4,
+              "radius": 3
+            },
+            "attackInfo": {
+              "attackTag": "",
+              "attenuationTag": "",
+              "attenuationGroup": "default",
+              "attackProperty": {
+                "damagePercentage": 1,
+                "damagePercentageRatio": 0,
+                "elementDurability": 100,
+                "strikeType": "Blunt",
+                "enBreak": 101,
+                "attackType": "Melee",
+                "__exp_arkhe": 0
+              },
+              "hitPattern": {
+                "onHitEffectName": "default",
+                "hitImpulseType": "LV5",
+                "retreatType": "ByHitDirection",
+                "canBeDefenceHalt": true
+              }
+            }
+          },
+          "targetType": "Enemy"
         }
       ]
     }

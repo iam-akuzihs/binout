@@ -1,0 +1,229 @@
+[
+  {
+    "Default": {
+      "$type": "ConfigAbility",
+      "abilityName": "Vehicle_Natsaurus_Drillhead_01",
+      "abilityMixins": [
+        {
+          "$type": "AttachToStateIDMixin",
+          "stateIDs": [
+            "Sprint"
+          ],
+          "modifierName": "DrillHead_Sprint_On"
+        },
+        {
+          "$type": "AttachToStateIDMixin",
+          "stateIDs": [
+            "Sprint",
+            "FastSkill",
+            "ChargeSkill"
+          ],
+          "modifierName": "DrillHead_Sprint_Handler"
+        },
+        {
+          "$type": "AttachModifierToSelfGlobalValueMixin",
+          "globalValueKey": "_ABILITY_DrillHead_Sprint_Mark",
+          "defaultGlobalValueOnCreate": 0,
+          "valueSteps": [
+            -0.5,
+            0.5,
+            1.5
+          ],
+          "modifierNameSteps": [
+            "Blank",
+            "UNIQUE_DrillHead_Sprint"
+          ]
+        },
+        {
+          "$type": "InvisibleInTalkAndCSMixin",
+          "pushColliderNames": [
+            "MoveCollider",
+            "MoveColliderDummy",
+            "PushColliderExtra"
+          ]
+        },
+        {
+          "$type": "ModifyCameraAircraftParamMixin",
+          "MaxDistance": 10,
+          "MIBMOMLLCEK": 10,
+          "BBLFHIBKGLC": 0.8
+        }
+      ],
+      "modifiers": {
+        "DrillHead_Sprint_On": {
+          "modifierName": "",
+          "elementDurability": 100,
+          "onAdded": [
+            {
+              "$type": "SetGlobalValue",
+              "value": 1,
+              "key": "_ABILITY_DrillHead_Sprint_Mark",
+              "maxValue": 0,
+              "minValue": 0
+            }
+          ]
+        },
+        "DrillHead_Sprint_Handler": {
+          "modifierName": "",
+          "elementDurability": 100,
+          "thinkInterval": 0.2,
+          "onRemoved": [
+            {
+              "$type": "SetGlobalValue",
+              "value": 0,
+              "key": "_ABILITY_DrillHead_Sprint_Mark",
+              "maxValue": 0,
+              "minValue": 0
+            }
+          ],
+          "onThinkInterval": [
+            {
+              "$type": "Predicated",
+              "targetPredicates": [
+                {
+                  "$type": "ByAnimatorInt",
+                  "logic": "Equal",
+                  "value": 5,
+                  "parameter": "MotionFlag"
+                }
+              ],
+              "successActions": [
+                {
+                  "$type": "SetGlobalValue",
+                  "value": 1,
+                  "key": "_ABILITY_DrillHead_Sprint_Mark",
+                  "maxValue": 0,
+                  "minValue": 0
+                }
+              ],
+              "failActions": [
+                {
+                  "$type": "SetGlobalValue",
+                  "value": 0,
+                  "key": "_ABILITY_DrillHead_Sprint_Mark",
+                  "maxValue": 0,
+                  "minValue": 0
+                }
+              ]
+            }
+          ]
+        },
+        "UNIQUE_DrillHead_Sprint": {
+          "stacking": "Unique",
+          "modifierName": "",
+          "isUnique": true,
+          "elementDurability": 100,
+          "modifierMixins": [
+            {
+              "$type": "TriggerPostProcessEffectMixin",
+              "postEffectAssetName": "PostEffect_Skiff_Sprint",
+              "duration": 0
+            }
+          ],
+          "onAdded": [
+            {
+              "$type": "ActCameraRadialBlur",
+              "cameraRadialBlur": {
+                "power": 0.6,
+                "blurTime": 0.2,
+                "fadeTime": 0.2
+              }
+            },
+            {
+              "$type": "AttachEffect",
+              "effectPattern": "Eff_SceneObj_FoxCraft_Speedup"
+            }
+          ]
+        },
+        "UNIQUE_DrillHead_MonoSprintEffectProlong": {
+          "stacking": "Unique",
+          "modifierName": "",
+          "isUnique": true,
+          "duration": 0.3,
+          "elementDurability": 100,
+          "onAdded": [
+            {
+              "$type": "AttachEffect",
+              "effectPattern": "Eff_SceneObj_FoxCraft_Speedup"
+            }
+          ]
+        },
+        "UNIQUE_DrillHead_MuteIce": {
+          "stacking": "Unique",
+          "modifierName": "",
+          "isUnique": true,
+          "elementDurability": 100,
+          "thinkInterval": 0.5,
+          "onAdded": [
+            {
+              "$type": "AttachEffect",
+              "effectPattern": "Eff_SceneObj_FoxCraft_Tail"
+            }
+          ],
+          "onThinkInterval": [
+            {
+              "$type": "TriggerAttackEvent",
+              "attackEvent": {
+                "attackPattern": {
+                  "$type": "ConfigAttackBox",
+                  "triggerType": "TriggerNoRepeat",
+                  "checkHitLayerType": "OnlyHitMassiveEntity",
+                  "born": {
+                    "$type": "ConfigBornBySelf",
+                    "offset": {
+                      "z": -3.3
+                    },
+                    "useRotation": true
+                  },
+                  "size": {
+                    "x": 5,
+                    "y": 4,
+                    "z": 8
+                  }
+                },
+                "attackInfo": {
+                  "attackTag": "",
+                  "attenuationTag": "",
+                  "attenuationGroup": "default",
+                  "attackProperty": {
+                    "damagePercentage": 0,
+                    "damagePercentageRatio": 0,
+                    "elementType": "VehicleMuteIce",
+                    "elementDurability": 10,
+                    "enBreak": 0,
+                    "__exp_arkhe": 0
+                  },
+                  "hitPattern": {
+                    "onHitEffectName": "none",
+                    "hitImpulseType": "LV0",
+                    "retreatType": "ByHitDirection",
+                    "muteHitText": true
+                  }
+                }
+              },
+              "targetType": "Enemy"
+            }
+          ]
+        },
+        "Blank": {
+          "modifierName": "",
+          "elementDurability": 100
+        }
+      },
+      "onAdded": [
+        {
+          "$type": "AttachAbilityStateResistance",
+          "resistanceListID": 15001
+        },
+        {
+          "$type": "AttachAbilityStateResistance",
+          "resistanceListID": 15002
+        },
+        {
+          "$type": "AttachModifier",
+          "modifierName": "UNIQUE_DrillHead_MuteIce"
+        }
+      ]
+    }
+  }
+]
