@@ -1,0 +1,580 @@
+[
+  {
+    "Default": {
+      "$type": "ConfigAbility",
+      "abilityName": "Animal_Pteromys_Steer"
+    }
+  },
+  {
+    "Default": {
+      "$type": "ConfigAbility",
+      "abilityName": "Animal_Ptromys_Glide",
+      "abilityMixins": [
+        {
+          "$type": "AttachToAnimatorStateIDMixin",
+          "stateIDs": [
+            "Glide_BS"
+          ],
+          "modifierName": "GlideLaunch",
+          "__unk_Q2081332355": ""
+        },
+        {
+          "$type": "AttachToAnimatorStateIDMixin",
+          "stateIDs": [
+            "GlideToAS",
+            "Glide_AS_Ditching"
+          ],
+          "modifierName": "GlideDrop",
+          "__unk_Q2081332355": ""
+        },
+        {
+          "$type": "AttachToAnimatorStateIDMixin",
+          "stateIDs": [
+            "HitThrow",
+            "HitThrowDrop",
+            "ReturnToBorn_BS",
+            "Glide_AS_Landing"
+          ],
+          "modifierName": "GlideLand",
+          "__unk_Q2081332355": ""
+        },
+        {
+          "$type": "AttachToAnimatorStateIDMixin",
+          "stateIDs": [
+            "Glide_BS",
+            "Glide_BSToGlide",
+            "Glide",
+            "GlideFlee"
+          ],
+          "modifierName": "GlideEffect",
+          "__unk_Q2081332355": ""
+        }
+      ],
+      "modifiers": {
+        "GlideLaunch": {
+          "modifierName": "",
+          "elementDurability": 100,
+          "onAdded": [
+            {
+              "$type": "IDNGFEEBPAM",
+              "boolID": "AirTag",
+              "value": true
+            }
+          ]
+        },
+        "GlideDrop": {
+          "modifierName": "",
+          "elementDurability": 100,
+          "modifierMixins": [
+            {
+              "$type": "FMHEMJBJFNA",
+              "onMotionChange": [
+                {
+                  "$type": "IDNGFEEBPAM",
+                  "boolID": "AirTag"
+                }
+              ],
+              "dropToPos": ""
+            }
+          ]
+        },
+        "GlideLand": {
+          "modifierName": "",
+          "elementDurability": 100,
+          "onAdded": [
+            {
+              "$type": "IDNGFEEBPAM",
+              "boolID": "AirTag"
+            }
+          ]
+        },
+        "GlideEffect": {
+          "modifierName": "",
+          "elementDurability": 100,
+          "onAdded": [
+            {
+              "$type": "AttachEffect",
+              "effectPattern": "Eff_Animal_Pteromys_Glide_Loop",
+              "scale": 1
+            }
+          ]
+        }
+      }
+    }
+  },
+  {
+    "Default": {
+      "$type": "ConfigAbility",
+      "abilityName": "Animal_Ptromys_ServerRouteManager",
+      "abilityMixins": [
+        {
+          "$type": "LEOGLBFIELL",
+          "poseIDs": [
+            1031,
+            31
+          ],
+          "modifierName": "OnPoint_MainLogic"
+        },
+        {
+          "$type": "LEOGLBFIELL",
+          "poseIDs": [
+            1032,
+            32
+          ],
+          "modifierName": "OnPointWaiting_MainLogic"
+        },
+        {
+          "$type": "LEOGLBFIELL",
+          "poseIDs": [
+            1030,
+            30
+          ],
+          "modifierName": "Gliding_MainLogic"
+        }
+      ],
+      "modifiers": {
+        "OnPoint_MainLogic": {
+          "modifierName": "",
+          "elementDurability": 100,
+          "modifierMixins": [
+            {
+              "$type": "AttachModifierToSelfGlobalValueNoInitMixin",
+              "globalValueKey": "_AIGV_SERVERROUTE_STARTFLAG_",
+              "valueSteps": [
+                -0.5,
+                0.5,
+                1.5
+              ],
+              "modifierNameSteps": [
+                "OnPoint_WaitingForNewRoutePoint",
+                "OnPoint_NewRoutePointReceived"
+              ]
+            }
+          ]
+        },
+        "OnPoint_NewRoutePointReceived": {
+          "modifierName": "",
+          "elementDurability": 100,
+          "onAdded": [
+            {
+              "$type": "__exp_TriggerThinkInterval"
+            }
+          ],
+          "onThinkInterval": [
+            {
+              "$type": "Predicated",
+              "targetPredicates": [
+                {
+                  "$type": "ByAny",
+                  "target": "Self",
+                  "predicates": [
+                    {
+                      "$type": "ByTargetGlobalValue",
+                      "key": "RoutePointType",
+                      "value": 0
+                    },
+                    {
+                      "$type": "ByTargetGlobalValue",
+                      "key": "RoutePointType",
+                      "value": 1
+                    },
+                    {
+                      "$type": "ByTargetGlobalValue",
+                      "key": "RoutePointType",
+                      "value": 2
+                    },
+                    {
+                      "$type": "ByTargetGlobalValue",
+                      "key": "RoutePointType",
+                      "value": 3
+                    }
+                  ]
+                }
+              ],
+              "successActions": [
+                {
+                  "$type": "SetAnimatorTrigger",
+                  "triggerID": "ToGlideTrigger"
+                },
+                {
+                  "$type": "MCOBFPMHMHJ",
+                  "luaCallType": "FromGroup",
+                  "sourceName": "SetMonsterSGV",
+                  "param1": 0,
+                  "MGAMDEHMCOL": 0,
+                  "MMHOHAOGPLP": 0
+                }
+              ],
+              "failActions": [
+                {
+                  "$type": "DebugLog",
+                  "content": "Animal_Pteromys: Route Point Type Invalid!!!!!!!!!!!!!!!"
+                }
+              ]
+            }
+          ]
+        },
+        "OnPoint_WaitingForNewRoutePoint": {
+          "modifierName": "",
+          "elementDurability": 100
+        },
+        "OnPointWaiting_MainLogic": {
+          "modifierName": "",
+          "elementDurability": 100,
+          "modifierMixins": [
+            {
+              "$type": "AttachModifierToSelfGlobalValueNoInitMixin",
+              "globalValueKey": "SGV_SERVERROUTE_STOPWAITINGFLAG_",
+              "valueSteps": [
+                -0.5,
+                0.5,
+                1.5
+              ],
+              "modifierNameSteps": [
+                "OnPointWaiting_KeepWaiting",
+                "OnPointWaiting_StopWaiting"
+              ],
+              "NMCLMHFBALJ": true
+            }
+          ]
+        },
+        "OnPointWaiting_KeepWaiting": {
+          "modifierName": "",
+          "elementDurability": 100
+        },
+        "OnPointWaiting_StopWaiting": {
+          "modifierName": "",
+          "elementDurability": 100,
+          "modifierMixins": [
+            {
+              "$type": "AttachModifierToSelfGlobalValueNoInitMixin",
+              "globalValueKey": "_AIGV_SERVERROUTE_STARTFLAG_",
+              "valueSteps": [
+                -0.5,
+                0.5,
+                1.5
+              ],
+              "modifierNameSteps": [
+                "OnPoint_WaitingForNewRoutePoint",
+                "OnPoint_NewRoutePointReceived"
+              ]
+            }
+          ]
+        },
+        "Gliding_MainLogic": {
+          "modifierName": "",
+          "elementDurability": 100,
+          "modifierMixins": [
+            {
+              "$type": "AttachModifierToSelfGlobalValueNoInitMixin",
+              "globalValueKey": "_AIGV_SERVERROUTE_CLOSEFLAG_",
+              "valueSteps": [
+                -0.5,
+                0.5,
+                1.5
+              ],
+              "modifierNameSteps": [
+                "Gliding_MovingToRoutePoint",
+                "Gliding_CloseToRoutePoint"
+              ]
+            },
+            {
+              "$type": "AttachModifierToSelfGlobalValueNoInitMixin",
+              "globalValueKey": "_AIGV_SERVERROUTE_BLOCKFLAG_",
+              "valueSteps": [
+                -0.5,
+                0.5,
+                1.5
+              ],
+              "modifierNameSteps": [
+                "Empty",
+                "Empty"
+              ]
+            }
+          ],
+          "onReconnect": [
+            {
+              "$type": "IDNGFEEBPAM",
+              "boolID": "Reconnect",
+              "value": true
+            }
+          ],
+          "onChangeAuthority": [
+            {
+              "$type": "IDNGFEEBPAM",
+              "boolID": "Reconnect",
+              "value": true
+            }
+          ]
+        },
+        "Gliding_MovingToRoutePoint": {
+          "modifierName": "",
+          "elementDurability": 100
+        },
+        "Gliding_CloseToRoutePoint": {
+          "modifierName": "",
+          "elementDurability": 100,
+          "thinkInterval": 0.2,
+          "onAdded": [
+            {
+              "$type": "SetAnimatorTrigger",
+              "predicates": [
+                {
+                  "$type": "ByAny",
+                  "target": "Self",
+                  "predicates": [
+                    {
+                      "$type": "ByTargetGlobalValue",
+                      "key": "RoutePointType",
+                      "value": 1
+                    },
+                    {
+                      "$type": "ByTargetGlobalValue",
+                      "key": "RoutePointType",
+                      "value": 2
+                    },
+                    {
+                      "$type": "ByTargetGlobalValue",
+                      "key": "RoutePointType",
+                      "value": 3
+                    }
+                  ]
+                }
+              ],
+              "triggerID": "GlideToLandTrigger"
+            }
+          ],
+          "onThinkInterval": [
+            {
+              "$type": "SetAnimatorTrigger",
+              "predicates": [
+                {
+                  "$type": "ByAny",
+                  "target": "Self",
+                  "predicates": [
+                    {
+                      "$type": "ByTargetGlobalValue",
+                      "key": "RoutePointType",
+                      "value": 1
+                    },
+                    {
+                      "$type": "ByTargetGlobalValue",
+                      "key": "RoutePointType",
+                      "value": 2
+                    },
+                    {
+                      "$type": "ByTargetGlobalValue",
+                      "key": "RoutePointType",
+                      "value": 3
+                    }
+                  ]
+                }
+              ],
+              "triggerID": "GlideToLandTrigger"
+            }
+          ]
+        },
+        "Empty": {
+          "modifierName": "",
+          "elementDurability": 100
+        }
+      }
+    }
+  },
+  {
+    "Default": {
+      "$type": "ConfigAbility",
+      "abilityName": "Animal_Ptromys_LandingToRoutePoint",
+      "onAbilityStart": [
+        {
+          "$type": "PAGFCBCKEBH",
+          "toPos": {
+            "$type": "ConfigBornByGlobalValue",
+            "positionKey": "RoutePointPos",
+            "directionKey": ""
+          },
+          "timeRange": 0.34,
+          "maxRange": -1,
+          "animatorStateIDs": [
+            "Glide_AS_Landing"
+          ],
+          "overrideMoveCollider": "",
+          "exactArrive": true
+        }
+      ]
+    }
+  },
+  {
+    "Default": {
+      "$type": "ConfigAbility",
+      "abilityName": "Animal_Ptromys_StartServerRoute",
+      "abilityMixins": [
+        {
+          "$type": "LEOGLBFIELL",
+          "poseIDs": [
+            10,
+            1010
+          ],
+          "modifierName": "Pose_OnTreeNotOnRoute"
+        }
+      ],
+      "modifiers": {
+        "Pose_OnTreeNotOnRoute": {
+          "modifierName": "",
+          "elementDurability": 100
+        }
+      },
+      "onAbilityStart": [
+        {
+          "$type": "GFFKENEJFFB",
+          "predicates": [
+            {
+              "$type": "ByHasModifier",
+              "target": "Self",
+              "modifierName": "Pose_OnTreeNotOnRoute"
+            }
+          ],
+          "intID": "PoseFlag",
+          "value": 31
+        }
+      ]
+    }
+  },
+  {
+    "Default": {
+      "$type": "ConfigAbility",
+      "abilityName": "Animal_Ptromys_DecidingLandingPose",
+      "onAbilityStart": [
+        {
+          "$type": "GFFKENEJFFB",
+          "predicates": [
+            {
+              "$type": "ByTargetGlobalValue",
+              "target": "Self",
+              "key": "RoutePointType",
+              "value": 1
+            }
+          ],
+          "intID": "PoseFlag",
+          "value": 31
+        },
+        {
+          "$type": "GFFKENEJFFB",
+          "predicates": [
+            {
+              "$type": "ByTargetGlobalValue",
+              "target": "Self",
+              "key": "RoutePointType",
+              "value": 2
+            }
+          ],
+          "intID": "PoseFlag",
+          "value": 20
+        },
+        {
+          "$type": "GFFKENEJFFB",
+          "predicates": [
+            {
+              "$type": "ByTargetGlobalValue",
+              "target": "Self",
+              "key": "RoutePointType",
+              "value": 3
+            }
+          ],
+          "intID": "PoseFlag",
+          "value": 32
+        }
+      ]
+    }
+  },
+  {
+    "Default": {
+      "$type": "ConfigAbility",
+      "abilityName": "Animal_Ptromys_GlideTest_StartGlide",
+      "onAbilityStart": [
+        {
+          "$type": "SetGlobalValue",
+          "value": 0,
+          "key": "_AIGV_SERVERROUTE_REACHFLAG_",
+          "maxValue": 0,
+          "minValue": 0
+        }
+      ]
+    }
+  },
+  {
+    "Default": {
+      "$type": "ConfigAbility",
+      "abilityName": "Animal_Ptromys_GlideTest_StopGlideToGround",
+      "onAbilityStart": [
+        {
+          "$type": "SetGlobalValue",
+          "value": 2,
+          "key": "RoutePointType",
+          "maxValue": 0,
+          "minValue": 0
+        },
+        {
+          "$type": "SetGlobalValue",
+          "value": 1,
+          "key": "_AIGV_SERVERROUTE_CLOSEFLAG_",
+          "maxValue": 0,
+          "minValue": 0
+        }
+      ]
+    }
+  },
+  {
+    "Default": {
+      "$type": "ConfigAbility",
+      "abilityName": "Animal_Ptromys_Flee",
+      "abilityMixins": [
+        {
+          "$type": "AttachToAnimatorStateIDMixin",
+          "stateIDs": [
+            "Flee_Disappear"
+          ],
+          "modifierName": "DisappearTimer",
+          "__unk_Q2081332355": ""
+        },
+        {
+          "$type": "AttachToAnimatorStateIDMixin",
+          "stateIDs": [
+            "GlideFlee_Disappear"
+          ],
+          "modifierName": "DisappearTimer",
+          "__unk_Q2081332355": ""
+        }
+      ],
+      "modifiers": {
+        "DisappearTimer": {
+          "modifierName": "",
+          "elementDurability": 100,
+          "onAdded": [
+            {
+              "$type": "AKIIMECIGKE",
+              "duration": 2,
+              "FJOEKICDALA": 10
+            },
+            {
+              "$type": "SetAnimatorBool",
+              "boolID": "Disappear",
+              "value": true
+            },
+            {
+              "$type": "KillSelf",
+              "duration": 1.5,
+              "killSelfType": "Disappear",
+              "configIdArray": [
+                28022501,
+                28022502
+              ],
+              "value": true,
+              "banExp": true
+            }
+          ]
+        }
+      }
+    }
+  }
+]
