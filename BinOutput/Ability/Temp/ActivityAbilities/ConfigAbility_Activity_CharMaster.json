@@ -1,0 +1,336 @@
+[
+  {
+    "Default": {
+      "$type": "ConfigAbility",
+      "abilityName": "ActivityAbility_CharMaster_Qin_01",
+      "abilityMixins": [
+        {
+          "$type": "HMMPEFGOIOM",
+          "key": "SGV_CharMastery_Qin",
+          "useLimitRange": true,
+          "maxValue": 1,
+          "minValue": 0
+        }
+      ],
+      "abilitySpecials": {
+        "BuffTickTime": 0,
+        "HurtTickTime": 0,
+        "LoseHPRatio": 0
+      },
+      "modifiers": {
+        "Blank": {
+          "modifierName": "",
+          "elementDurability": 100
+        },
+        "UNIQUE_CharMaster_Qin01_FireDebuff_LoseHP_SGV_Handler": {
+          "modifierName": "",
+          "isUnique": true,
+          "elementDurability": 100,
+          "modifierMixins": [
+            {
+              "$type": "AttachModifierToSelfGlobalValueNoInitMixin",
+              "globalValueKey": "SGV_CharMastery_Qin",
+              "valueSteps": [
+                -0.5,
+                0.5,
+                1.5
+              ],
+              "modifierNameSteps": [
+                "Blank",
+                "UNIQUE_CharMaster_Qin01_FireDebuff_LoseHP_Handler"
+              ],
+              "CEDCLMJMBDE": true
+            }
+          ]
+        },
+        "UNIQUE_CharMaster_Qin01_FireDebuff_LoseHP_Handler": {
+          "modifierName": "",
+          "isUnique": true,
+          "elementDurability": 100,
+          "thinkInterval": "BuffTickTime",
+          "onThinkInterval": [
+            {
+              "$type": "AttachModifier",
+              "target": "Team",
+              "modifierName": "UNIQUE_CharMaster_Qin01_FireDebuff_LoseHP_Team"
+            }
+          ]
+        },
+        "UNIQUE_CharMaster_Qin01_FireDebuff_LoseHP_Team": {
+          "modifierName": "",
+          "isUnique": true,
+          "elementDurability": 100,
+          "thinkInterval": "HurtTickTime",
+          "modifierMixins": [
+            {
+              "$type": "CurLocalAvatarMixinV2",
+              "modifierName": "UNIQUE_CharMaster_Qin01_FireDebuff_LoseHP_Slave"
+            }
+          ],
+          "onAdded": [
+            {
+              "$type": "AttachEffect",
+              "effectPattern": "Eff_Monster_CommonSkill_FireDebuff_LoseHP",
+              "scale": 1
+            },
+            {
+              "$type": "FireEffect",
+              "target": "CurLocalAvatar",
+              "effectPattern": "Eff_Monster_CommonSkill_FireDebuff_LoseHP_OnAdded",
+              "scale": 1
+            },
+            {
+              "$type": "ApplyModifier",
+              "target": "CurLocalAvatar",
+              "modifierName": "UNIQUE_CharMaster_Qin01_FireDebuff_LoseHP_Slave"
+            },
+            {
+              "$type": "AttachModifier",
+              "target": "CurLocalAvatar",
+              "modifierName": "UNIQUE_CharMaster_Qin01_FireDebuff_Detect"
+            },
+            {
+              "$type": "__exp_TriggerThinkInterval"
+            }
+          ],
+          "onRemoved": [
+            {
+              "$type": "RemoveUniqueModifier",
+              "target": "CurTeamAvatars",
+              "modifierName": "UNIQUE_CharMaster_Qin01_FireDebuff_LoseHP_Slave"
+            }
+          ],
+          "onThinkInterval": [
+            {
+              "$type": "GetFightProperty",
+              "doOffStage": true,
+              "fightPropSourceTarget": "CurLocalAvatar",
+              "fightProp": "FIGHT_PROP_MAX_HP",
+              "globalValueKey": "CharMaster_Qin01_MaxHp"
+            },
+            {
+              "$type": "DamageByAttackValue",
+              "target": "CurLocalAvatar",
+              "born": {
+                "$type": "ConfigBornBySelf",
+                "offset": {
+                  "y": 1
+                },
+                "useRotation": true
+              },
+              "attackInfo": {
+                "attackTag": "",
+                "attenuationTag": "",
+                "attenuationGroup": "default",
+                "attackProperty": {
+                  "damagePercentageRatio": 0,
+                  "elementType": "Fire",
+                  "elementDurability": 0,
+                  "ignoreAttackerProperty": true,
+                  "enBreak": 0,
+                  "damageExtra": [
+                    "LoseHPRatio",
+                    "CharMaster_Qin01_MaxHp",
+                    "MUL"
+                  ],
+                  "trueDamage": true,
+                  "__exp_arkhe": 0
+                },
+                "hitPattern": {
+                  "onHitEffectName": "",
+                  "__unk_Q3893899620": "",
+                  "hitImpulseType": "LV0",
+                  "retreatType": "ByHitDirection"
+                }
+              }
+            }
+          ],
+          "modifierTags": [
+            "Corruption"
+          ]
+        },
+        "UNIQUE_CharMaster_Qin01_FireDebuff_LoseHP_Slave": {
+          "modifierName": "",
+          "isUnique": true,
+          "elementType": "Fire",
+          "elementDurability": 25,
+          "onRemoved": [
+            {
+              "$type": "RemoveUniqueModifier",
+              "target": "Team",
+              "predicates": [
+                {
+                  "$type": "ByNot",
+                  "predicates": [
+                    {
+                      "$type": "ByHasElement",
+                      "target": "Self",
+                      "element": "Fire"
+                    }
+                  ]
+                }
+              ],
+              "modifierName": "UNIQUE_CharMaster_Qin01_FireDebuff_LoseHP_Team"
+            }
+          ],
+          "buffID": 90002
+        },
+        "UNIQUE_CharMaster_Qin01_FireDebuff_Detect": {
+          "modifierName": "",
+          "isUnique": true,
+          "elementDurability": 100,
+          "thinkInterval": 0.1,
+          "onThinkInterval": [
+            {
+              "$type": "RemoveUniqueModifier",
+              "target": "Team",
+              "predicates": [
+                {
+                  "$type": "ByNot",
+                  "predicates": [
+                    {
+                      "$type": "ByHasElement",
+                      "target": "Self",
+                      "element": "Fire"
+                    }
+                  ]
+                }
+              ],
+              "modifierName": "UNIQUE_CharMaster_Qin01_FireDebuff_LoseHP_Team"
+            }
+          ]
+        }
+      },
+      "onAdded": [
+        {
+          "$type": "AttachModifier",
+          "target": "Team",
+          "doOffStage": true,
+          "modifierName": "UNIQUE_CharMaster_Qin01_FireDebuff_LoseHP_SGV_Handler"
+        }
+      ],
+      "isDynamicAbility": true
+    }
+  },
+  {
+    "Default": {
+      "$type": "ConfigAbility",
+      "abilityName": "ActivityAbility_CharMaster_QiQi_01",
+      "abilityMixins": [
+        {
+          "$type": "HMMPEFGOIOM",
+          "key": "SGV_CharMastery_Qiqi",
+          "useLimitRange": true,
+          "maxValue": 1,
+          "minValue": 0
+        }
+      ],
+      "abilitySpecials": {
+        "HurtTickTime": 0,
+        "LoseHPRatio": 0
+      },
+      "modifiers": {
+        "Blank": {
+          "modifierName": "",
+          "elementDurability": 100
+        },
+        "CharMaster_QiQi01_Hurt_SGV_TeamHandler": {
+          "modifierName": "",
+          "elementDurability": 100,
+          "modifierMixins": [
+            {
+              "$type": "AttachModifierToSelfGlobalValueNoInitMixin",
+              "globalValueKey": "SGV_CharMastery_Qiqi",
+              "valueSteps": [
+                -0.5,
+                0.5,
+                1.5
+              ],
+              "modifierNameSteps": [
+                "Blank",
+                "CharMaster_QiQi01_Hurt_TeamHandler"
+              ],
+              "CEDCLMJMBDE": true
+            }
+          ]
+        },
+        "CharMaster_QiQi01_Hurt_TeamHandler": {
+          "modifierName": "",
+          "elementDurability": 100,
+          "thinkInterval": 1,
+          "onAdded": [
+            {
+              "$type": "AttachModifier",
+              "target": "CurTeamAvatars",
+              "doOffStage": true,
+              "modifierName": "CharMaster_QiQi01_Hurt_Handler"
+            }
+          ],
+          "onThinkInterval": [
+            {
+              "$type": "AttachModifier",
+              "target": "CurTeamAvatars",
+              "doOffStage": true,
+              "modifierName": "CharMaster_QiQi01_Hurt_Handler"
+            }
+          ]
+        },
+        "CharMaster_QiQi01_Hurt_Handler": {
+          "modifierName": "",
+          "elementDurability": 100,
+          "thinkInterval": "HurtTickTime",
+          "onThinkInterval": [
+            {
+              "$type": "LoseHP",
+              "doOffStage": true,
+              "amountByTargetMaxHPRatio": "LoseHPRatio",
+              "MIJGKFOAEPN": ""
+            }
+          ]
+        }
+      },
+      "onAdded": [
+        {
+          "$type": "AttachModifier",
+          "target": "Team",
+          "doOffStage": true,
+          "modifierName": "CharMaster_QiQi01_Hurt_SGV_TeamHandler"
+        }
+      ],
+      "isDynamicAbility": true
+    }
+  },
+  {
+    "Default": {
+      "$type": "ConfigAbility",
+      "abilityName": "ActivityAbility_CharMaster_Diluc_01",
+      "abilitySpecials": {
+        "TickTime": 0,
+        "Energy": 0
+      },
+      "modifiers": {
+        "CharMaster_Diluc01_Energy_Handler": {
+          "modifierName": "",
+          "elementDurability": 100,
+          "thinkInterval": "TickTime",
+          "onThinkInterval": [
+            {
+              "$type": "ReviveElemEnergy",
+              "doOffStage": true,
+              "value": "Energy"
+            }
+          ]
+        }
+      },
+      "onAdded": [
+        {
+          "$type": "AttachModifier",
+          "target": "CurLocalAvatar",
+          "doOffStage": true,
+          "modifierName": "CharMaster_Diluc01_Energy_Handler"
+        }
+      ],
+      "isDynamicAbility": true
+    }
+  }
+]
