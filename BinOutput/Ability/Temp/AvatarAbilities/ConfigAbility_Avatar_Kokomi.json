@@ -1,0 +1,4391 @@
+[
+  {
+    "Default": {
+      "$type": "ConfigAbility",
+      "abilityName": "Avatar_Kokomi_ExtraAttack",
+      "abilityMixins": [
+        {
+          "$type": "ButtonHoldChargeMixin",
+          "skillID": 10541,
+          "chargeTime": 0.1,
+          "secondChargeTime": 0.1,
+          "onBeginUncharged": [
+            {
+              "$type": "SetAnimatorTrigger",
+              "predicates": [
+                {
+                  "$type": "ByAnimatorInt",
+                  "logic": "Equal",
+                  "value": 0,
+                  "parameter": "ComboCount"
+                }
+              ],
+              "triggerID": "DoSkill"
+            },
+            {
+              "$type": "SetAnimatorInt",
+              "predicates": [
+                {
+                  "$type": "ByAnimatorInt",
+                  "logic": "Equal",
+                  "value": 0,
+                  "parameter": "ComboCount"
+                }
+              ],
+              "intID": "SkillID",
+              "value": 99
+            },
+            {
+              "$type": "SetAnimatorBool",
+              "boolID": "IsCharging"
+            }
+          ],
+          "onReleaseUncharged": [
+            {
+              "$type": "SetAnimatorTrigger",
+              "triggerID": "DoSkill"
+            },
+            {
+              "$type": "SetAnimatorInt",
+              "intID": "SkillID",
+              "value": 1
+            }
+          ],
+          "onBeginCharged": [
+            {
+              "$type": "SetAnimatorBool",
+              "boolID": "IsCharging",
+              "value": true
+            }
+          ],
+          "onReleaseCharged": [
+            {
+              "$type": "SetAnimatorBool",
+              "boolID": "IsCharging"
+            },
+            {
+              "$type": "SetAnimatorTrigger",
+              "triggerID": "DoSkill"
+            },
+            {
+              "$type": "SetAnimatorInt",
+              "intID": "SkillID",
+              "value": 1
+            }
+          ],
+          "onBeginSecondCharged": [
+            {
+              "$type": "SetAnimatorTrigger",
+              "triggerID": "DoSkill"
+            },
+            {
+              "$type": "Predicated",
+              "targetPredicates": [
+                {
+                  "$type": "ByLocalAvatarStamina",
+                  "logic": "GreaterOrEqual",
+                  "stamina": "ExtraAttack_Catalyst_Stamina_Cost"
+                }
+              ],
+              "successActions": [
+                {
+                  "$type": "SetAnimatorInt",
+                  "intID": "SkillID",
+                  "value": 6
+                }
+              ],
+              "failActions": [
+                {
+                  "$type": "SetAnimatorInt",
+                  "intID": "SkillID",
+                  "value": 1
+                }
+              ]
+            },
+            {
+              "$type": "SetAnimatorBool",
+              "boolID": "IsCharging"
+            }
+          ],
+          "chargeStateIDs": [
+            "Attack01",
+            "Attack02",
+            "Attack03",
+            "ExtraAttack_BS",
+            "ExtraAttack_Charge",
+            "ExtraAttack",
+            "ExtraAttack_AS"
+          ]
+        },
+        {
+          "$type": "AttachToStateIDMixin",
+          "stateIDs": [
+            "ExtraAttack_Charge"
+          ],
+          "modifierName": "ExtraAttack_StaminaCost"
+        }
+      ],
+      "abilitySpecials": {
+        "ExtraAttack_Catalyst_Stamina_Cost": 0
+      },
+      "modifiers": {
+        "ExtraAttack_StaminaCost": {
+          "modifierName": "",
+          "elementDurability": 100,
+          "onAdded": [
+            {
+              "$type": "AvatarSkillStart",
+              "skillID": 10003,
+              "cdRatio": 1,
+              "costStaminaRatio": "ExtraAttack_Catalyst_Stamina_Cost"
+            }
+          ]
+        }
+      }
+    }
+  },
+  {
+    "Default": {
+      "$type": "ConfigAbility",
+      "abilityName": "Avatar_Kokomi_ExtraAttack_Charge",
+      "abilityMixins": [
+        {
+          "$type": "AttachToStateIDMixin",
+          "stateIDs": [
+            "ExtraAttack_BS",
+            "ExtraAttack_Charge",
+            "ExtraAttack"
+          ],
+          "modifierName": "Avatar_Kokomi_ExtraAttack_BurstMark"
+        }
+      ],
+      "modifiers": {
+        "Avatar_Kokomi_ExtraAttack_BurstMark": {
+          "modifierName": "",
+          "elementDurability": 100,
+          "onAdded": [
+            {
+              "$type": "SetGlobalValue",
+              "value": 0,
+              "key": "_ABILITY_Kokomi_ExtraAttack_BurstMark",
+              "maxValue": 0,
+              "minValue": 0
+            },
+            {
+              "$type": "SetGlobalValue",
+              "predicates": [
+                {
+                  "$type": "ByTargetGlobalValue",
+                  "target": "Caster",
+                  "key": "_ABILITY_Kokomi_ElementalBurst_Flag",
+                  "value": 1
+                }
+              ],
+              "value": 1,
+              "key": "_ABILITY_Kokomi_ExtraAttack_BurstMark",
+              "maxValue": 0,
+              "minValue": 0
+            },
+            {
+              "$type": "SetGlobalValue",
+              "value": 0,
+              "key": "_ABILITY_Kokomi_ElementalBurst_ExtraAttackHit_Flag",
+              "maxValue": 0,
+              "minValue": 0
+            }
+          ],
+          "onRemoved": [
+            {
+              "$type": "SetGlobalValue",
+              "value": 0,
+              "key": "_ABILITY_Kokomi_ExtraAttack_BurstMark",
+              "maxValue": 0,
+              "minValue": 0
+            }
+          ]
+        },
+        "Avatar_Kokomi_ExtraAttack_Charge_HasTarget": {
+          "modifierName": "",
+          "duration": 0.5,
+          "elementDurability": 100,
+          "onAdded": [
+            {
+              "$type": "SetGlobalPos",
+              "target": "SelfAttackTarget",
+              "key": "_ABILITY_Kokomi_ExtraAttack_Pos",
+              "born": {
+                "$type": "ConfigBornBySelectedPoint",
+                "onGround": true
+              },
+              "setTarget": false
+            },
+            {
+              "$type": "FireEffect",
+              "predicates": [
+                {
+                  "$type": "ByTargetGlobalValue",
+                  "target": "Caster",
+                  "key": "_ABILITY_Kokomi_ExtraAttack_BurstMark",
+                  "value": 0
+                }
+              ],
+              "effectPattern": "Eff_Avatar_Girl_Catalyst_Kokomi_ExtraAttack_Alert",
+              "born": {
+                "$type": "ConfigBornByGlobalValue",
+                "onGround": true,
+                "positionKey": "_ABILITY_Kokomi_ExtraAttack_Pos",
+                "directionKey": ""
+              }
+            },
+            {
+              "$type": "FireEffect",
+              "predicates": [
+                {
+                  "$type": "ByTargetGlobalValue",
+                  "target": "Caster",
+                  "key": "_ABILITY_Kokomi_ExtraAttack_BurstMark",
+                  "value": 1
+                }
+              ],
+              "effectPattern": "Eff_Avatar_Girl_Catalyst_Kokomi_ExtraAttack_Alert_Burst",
+              "born": {
+                "$type": "ConfigBornByGlobalValue",
+                "onGround": true,
+                "positionKey": "_ABILITY_Kokomi_ExtraAttack_Pos",
+                "directionKey": ""
+              }
+            }
+          ]
+        },
+        "Avatar_Kokomi_ExtraAttack_Charge_NoTarget": {
+          "modifierName": "",
+          "duration": 0.5,
+          "elementDurability": 100,
+          "onAdded": [
+            {
+              "$type": "SetGlobalPos",
+              "key": "_ABILITY_Kokomi_ExtraAttack_Pos",
+              "born": {
+                "$type": "ConfigBornBySelf",
+                "offset": {
+                  "z": 5
+                },
+                "onGround": true
+              }
+            },
+            {
+              "$type": "FireEffect",
+              "predicates": [
+                {
+                  "$type": "ByTargetGlobalValue",
+                  "target": "Caster",
+                  "key": "_ABILITY_Kokomi_ExtraAttack_BurstMark",
+                  "value": 0
+                }
+              ],
+              "effectPattern": "Eff_Avatar_Girl_Catalyst_Kokomi_ExtraAttack_Alert",
+              "born": {
+                "$type": "ConfigBornByGlobalValue",
+                "onGround": true,
+                "positionKey": "_ABILITY_Kokomi_ExtraAttack_Pos",
+                "directionKey": ""
+              }
+            },
+            {
+              "$type": "FireEffect",
+              "predicates": [
+                {
+                  "$type": "ByTargetGlobalValue",
+                  "target": "Caster",
+                  "key": "_ABILITY_Kokomi_ExtraAttack_BurstMark",
+                  "value": 1
+                }
+              ],
+              "effectPattern": "Eff_Avatar_Girl_Catalyst_Kokomi_ExtraAttack_Alert_Burst",
+              "born": {
+                "$type": "ConfigBornByGlobalValue",
+                "onGround": true,
+                "positionKey": "_ABILITY_Kokomi_ExtraAttack_Pos",
+                "directionKey": ""
+              }
+            }
+          ]
+        }
+      },
+      "onAbilityStart": [
+        {
+          "$type": "Predicated",
+          "targetPredicates": [
+            {
+              "$type": "ByHasAttackTarget"
+            }
+          ],
+          "successActions": [
+            {
+              "$type": "ApplyModifier",
+              "modifierName": "Avatar_Kokomi_ExtraAttack_Charge_HasTarget"
+            }
+          ],
+          "failActions": [
+            {
+              "$type": "ApplyModifier",
+              "modifierName": "Avatar_Kokomi_ExtraAttack_Charge_NoTarget"
+            }
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "Default": {
+      "$type": "ConfigAbility",
+      "abilityName": "Avatar_Kokomi_ExtraAttack_Initiate",
+      "abilitySpecials": {
+        "ExtraAttack_Damage": 0,
+        "ExtraAttack_MaxHP_Percentage": 0
+      },
+      "onAbilityStart": [
+        {
+          "$type": "FireEffect",
+          "predicates": [
+            {
+              "$type": "ByTargetGlobalValue",
+              "target": "Caster",
+              "key": "_ABILITY_Kokomi_ExtraAttack_BurstMark",
+              "value": 0
+            }
+          ],
+          "effectPattern": "Eff_Avatar_Girl_Catalyst_Kokomi_ExtraAttack_Explode",
+          "born": {
+            "$type": "ConfigBornByGlobalValue",
+            "onGround": true,
+            "positionKey": "_ABILITY_Kokomi_ExtraAttack_Pos",
+            "directionKey": ""
+          }
+        },
+        {
+          "$type": "TriggerAttackEvent",
+          "doOffStage": true,
+          "predicates": [
+            {
+              "$type": "ByTargetGlobalValue",
+              "target": "Caster",
+              "key": "_ABILITY_Kokomi_ExtraAttack_BurstMark",
+              "value": 0
+            }
+          ],
+          "attackEvent": {
+            "attackPattern": {
+              "$type": "ConfigAttackSphere",
+              "triggerType": "TriggerNoRepeat",
+              "born": {
+                "$type": "ConfigBornByGlobalValue",
+                "onGround": true,
+                "positionKey": "_ABILITY_Kokomi_ExtraAttack_Pos",
+                "directionKey": ""
+              },
+              "radius": 3.5
+            },
+            "attackInfo": {
+              "attackTag": "ExtraAttack",
+              "attenuationTag": "",
+              "attenuationGroup": "default",
+              "attackProperty": {
+                "damagePercentage": "ExtraAttack_Damage",
+                "damagePercentageRatio": 0,
+                "elementType": "Water",
+                "elementRank": 3,
+                "elementDurability": 25,
+                "strikeType": "Default",
+                "enBreak": 100
+              },
+              "hitPattern": {
+                "onHitEffectName": "default",
+                "hitImpulseType": "LV1",
+                "retreatType": "ByHitDirection",
+                "hitHaltTimeScale": 0.05
+              },
+              "forceCameraShake": true,
+              "cameraShake": {
+                "shakeRange": 0.5,
+                "shakeTime": 0.2,
+                "shakeDistance": 30,
+                "extension": {
+                  "baseCycle": 0.08,
+                  "cycleDamping": -0.04
+                }
+              }
+            }
+          },
+          "targetType": "Enemy"
+        },
+        {
+          "$type": "FireEffect",
+          "predicates": [
+            {
+              "$type": "ByTargetGlobalValue",
+              "target": "Caster",
+              "key": "_ABILITY_Kokomi_ExtraAttack_BurstMark",
+              "value": 1
+            }
+          ],
+          "effectPattern": "Eff_Avatar_Girl_Catalyst_Kokomi_ExtraAttack_Explode_Burst",
+          "born": {
+            "$type": "ConfigBornByGlobalValue",
+            "onGround": true,
+            "positionKey": "_ABILITY_Kokomi_ExtraAttack_Pos",
+            "directionKey": ""
+          }
+        },
+        {
+          "$type": "TriggerAttackEvent",
+          "doOffStage": true,
+          "predicates": [
+            {
+              "$type": "ByTargetGlobalValue",
+              "target": "Caster",
+              "key": "_ABILITY_Kokomi_ExtraAttack_BurstMark",
+              "value": 1
+            }
+          ],
+          "attackEvent": {
+            "attackPattern": {
+              "$type": "ConfigAttackSphere",
+              "triggerType": "TriggerNoRepeat",
+              "born": {
+                "$type": "ConfigBornByGlobalValue",
+                "onGround": true,
+                "positionKey": "_ABILITY_Kokomi_ExtraAttack_Pos",
+                "directionKey": ""
+              },
+              "radius": 4
+            },
+            "attackInfo": {
+              "attackTag": "ExtraAttack",
+              "attenuationTag": "",
+              "attenuationGroup": "default",
+              "attackProperty": {
+                "damagePercentage": "ExtraAttack_Damage",
+                "damagePercentageRatio": 0,
+                "elementType": "Water",
+                "elementRank": 3,
+                "elementDurability": 25,
+                "strikeType": "Default",
+                "enBreak": 100,
+                "damageExtra": [
+                  "FIGHT_PROP_MAX_HP",
+                  "ExtraAttack_MaxHP_Percentage",
+                  "MUL"
+                ]
+              },
+              "hitPattern": {
+                "onHitEffectName": "default",
+                "hitImpulseType": "LV5",
+                "overrideHitImpulse": {
+                  "hitLevel": "Air",
+                  "hitImpulseX": 0,
+                  "hitImpulseY": 600
+                },
+                "retreatType": "ByHitDirection",
+                "hitHaltTimeScale": 0.05
+              },
+              "forceCameraShake": true,
+              "cameraShake": {
+                "shakeRange": 0.5,
+                "shakeTime": 0.2,
+                "shakeDistance": 30,
+                "extension": {
+                  "baseCycle": 0.08,
+                  "cycleDamping": -0.04
+                }
+              }
+            }
+          },
+          "targetType": "Enemy"
+        }
+      ]
+    }
+  },
+  {
+    "Default": {
+      "$type": "ConfigAbility",
+      "abilityName": "Avatar_Kokomi_Attack01",
+      "onAbilityStart": [
+        {
+          "$type": "TriggerBullet",
+          "predicates": [
+            {
+              "$type": "ByTargetGlobalValue",
+              "target": "Caster",
+              "key": "_ABILITY_Kokomi_ElementalBurst_Flag",
+              "value": 0,
+              "compareType": "NoneOrEqual"
+            }
+          ],
+          "bulletID": 41054011,
+          "born": {
+            "$type": "ConfigBornBySelf",
+            "offset": {
+              "x": 0.4,
+              "y": 1.2,
+              "z": 0.2
+            },
+            "direction": {
+              "$type": "ConfigDirectionByAttackTarget",
+              "scatter": {
+                "maxDistance": 10,
+                "maxScatterAngle": -45,
+                "centerRote": -45,
+                "randomRote": 10
+              }
+            }
+          }
+        },
+        {
+          "$type": "TriggerBullet",
+          "predicates": [
+            {
+              "$type": "ByTargetGlobalValue",
+              "target": "Caster",
+              "key": "_ABILITY_Kokomi_ElementalBurst_Flag",
+              "value": 1
+            }
+          ],
+          "bulletID": 41054021,
+          "born": {
+            "$type": "ConfigBornBySelf",
+            "offset": {
+              "x": 0.4,
+              "y": 1.2,
+              "z": 0.2
+            },
+            "direction": {
+              "$type": "ConfigDirectionByAttackTarget",
+              "scatter": {
+                "maxDistance": 10,
+                "maxScatterAngle": -45,
+                "centerRote": -45,
+                "randomRote": 10
+              }
+            }
+          }
+        },
+        {
+          "$type": "FireEffect",
+          "effectPattern": "Eff_Avatar_Girl_Catalyst_Kokomi_NormalAttack_Shoot_Small",
+          "born": {
+            "$type": "ConfigBornBySelf",
+            "offset": {
+              "x": 0.4,
+              "y": 1.2,
+              "z": 0.2
+            }
+          }
+        }
+      ]
+    }
+  },
+  {
+    "Default": {
+      "$type": "ConfigAbility",
+      "abilityName": "Avatar_Kokomi_Attack02",
+      "onAbilityStart": [
+        {
+          "$type": "TriggerBullet",
+          "predicates": [
+            {
+              "$type": "ByTargetGlobalValue",
+              "target": "Caster",
+              "key": "_ABILITY_Kokomi_ElementalBurst_Flag",
+              "value": 0,
+              "compareType": "NoneOrEqual"
+            }
+          ],
+          "bulletID": 41054012,
+          "born": {
+            "$type": "ConfigBornBySelf",
+            "offset": {
+              "x": -0.4,
+              "y": 1.15,
+              "z": 0.1
+            },
+            "direction": {
+              "$type": "ConfigDirectionByAttackTarget",
+              "scatter": {
+                "maxDistance": 10,
+                "maxScatterAngle": -45,
+                "centerRote": 45,
+                "randomRote": 10
+              }
+            }
+          }
+        },
+        {
+          "$type": "TriggerBullet",
+          "predicates": [
+            {
+              "$type": "ByTargetGlobalValue",
+              "target": "Caster",
+              "key": "_ABILITY_Kokomi_ElementalBurst_Flag",
+              "value": 1
+            }
+          ],
+          "bulletID": 41054022,
+          "born": {
+            "$type": "ConfigBornBySelf",
+            "offset": {
+              "x": -0.4,
+              "y": 1.15,
+              "z": 0.1
+            },
+            "direction": {
+              "$type": "ConfigDirectionByAttackTarget",
+              "scatter": {
+                "maxDistance": 10,
+                "maxScatterAngle": -45,
+                "centerRote": 45,
+                "randomRote": 10
+              }
+            }
+          }
+        },
+        {
+          "$type": "FireEffect",
+          "effectPattern": "Eff_Avatar_Girl_Catalyst_Kokomi_NormalAttack_Shoot_Small",
+          "born": {
+            "$type": "ConfigBornBySelf",
+            "offset": {
+              "x": -0.4,
+              "y": 1.15,
+              "z": 0.1
+            }
+          }
+        }
+      ]
+    }
+  },
+  {
+    "Default": {
+      "$type": "ConfigAbility",
+      "abilityName": "Avatar_Kokomi_Attack03",
+      "onAbilityStart": [
+        {
+          "$type": "TriggerBullet",
+          "predicates": [
+            {
+              "$type": "ByTargetGlobalValue",
+              "target": "Caster",
+              "key": "_ABILITY_Kokomi_ElementalBurst_Flag",
+              "value": 0,
+              "compareType": "NoneOrEqual"
+            }
+          ],
+          "bulletID": 41054013,
+          "born": {
+            "$type": "ConfigBornBySelf",
+            "offset": {
+              "y": 1.4,
+              "z": 0.5
+            },
+            "direction": {
+              "$type": "ConfigDirectionByAttackTarget",
+              "scatter": {
+                "maxDistance": 10,
+                "maxScatterAngle": -35,
+                "centerRote": 45,
+                "randomRote": 10
+              }
+            }
+          }
+        },
+        {
+          "$type": "FireEffect",
+          "predicates": [
+            {
+              "$type": "ByTargetGlobalValue",
+              "target": "Caster",
+              "key": "_ABILITY_Kokomi_ElementalBurst_Flag",
+              "value": 0,
+              "compareType": "NoneOrEqual"
+            }
+          ],
+          "effectPattern": "Eff_Avatar_Girl_Catalyst_Kokomi_NormalAttack_Shoot_Medium",
+          "born": {
+            "$type": "ConfigBornBySelf",
+            "offset": {
+              "y": 1.4,
+              "z": 0.5
+            }
+          }
+        },
+        {
+          "$type": "TriggerBullet",
+          "predicates": [
+            {
+              "$type": "ByTargetGlobalValue",
+              "target": "Caster",
+              "key": "_ABILITY_Kokomi_ElementalBurst_Flag",
+              "value": 1
+            },
+            {
+              "$type": "ByNot",
+              "predicates": [
+                {
+                  "$type": "ByUnlockTalentParam",
+                  "talentParam": "Avatar_Kokomi_NormalAttack_BounceBullet"
+                }
+              ]
+            }
+          ],
+          "bulletID": 41054023,
+          "born": {
+            "$type": "ConfigBornBySelf",
+            "offset": {
+              "y": 1.4,
+              "z": 0.5
+            },
+            "direction": {
+              "$type": "ConfigDirectionByAttackTarget",
+              "scatter": {
+                "maxDistance": 10,
+                "maxScatterAngle": -35,
+                "centerRote": 45,
+                "randomRote": 10
+              }
+            }
+          }
+        },
+        {
+          "$type": "TriggerBullet",
+          "predicates": [
+            {
+              "$type": "ByTargetGlobalValue",
+              "target": "Caster",
+              "key": "_ABILITY_Kokomi_ElementalBurst_Flag",
+              "value": 1
+            },
+            {
+              "$type": "ByUnlockTalentParam",
+              "talentParam": "Avatar_Kokomi_NormalAttack_BounceBullet"
+            }
+          ],
+          "bulletID": 41054023,
+          "born": {
+            "$type": "ConfigBornBySelf",
+            "offset": {
+              "y": 1.4,
+              "z": 0.5
+            },
+            "direction": {
+              "$type": "ConfigDirectionByAttackTarget",
+              "scatter": {
+                "maxDistance": 10,
+                "maxScatterAngle": -50,
+                "centerRote": 60,
+                "randomRote": 8
+              }
+            }
+          }
+        },
+        {
+          "$type": "TriggerBullet",
+          "predicates": [
+            {
+              "$type": "ByTargetGlobalValue",
+              "target": "Caster",
+              "key": "_ABILITY_Kokomi_ElementalBurst_Flag",
+              "value": 1
+            },
+            {
+              "$type": "ByUnlockTalentParam",
+              "talentParam": "Avatar_Kokomi_NormalAttack_BounceBullet"
+            }
+          ],
+          "bulletID": 41054031,
+          "born": {
+            "$type": "ConfigBornBySelf",
+            "offset": {
+              "x": 0.5,
+              "y": 1.4,
+              "z": 0.5
+            },
+            "direction": {
+              "$type": "ConfigDirectionByAttackTarget",
+              "scatter": {
+                "maxDistance": 10,
+                "maxScatterAngle": -50,
+                "centerRote": -60,
+                "randomRote": 8
+              }
+            }
+          }
+        },
+        {
+          "$type": "FireEffect",
+          "predicates": [
+            {
+              "$type": "ByTargetGlobalValue",
+              "target": "Caster",
+              "key": "_ABILITY_Kokomi_ElementalBurst_Flag",
+              "value": 1
+            }
+          ],
+          "effectPattern": "Eff_Avatar_Girl_Catalyst_Kokomi_NormalAttack_Shoot_Big",
+          "born": {
+            "$type": "ConfigBornBySelf",
+            "offset": {
+              "y": 1.4,
+              "z": 0.5
+            }
+          }
+        }
+      ]
+    }
+  },
+  {
+    "Default": {
+      "$type": "ConfigAbility",
+      "abilityName": "Avatar_Kokomi_NormalAttack_Bullet_1_Damage",
+      "abilitySpecials": {
+        "NormalAttack_01_Damage": 0
+      },
+      "modifiers": {
+        "Avatar_Kokomi_NormalAttack_AngularVelocity_Timer": {
+          "modifierName": "",
+          "duration": 0.3,
+          "elementDurability": 100,
+          "onRemoved": [
+            {
+              "$type": "ApplyModifier",
+              "modifierName": "Avatar_Kokomi_NormalAttack_AngularVelocity"
+            }
+          ]
+        },
+        "Avatar_Kokomi_NormalAttack_AngularVelocity": {
+          "modifierName": "",
+          "elementDurability": 100,
+          "properties": {
+            "Actor_BulletMoveAngularVelocityRatio": 10
+          }
+        }
+      },
+      "onAdded": [
+        {
+          "$type": "ApplyModifier",
+          "modifierName": "Avatar_Kokomi_NormalAttack_AngularVelocity_Timer"
+        },
+        {
+          "$type": "AttachEffect",
+          "effectPattern": "Eff_Avatar_Girl_Catalyst_Kokomi_NormalAttack_Bullet"
+        },
+        {
+          "$type": "AttachEffect",
+          "effectPattern": "Eff_Avatar_Girl_Catalyst_Kokomi_NormalAttack_Bullet_Trail"
+        }
+      ],
+      "onAbilityStart": [
+        {
+          "$type": "TriggerAttackEvent",
+          "attackEvent": {
+            "attackPattern": {
+              "$type": "ConfigAttackSphere",
+              "triggerType": "TriggerNoRepeat",
+              "born": {
+                "$type": "ConfigBornByCollisionPoint"
+              },
+              "radius": 0.7
+            },
+            "attackInfo": {
+              "attackTag": "NormalAttack_01",
+              "attenuationTag": "Kokomi_Water_Damage",
+              "attenuationGroup": "default",
+              "attackProperty": {
+                "damagePercentage": "NormalAttack_01_Damage",
+                "damagePercentageRatio": 0,
+                "elementType": "Water",
+                "elementDurability": 25,
+                "strikeType": "Default",
+                "enBreak": 12.8205
+              },
+              "hitPattern": {
+                "onHitEffectName": "Eff_Avatar_Girl_Catalyst_Kokomi_NormalAttack_Bullet_Hit",
+                "hitImpulseType": "LV1",
+                "hitHaltTimeScale": 0.05
+              },
+              "canBeModifiedBy": "OriginOwner"
+            }
+          },
+          "targetType": "Enemy"
+        },
+        {
+          "$type": "FireHitEffect",
+          "hitEntity": "",
+          "hitScene": {
+            "defaultEffect": "Eff_Avatar_Girl_Catalyst_Kokomi_NormalAttack_Bullet_Hit"
+          }
+        },
+        {
+          "$type": "KillSelf"
+        }
+      ],
+      "onKill": [
+        {
+          "$type": "FireEffect",
+          "effectPattern": "Eff_Avatar_Girl_Catalyst_Kokomi_NormalAttack_Bullet_Hit"
+        }
+      ]
+    }
+  },
+  {
+    "Default": {
+      "$type": "ConfigAbility",
+      "abilityName": "Avatar_Kokomi_NormalAttack_Bullet_2_Damage",
+      "abilitySpecials": {
+        "NormalAttack_02_Damage": 0
+      },
+      "modifiers": {
+        "Avatar_Kokomi_NormalAttack_AngularVelocity_Timer": {
+          "modifierName": "",
+          "duration": 0.3,
+          "elementDurability": 100,
+          "onRemoved": [
+            {
+              "$type": "ApplyModifier",
+              "modifierName": "Avatar_Kokomi_NormalAttack_AngularVelocity"
+            }
+          ]
+        },
+        "Avatar_Kokomi_NormalAttack_AngularVelocity": {
+          "modifierName": "",
+          "elementDurability": 100,
+          "properties": {
+            "Actor_BulletMoveAngularVelocityRatio": 10
+          }
+        }
+      },
+      "onAdded": [
+        {
+          "$type": "ApplyModifier",
+          "modifierName": "Avatar_Kokomi_NormalAttack_AngularVelocity_Timer"
+        },
+        {
+          "$type": "AttachEffect",
+          "effectPattern": "Eff_Avatar_Girl_Catalyst_Kokomi_NormalAttack_Bullet"
+        },
+        {
+          "$type": "AttachEffect",
+          "effectPattern": "Eff_Avatar_Girl_Catalyst_Kokomi_NormalAttack_Bullet_Trail"
+        }
+      ],
+      "onAbilityStart": [
+        {
+          "$type": "TriggerAttackEvent",
+          "attackEvent": {
+            "attackPattern": {
+              "$type": "ConfigAttackSphere",
+              "triggerType": "TriggerNoRepeat",
+              "born": {
+                "$type": "ConfigBornByCollisionPoint"
+              },
+              "radius": 0.7
+            },
+            "attackInfo": {
+              "attackTag": "NormalAttack_02",
+              "attenuationTag": "Kokomi_Water_Damage",
+              "attenuationGroup": "default",
+              "attackProperty": {
+                "damagePercentage": "NormalAttack_02_Damage",
+                "damagePercentageRatio": 0,
+                "elementType": "Water",
+                "elementDurability": 25,
+                "strikeType": "Default",
+                "enBreak": 11.53845
+              },
+              "hitPattern": {
+                "onHitEffectName": "Eff_Avatar_Girl_Catalyst_Kokomi_NormalAttack_Bullet_Hit",
+                "hitImpulseType": "LV1",
+                "hitHaltTimeScale": 0.05
+              },
+              "canBeModifiedBy": "OriginOwner"
+            }
+          },
+          "targetType": "Enemy"
+        },
+        {
+          "$type": "FireHitEffect",
+          "hitEntity": "",
+          "hitScene": {
+            "defaultEffect": "Eff_Avatar_Girl_Catalyst_Kokomi_NormalAttack_Bullet_Hit"
+          }
+        },
+        {
+          "$type": "KillSelf"
+        }
+      ],
+      "onKill": [
+        {
+          "$type": "FireEffect",
+          "effectPattern": "Eff_Avatar_Girl_Catalyst_Kokomi_NormalAttack_Bullet_Hit"
+        }
+      ]
+    }
+  },
+  {
+    "Default": {
+      "$type": "ConfigAbility",
+      "abilityName": "Avatar_Kokomi_NormalAttack_Bullet_3_Damage",
+      "abilitySpecials": {
+        "NormalAttack_03_Damage": 0
+      },
+      "modifiers": {
+        "Avatar_Kokomi_NormalAttack_AngularVelocity_Timer": {
+          "modifierName": "",
+          "duration": 0.3,
+          "elementDurability": 100,
+          "onRemoved": [
+            {
+              "$type": "ApplyModifier",
+              "modifierName": "Avatar_Kokomi_NormalAttack_AngularVelocity"
+            }
+          ]
+        },
+        "Avatar_Kokomi_NormalAttack_AngularVelocity": {
+          "modifierName": "",
+          "elementDurability": 100,
+          "properties": {
+            "Actor_BulletMoveAngularVelocityRatio": 10
+          }
+        }
+      },
+      "onAdded": [
+        {
+          "$type": "ApplyModifier",
+          "modifierName": "Avatar_Kokomi_NormalAttack_AngularVelocity_Timer"
+        },
+        {
+          "$type": "AttachEffect",
+          "effectPattern": "Eff_Avatar_Girl_Catalyst_Kokomi_NormalAttack_Bullet"
+        },
+        {
+          "$type": "AttachEffect",
+          "effectPattern": "Eff_Avatar_Girl_Catalyst_Kokomi_NormalAttack_Bullet_Trail"
+        }
+      ],
+      "onAbilityStart": [
+        {
+          "$type": "TriggerAttackEvent",
+          "attackEvent": {
+            "attackPattern": {
+              "$type": "ConfigAttackSphere",
+              "triggerType": "TriggerNoRepeat",
+              "born": {
+                "$type": "ConfigBornByCollisionPoint"
+              },
+              "radius": 0.7
+            },
+            "attackInfo": {
+              "attackTag": "NormalAttack_03",
+              "attenuationTag": "Kokomi_Water_Damage",
+              "attenuationGroup": "default",
+              "attackProperty": {
+                "damagePercentage": "NormalAttack_03_Damage",
+                "damagePercentageRatio": 0,
+                "elementType": "Water",
+                "elementDurability": 25,
+                "strikeType": "Default",
+                "enBreak": 17.6823
+              },
+              "hitPattern": {
+                "onHitEffectName": "Eff_Avatar_Girl_Catalyst_Kokomi_NormalAttack_Bullet_Hit",
+                "hitImpulseType": "LV1",
+                "hitHaltTimeScale": 0.05
+              },
+              "canBeModifiedBy": "OriginOwner"
+            }
+          },
+          "targetType": "Enemy"
+        },
+        {
+          "$type": "FireHitEffect",
+          "hitEntity": "",
+          "hitScene": {
+            "defaultEffect": "Eff_Avatar_Girl_Catalyst_Kokomi_NormalAttack_Bullet_Hit"
+          }
+        },
+        {
+          "$type": "KillSelf"
+        }
+      ],
+      "onKill": [
+        {
+          "$type": "FireEffect",
+          "effectPattern": "Eff_Avatar_Girl_Catalyst_Kokomi_NormalAttack_Bullet_Hit"
+        }
+      ]
+    }
+  },
+  {
+    "Default": {
+      "$type": "ConfigAbility",
+      "abilityName": "Avatar_Kokomi_NormalAttack_Bullet_1_Burst_Damage",
+      "abilitySpecials": {
+        "NormalAttack_01_Damage": 0,
+        "NormalAttack_MaxHP_Percentage": 0
+      },
+      "modifiers": {
+        "Avatar_Kokomi_NormalAttack_AngularVelocity_Timer": {
+          "modifierName": "",
+          "duration": 0.3,
+          "elementDurability": 100,
+          "onRemoved": [
+            {
+              "$type": "ApplyModifier",
+              "modifierName": "Avatar_Kokomi_NormalAttack_AngularVelocity"
+            }
+          ]
+        },
+        "Avatar_Kokomi_NormalAttack_AngularVelocity": {
+          "modifierName": "",
+          "elementDurability": 100,
+          "properties": {
+            "Actor_BulletMoveAngularVelocityRatio": 10
+          }
+        },
+        "Avatar_Kokomi_NormalAttack_Heal_Handler": {
+          "modifierName": "",
+          "elementDurability": 100,
+          "onHittingOther": [
+            {
+              "$type": "Predicated",
+              "target": "Target",
+              "targetPredicates": [
+                {
+                  "$type": "ByAttackTags",
+                  "attackTags": [
+                    "NormalAttack_01"
+                  ]
+                },
+                {
+                  "$type": "ByEntityTypes",
+                  "entityTypes": [
+                    "Monster"
+                  ]
+                },
+                {
+                  "$type": "ByTargetGlobalValue",
+                  "key": "_ANIMAL_ENTITY_TYPE",
+                  "value": 0,
+                  "compareType": "NoneOrEqual"
+                }
+              ],
+              "successActions": [
+                {
+                  "$type": "TriggerAbility",
+                  "target": "Owner",
+                  "predicates": [
+                    {
+                      "$type": "ByTargetGlobalValue",
+                      "target": "Self",
+                      "key": "_ABILITY_Kokomi_ElementalBurst_Hit_Flag",
+                      "value": 0
+                    }
+                  ],
+                  "abilityName": "Avatar_Kokomi_ElementalBurst_Heal"
+                },
+                {
+                  "$type": "SetGlobalValue",
+                  "value": 1,
+                  "key": "_ABILITY_Kokomi_ElementalBurst_Hit_Flag",
+                  "maxValue": 0,
+                  "minValue": 0
+                },
+                {
+                  "$type": "TriggerAbility",
+                  "target": "Owner",
+                  "predicates": [
+                    {
+                      "$type": "ByUnlockTalentParam",
+                      "talentParam": "Avatar_Kokomi_ElementalBurst_AtkSpeeddBuff"
+                    }
+                  ],
+                  "abilityName": "Avatar_Kokomi_ElementalBurst_ReviveEnergy"
+                }
+              ]
+            }
+          ]
+        }
+      },
+      "onAdded": [
+        {
+          "$type": "ApplyModifier",
+          "modifierName": "Avatar_Kokomi_NormalAttack_AngularVelocity_Timer"
+        },
+        {
+          "$type": "AttachEffect",
+          "effectPattern": "Eff_Avatar_Girl_Catalyst_Kokomi_NormalAttack_Bullet_Burst"
+        },
+        {
+          "$type": "AttachEffect",
+          "effectPattern": "Eff_Avatar_Girl_Catalyst_Kokomi_NormalAttack_Bullet_Burst_Trail"
+        },
+        {
+          "$type": "AttachModifier",
+          "modifierName": "Avatar_Kokomi_NormalAttack_Heal_Handler"
+        },
+        {
+          "$type": "SetGlobalValue",
+          "value": 0,
+          "key": "_ABILITY_Kokomi_ElementalBurst_Hit_Flag",
+          "maxValue": 0,
+          "minValue": 0
+        }
+      ],
+      "onAbilityStart": [
+        {
+          "$type": "TriggerAttackEvent",
+          "attackEvent": {
+            "attackPattern": {
+              "$type": "ConfigAttackSphere",
+              "triggerType": "TriggerNoRepeat",
+              "born": {
+                "$type": "ConfigBornByCollisionPoint"
+              },
+              "radius": 1.2
+            },
+            "attackInfo": {
+              "attackTag": "NormalAttack_01",
+              "attenuationTag": "Kokomi_Water_Damage",
+              "attenuationGroup": "default",
+              "attackProperty": {
+                "damagePercentage": "NormalAttack_01_Damage",
+                "damagePercentageRatio": 0,
+                "elementType": "Water",
+                "elementDurability": 25,
+                "strikeType": "Default",
+                "enBreak": 12.8205,
+                "damageExtra": [
+                  "FIGHT_PROP_MAX_HP",
+                  "NormalAttack_MaxHP_Percentage",
+                  "MUL"
+                ]
+              },
+              "hitPattern": {
+                "onHitEffectName": "Eff_Avatar_Girl_Catalyst_Kokomi_NormalAttack_Bullet_Burst_Hit",
+                "hitImpulseType": "LV3",
+                "hitHaltTimeScale": 0.05
+              },
+              "canBeModifiedBy": "OriginOwner"
+            }
+          },
+          "targetType": "Enemy"
+        },
+        {
+          "$type": "FireHitEffect",
+          "hitEntity": "",
+          "hitScene": {
+            "defaultEffect": "Eff_Avatar_Girl_Catalyst_Kokomi_NormalAttack_Bullet_Burst_Hit"
+          }
+        },
+        {
+          "$type": "KillSelf"
+        }
+      ],
+      "onKill": [
+        {
+          "$type": "FireEffect",
+          "effectPattern": "Eff_Avatar_Girl_Catalyst_Kokomi_NormalAttack_Bullet_Hit"
+        }
+      ]
+    }
+  },
+  {
+    "Default": {
+      "$type": "ConfigAbility",
+      "abilityName": "Avatar_Kokomi_NormalAttack_Bullet_2_Burst_Damage",
+      "abilitySpecials": {
+        "NormalAttack_02_Damage": 0,
+        "NormalAttack_MaxHP_Percentage": 0
+      },
+      "modifiers": {
+        "Avatar_Kokomi_NormalAttack_AngularVelocity_Timer": {
+          "modifierName": "",
+          "duration": 0.3,
+          "elementDurability": 100,
+          "onRemoved": [
+            {
+              "$type": "ApplyModifier",
+              "modifierName": "Avatar_Kokomi_NormalAttack_AngularVelocity"
+            }
+          ]
+        },
+        "Avatar_Kokomi_NormalAttack_AngularVelocity": {
+          "modifierName": "",
+          "elementDurability": 100,
+          "properties": {
+            "Actor_BulletMoveAngularVelocityRatio": 10
+          }
+        },
+        "Avatar_Kokomi_NormalAttack_Heal_Handler": {
+          "modifierName": "",
+          "elementDurability": 100,
+          "onHittingOther": [
+            {
+              "$type": "Predicated",
+              "target": "Target",
+              "targetPredicates": [
+                {
+                  "$type": "ByAttackTags",
+                  "attackTags": [
+                    "NormalAttack_02"
+                  ]
+                },
+                {
+                  "$type": "ByEntityTypes",
+                  "entityTypes": [
+                    "Monster"
+                  ]
+                },
+                {
+                  "$type": "ByTargetGlobalValue",
+                  "key": "_ANIMAL_ENTITY_TYPE",
+                  "value": 0,
+                  "compareType": "NoneOrEqual"
+                }
+              ],
+              "successActions": [
+                {
+                  "$type": "TriggerAbility",
+                  "target": "Owner",
+                  "predicates": [
+                    {
+                      "$type": "ByTargetGlobalValue",
+                      "target": "Self",
+                      "key": "_ABILITY_Kokomi_ElementalBurst_Hit_Flag",
+                      "value": 0
+                    }
+                  ],
+                  "abilityName": "Avatar_Kokomi_ElementalBurst_Heal"
+                },
+                {
+                  "$type": "SetGlobalValue",
+                  "value": 1,
+                  "key": "_ABILITY_Kokomi_ElementalBurst_Hit_Flag",
+                  "maxValue": 0,
+                  "minValue": 0
+                },
+                {
+                  "$type": "TriggerAbility",
+                  "target": "Owner",
+                  "predicates": [
+                    {
+                      "$type": "ByUnlockTalentParam",
+                      "talentParam": "Avatar_Kokomi_ElementalBurst_AtkSpeeddBuff"
+                    }
+                  ],
+                  "abilityName": "Avatar_Kokomi_ElementalBurst_ReviveEnergy"
+                }
+              ]
+            }
+          ]
+        }
+      },
+      "onAdded": [
+        {
+          "$type": "ApplyModifier",
+          "modifierName": "Avatar_Kokomi_NormalAttack_AngularVelocity_Timer"
+        },
+        {
+          "$type": "AttachEffect",
+          "effectPattern": "Eff_Avatar_Girl_Catalyst_Kokomi_NormalAttack_Bullet_Burst"
+        },
+        {
+          "$type": "AttachEffect",
+          "effectPattern": "Eff_Avatar_Girl_Catalyst_Kokomi_NormalAttack_Bullet_Burst_Trail"
+        },
+        {
+          "$type": "AttachModifier",
+          "modifierName": "Avatar_Kokomi_NormalAttack_Heal_Handler"
+        },
+        {
+          "$type": "SetGlobalValue",
+          "value": 0,
+          "key": "_ABILITY_Kokomi_ElementalBurst_Hit_Flag",
+          "maxValue": 0,
+          "minValue": 0
+        }
+      ],
+      "onAbilityStart": [
+        {
+          "$type": "TriggerAttackEvent",
+          "attackEvent": {
+            "attackPattern": {
+              "$type": "ConfigAttackSphere",
+              "triggerType": "TriggerNoRepeat",
+              "born": {
+                "$type": "ConfigBornByCollisionPoint"
+              },
+              "radius": 1.2
+            },
+            "attackInfo": {
+              "attackTag": "NormalAttack_02",
+              "attenuationTag": "Kokomi_Water_Damage",
+              "attenuationGroup": "default",
+              "attackProperty": {
+                "damagePercentage": "NormalAttack_02_Damage",
+                "damagePercentageRatio": 0,
+                "elementType": "Water",
+                "elementDurability": 25,
+                "strikeType": "Default",
+                "enBreak": 11.53845,
+                "damageExtra": [
+                  "FIGHT_PROP_MAX_HP",
+                  "NormalAttack_MaxHP_Percentage",
+                  "MUL"
+                ]
+              },
+              "hitPattern": {
+                "onHitEffectName": "Eff_Avatar_Girl_Catalyst_Kokomi_NormalAttack_Bullet_Burst_Hit",
+                "hitImpulseType": "LV3",
+                "hitHaltTimeScale": 0.05
+              },
+              "canBeModifiedBy": "OriginOwner"
+            }
+          },
+          "targetType": "Enemy"
+        },
+        {
+          "$type": "FireHitEffect",
+          "hitEntity": "",
+          "hitScene": {
+            "defaultEffect": "Eff_Avatar_Girl_Catalyst_Kokomi_NormalAttack_Bullet_Burst_Hit"
+          }
+        },
+        {
+          "$type": "KillSelf"
+        }
+      ],
+      "onKill": [
+        {
+          "$type": "FireEffect",
+          "effectPattern": "Eff_Avatar_Girl_Catalyst_Kokomi_NormalAttack_Bullet_Hit"
+        }
+      ]
+    }
+  },
+  {
+    "Default": {
+      "$type": "ConfigAbility",
+      "abilityName": "Avatar_Kokomi_NormalAttack_Bullet_3_Burst_Damage",
+      "abilitySpecials": {
+        "NormalAttack_03_Damage": 0,
+        "NormalAttack_MaxHP_Percentage": 0
+      },
+      "modifiers": {
+        "Avatar_Kokomi_NormalAttack_AngularVelocity_Timer": {
+          "modifierName": "",
+          "duration": 0.3,
+          "elementDurability": 100,
+          "onRemoved": [
+            {
+              "$type": "ApplyModifier",
+              "modifierName": "Avatar_Kokomi_NormalAttack_AngularVelocity"
+            }
+          ]
+        },
+        "Avatar_Kokomi_NormalAttack_AngularVelocity": {
+          "modifierName": "",
+          "elementDurability": 100,
+          "properties": {
+            "Actor_BulletMoveAngularVelocityRatio": 10
+          }
+        },
+        "Avatar_Kokomi_NormalAttack_Heal_Handler": {
+          "modifierName": "",
+          "elementDurability": 100,
+          "onHittingOther": [
+            {
+              "$type": "Predicated",
+              "target": "Target",
+              "targetPredicates": [
+                {
+                  "$type": "ByAttackTags",
+                  "attackTags": [
+                    "NormalAttack_03"
+                  ]
+                },
+                {
+                  "$type": "ByEntityTypes",
+                  "entityTypes": [
+                    "Monster"
+                  ]
+                },
+                {
+                  "$type": "ByTargetGlobalValue",
+                  "key": "_ANIMAL_ENTITY_TYPE",
+                  "value": 0,
+                  "compareType": "NoneOrEqual"
+                }
+              ],
+              "successActions": [
+                {
+                  "$type": "TriggerAbility",
+                  "target": "Owner",
+                  "predicates": [
+                    {
+                      "$type": "ByTargetGlobalValue",
+                      "target": "Self",
+                      "key": "_ABILITY_Kokomi_ElementalBurst_Hit_Flag",
+                      "value": 0
+                    }
+                  ],
+                  "abilityName": "Avatar_Kokomi_ElementalBurst_Heal"
+                },
+                {
+                  "$type": "SetGlobalValue",
+                  "value": 1,
+                  "key": "_ABILITY_Kokomi_ElementalBurst_Hit_Flag",
+                  "maxValue": 0,
+                  "minValue": 0
+                },
+                {
+                  "$type": "TriggerAbility",
+                  "target": "Owner",
+                  "predicates": [
+                    {
+                      "$type": "ByUnlockTalentParam",
+                      "talentParam": "Avatar_Kokomi_ElementalBurst_AtkSpeeddBuff"
+                    }
+                  ],
+                  "abilityName": "Avatar_Kokomi_ElementalBurst_ReviveEnergy"
+                }
+              ]
+            }
+          ]
+        }
+      },
+      "onAdded": [
+        {
+          "$type": "ApplyModifier",
+          "modifierName": "Avatar_Kokomi_NormalAttack_AngularVelocity_Timer"
+        },
+        {
+          "$type": "AttachEffect",
+          "effectPattern": "Eff_Avatar_Girl_Catalyst_Kokomi_NormalAttack_Bullet_Burst"
+        },
+        {
+          "$type": "AttachEffect",
+          "effectPattern": "Eff_Avatar_Girl_Catalyst_Kokomi_NormalAttack_Bullet_Burst_Trail"
+        },
+        {
+          "$type": "AttachModifier",
+          "modifierName": "Avatar_Kokomi_NormalAttack_Heal_Handler"
+        },
+        {
+          "$type": "SetGlobalValue",
+          "value": 0,
+          "key": "_ABILITY_Kokomi_ElementalBurst_Hit_Flag",
+          "maxValue": 0,
+          "minValue": 0
+        }
+      ],
+      "onAbilityStart": [
+        {
+          "$type": "TriggerAttackEvent",
+          "attackEvent": {
+            "attackPattern": {
+              "$type": "ConfigAttackSphere",
+              "triggerType": "TriggerNoRepeat",
+              "born": {
+                "$type": "ConfigBornByCollisionPoint"
+              },
+              "radius": 1.2
+            },
+            "attackInfo": {
+              "attackTag": "NormalAttack_03",
+              "attenuationTag": "Kokomi_Water_Damage",
+              "attenuationGroup": "default",
+              "attackProperty": {
+                "damagePercentage": "NormalAttack_03_Damage",
+                "damagePercentageRatio": 0,
+                "elementType": "Water",
+                "elementDurability": 25,
+                "strikeType": "Default",
+                "enBreak": 17.6823,
+                "damageExtra": [
+                  "FIGHT_PROP_MAX_HP",
+                  "NormalAttack_MaxHP_Percentage",
+                  "MUL"
+                ]
+              },
+              "hitPattern": {
+                "onHitEffectName": "Eff_Avatar_Girl_Catalyst_Kokomi_NormalAttack_Bullet_Burst_Hit",
+                "hitImpulseType": "LV3",
+                "hitHaltTimeScale": 0.05
+              },
+              "canBeModifiedBy": "OriginOwner"
+            }
+          },
+          "targetType": "Enemy"
+        },
+        {
+          "$type": "FireHitEffect",
+          "hitEntity": "",
+          "hitScene": {
+            "defaultEffect": "Eff_Avatar_Girl_Catalyst_Kokomi_NormalAttack_Bullet_Burst_Hit"
+          }
+        },
+        {
+          "$type": "KillSelf"
+        }
+      ],
+      "onKill": [
+        {
+          "$type": "FireEffect",
+          "effectPattern": "Eff_Avatar_Girl_Catalyst_Kokomi_NormalAttack_Bullet_Hit"
+        }
+      ]
+    }
+  },
+  {
+    "Default": {
+      "$type": "ConfigAbility",
+      "abilityName": "Kokomi_NormalAttack_Bullet_Bounce",
+      "abilitySpecials": {
+        "Talent_ExtraBullet_MaxHP_Percentage": 0
+      },
+      "modifiers": {
+        "Avatar_Kokomi_NormalAttack_AngularVelocity_Timer": {
+          "modifierName": "",
+          "duration": 0.4,
+          "elementDurability": 100,
+          "onRemoved": [
+            {
+              "$type": "ApplyModifier",
+              "modifierName": "Avatar_Kokomi_NormalAttack_AngularVelocity"
+            }
+          ]
+        },
+        "Avatar_Kokomi_NormalAttack_AngularVelocity": {
+          "modifierName": "",
+          "elementDurability": 100,
+          "properties": {
+            "Actor_BulletMoveAngularVelocityRatio": 10
+          }
+        }
+      },
+      "onAdded": [
+        {
+          "$type": "ApplyModifier",
+          "modifierName": "Avatar_Kokomi_NormalAttack_AngularVelocity_Timer"
+        },
+        {
+          "$type": "AttachEffect",
+          "effectPattern": "Eff_Avatar_Girl_Catalyst_Kokomi_NormalAttack_Bullet_Burst"
+        },
+        {
+          "$type": "AttachEffect",
+          "effectPattern": "Eff_Avatar_Girl_Catalyst_Kokomi_NormalAttack_Bullet_Burst_Trail"
+        }
+      ],
+      "onAbilityStart": [
+        {
+          "$type": "TriggerAttackEvent",
+          "attackEvent": {
+            "attackPattern": {
+              "$type": "ConfigAttackSphere",
+              "triggerType": "TriggerNoRepeat",
+              "born": {
+                "$type": "ConfigBornByCollisionPoint"
+              },
+              "radius": 1.2
+            },
+            "attackInfo": {
+              "attackTag": "ExtraBullet",
+              "attenuationTag": "",
+              "attenuationGroup": "default",
+              "attackProperty": {
+                "damagePercentageRatio": 0,
+                "elementType": "Water",
+                "elementDurability": 25,
+                "strikeType": "Default",
+                "damageExtra": [
+                  "FIGHT_PROP_MAX_HP",
+                  "Talent_ExtraBullet_MaxHP_Percentage",
+                  "MUL"
+                ]
+              },
+              "hitPattern": {
+                "onHitEffectName": "Eff_Kokomi_NormalAttack_Bullet_Burst_Hit_Whitebox",
+                "hitImpulseType": "LV3",
+                "hitHaltTimeScale": 0.05
+              },
+              "canBeModifiedBy": "OriginOwner"
+            }
+          },
+          "targetType": "Enemy"
+        },
+        {
+          "$type": "FireHitEffect",
+          "hitEntity": "",
+          "hitScene": {
+            "defaultEffect": "Eff_Kokomi_NormalAttack_Bullet_Hit_Whitebox"
+          }
+        }
+      ],
+      "onKill": [
+        {
+          "$type": "FireEffect",
+          "effectPattern": "Eff_Avatar_Girl_Catalyst_Kokomi_NormalAttack_Bullet_Hit"
+        }
+      ]
+    }
+  },
+  {
+    "Default": {
+      "$type": "ConfigAbility",
+      "abilityName": "Avatar_Kokomi_ElementalArt",
+      "abilityMixins": [
+        {
+          "$type": "AttachToNormalizedTimeMixin",
+          "stateID": "Kokomi_ElementalArt",
+          "modifierName": "Avatar_Kokomi_ElementalArt_KillGadget",
+          "normalizeStart": 0.1
+        }
+      ],
+      "modifiers": {
+        "Avatar_Kokomi_ElementalArt_WaterBuff": {
+          "modifierName": "",
+          "duration": 0.2,
+          "elementType": "Water",
+          "elementDurability": 25
+        },
+        "Avatar_Kokomi_ElementalArt_KillGadget": {
+          "modifierName": "",
+          "elementDurability": 100,
+          "onAdded": [
+            {
+              "$type": "KillGadget",
+              "gadgetInfo": {
+                "configID": 41054002
+              }
+            }
+          ]
+        }
+      },
+      "onAbilityStart": [
+        {
+          "$type": "AvatarSkillStart",
+          "skillID": 10542,
+          "cdRatio": 1,
+          "costStaminaRatio": 1
+        },
+        {
+          "$type": "CreateGadget",
+          "born": {
+            "$type": "ConfigBornByTarget",
+            "offset": {
+              "z": 3
+            }
+          },
+          "gadgetID": 41054002,
+          "campID": 1001,
+          "campTargetType": "Enemy"
+        },
+        {
+          "$type": "AttachModifier",
+          "modifierName": "Avatar_Kokomi_ElementalArt_WaterBuff"
+        }
+      ]
+    }
+  },
+  {
+    "Default": {
+      "$type": "ConfigAbility",
+      "abilityName": "Kokomi_ElementalArt_Gadget",
+      "abilityMixins": [
+        {
+          "$type": "AttachModifierToSelfGlobalValueMixin",
+          "globalValueKey": "_ABILITY_Kokomi_ElementalArt_Burst_Flag",
+          "defaultGlobalValueOnCreate": 0,
+          "valueSteps": [
+            -0.5,
+            0.5,
+            1.5
+          ],
+          "modifierNameSteps": [
+            "Blank",
+            "Burst_Effect"
+          ]
+        }
+      ],
+      "abilitySpecials": {
+        "ElementalArt_Gadget_Duration": 0
+      },
+      "modifiers": {
+        "Blank": {
+          "modifierName": "",
+          "elementDurability": 100
+        },
+        "Burst_Effect": {
+          "modifierName": "",
+          "elementDurability": 100,
+          "onAdded": [
+            {
+              "$type": "SetAnimatorBool",
+              "boolID": "Burst",
+              "value": true
+            }
+          ],
+          "onRemoved": [
+            {
+              "$type": "SetAnimatorBool",
+              "boolID": "Burst"
+            }
+          ]
+        },
+        "UNIQUE_Kokomi_ElementalArt_Gadget_LifeTime": {
+          "modifierName": "",
+          "isUnique": true,
+          "duration": "ElementalArt_Gadget_Duration",
+          "elementDurability": 100,
+          "onAdded": [
+            {
+              "$type": "SetAnimatorBool",
+              "boolID": "FadeOut"
+            },
+            {
+              "$type": "AttachEffect",
+              "effectPattern": "Eff_Avatar_Girl_Catalyst_Kokomi_ElementalArt_Gadget_Field"
+            }
+          ],
+          "onRemoved": [
+            {
+              "$type": "SetAnimatorBool",
+              "boolID": "FadeOut",
+              "value": true
+            },
+            {
+              "$type": "FireEffect",
+              "effectPattern": "Eff_Avatar_Girl_Catalyst_Kokomi_ElementalArt_Gadget_Die",
+              "born": {
+                "$type": "ConfigBornByAttachPoint",
+                "attachPointName": "RootNode"
+              }
+            },
+            {
+              "$type": "KillSelf",
+              "duration": 0.5
+            }
+          ],
+          "onAttackLanded": [
+            {
+              "$type": "Predicated",
+              "target": "Target",
+              "targetPredicates": [
+                {
+                  "$type": "ByAttackTags",
+                  "attackTags": [
+                    "Elemental_Art"
+                  ]
+                },
+                {
+                  "$type": "ByEntityTypes",
+                  "entityTypes": [
+                    "Monster"
+                  ]
+                },
+                {
+                  "$type": "ByTargetGlobalValue",
+                  "key": "_ANIMAL_ENTITY_TYPE",
+                  "value": 0,
+                  "compareType": "NoneOrEqual"
+                }
+              ],
+              "successActions": [
+                {
+                  "$type": "ApplyModifier",
+                  "modifierName": "Avatar_Kokomi_ElementalArt_ElemBall"
+                }
+              ]
+            }
+          ]
+        },
+        "Avatar_Kokomi_ElementalArt_ElemBall": {
+          "stacking": "Unique",
+          "modifierName": "",
+          "duration": 1,
+          "elementDurability": 100,
+          "onAdded": [
+            {
+              "$type": "Randomed",
+              "chance": 0.67,
+              "successActions": [
+                {
+                  "$type": "GenerateElemBall",
+                  "configID": 2018,
+                  "born": {
+                    "$type": "ConfigBornByAttachPoint",
+                    "attachPointName": "RootNode"
+                  },
+                  "ratio": 1,
+                  "baseEnergy": 3
+                }
+              ]
+            }
+          ]
+        }
+      },
+      "onAdded": [
+        {
+          "$type": "ApplyModifier",
+          "modifierName": "UNIQUE_Kokomi_ElementalArt_Gadget_LifeTime"
+        },
+        {
+          "$type": "SetGlobalValue",
+          "predicates": [
+            {
+              "$type": "ByTargetGlobalValue",
+              "target": "Owner",
+              "key": "_ABILITY_Kokomi_ElementalBurst_Flag",
+              "value": 1
+            }
+          ],
+          "value": 1,
+          "key": "_ABILITY_Kokomi_ElementalArt_Burst_Flag",
+          "maxValue": 0,
+          "minValue": 0
+        }
+      ],
+      "onAbilityStart": [
+        {
+          "$type": "ApplyModifier",
+          "modifierName": "UNIQUE_Kokomi_ElementalArt_Gadget_LifeTime"
+        }
+      ],
+      "onFieldEnter": [
+        {
+          "$type": "Predicated",
+          "target": "Target",
+          "targetPredicates": [
+            {
+              "$type": "ByTargetType",
+              "targetType": "Owner"
+            },
+            {
+              "$type": "ByEntityTypes",
+              "entityTypes": [
+                "Avatar"
+              ]
+            },
+            {
+              "$type": "ByTargetGlobalValue",
+              "target": "Owner",
+              "key": "_ABILITY_Kokomi_ElementalBurst_Flag",
+              "value": 1
+            }
+          ],
+          "successActions": [
+            {
+              "$type": "SetGlobalValue",
+              "value": 1,
+              "key": "_ABILITY_Kokomi_ElementalArt_Burst_Flag",
+              "maxValue": 0,
+              "minValue": 0
+            }
+          ]
+        }
+      ],
+      "onFieldExit": [
+        {
+          "$type": "Predicated",
+          "target": "Target",
+          "targetPredicates": [
+            {
+              "$type": "ByTargetType",
+              "targetType": "Owner"
+            },
+            {
+              "$type": "ByEntityTypes",
+              "entityTypes": [
+                "Avatar"
+              ]
+            }
+          ],
+          "successActions": [
+            {
+              "$type": "SetGlobalValue",
+              "value": 0,
+              "key": "_ABILITY_Kokomi_ElementalArt_Burst_Flag",
+              "maxValue": 0,
+              "minValue": 0
+            }
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "Default": {
+      "$type": "ConfigAbility",
+      "abilityName": "Kokomi_ElementalArt_Gadget_Controller",
+      "abilitySpecials": {
+        "ElementalArt_Heal_MaxHP_Base_Percentage": 0,
+        "ElementalArt_Heal_Base_Amount": 0,
+        "ElementalArt_Damage_Percentage": 0,
+        "ElementalArt_Damage_MaxHP_Percentage": 0,
+        "Talent_ExtraHealLowHPTarget_Threshold": 0,
+        "Talent_ExtraHealLowHPTarget_ElementalArt_MaxHP_Extra_Percentage": 0
+      },
+      "modifiers": {
+        "Avatar_Kokomi_ElementalArt_Heal": {
+          "modifierName": "",
+          "duration": 1,
+          "elementDurability": 100,
+          "onAdded": [
+            {
+              "$type": "HealHP",
+              "amount": "ElementalArt_Heal_Base_Amount",
+              "amountByCasterMaxHPRatio": "ElementalArt_Heal_MaxHP_Base_Percentage"
+            }
+          ]
+        },
+        "Avatar_Kokomi_ElementalArt_Heal_Talent_ExtraHealLowHPTarget": {
+          "modifierName": "",
+          "duration": 1,
+          "elementDurability": 100,
+          "onAdded": [
+            {
+              "$type": "HealHP",
+              "amount": "ElementalArt_Heal_Base_Amount",
+              "amountByCasterMaxHPRatio": [
+                "ElementalArt_Heal_MaxHP_Base_Percentage",
+                "Talent_ExtraHealLowHPTarget_ElementalArt_MaxHP_Extra_Percentage",
+                "ADD"
+              ]
+            }
+          ]
+        }
+      },
+      "onAbilityStart": [
+        {
+          "$type": "Predicated",
+          "target": "Caster",
+          "targetPredicates": [
+            {
+              "$type": "ByUnlockTalentParam",
+              "talentParam": "Avatar_Kokomi_Talent_ExtraHealLowHPTarget"
+            }
+          ],
+          "successActions": [
+            {
+              "$type": "ApplyModifier",
+              "otherTargets": {
+                "$type": "SelectTargetsByShape",
+                "entityTypePriority": [
+                  "Avatar"
+                ],
+                "shapeName": "CircleR6",
+                "campTargetType": "SelfCamp",
+                "sizeRatio": 1
+              },
+              "predicates": [
+                {
+                  "$type": "ByTargetHPRatio",
+                  "logic": "LesserOrEqual",
+                  "HPRatio": "Talent_ExtraHealLowHPTarget_Threshold"
+                },
+                {
+                  "$type": "ByEntityTypes",
+                  "entityTypes": [
+                    "Avatar"
+                  ]
+                }
+              ],
+              "modifierName": "Avatar_Kokomi_ElementalArt_Heal_Talent_ExtraHealLowHPTarget"
+            },
+            {
+              "$type": "ApplyModifier",
+              "otherTargets": {
+                "$type": "SelectTargetsByShape",
+                "entityTypePriority": [
+                  "Avatar"
+                ],
+                "shapeName": "CircleR6",
+                "campTargetType": "SelfCamp",
+                "sizeRatio": 1
+              },
+              "predicates": [
+                {
+                  "$type": "ByTargetHPRatio",
+                  "HPRatio": "Talent_ExtraHealLowHPTarget_Threshold"
+                },
+                {
+                  "$type": "ByEntityTypes",
+                  "entityTypes": [
+                    "Avatar"
+                  ]
+                }
+              ],
+              "modifierName": "Avatar_Kokomi_ElementalArt_Heal"
+            }
+          ],
+          "failActions": [
+            {
+              "$type": "ApplyModifier",
+              "otherTargets": {
+                "$type": "SelectTargetsByShape",
+                "entityTypePriority": [
+                  "Avatar"
+                ],
+                "shapeName": "CircleR6",
+                "campTargetType": "SelfCamp",
+                "sizeRatio": 1
+              },
+              "predicates": [
+                {
+                  "$type": "ByEntityTypes",
+                  "entityTypes": [
+                    "Avatar"
+                  ]
+                }
+              ],
+              "modifierName": "Avatar_Kokomi_ElementalArt_Heal"
+            }
+          ]
+        },
+        {
+          "$type": "FireEffect",
+          "effectPattern": "Eff_Avatar_Girl_Catalyst_Kokomi_ElementalArt_Gadget_HealWave"
+        },
+        {
+          "$type": "FireEffect",
+          "predicates": [
+            {
+              "$type": "ByTargetGlobalValue",
+              "key": "_ABILITY_Kokomi_ElementalArt_Burst_Flag",
+              "value": 1,
+              "forceByCaster": true
+            }
+          ],
+          "effectPattern": "Eff_Avatar_Girl_Catalyst_Kokomi_ElementalArt_Gadget_ShockWave"
+        },
+        {
+          "$type": "FireEffect",
+          "predicates": [
+            {
+              "$type": "ByTargetGlobalValue",
+              "key": "_ABILITY_Kokomi_ElementalArt_Burst_Flag",
+              "value": 0,
+              "forceByCaster": true
+            }
+          ],
+          "effectPattern": "Eff_Avatar_Girl_Catalyst_Kokomi_ElementalArt_Gadget_ShockWave_2"
+        },
+        {
+          "$type": "TriggerAttackEvent",
+          "predicates": [
+            {
+              "$type": "ByTargetGlobalValue",
+              "key": "_ABILITY_Kokomi_ElementalArt_Burst_Flag",
+              "value": 0,
+              "forceByCaster": true
+            }
+          ],
+          "attackEvent": {
+            "attackPattern": {
+              "$type": "ConfigAttackSphere",
+              "triggerType": "TriggerNoRepeat",
+              "born": {
+                "$type": "ConfigBornByAttachPoint",
+                "attachPointName": "RootNode"
+              },
+              "radius": 6
+            },
+            "attackInfo": {
+              "attackTag": "Elemental_Art",
+              "attenuationTag": "",
+              "attenuationGroup": "default",
+              "attackProperty": {
+                "damagePercentage": "ElementalArt_Damage_Percentage",
+                "damagePercentageRatio": 0,
+                "elementType": "Water",
+                "elementDurability": 25,
+                "strikeType": "Default",
+                "enBreak": 50
+              },
+              "hitPattern": {
+                "onHitEffectName": "Eff_Avatar_Girl_Catalyst_Kokomi_ElementalArt_Gadget_Hit",
+                "hitImpulseType": "LV1"
+              },
+              "canBeModifiedBy": "OriginOwner"
+            }
+          },
+          "targetType": "Enemy"
+        },
+        {
+          "$type": "TriggerAttackEvent",
+          "predicates": [
+            {
+              "$type": "ByTargetGlobalValue",
+              "key": "_ABILITY_Kokomi_ElementalArt_Burst_Flag",
+              "value": 1,
+              "forceByCaster": true
+            }
+          ],
+          "attackEvent": {
+            "attackPattern": {
+              "$type": "ConfigAttackSphere",
+              "triggerType": "TriggerNoRepeat",
+              "born": {
+                "$type": "ConfigBornByAttachPoint",
+                "attachPointName": "RootNode"
+              },
+              "radius": 6
+            },
+            "attackInfo": {
+              "attackTag": "Elemental_Art",
+              "attenuationTag": "",
+              "attenuationGroup": "default",
+              "attackProperty": {
+                "damagePercentage": "ElementalArt_Damage_Percentage",
+                "damagePercentageRatio": 0,
+                "elementType": "Water",
+                "elementDurability": 25,
+                "strikeType": "Default",
+                "enBreak": 100,
+                "damageExtra": [
+                  "FIGHT_PROP_MAX_HP",
+                  "ElementalArt_Damage_MaxHP_Percentage",
+                  "MUL"
+                ]
+              },
+              "hitPattern": {
+                "onHitEffectName": "Eff_Avatar_Girl_Catalyst_Kokomi_ElementalArt_Gadget_Hit",
+                "hitImpulseType": "LV1",
+                "hitHaltTimeScale": 0.05
+              },
+              "canBeModifiedBy": "OriginOwner"
+            }
+          },
+          "targetType": "Enemy"
+        }
+      ]
+    }
+  },
+  {
+    "Default": {
+      "$type": "ConfigAbility",
+      "abilityName": "Avatar_Kokomi_ElementalBurst_Hagoromo",
+      "abilityMixins": [
+        {
+          "$type": "AttachToStateIDMixin",
+          "stateIDs": [
+            "Kokomi_ElementalBurst"
+          ],
+          "modifierName": "Avatar_Kokomi_ElementalBurst_Reset"
+        },
+        {
+          "$type": "AttachToAnimatorStateIDMixin",
+          "stateIDs": [
+            "WalkToRun",
+            "Walk",
+            "RunToWalk",
+            "Run",
+            "RunningTurn",
+            "SprintToRun",
+            "FallToGroundRun",
+            "FallToGroundRunHard",
+            "FallToGroundSprint",
+            "Sprint",
+            "SprintBS"
+          ],
+          "modifierName": "Avatar_Kokomi_Hagoromo_Move"
+        },
+        {
+          "$type": "AttachToStateIDMixin",
+          "stateIDs": [
+            "Jump",
+            "JumpWeapon"
+          ],
+          "modifierName": "Avatar_Kokomi_Hagoromo_Move"
+        },
+        {
+          "$type": "AttachToStateIDMixin",
+          "stateIDs": [
+            "Attack01"
+          ],
+          "modifierName": "Avatar_Kokomi_Hagoromo_Attack01"
+        },
+        {
+          "$type": "AttachToStateIDMixin",
+          "stateIDs": [
+            "Attack02"
+          ],
+          "modifierName": "Avatar_Kokomi_Hagoromo_Attack02"
+        },
+        {
+          "$type": "AttachToStateIDMixin",
+          "stateIDs": [
+            "Attack03"
+          ],
+          "modifierName": "Avatar_Kokomi_Hagoromo_Attack03"
+        },
+        {
+          "$type": "AttachToStateIDMixin",
+          "stateIDs": [
+            "ExtraAttack_Charge"
+          ],
+          "modifierName": "Avatar_Kokomi_Hagoromo_ExtraAttack"
+        },
+        {
+          "$type": "AttachToStateIDMixin",
+          "stateIDs": [
+            "Kokomi_ElementalArt"
+          ],
+          "modifierName": "Avatar_Kokomi_Hagoromo_ElementalArt"
+        },
+        {
+          "$type": "AttachToStateIDMixin",
+          "stateIDs": [
+            "Fly",
+            "Swim",
+            "Sit",
+            "Fall",
+            "Slip",
+            "Crouch",
+            "HitThrow",
+            "BeHitAir"
+          ],
+          "modifierName": "Avatar_Kokomi_Hagoromo_Hide"
+        },
+        {
+          "$type": "AttachToStateIDMixin",
+          "stateIDs": [
+            "Jump",
+            "Climb",
+            "Fly",
+            "Swim",
+            "Sit",
+            "Fall",
+            "Slip",
+            "Crouch",
+            "HitThrow",
+            "BeHitAir"
+          ],
+          "modifierName": "Avatar_Kokomi_Ripple_Hide"
+        },
+        {
+          "$type": "AttachToAnimatorStateIDMixin",
+          "stateIDs": [
+            "Sprint",
+            "SprintBS",
+            "SprintToRun",
+            "SprintToIdle"
+          ],
+          "modifierName": "Avatar_Kokomi_Hagoromo_ChangeFollowDampTime"
+        }
+      ],
+      "modifiers": {
+        "Avatar_Kokomi_ElementalBurst_Reset": {
+          "modifierName": "",
+          "elementDurability": 100,
+          "onAdded": [
+            {
+              "$type": "RemoveUniqueModifier",
+              "modifierName": "UNIQUE_Avatar_Kokomi_Hagoromo"
+            }
+          ]
+        },
+        "UNIQUE_Avatar_Kokomi_Hagoromo": {
+          "modifierName": "",
+          "isUnique": true,
+          "elementDurability": 100,
+          "onAdded": [
+            {
+              "$type": "AttachEffect",
+              "effectPattern": "Eff_Avatar_Girl_Catalyst_Kokomi_ElementalBurst_Aura"
+            }
+          ]
+        },
+        "Avatar_Kokomi_Hagoromo_Move": {
+          "modifierName": "",
+          "elementDurability": 100,
+          "onAdded": [
+            {
+              "$type": "SendEffectTrigger",
+              "parameter": "Move",
+              "attachPoint": "",
+              "effectPattern": "Eff_Avatar_Girl_Catalyst_Kokomi_ElementalBurst_Aura"
+            }
+          ],
+          "onRemoved": [
+            {
+              "$type": "SendEffectTrigger",
+              "parameter": "Stop",
+              "attachPoint": "",
+              "effectPattern": "Eff_Avatar_Girl_Catalyst_Kokomi_ElementalBurst_Aura"
+            }
+          ]
+        },
+        "Avatar_Kokomi_Hagoromo_Attack01": {
+          "modifierName": "",
+          "elementDurability": 100,
+          "onAdded": [
+            {
+              "$type": "SendEffectTrigger",
+              "parameter": "Attack01",
+              "attachPoint": "",
+              "effectPattern": "Eff_Avatar_Girl_Catalyst_Kokomi_ElementalBurst_Aura"
+            }
+          ]
+        },
+        "Avatar_Kokomi_Hagoromo_Attack02": {
+          "modifierName": "",
+          "elementDurability": 100,
+          "onAdded": [
+            {
+              "$type": "SendEffectTrigger",
+              "parameter": "Attack02",
+              "attachPoint": "",
+              "effectPattern": "Eff_Avatar_Girl_Catalyst_Kokomi_ElementalBurst_Aura"
+            }
+          ]
+        },
+        "Avatar_Kokomi_Hagoromo_Attack03": {
+          "modifierName": "",
+          "elementDurability": 100,
+          "onAdded": [
+            {
+              "$type": "SendEffectTrigger",
+              "parameter": "Attack03",
+              "attachPoint": "",
+              "effectPattern": "Eff_Avatar_Girl_Catalyst_Kokomi_ElementalBurst_Aura"
+            }
+          ]
+        },
+        "Avatar_Kokomi_Hagoromo_ExtraAttack": {
+          "modifierName": "",
+          "elementDurability": 100,
+          "onAdded": [
+            {
+              "$type": "SendEffectTrigger",
+              "parameter": "ExtraAttack",
+              "attachPoint": "",
+              "effectPattern": "Eff_Avatar_Girl_Catalyst_Kokomi_ElementalBurst_Aura"
+            }
+          ]
+        },
+        "Avatar_Kokomi_Hagoromo_ElementalArt": {
+          "modifierName": "",
+          "elementDurability": 100,
+          "onAdded": [
+            {
+              "$type": "SendEffectTrigger",
+              "parameter": "ElementalArt",
+              "attachPoint": "",
+              "effectPattern": "Eff_Avatar_Girl_Catalyst_Kokomi_ElementalBurst_Aura"
+            }
+          ]
+        },
+        "Avatar_Kokomi_Hagoromo_Hide": {
+          "modifierName": "",
+          "elementDurability": 100,
+          "onAdded": [
+            {
+              "$type": "SendEffectTrigger",
+              "parameter": "FadeOut",
+              "attachPoint": "",
+              "effectPattern": "Eff_Avatar_Girl_Catalyst_Kokomi_ElementalBurst_Aura"
+            }
+          ],
+          "onRemoved": [
+            {
+              "$type": "SendEffectTrigger",
+              "parameter": "FadeIn",
+              "attachPoint": "",
+              "effectPattern": "Eff_Avatar_Girl_Catalyst_Kokomi_ElementalBurst_Aura"
+            }
+          ]
+        },
+        "Avatar_Kokomi_Ripple_Hide": {
+          "modifierName": "",
+          "elementDurability": 100,
+          "onAdded": [
+            {
+              "$type": "SendEffectTrigger",
+              "parameter": "Ripple_Off",
+              "attachPoint": "",
+              "effectPattern": "Eff_Avatar_Girl_Catalyst_Kokomi_ElementalBurst_Ripple"
+            }
+          ],
+          "onRemoved": [
+            {
+              "$type": "SendEffectTrigger",
+              "parameter": "Ripple_On",
+              "attachPoint": "",
+              "effectPattern": "Eff_Avatar_Girl_Catalyst_Kokomi_ElementalBurst_Ripple"
+            }
+          ]
+        },
+        "Avatar_Kokomi_Hagoromo_ChangeFollowDampTime": {
+          "modifierName": "",
+          "elementDurability": 100,
+          "onAdded": [
+            {
+              "$type": "ChangeFollowDampTime",
+              "effectPattern": "Eff_Avatar_Girl_Catalyst_Kokomi_ElementalBurst_Aura",
+              "DPEMOHCJAPK": 0.01
+            }
+          ],
+          "onRemoved": [
+            {
+              "$type": "ChangeFollowDampTime",
+              "effectPattern": "Eff_Avatar_Girl_Catalyst_Kokomi_ElementalBurst_Aura",
+              "DPEMOHCJAPK": 0.05
+            }
+          ]
+        }
+      },
+      "onAbilityStart": [
+        {
+          "$type": "ApplyModifier",
+          "doOffStage": true,
+          "modifierName": "UNIQUE_Avatar_Kokomi_Hagoromo"
+        }
+      ]
+    }
+  },
+  {
+    "Default": {
+      "$type": "ConfigAbility",
+      "abilityName": "Avatar_Kokomi_ElementalBurst_FootRipple_Left",
+      "onAbilityStart": [
+        {
+          "$type": "FireEffect",
+          "predicates": [
+            {
+              "$type": "BySceneSurfaceType",
+              "filters": [
+                "Water"
+              ]
+            },
+            {
+              "$type": "ByTargetGlobalValue",
+              "key": "_ABILITY_Kokomi_ElementalBurst_Flag",
+              "value": 1,
+              "forceByCaster": true
+            }
+          ],
+          "effectPattern": "Eff_Avatar_Girl_Catalyst_Kokomi_ElementalBurst_FootRipple",
+          "born": {
+            "$type": "ConfigBornByAttachPoint",
+            "attachPointName": "LFoot"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "Default": {
+      "$type": "ConfigAbility",
+      "abilityName": "Avatar_Kokomi_ElementalBurst_FootRipple_Right",
+      "onAbilityStart": [
+        {
+          "$type": "FireEffect",
+          "predicates": [
+            {
+              "$type": "BySceneSurfaceType",
+              "filters": [
+                "Water"
+              ]
+            },
+            {
+              "$type": "ByTargetGlobalValue",
+              "key": "_ABILITY_Kokomi_ElementalBurst_Flag",
+              "value": 1,
+              "forceByCaster": true
+            }
+          ],
+          "effectPattern": "Eff_Avatar_Girl_Catalyst_Kokomi_ElementalBurst_FootRipple",
+          "born": {
+            "$type": "ConfigBornByAttachPoint",
+            "attachPointName": "RFoot"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "Default": {
+      "$type": "ConfigAbility",
+      "abilityName": "Avatar_Kokomi_ElementalBurst_Initiate",
+      "abilityMixins": [
+        {
+          "$type": "AttachModifierToSelfGlobalValueMixin",
+          "globalValueKey": "_ABILITY_Kokomi_ElementalBurst_MoveOnWater_Flag",
+          "defaultGlobalValueOnCreate": 0,
+          "valueSteps": [
+            -0.5,
+            0.5,
+            1.5
+          ],
+          "modifierNameSteps": [
+            "MoveOnWater_Off",
+            "MoveOnWater_On"
+          ]
+        },
+        {
+          "$type": "AttachToStateIDMixin",
+          "stateIDs": [
+            "Kokomi_ElementalBurst"
+          ],
+          "modifierName": "Avatar_Kokomi_ElementalBurst_States"
+        },
+        {
+          "$type": "AttachToStateIDMixin",
+          "stateIDs": [
+            "Kokomi_ElementalBurst"
+          ],
+          "modifierName": "Avatar_Kokomi_ElementalBurst_Camera"
+        },
+        {
+          "$type": "AttachToStateIDMixin",
+          "stateIDs": [
+            "Kokomi_ElementalBurst"
+          ],
+          "modifierName": "Avatar_Kokomi_ElementalBurst_Pre_Weather"
+        },
+        {
+          "$type": "AttachToStateIDMixin",
+          "stateIDs": [
+            "Kokomi_ElementalBurst"
+          ],
+          "modifierName": "Avatar_Kokomi_ElementalBurst_Emotion"
+        },
+        {
+          "$type": "AttachToStateIDMixin",
+          "stateIDs": [
+            "Kokomi_ElementalBurst",
+            "Kokomi_ElementalBurst_AS"
+          ],
+          "modifierName": "Avatar_Kokomi_ElementalBurst_HideWeapon"
+        }
+      ],
+      "abilitySpecials": {
+        "ElementalBurst_Damage_MaxHP_Percentage": 0,
+        "ElementalBurst_Duration": 0,
+        "ElementalBurst_Damage_HealAdd_Percentage": 0,
+        "Talent_AtkSpeedBuff_Ratio": 0,
+        "Talent_AtkSpeedBuff_ReviveEnergy": 0
+      },
+      "modifiers": {
+        "MoveOnWater_Off": {
+          "modifierName": "",
+          "elementDurability": 100,
+          "onAdded": [
+            {
+              "$type": "EnableAvatarMoveOnWater",
+              "doOffStage": true,
+              "canBeHandledOnRecover": true
+            }
+          ]
+        },
+        "MoveOnWater_On": {
+          "modifierName": "",
+          "elementDurability": 100,
+          "onAdded": [
+            {
+              "$type": "EnableAvatarMoveOnWater",
+              "doOffStage": true,
+              "canBeHandledOnRecover": true,
+              "enable": true
+            }
+          ]
+        },
+        "Avatar_Kokomi_ElementalBurst_HideWeapon": {
+          "modifierName": "",
+          "elementDurability": 100,
+          "onAdded": [
+            {
+              "$type": "RemoveUniqueModifier",
+              "modifierName": "UNIQUE_Avatar_Kokomi_ElementalBurst_Weather"
+            },
+            {
+              "$type": "TriggerHideWeapon",
+              "partNames": [
+                "equip01",
+                "equip02",
+                "sheathPoint"
+              ]
+            }
+          ],
+          "onRemoved": [
+            {
+              "$type": "TriggerHideWeapon",
+              "doOffStage": true,
+              "visible": true,
+              "partNames": [
+                "equip01",
+                "equip02",
+                "sheathPoint"
+              ]
+            }
+          ]
+        },
+        "UNIQUE_Avatar_Kokomi_ElementalBurst_Weather": {
+          "modifierName": "",
+          "isUnique": true,
+          "elementDurability": 100,
+          "modifierMixins": [
+            {
+              "$type": "TriggerWeatherMixin",
+              "type": "Skill",
+              "weatherPattern": "Weather_Kokomi_ElementalBurst_Constant",
+              "transDuration": 0.3,
+              "duration": 11
+            }
+          ],
+          "onAdded": [
+            {
+              "$type": "RemoveModifier",
+              "modifierName": "Avatar_Kokomi_ElementalBurst_Pre_Weather"
+            }
+          ]
+        },
+        "Avatar_Kokomi_ElementalBurst_Pre_Weather": {
+          "modifierName": "",
+          "elementDurability": 100,
+          "modifierMixins": [
+            {
+              "$type": "TriggerWeatherMixin",
+              "type": "Skill",
+              "weatherPattern": "Weather_Kokomi_ElementalBurst",
+              "duration": 1.2
+            }
+          ],
+          "onAdded": [
+            {
+              "$type": "RemoveUniqueModifier",
+              "modifierName": "UNIQUE_Kokomi_ElementalBurst_Handler"
+            }
+          ]
+        },
+        "Avatar_Kokomi_ElementalBurst_Emotion": {
+          "modifierName": "",
+          "elementDurability": 100,
+          "onAdded": [
+            {
+              "$type": "ControlEmotion",
+              "toggleEmoSync": false,
+              "toggleBlink": false,
+              "toggleEyeKey": false
+            }
+          ],
+          "onRemoved": [
+            {
+              "$type": "ControlEmotion",
+              "doOffStage": true
+            }
+          ],
+          "onAvatarOut": [
+            {
+              "$type": "ControlEmotion",
+              "doOffStage": true
+            }
+          ]
+        },
+        "Avatar_Kokomi_ElementalBurst_Camera": {
+          "modifierName": "",
+          "elementDurability": 100,
+          "onAdded": [
+            {
+              "$type": "Predicated",
+              "targetPredicates": [
+                {
+                  "$type": "ByAttackNotHitScene",
+                  "attackPattern": {
+                    "$type": "ConfigAttackCircle",
+                    "triggerType": "TriggerNoRepeat",
+                    "born": {
+                      "$type": "ConfigBornBySelf",
+                      "offset": {
+                        "y": 0.5
+                      }
+                    },
+                    "height": 2,
+                    "radius": 1
+                  },
+                  "checkWaterLayer": true
+                },
+                {
+                  "$type": "ByAvatarInWaterDepth",
+                  "compareType": "LessAndEqual",
+                  "depth": 0.5
+                }
+              ],
+              "successActions": [
+                {
+                  "$type": "AvatarEnterCameraShot",
+                  "cameraMoveCfgPath": "Camera_Kokomi_ElementalBurst"
+                },
+                {
+                  "$type": "FireEffect",
+                  "effectPattern": "Eff_Avatar_Girl_Catalyst_Kokomi_ElementalBurst_Stage"
+                }
+              ],
+              "failActions": [
+                {
+                  "$type": "FireEffect",
+                  "effectPattern": "Eff_Avatar_Girl_Catalyst_Kokomi_ElementalBurst_Stage_Thirdparty"
+                }
+              ]
+            },
+            {
+              "$type": "EnableHeadControl",
+              "blend": false
+            },
+            {
+              "$type": "AvatarCameraParam",
+              "cameraParam": {
+                "forceRadius": 5,
+                "forceRadiusDuration": 0.1,
+                "shouldKeepForceRadius": true
+              }
+            }
+          ],
+          "onRemoved": [
+            {
+              "$type": "AvatarExitCameraShot",
+              "doOffStage": true
+            },
+            {
+              "$type": "EnableHeadControl",
+              "enable": true
+            }
+          ],
+          "onAvatarOut": [
+            {
+              "$type": "AvatarCameraParam",
+              "cameraParam": {
+                "forceRadius": 5,
+                "forceRadiusDuration": 0.1,
+                "shouldKeepForceRadius": true
+              }
+            },
+            {
+              "$type": "AvatarExitCameraShot",
+              "doOffStage": true
+            },
+            {
+              "$type": "EnableHeadControl",
+              "doOffStage": true,
+              "enable": true
+            }
+          ]
+        },
+        "Avatar_Kokomi_ElementalBurst_States": {
+          "modifierName": "",
+          "elementDurability": 100,
+          "state": "Invincible",
+          "onAdded": [
+            {
+              "$type": "AttachAbilityStateResistance",
+              "resistanceListID": 11002
+            }
+          ]
+        },
+        "SendEffectTrigger": {
+          "modifierName": "",
+          "duration": 0.2,
+          "elementDurability": 100,
+          "onAdded": [
+            {
+              "$type": "SetGlobalValue",
+              "value": 1,
+              "key": "_ABILITY_Kokomi_ElementalArt_Burst_Flag",
+              "maxValue": 0,
+              "minValue": 0
+            }
+          ]
+        },
+        "SendEffectTrigger_off": {
+          "modifierName": "",
+          "duration": 0.2,
+          "elementDurability": 100,
+          "onAdded": [
+            {
+              "$type": "SetGlobalValue",
+              "value": 0,
+              "key": "_ABILITY_Kokomi_ElementalArt_Burst_Flag",
+              "maxValue": 0,
+              "minValue": 0
+            }
+          ]
+        },
+        "UNIQUE_Kokomi_ElementalBurst_Handler": {
+          "modifierName": "",
+          "isUnique": true,
+          "duration": "ElementalBurst_Duration",
+          "elementDurability": 100,
+          "modifierMixins": [
+            {
+              "$type": "ReplaceEventPatternMixin",
+              "oldPatterns": [
+                "Ani_Run01",
+                "Ani_WalkSprint01"
+              ],
+              "newPatterns": [
+                "Kokomi_Ripple_Run",
+                "Kokomi_Ripple_WalkSprint"
+              ]
+            }
+          ],
+          "properties": {
+            "Actor_EndureDelta": 0.25
+          },
+          "onAdded": [
+            {
+              "$type": "SetAnimatorBool",
+              "boolID": "CanSpecialPerform"
+            },
+            {
+              "$type": "AttachModifier",
+              "modifierName": "UNIQUE_Avatar_Kokomi_ElementalBurst_Weather"
+            },
+            {
+              "$type": "SetGlobalValue",
+              "value": 1,
+              "key": "_ABILITY_Kokomi_ElementalBurst_Flag",
+              "maxValue": 0,
+              "minValue": 0
+            },
+            {
+              "$type": "AttachEffect",
+              "effectPattern": "Eff_Avatar_Girl_Catalyst_Kokomi_ElementalBurst_Ripple"
+            },
+            {
+              "$type": "TriggerAbility",
+              "otherTargets": {
+                "$type": "SelectTargetsByChildren",
+                "configID": 41054002
+              },
+              "predicates": [
+                {
+                  "$type": "ByUnlockTalentParam",
+                  "talentParam": "Avatar_Kokomi_Talent_ElementalBurstRefreshGadget"
+                }
+              ],
+              "abilityName": "Kokomi_ElementalArt_Gadget"
+            },
+            {
+              "$type": "AttachModifier",
+              "predicates": [
+                {
+                  "$type": "ByUnlockTalentParam",
+                  "talentParam": "Avatar_Kokomi_ElementalBurst_DamageBuff_HealAdd"
+                }
+              ],
+              "modifierName": "UNIQUE_Avatar_Kokomi_ElementalBurst_DamageBuff_HealAdd"
+            },
+            {
+              "$type": "AttachModifier",
+              "predicates": [
+                {
+                  "$type": "ByUnlockTalentParam",
+                  "talentParam": "Avatar_Kokomi_ElementalBurst_AtkSpeeddBuff"
+                }
+              ],
+              "modifierName": "UNIQUE_Avatar_Kokomi_ElementalBurst_AtkSpeedBuff"
+            },
+            {
+              "$type": "ClearEndura"
+            }
+          ],
+          "onRemoved": [
+            {
+              "$type": "SetAnimatorBool",
+              "doOffStage": true,
+              "boolID": "CanSpecialPerform",
+              "value": true
+            },
+            {
+              "$type": "SetGlobalValue",
+              "doOffStage": true,
+              "value": 0,
+              "key": "_ABILITY_Kokomi_ElementalBurst_Flag",
+              "maxValue": 0,
+              "minValue": 0
+            },
+            {
+              "$type": "ApplyModifier",
+              "otherTargets": {
+                "$type": "SelectTargetsByChildren",
+                "configID": 41054002
+              },
+              "modifierName": "SendEffectTrigger_off"
+            },
+            {
+              "$type": "ApplyModifier",
+              "doOffStage": true,
+              "modifierName": "Avatar_Kokomi_Hagoromo_Remover"
+            },
+            {
+              "$type": "ApplyModifier",
+              "doOffStage": true,
+              "modifierName": "Avatar_Kokomi_MoveOnWater_Remover"
+            }
+          ],
+          "onHittingOther": [
+            {
+              "$type": "Predicated",
+              "target": "Target",
+              "targetPredicates": [
+                {
+                  "$type": "ByAttackTags",
+                  "attackTags": [
+                    "ExtraAttack"
+                  ]
+                },
+                {
+                  "$type": "ByEntityTypes",
+                  "entityTypes": [
+                    "Monster"
+                  ]
+                },
+                {
+                  "$type": "ByTargetGlobalValue",
+                  "key": "_ANIMAL_ENTITY_TYPE",
+                  "value": 0,
+                  "compareType": "NoneOrEqual"
+                }
+              ],
+              "successActions": [
+                {
+                  "$type": "TriggerAbility",
+                  "predicates": [
+                    {
+                      "$type": "ByTargetGlobalValue",
+                      "target": "Self",
+                      "key": "_ABILITY_Kokomi_ElementalBurst_ExtraAttackHit_Flag",
+                      "value": 0,
+                      "compareType": "NoneOrEqual"
+                    }
+                  ],
+                  "abilityName": "Avatar_Kokomi_ElementalBurst_Heal"
+                },
+                {
+                  "$type": "SetGlobalValue",
+                  "value": 1,
+                  "key": "_ABILITY_Kokomi_ElementalBurst_ExtraAttackHit_Flag",
+                  "maxValue": 0,
+                  "minValue": 0
+                }
+              ]
+            }
+          ],
+          "onKill": [
+            {
+              "$type": "SetGlobalValue",
+              "doOffStage": true,
+              "value": 0,
+              "key": "_ABILITY_Kokomi_ElementalBurst_MoveOnWater_Flag",
+              "maxValue": 0,
+              "minValue": 0
+            },
+            {
+              "$type": "RemoveUniqueModifier",
+              "doOffStage": true,
+              "modifierName": "UNIQUE_Avatar_Kokomi_Hagoromo"
+            },
+            {
+              "$type": "RemoveUniqueModifier",
+              "doOffStage": true,
+              "modifierName": "UNIQUE_Kokomi_ElementalBurst_Handler"
+            }
+          ],
+          "onAvatarOut": [
+            {
+              "$type": "SetGlobalValue",
+              "doOffStage": true,
+              "value": 0,
+              "key": "_ABILITY_Kokomi_ElementalBurst_MoveOnWater_Flag",
+              "maxValue": 0,
+              "minValue": 0
+            },
+            {
+              "$type": "EnableAvatarMoveOnWater",
+              "doOffStage": true
+            },
+            {
+              "$type": "RemoveUniqueModifier",
+              "doOffStage": true,
+              "modifierName": "UNIQUE_Avatar_Kokomi_Hagoromo"
+            },
+            {
+              "$type": "RemoveUniqueModifier",
+              "doOffStage": true,
+              "modifierName": "UNIQUE_Kokomi_ElementalBurst_Handler"
+            }
+          ]
+        },
+        "UNIQUE_Avatar_Kokomi_ElementalBurst_AtkSpeedBuff": {
+          "modifierName": "",
+          "isUnique": true,
+          "elementDurability": 100,
+          "properties": {
+            "Animator_AttackSpeedRatio": "Talent_AtkSpeedBuff_Ratio"
+          },
+          "isLimitedProperties": true
+        },
+        "Avatar_Kokomi_MoveOnWater_Remover": {
+          "modifierName": "",
+          "duration": 0.8,
+          "elementDurability": 100,
+          "onRemoved": [
+            {
+              "$type": "SetGlobalValue",
+              "doOffStage": true,
+              "predicates": [
+                {
+                  "$type": "ByNot",
+                  "predicates": [
+                    {
+                      "$type": "ByTargetGlobalValue",
+                      "key": "_ABILITY_Kokomi_ElementalBurst_Flag",
+                      "value": 1,
+                      "forceByCaster": true
+                    }
+                  ]
+                }
+              ],
+              "value": 0,
+              "key": "_ABILITY_Kokomi_ElementalBurst_MoveOnWater_Flag",
+              "maxValue": 0,
+              "minValue": 0
+            }
+          ]
+        },
+        "Avatar_Kokomi_Hagoromo_Remover": {
+          "modifierName": "",
+          "duration": 1.2,
+          "elementDurability": 100,
+          "onAdded": [
+            {
+              "$type": "SendEffectTrigger",
+              "doOffStage": true,
+              "parameter": "Dissolve",
+              "attachPoint": "",
+              "effectPattern": "Eff_Avatar_Girl_Catalyst_Kokomi_ElementalBurst_Aura"
+            }
+          ],
+          "onRemoved": [
+            {
+              "$type": "RemoveUniqueModifier",
+              "doOffStage": true,
+              "predicates": [
+                {
+                  "$type": "ByNot",
+                  "predicates": [
+                    {
+                      "$type": "ByTargetGlobalValue",
+                      "key": "_ABILITY_Kokomi_ElementalBurst_Flag",
+                      "value": 1,
+                      "forceByCaster": true
+                    }
+                  ]
+                }
+              ],
+              "modifierName": "UNIQUE_Avatar_Kokomi_Hagoromo"
+            }
+          ]
+        },
+        "UNIQUE_Avatar_Kokomi_ElementalBurst_DamageBuff_HealAdd": {
+          "modifierName": "",
+          "isUnique": true,
+          "elementDurability": 100,
+          "modifierMixins": [
+            {
+              "$type": "ModifyDamageMixin",
+              "attackTags": [
+                "NormalAttack_01",
+                "NormalAttack_02",
+                "NormalAttack_03",
+                "ExtraAttack"
+              ],
+              "damagePercentageRatio": 0,
+              "damageExtra": [
+                "FIGHT_PROP_MAX_HP",
+                "ElementalBurst_Damage_HealAdd_Percentage",
+                "MUL",
+                "FIGHT_PROP_HEAL_ADD",
+                "MUL"
+              ]
+            }
+          ],
+          "isLimitedProperties": true
+        }
+      },
+      "onAdded": [
+        {
+          "$type": "SetGlobalValue",
+          "doOffStage": true,
+          "value": 0,
+          "key": "_ABILITY_Kokomi_ElementalBurst_Flag",
+          "maxValue": 0,
+          "minValue": 0
+        },
+        {
+          "$type": "SetGlobalValue",
+          "doOffStage": true,
+          "value": 0,
+          "key": "_ABILITY_Kokomi_ElementalBurst_MoveOnWater_Flag",
+          "maxValue": 0,
+          "minValue": 0
+        }
+      ],
+      "onAbilityStart": [
+        {
+          "$type": "AvatarSkillStart",
+          "skillID": 10545,
+          "cdRatio": 1,
+          "costStaminaRatio": 1
+        },
+        {
+          "$type": "SetGlobalValue",
+          "doOffStage": true,
+          "value": 1,
+          "key": "_ABILITY_Kokomi_ElementalBurst_MoveOnWater_Flag",
+          "maxValue": 0,
+          "minValue": 0
+        },
+        {
+          "$type": "ActCameraRadialBlur",
+          "cameraRadialBlur": {
+            "power": 1,
+            "blurTime": 0.4,
+            "fadeTime": 0.2
+          }
+        },
+        {
+          "$type": "FireEffect",
+          "effectPattern": "Eff_Avatar_Girl_Catalyst_Kokomi_ElementalBurst_Blast"
+        },
+        {
+          "$type": "TriggerAttackEvent",
+          "attackEvent": {
+            "attackPattern": {
+              "$type": "ConfigAttackSphere",
+              "triggerType": "TriggerNoRepeat",
+              "radius": 5
+            },
+            "attackInfo": {
+              "attackTag": "Elemental_Burst",
+              "attenuationTag": "",
+              "attenuationGroup": "default",
+              "attackProperty": {
+                "damagePercentageRatio": 0,
+                "elementType": "Water",
+                "elementRank": 3,
+                "elementDurability": 50,
+                "strikeType": "Default",
+                "enBreak": 250,
+                "damageExtra": [
+                  "FIGHT_PROP_MAX_HP",
+                  "ElementalBurst_Damage_MaxHP_Percentage",
+                  "MUL"
+                ]
+              },
+              "hitPattern": {
+                "onHitEffectName": "default",
+                "hitImpulseType": "LV3",
+                "retreatType": "ByHitDirection",
+                "hitHaltTimeScale": 0.05
+              },
+              "forceCameraShake": true,
+              "cameraShake": {
+                "shakeRange": 0.6,
+                "shakeTime": 0.36,
+                "shakeDistance": 30,
+                "extension": {
+                  "baseCycle": 0.08,
+                  "cycleDamping": -0.04
+                }
+              }
+            }
+          },
+          "targetType": "Enemy"
+        },
+        {
+          "$type": "ApplyModifier",
+          "modifierName": "UNIQUE_Kokomi_ElementalBurst_Handler"
+        },
+        {
+          "$type": "ApplyModifier",
+          "otherTargets": {
+            "$type": "SelectTargetsByChildren",
+            "configID": 41054002
+          },
+          "modifierName": "SendEffectTrigger"
+        }
+      ]
+    }
+  },
+  {
+    "Default": {
+      "$type": "ConfigAbility",
+      "abilityName": "Avatar_Kokomi_ElementalBurst_ReviveEnergy",
+      "abilitySpecials": {
+        "Talent_AtkSpeedBuff_ReviveEnergy": 0
+      },
+      "modifiers": {
+        "Avatar_Kokomi_ElementalBurst_ReviveEnergy": {
+          "stacking": "Unique",
+          "modifierName": "",
+          "duration": 0.2,
+          "elementDurability": 100,
+          "onAdded": [
+            {
+              "$type": "ReviveElemEnergy",
+              "value": "Talent_AtkSpeedBuff_ReviveEnergy"
+            }
+          ]
+        }
+      },
+      "onAbilityStart": [
+        {
+          "$type": "ApplyModifier",
+          "modifierName": "Avatar_Kokomi_ElementalBurst_ReviveEnergy"
+        }
+      ]
+    }
+  },
+  {
+    "Default": {
+      "$type": "ConfigAbility",
+      "abilityName": "Avatar_Kokomi_ElementalBurst_Heal",
+      "abilitySpecials": {
+        "ElementalBurst_Heal_MaxHP_Base_Percentage": 0,
+        "ElementalBurst_Heal_Base_Amount": 0,
+        "Talent_ExtraHealLowHPTarget_Threshold": 0,
+        "Talent_ExtraHealLowHPTarget_ElementalBurst_MaxHP_Extra_Percentage": 0,
+        "Talent_OverHealBuff_Threshold": 0,
+        "Talent_OverHealBuff_Duration": 0,
+        "Talent_OverHealBuff_WaterAddHurt": 0
+      },
+      "modifiers": {
+        "Avatar_Kokomi_ElementalBurst_Heal_Predicate_LowHP": {
+          "stacking": "Multiple",
+          "modifierName": "",
+          "duration": 0.2,
+          "elementDurability": 100,
+          "onAdded": [
+            {
+              "$type": "Predicated",
+              "target": "Caster",
+              "doOffStage": true,
+              "targetPredicates": [
+                {
+                  "$type": "ByUnlockTalentParam",
+                  "talentParam": "Avatar_Kokomi_Talent_ExtraHealLowHPTarget"
+                }
+              ],
+              "successActions": [
+                {
+                  "$type": "ApplyModifier",
+                  "target": "AllPlayerAvatars",
+                  "doOffStage": true,
+                  "predicates": [
+                    {
+                      "$type": "ByTargetPositionToSelfPosition",
+                      "logic": "LesserOrEqual",
+                      "value": 40
+                    },
+                    {
+                      "$type": "ByTargetHPRatio",
+                      "logic": "LesserOrEqual",
+                      "HPRatio": "Talent_ExtraHealLowHPTarget_Threshold"
+                    }
+                  ],
+                  "modifierName": "Avatar_Kokomi_ElementalBurst_Heal_LowHPTarget"
+                },
+                {
+                  "$type": "ApplyModifier",
+                  "target": "AllPlayerAvatars",
+                  "doOffStage": true,
+                  "predicates": [
+                    {
+                      "$type": "ByTargetPositionToSelfPosition",
+                      "logic": "LesserOrEqual",
+                      "value": 40
+                    },
+                    {
+                      "$type": "ByTargetHPRatio",
+                      "HPRatio": "Talent_ExtraHealLowHPTarget_Threshold"
+                    }
+                  ],
+                  "modifierName": "Avatar_Kokomi_ElementalBurst_Heal_Predicate_Overheal"
+                }
+              ],
+              "failActions": [
+                {
+                  "$type": "ApplyModifier",
+                  "target": "AllPlayerAvatars",
+                  "doOffStage": true,
+                  "predicates": [
+                    {
+                      "$type": "ByTargetPositionToSelfPosition",
+                      "logic": "LesserOrEqual",
+                      "value": 40
+                    }
+                  ],
+                  "modifierName": "Avatar_Kokomi_ElementalBurst_Heal_Predicate_Overheal"
+                }
+              ]
+            }
+          ]
+        },
+        "Avatar_Kokomi_ElementalBurst_Heal_Predicate_Overheal": {
+          "stacking": "Multiple",
+          "modifierName": "",
+          "duration": 0.2,
+          "elementDurability": 100,
+          "onAdded": [
+            {
+              "$type": "Predicated",
+              "target": "Caster",
+              "doOffStage": true,
+              "targetPredicates": [
+                {
+                  "$type": "ByUnlockTalentParam",
+                  "talentParam": "Avatar_Kokomi_ExtraHeal_OverHeal"
+                }
+              ],
+              "successActions": [
+                {
+                  "$type": "ApplyModifier",
+                  "doOffStage": true,
+                  "predicates": [
+                    {
+                      "$type": "ByTargetHPRatio",
+                      "logic": "GreaterOrEqual",
+                      "HPRatio": "Talent_OverHealBuff_Threshold"
+                    }
+                  ],
+                  "modifierName": "Avatar_Kokomi_ElementalBurst_OverHeal"
+                },
+                {
+                  "$type": "ApplyModifier",
+                  "doOffStage": true,
+                  "predicates": [
+                    {
+                      "$type": "ByTargetHPRatio",
+                      "logic": "Lesser",
+                      "HPRatio": "Talent_OverHealBuff_Threshold"
+                    }
+                  ],
+                  "modifierName": "Avatar_Kokomi_ElementalBurst_Heal"
+                }
+              ],
+              "failActions": [
+                {
+                  "$type": "ApplyModifier",
+                  "doOffStage": true,
+                  "modifierName": "Avatar_Kokomi_ElementalBurst_Heal"
+                }
+              ]
+            }
+          ]
+        },
+        "Avatar_Kokomi_ElementalBurst_Heal": {
+          "stacking": "Multiple",
+          "modifierName": "",
+          "duration": 0.2,
+          "elementDurability": 100,
+          "onAdded": [
+            {
+              "$type": "HealHP",
+              "doOffStage": true,
+              "amount": "ElementalBurst_Heal_Base_Amount",
+              "amountByCasterMaxHPRatio": "ElementalBurst_Heal_MaxHP_Base_Percentage"
+            }
+          ]
+        },
+        "Avatar_Kokomi_ElementalBurst_Heal_LowHPTarget": {
+          "stacking": "Multiple",
+          "modifierName": "",
+          "duration": 0.2,
+          "elementDurability": 100,
+          "onAdded": [
+            {
+              "$type": "HealHP",
+              "doOffStage": true,
+              "amount": "ElementalBurst_Heal_Base_Amount",
+              "amountByCasterMaxHPRatio": [
+                "ElementalBurst_Heal_MaxHP_Base_Percentage",
+                "Talent_ExtraHealLowHPTarget_ElementalBurst_MaxHP_Extra_Percentage",
+                "ADD"
+              ]
+            }
+          ]
+        },
+        "Avatar_Kokomi_ElementalBurst_OverHeal": {
+          "stacking": "Multiple",
+          "modifierName": "",
+          "duration": 0.2,
+          "elementDurability": 100,
+          "onAdded": [
+            {
+              "$type": "HealHP",
+              "doOffStage": true,
+              "amount": "ElementalBurst_Heal_Base_Amount",
+              "amountByCasterMaxHPRatio": "ElementalBurst_Heal_MaxHP_Base_Percentage"
+            },
+            {
+              "$type": "ApplyModifier",
+              "target": "Caster",
+              "doOffStage": true,
+              "modifierName": "UNIQUE_Avatar_Kokomi_ElementalBurst_OverHeal_Buff"
+            }
+          ]
+        },
+        "UNIQUE_Avatar_Kokomi_ElementalBurst_OverHeal_Buff": {
+          "modifierName": "",
+          "isUnique": true,
+          "duration": "Talent_OverHealBuff_Duration",
+          "elementDurability": 100,
+          "properties": {
+            "Actor_WaterAddHurtExtraDelta": "Talent_OverHealBuff_WaterAddHurt"
+          },
+          "state": "AttackUp",
+          "isLimitedProperties": true
+        }
+      },
+      "onAbilityStart": [
+        {
+          "$type": "ApplyModifier",
+          "modifierName": "Avatar_Kokomi_ElementalBurst_Heal_Predicate_LowHP"
+        }
+      ]
+    }
+  },
+  {
+    "Default": {
+      "$type": "ConfigAbility",
+      "abilityName": "Avatar_Kokomi_FallingAnthem",
+      "abilityMixins": [
+        {
+          "$type": "AvatarChangeSkillMixin",
+          "jumpSkillID": 5054010,
+          "flySkillID": 5054010
+        },
+        {
+          "$type": "AttachToStateIDMixin",
+          "stateIDs": [
+            "FallingAnthem_BS"
+          ],
+          "modifierName": "FallingAnthem_BS_Material"
+        },
+        {
+          "$type": "AttachToAnimatorStateIDMixin",
+          "stateIDs": [
+            "FallingAnthem_BS_2",
+            "FallingAnthem_Loop",
+            "FallingAnthem_Loop_Low"
+          ],
+          "modifierName": "FallingAnthem_LoopDamage"
+        },
+        {
+          "$type": "AttachToStateIDMixin",
+          "stateIDs": [
+            "FallingAnthem_BS"
+          ],
+          "modifierName": "FallingAnthem_BS_VelocityForce_Initialize"
+        },
+        {
+          "$type": "AttachToStateIDMixin",
+          "stateIDs": [
+            "FallingAnthem_BS",
+            "FallingAnthem_Loop",
+            "FallingAnthem_AS_1",
+            "FallingAnthem_AS_2"
+          ],
+          "modifierName": "FallingAnthem_Height_Detect"
+        },
+        {
+          "$type": "AttachToStateIDMixin",
+          "stateIDs": [
+            "FallingAnthem_BS",
+            "FallingAnthem_Loop",
+            "FallingAnthem_AS_1",
+            "FallingAnthem_AS_2"
+          ],
+          "modifierName": "FallingAnthem_FallingDamageImmune_01"
+        },
+        {
+          "$type": "AttachToStateIDMixin",
+          "stateIDs": [
+            "FallingAnthem_BS",
+            "FallingAnthem_Loop"
+          ],
+          "modifierName": "Inertia"
+        },
+        {
+          "$type": "AttachToStateIDMixin",
+          "stateIDs": [
+            "FallingAnthem_BS",
+            "FallingAnthem_Loop",
+            "FallingAnthem_AS_1",
+            "FallingAnthem_AS_2"
+          ],
+          "modifierName": "FallingAnthem_OverHead_Camera"
+        },
+        {
+          "$type": "AttachToStateIDMixin",
+          "stateIDs": [
+            "FallingAnthem_BS"
+          ],
+          "modifierName": "FallingAnthem_ClearVelocityForce"
+        },
+        {
+          "$type": "AttachToAnimatorStateIDMixin",
+          "stateIDs": [
+            "FallingAnthem_BS_2",
+            "FallingAnthem_Loop",
+            "FallingAnthem_Loop_Low",
+            "FallingAnthem_AS_1"
+          ],
+          "modifierName": "FallingAnthem_Attach_SelfEffect"
+        },
+        {
+          "$type": "AttachToAnimatorStateIDMixin",
+          "stateIDs": [
+            "FallingAnthem_AS_1"
+          ],
+          "modifierName": "FallingAnthem_Remove_SelfEffect"
+        },
+        {
+          "$type": "AttachToAnimatorStateIDMixin",
+          "stateIDs": [
+            "FallingAnthem_BS_2",
+            "FallingAnthem_Loop"
+          ],
+          "modifierName": "FallingAnthem_SetVisible"
+        },
+        {
+          "$type": "AttachToStateIDMixin",
+          "stateIDs": [
+            "FallingAnthem_BS",
+            "FallingAnthem_Loop",
+            "FallingAnthem_AS_1"
+          ],
+          "modifierName": "HideWeapon"
+        }
+      ],
+      "abilitySpecials": {
+        "FallingAnthem_Normal_Loop_Damage": 0,
+        "FallingAnthem_Normal_Rank_1_Damage": 0,
+        "FallingAnthem_Normal_Rank_2_Damage": 0,
+        "FallingAnthem_Altitude_Lv0": 20,
+        "FallingAnthem_Altitude_Lv1": 40,
+        "FallingAnthem_Altitude_Lv2": 60,
+        "FallingAnthem_Altitude_Lv3": 100,
+        "FallingAnthem_Altitude_Lv4": 200,
+        "FallingAnthem_FallingDamageRatio_Lv0": -1,
+        "FallingAnthem_FallingDamageRatio_Lv1": -1,
+        "FallingAnthem_FallingDamageRatio_Lv2": -0.9,
+        "FallingAnthem_FallingDamageRatio_Lv3": -0.8,
+        "FallingAnthem_FallingDamageRatio_Lv4": -0.6,
+        "FallingAnthem_FallingDamageRatio": 0
+      },
+      "modifiers": {
+        "HideWeapon": {
+          "modifierName": "",
+          "elementDurability": 100,
+          "onAdded": [
+            {
+              "$type": "TriggerHideWeapon",
+              "partNames": [
+                "equip01",
+                "equip02",
+                "sheathPoint"
+              ]
+            }
+          ],
+          "onRemoved": [
+            {
+              "$type": "TriggerHideWeapon",
+              "visible": true,
+              "partNames": [
+                "equip01",
+                "equip02",
+                "sheathPoint"
+              ]
+            }
+          ]
+        },
+        "FallingAnthem_SetVisible": {
+          "modifierName": "",
+          "elementDurability": 100,
+          "onAdded": [
+            {
+              "$type": "TriggerSetVisible",
+              "doOffStage": true
+            }
+          ],
+          "onRemoved": [
+            {
+              "$type": "TriggerSetVisible",
+              "doOffStage": true,
+              "visible": true
+            }
+          ]
+        },
+        "FallingAnthem_BS_Material": {
+          "modifierName": "",
+          "elementDurability": 100,
+          "onAdded": [
+            {
+              "$type": "FireEffect",
+              "effectPattern": "Eff_Avatar_Catalyst_FallAnthem_BS_Water"
+            },
+            {
+              "$type": "ApplyModifier",
+              "modifierName": "FallingAnthem_BSCameraRadialBlur"
+            }
+          ]
+        },
+        "FallingAnthem_BS_VelocityForce_Initialize": {
+          "modifierName": "",
+          "elementDurability": 100,
+          "properties": {
+            "Actor_AddGravityScale": -2
+          },
+          "onAdded": [
+            {
+              "$type": "RemoveVelocityForce",
+              "forces": [
+                "RushMoveType"
+              ]
+            }
+          ]
+        },
+        "FallingAnthem_LoopDamage": {
+          "modifierName": "",
+          "elementDurability": 100,
+          "thinkInterval": 0.3,
+          "onThinkInterval": [
+            {
+              "$type": "TriggerAttackEvent",
+              "attackEvent": {
+                "attackPattern": {
+                  "$type": "ConfigAttackSphere",
+                  "triggerType": "TriggerNoRepeat",
+                  "born": {
+                    "$type": "ConfigBornBySelf"
+                  },
+                  "radius": 1.5
+                },
+                "attackInfo": {
+                  "attackTag": "FallingAttack",
+                  "attenuationTag": "",
+                  "attenuationGroup": "default",
+                  "attackProperty": {
+                    "damagePercentage": "FallingAnthem_Normal_Loop_Damage",
+                    "damagePercentageRatio": 0,
+                    "elementType": "Water",
+                    "elementDurability": 0,
+                    "strikeType": "Default",
+                    "enBreak": 5
+                  },
+                  "hitPattern": {
+                    "onHitEffectName": "default",
+                    "hitImpulseType": "LV2",
+                    "hitHaltTimeScale": 0.02
+                  }
+                }
+              },
+              "targetType": "Enemy"
+            }
+          ]
+        },
+        "FallingAnthem_FallingDamageImmune_01": {
+          "modifierName": "",
+          "elementDurability": 100,
+          "onAdded": [
+            {
+              "$type": "ClearGlobalValue",
+              "key": "_ABILITY_FallingAttack_Altitude"
+            },
+            {
+              "$type": "AddGlobalValue",
+              "predicates": [
+                {
+                  "$type": "ByTargetAltitude",
+                  "logic": "LesserOrEqual",
+                  "value": "FallingAnthem_Altitude_Lv0"
+                }
+              ],
+              "value": "FallingAnthem_FallingDamageRatio_Lv0",
+              "key": "_ABILITY_FallingAttack_Altitude",
+              "useLimitRange": true,
+              "maxValue": "FallingAnthem_FallingDamageRatio_Lv0",
+              "minValue": "FallingAnthem_FallingDamageRatio_Lv0"
+            },
+            {
+              "$type": "AddGlobalValue",
+              "predicates": [
+                {
+                  "$type": "ByTargetAltitude",
+                  "logic": "LesserOrEqual",
+                  "value": "FallingAnthem_Altitude_Lv1"
+                },
+                {
+                  "$type": "ByTargetAltitude",
+                  "value": "FallingAnthem_Altitude_Lv0"
+                }
+              ],
+              "value": "FallingAnthem_FallingDamageRatio_Lv1",
+              "key": "_ABILITY_FallingAttack_Altitude",
+              "useLimitRange": true,
+              "maxValue": "FallingAnthem_FallingDamageRatio_Lv1",
+              "minValue": "FallingAnthem_FallingDamageRatio_Lv1"
+            },
+            {
+              "$type": "AddGlobalValue",
+              "predicates": [
+                {
+                  "$type": "ByTargetAltitude",
+                  "logic": "LesserOrEqual",
+                  "value": "FallingAnthem_Altitude_Lv2"
+                },
+                {
+                  "$type": "ByTargetAltitude",
+                  "value": "FallingAnthem_Altitude_Lv1"
+                }
+              ],
+              "value": "FallingAnthem_FallingDamageRatio_Lv2",
+              "key": "_ABILITY_FallingAttack_Altitude",
+              "useLimitRange": true,
+              "maxValue": "FallingAnthem_FallingDamageRatio_Lv2",
+              "minValue": "FallingAnthem_FallingDamageRatio_Lv2"
+            },
+            {
+              "$type": "AddGlobalValue",
+              "predicates": [
+                {
+                  "$type": "ByTargetAltitude",
+                  "logic": "LesserOrEqual",
+                  "value": "FallingAnthem_Altitude_Lv3"
+                },
+                {
+                  "$type": "ByTargetAltitude",
+                  "value": "FallingAnthem_Altitude_Lv2"
+                }
+              ],
+              "value": "FallingAnthem_FallingDamageRatio_Lv3",
+              "key": "_ABILITY_FallingAttack_Altitude",
+              "useLimitRange": true,
+              "maxValue": "FallingAnthem_FallingDamageRatio_Lv3",
+              "minValue": "FallingAnthem_FallingDamageRatio_Lv3"
+            },
+            {
+              "$type": "AddGlobalValue",
+              "predicates": [
+                {
+                  "$type": "ByTargetAltitude",
+                  "value": "FallingAnthem_Altitude_Lv3"
+                }
+              ],
+              "value": "FallingAnthem_FallingDamageRatio_Lv4",
+              "key": "_ABILITY_FallingAttack_Altitude",
+              "useLimitRange": true,
+              "maxValue": "FallingAnthem_FallingDamageRatio_Lv4",
+              "minValue": "FallingAnthem_FallingDamageRatio_Lv4"
+            },
+            {
+              "$type": "AttachModifier",
+              "modifierName": "FallingAnthem_FallingDamageImmune_02"
+            }
+          ]
+        },
+        "FallingAnthem_FallingDamageImmune_02": {
+          "modifierName": "",
+          "elementDurability": 100,
+          "onAdded": [
+            {
+              "$type": "SetGlobalValueToOverrideMap",
+              "globalValueKey": "_ABILITY_FallingAttack_Altitude",
+              "overrideMapKey": "FallingAnthem_FallingDamageRatio"
+            },
+            {
+              "$type": "AttachModifier",
+              "modifierName": "FallingAnthem_FallingDamageImmune_03"
+            }
+          ]
+        },
+        "FallingAnthem_FallingDamageImmune_03": {
+          "modifierName": "",
+          "elementDurability": 100,
+          "properties": {
+            "Actor_FallingDamageRatio": "FallingAnthem_FallingDamageRatio"
+          }
+        },
+        "Inertia": {
+          "modifierName": "",
+          "elementDurability": 100,
+          "modifierMixins": [
+            {
+              "$type": "ApplyInertiaVelocityMixin",
+              "useXZ": false,
+              "useY": false
+            }
+          ]
+        },
+        "FallingAnthem_Height_Detect": {
+          "modifierName": "",
+          "elementDurability": 100,
+          "onAdded": [
+            {
+              "$type": "AddGlobalValue",
+              "predicates": [
+                {
+                  "$type": "ByTargetAltitude",
+                  "logic": "LesserOrEqual",
+                  "value": 2.4
+                }
+              ],
+              "value": 0,
+              "key": "_ABILITY_FallingAnthem_UseCamera",
+              "useLimitRange": true,
+              "maxValue": 0,
+              "minValue": 0
+            },
+            {
+              "$type": "AddGlobalValue",
+              "predicates": [
+                {
+                  "$type": "ByTargetAltitude",
+                  "value": 2.4
+                }
+              ],
+              "value": 5,
+              "key": "_ABILITY_FallingAnthem_UseCamera",
+              "useLimitRange": true,
+              "maxValue": 1,
+              "minValue": 0
+            },
+            {
+              "$type": "SetAnimatorFloat",
+              "predicates": [
+                {
+                  "$type": "ByTargetAltitude",
+                  "logic": "LesserOrEqual",
+                  "value": 2.4
+                }
+              ],
+              "floatID": "FallingAnthem_UseCamera",
+              "value": 0
+            },
+            {
+              "$type": "SetAnimatorFloat",
+              "predicates": [
+                {
+                  "$type": "ByTargetAltitude",
+                  "value": 2.4
+                }
+              ],
+              "floatID": "FallingAnthem_UseCamera",
+              "value": 1
+            }
+          ],
+          "onRemoved": [
+            {
+              "$type": "SetAnimatorFloat",
+              "floatID": "FallingAnthem_UseCamera",
+              "value": 0
+            },
+            {
+              "$type": "AddGlobalValue",
+              "value": 0,
+              "key": "_ABILITY_FallingAnthem_UseCamera",
+              "useLimitRange": true,
+              "maxValue": 0,
+              "minValue": 0
+            }
+          ]
+        },
+        "FallingAnthem_OverHead_Camera": {
+          "modifierName": "",
+          "elementDurability": 100,
+          "onAdded": [
+            {
+              "$type": "AvatarCameraParam",
+              "predicates": [
+                {
+                  "$type": "ByAnimatorFloat",
+                  "logic": "Equal",
+                  "value": 1,
+                  "parameter": "FallingAnthem_UseCamera"
+                }
+              ],
+              "cameraParam": {
+                "forceRadius": 4.5,
+                "forceRadiusDuration": 0.2,
+                "shouldKeepForceRadius": true
+              }
+            }
+          ]
+        },
+        "FallingAnthem_OverHead_Camera_Remover": {
+          "modifierName": "",
+          "elementDurability": 100,
+          "onAdded": [
+            {
+              "$type": "AvatarExitCameraShot",
+              "doOffStage": true
+            }
+          ]
+        },
+        "FallingAnthem_Landed_Camera": {
+          "modifierName": "",
+          "elementDurability": 100,
+          "onAdded": [
+            {
+              "$type": "AvatarCameraParam",
+              "predicates": [
+                {
+                  "$type": "ByAnimatorFloat",
+                  "logic": "Equal",
+                  "value": 1,
+                  "parameter": "FallingAnthem_UseCamera"
+                }
+              ],
+              "cameraParam": {
+                "forceRadius": 6,
+                "forceRadiusDuration": 0.1,
+                "shouldKeepForceRadius": true
+              }
+            }
+          ]
+        },
+        "FallingAnthem_ClearVelocityForce": {
+          "modifierName": "",
+          "elementDurability": 100,
+          "onAdded": [
+            {
+              "$type": "RemoveVelocityForce",
+              "forces": [
+                "RushMoveType",
+                "InertiaType"
+              ]
+            }
+          ]
+        },
+        "FallingAnthem_Attach_SelfEffect": {
+          "modifierName": "",
+          "elementDurability": 100,
+          "onAdded": [
+            {
+              "$type": "AttachEffect",
+              "effectPattern": "Eff_Avatar_Catalyst_FallAnthem_Self_Water"
+            }
+          ]
+        },
+        "FallingAnthem_Remove_SelfEffect": {
+          "modifierName": "",
+          "duration": 0.1,
+          "elementDurability": 100,
+          "onRemoved": [
+            {
+              "$type": "RemoveModifier",
+              "modifierName": "FallingAnthem_Attach_SelfEffect"
+            }
+          ]
+        },
+        "FallingAnthem_BSCameraRadialBlur": {
+          "modifierName": "",
+          "duration": 0.3,
+          "elementDurability": 100,
+          "modifierMixins": [
+            {
+              "$type": "CameraBlurMixin",
+              "cameraRadialBlur": {
+                "power": 0.3,
+                "fadeTime": 0.15
+              }
+            }
+          ]
+        }
+      },
+      "onAbilityStart": [
+        {
+          "$type": "TriggerAttackEvent",
+          "predicates": [
+            {
+              "$type": "ByTargetGlobalValue",
+              "key": "_ABILITY_FallingAnthem_UseCamera",
+              "value": 0,
+              "forceByCaster": true,
+              "compareType": "NoneOrEqual"
+            }
+          ],
+          "attackEvent": {
+            "attackPattern": {
+              "$type": "ConfigAttackCircle",
+              "triggerType": "TriggerNoRepeat",
+              "born": {
+                "$type": "ConfigBornByTarget",
+                "offset": {
+                  "y": -0.5
+                }
+              },
+              "height": 2,
+              "radius": 3
+            },
+            "attackInfo": {
+              "attackTag": "FallingAttack",
+              "attenuationTag": "",
+              "attenuationGroup": "default",
+              "attackProperty": {
+                "damagePercentage": "FallingAnthem_Normal_Rank_1_Damage",
+                "damagePercentageRatio": 0,
+                "elementType": "Water",
+                "elementDurability": 25,
+                "strikeType": "Default",
+                "enBreak": 50
+              },
+              "hitPattern": {
+                "onHitEffectName": "none",
+                "hitImpulseType": "LV3",
+                "hitHaltTimeScale": 0.1
+              },
+              "forceCameraShake": true,
+              "cameraShake": {
+                "shakeType": "CustomVector",
+                "shakeRange": 0.24,
+                "shakeTime": 0.12,
+                "shakeDistance": 30,
+                "shakeDir": {
+                  "y": 1
+                },
+                "extension": {
+                  "baseCycle": 0.24,
+                  "cycleDamping": 0,
+                  "rangeAttenuation": 0.3
+                }
+              }
+            }
+          },
+          "targetType": "Enemy"
+        },
+        {
+          "$type": "TriggerAttackEvent",
+          "predicates": [
+            {
+              "$type": "ByTargetGlobalValue",
+              "key": "_ABILITY_FallingAnthem_UseCamera",
+              "value": 1,
+              "forceByCaster": true
+            }
+          ],
+          "attackEvent": {
+            "attackPattern": {
+              "$type": "ConfigAttackCircle",
+              "triggerType": "TriggerNoRepeat",
+              "born": {
+                "$type": "ConfigBornByTarget",
+                "offset": {
+                  "y": -0.5
+                }
+              },
+              "height": 2,
+              "radius": 3.5
+            },
+            "attackInfo": {
+              "attackTag": "FallingAttack",
+              "attenuationTag": "",
+              "attenuationGroup": "default",
+              "attackProperty": {
+                "damagePercentage": "FallingAnthem_Normal_Rank_2_Damage",
+                "damagePercentageRatio": 0,
+                "elementType": "Water",
+                "elementDurability": 25,
+                "strikeType": "Default",
+                "enBreak": 100
+              },
+              "hitPattern": {
+                "onHitEffectName": "none",
+                "hitImpulseType": "LV4",
+                "hitHaltTimeScale": 0.1
+              },
+              "forceCameraShake": true,
+              "cameraShake": {
+                "shakeType": "CustomVector",
+                "shakeRange": 0.5,
+                "shakeTime": 0.2,
+                "shakeDistance": 30,
+                "shakeDir": {
+                  "y": 1,
+                  "z": 1
+                },
+                "extension": {
+                  "baseCycle": 0.4,
+                  "cycleDamping": 0,
+                  "rangeAttenuation": 0.3
+                }
+              }
+            }
+          },
+          "targetType": "Enemy"
+        },
+        {
+          "$type": "FireEffect",
+          "predicates": [
+            {
+              "$type": "ByTargetGlobalValue",
+              "key": "_ABILITY_FallingAnthem_UseCamera",
+              "value": 0,
+              "forceByCaster": true,
+              "compareType": "NoneOrEqual"
+            }
+          ],
+          "effectPattern": "Eff_Avatar_Catalyst_FallAnthem_Strike_01_Water"
+        },
+        {
+          "$type": "FireEffect",
+          "predicates": [
+            {
+              "$type": "ByTargetGlobalValue",
+              "key": "_ABILITY_FallingAnthem_UseCamera",
+              "value": 1,
+              "forceByCaster": true
+            }
+          ],
+          "effectPattern": "Eff_Avatar_Catalyst_FallAnthem_Strike_02_Water"
+        }
+      ]
+    }
+  },
+  {
+    "Default": {
+      "$type": "ConfigAbility",
+      "abilityName": "Avatar_Kokomi_Show",
+      "abilityMixins": [
+        {
+          "$type": "AttachToNormalizedTimeMixin",
+          "stateID": "StandbyShow_02",
+          "modifierName": "Avatar_Kokomi_Show02_VFX",
+          "normalizeStart": 0.001,
+          "normalizeEnd": 0.895
+        }
+      ],
+      "modifiers": {
+        "Avatar_Kokomi_Show02_VFX": {
+          "modifierName": "",
+          "elementDurability": 100,
+          "onAdded": [
+            {
+              "$type": "Randomed",
+              "chance": 0.5,
+              "successActions": [
+                {
+                  "$type": "AttachEffect",
+                  "effectPattern": "Eff_Avatar_Girl_Catalyst_Kokomi_Show02_00"
+                }
+              ],
+              "failActions": [
+                {
+                  "$type": "AttachEffect",
+                  "effectPattern": "Eff_Avatar_Girl_Catalyst_Kokomi_Show02_01"
+                }
+              ]
+            }
+          ]
+        }
+      }
+    }
+  },
+  {
+    "Default": {
+      "$type": "ConfigAbility",
+      "abilityName": "Avatar_Kokomi_SwimStamina_Reduction",
+      "modifiers": {
+        "Kokomi_SwimStaminaReduction_Handler": {
+          "modifierName": "",
+          "elementDurability": 100,
+          "thinkInterval": 5,
+          "onThinkInterval": [
+            {
+              "$type": "AttachModifier",
+              "target": "CurTeamAvatars",
+              "doOffStage": true,
+              "modifierName": "UNIQUE_SwimStaminaReduction"
+            }
+          ]
+        },
+        "UNIQUE_SwimStaminaReduction": {
+          "modifierName": "",
+          "isUnique": true,
+          "elementDurability": 100,
+          "modifierMixins": [
+            {
+              "$type": "AttachToStateIDMixin",
+              "stateIDs": [
+                "Swim"
+              ],
+              "modifierName": "SwimStamina_Reduction"
+            }
+          ]
+        },
+        "SwimStamina_Reduction": {
+          "modifierName": "",
+          "elementDurability": 100,
+          "properties": {
+            "Actor_CostStaminaRatio": -0.2
+          }
+        }
+      },
+      "onAdded": [
+        {
+          "$type": "AttachModifier",
+          "target": "CurTeamAvatars",
+          "doOffStage": true,
+          "modifierName": "UNIQUE_SwimStaminaReduction"
+        },
+        {
+          "$type": "AttachModifier",
+          "doOffStage": true,
+          "modifierName": "Kokomi_SwimStaminaReduction_Handler"
+        }
+      ],
+      "isDynamicAbility": true
+    }
+  },
+  {
+    "Default": {
+      "$type": "ConfigAbility",
+      "abilityName": "Avatar_Kokomi_CritRateDown",
+      "abilitySpecials": {
+        "Avatar_Kokomi_CritRate_Delta": 0,
+        "Avatar_Kokomi_HealAdd_Delta": 0
+      },
+      "modifiers": {
+        "Avatar_Kokomi_CritRateDown": {
+          "modifierName": "",
+          "elementDurability": 100,
+          "properties": {
+            "Actor_CriticalDelta": "Avatar_Kokomi_CritRate_Delta",
+            "Actor_HealAddDelta": "Avatar_Kokomi_HealAdd_Delta"
+          }
+        }
+      },
+      "onAdded": [
+        {
+          "$type": "AttachModifier",
+          "doOffStage": true,
+          "modifierName": "Avatar_Kokomi_CritRateDown"
+        }
+      ]
+    }
+  }
+]
