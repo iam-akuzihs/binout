@@ -126,22 +126,22 @@
           "onAdded": [
             {
               "$type": "BroadcastNeuronStimulate",
-              "EPADBCOELIH": "SURROUND",
-              "CJNNGCCCHOH": true,
+              "neuronName": "SURROUND",
+              "stimulate": true,
               "range": 50
             }
           ],
           "onRemoved": [
             {
               "$type": "BroadcastNeuronStimulate",
-              "EPADBCOELIH": "SURROUND",
+              "neuronName": "SURROUND",
               "range": 50
             }
           ],
           "onKill": [
             {
               "$type": "BroadcastNeuronStimulate",
-              "EPADBCOELIH": "SURROUND",
+              "neuronName": "SURROUND",
               "range": 50
             }
           ]
@@ -183,13 +183,13 @@
       "onAbilityStart": [
         {
           "$type": "SetCanDieImmediately",
-          "PGEOCOLLNBO": true
+          "dieImmediately": true
         },
         {
           "$type": "KillSelf",
-          "BEKKIHBPHGD": true,
-          "EOIGEKNINFE": true,
-          "EKINLACJBGF": true
+          "banDrop": true,
+          "banExp": true,
+          "banHPPercentageDrop": true
         }
       ]
     }
@@ -205,7 +205,7 @@
             "Sacrifice",
             "TurnToSacrifice"
           ],
-          "OFLAPMGKHHE": [
+          "enterPredicates": [
             {
               "$type": "ByTargetGlobalValue",
               "key": "_ABILITY_ABYSS_FIRE_ELEMENTSHIELD",
@@ -213,7 +213,7 @@
               "forceByCaster": true
             }
           ],
-          "JLLNCKPFKLD": [
+          "exitPredicates": [
             {
               "$type": "ByTargetGlobalValue",
               "key": "_ABILITY_ABYSS_FIRE_ELEMENTSHIELD",
@@ -221,13 +221,13 @@
               "forceByCaster": true
             }
           ],
-          "KELPBOLPMNI": [
+          "enterActions": [
             {
               "$type": "TriggerAbility",
               "abilityName": "Abyss_Fire_ElementShield_Remove_NoBroken"
             }
           ],
-          "MCFCEOACJEB": [
+          "exitActions": [
             {
               "$type": "SetPoseInt",
               "intID": "ElementState",
@@ -345,7 +345,7 @@
         "Abyss_Fire_ElementShield_RecoverHandler": {
           "modifierName": "",
           "elementDurability": 100,
-          "AMJKBHJBBGN": [
+          "onReconnect": [
             {
               "$type": "ApplyModifier",
               "modifierName": "UNIQUE_Abyss_Fire_ElementShield"
@@ -359,7 +359,7 @@
           "onAdded": [
             {
               "$type": "UseSkillEliteSet",
-              "AFIOIAPCKEJ": 1
+              "skillEliteSetID": 1
             }
           ]
         },
@@ -371,9 +371,9 @@
           "elementDurability": [
             300,
             "ElementShield_DurabilityImprove",
-            "Mul",
+            "MUL",
             300,
-            "Add"
+            "ADD"
           ],
           "modifierMixins": [
             {
@@ -383,7 +383,7 @@
               "shieldAngle": 360,
               "shieldHPRatio": 1,
               "damageRatio": 0.2,
-              "HMLKELJFCKD": [
+              "onShieldSuccess": [
                 {
                   "$type": "Predicated",
                   "target": "Target",
@@ -391,7 +391,8 @@
                     {
                       "$type": "ByEntityTypes",
                       "entityTypes": [
-                        "Avatar"
+                        "Avatar",
+                        "Partner"
                       ]
                     }
                   ],
@@ -438,10 +439,11 @@
                 {
                   "$type": "SendEffectTrigger",
                   "parameter": "BeHitInvalid",
+                  "attachPoint": "",
                   "effectPattern": "Eff_Monster_Abyss_Fire_ElementShield_BS"
                 }
               ],
-              "FFOEHJLIDFC": [
+              "onShieldFailed": [
                 {
                   "$type": "Predicated",
                   "target": "Target",
@@ -449,7 +451,8 @@
                     {
                       "$type": "ByEntityTypes",
                       "entityTypes": [
-                        "Avatar"
+                        "Avatar",
+                        "Partner"
                       ]
                     }
                   ],
@@ -496,15 +499,16 @@
                 {
                   "$type": "SendEffectTrigger",
                   "parameter": "BeHit",
+                  "attachPoint": "",
                   "effectPattern": "Eff_Monster_Abyss_Fire_ElementShield_BS"
                 }
               ],
-              "NGOKEFIDFCJ": true,
-              "HJAIAEACKHM": true
+              "useMutiPlayerFixData": true,
+              "shieldAngle": true
             },
             {
               "$type": "VelocityForceMixin",
-              "MPGPCCEHFGL": [
+              "excludeForces": [
                 "WindZoneType"
               ]
             }
@@ -562,6 +566,16 @@
             {
               "$type": "RemoveUniqueModifier",
               "modifierName": "UNIQUE_Abyss_Fire_ElementShield_Effect"
+            },
+            {
+              "$type": "KillSelf",
+              "predicates": [
+                {
+                  "$type": "ByTargetGlobalValue",
+                  "key": "_MONSTER_ForCharAmusement_Shield",
+                  "value": 1
+                }
+              ]
             }
           ],
           "onBeingHit": [
@@ -728,7 +742,7 @@
         "Abyss_Fire_ElementShield_Effect_RecoverHandler": {
           "modifierName": "",
           "elementDurability": 100,
-          "AMJKBHJBBGN": [
+          "onReconnect": [
             {
               "$type": "ApplyModifier",
               "modifierName": "UNIQUE_Abyss_Fire_ElementShield_Effect"
@@ -743,14 +757,14 @@
           "onAdded": [
             {
               "$type": "EnableHitBoxByName",
-              "EACGOCFODIC": [
+              "hitBoxNames": [
                 "HitBox_ElementShield"
               ],
               "setEnable": true
             },
             {
               "$type": "EnableHitBoxByName",
-              "EACGOCFODIC": [
+              "hitBoxNames": [
                 "HitBox",
                 "HeadBox"
               ]
@@ -770,13 +784,13 @@
           "onRemoved": [
             {
               "$type": "EnableHitBoxByName",
-              "EACGOCFODIC": [
+              "hitBoxNames": [
                 "HitBox_ElementShield"
               ]
             },
             {
               "$type": "EnableHitBoxByName",
-              "EACGOCFODIC": [
+              "hitBoxNames": [
                 "HitBox",
                 "HeadBox"
               ],
@@ -845,7 +859,7 @@
               "modifierName": "UNIQUE_Abyss_Fire_DizzyTimer"
             }
           ],
-          "AMJKBHJBBGN": [
+          "onReconnect": [
             {
               "$type": "ApplyModifier",
               "modifierName": "UNIQUE_Abyss_Fire_DizzyTimer"
@@ -859,9 +873,9 @@
           "duration": [
             12,
             "ElementShield_GapReduce",
-            "Mul",
+            "MUL",
             12,
-            "Add"
+            "ADD"
           ],
           "elementDurability": 100,
           "properties": {
@@ -990,8 +1004,7 @@
             },
             {
               "$type": "ApplyModifier",
-              "target": "Owner",
-              "modifierName": "Abyss_Fire_FireImpulse_ReduceGV"
+              "modifierName": "Abyss_Fire_FireImpulse_InitGV"
             },
             {
               "$type": "AddGlobalValue",
@@ -1032,7 +1045,7 @@
               "born": {
                 "$type": "ConfigBornByPredicatePoint",
                 "onGround": true,
-                "BIOOFAHEGLA": 0.75
+                "timeForPredictive": 0.75
               },
               "gadgetID": 42201007,
               "campID": 4001,
@@ -1064,9 +1077,9 @@
                 "positionKey": "Gather_BornPos",
                 "directionKey": ""
               },
-              "OADJJGJKKLA": {
+              "checkGround": {
                 "enable": true,
-                "PCLKNLDEHGH": 10
+                "raycastDownHeight": 10
               },
               "gadgetID": 42201007,
               "campID": 4001,
@@ -1074,7 +1087,7 @@
             }
           ]
         },
-        "Abyss_Fire_FireImpulse_ReduceGV": {
+        "Abyss_Fire_FireImpulse_InitGV": {
           "stacking": "MultipleRefresh",
           "stackingOption": {
             "abilitySpecialName": "",
@@ -1162,7 +1175,7 @@
               "attenuationTag": "",
               "attenuationGroup": "default",
               "attackProperty": {
-                "damagePercentage": 1.5,
+                "damagePercentage": 1,
                 "damagePercentageRatio": 0,
                 "elementType": "Fire",
                 "elementDurability": 50,
@@ -1209,7 +1222,7 @@
               "attenuationTag": "",
               "attenuationGroup": "default",
               "attackProperty": {
-                "damagePercentage": 2,
+                "damagePercentage": 1.333,
                 "damagePercentageRatio": 0,
                 "elementType": "Fire",
                 "elementDurability": 50,
@@ -1260,8 +1273,8 @@
               "value": 1
             }
           ],
-          "GPGMPHIIAMD": 82006,
-          "LNGKALMLMGN": true
+          "watcherId": 82006,
+          "inThreatListOnly": true
         }
       ]
     }
@@ -1313,7 +1326,7 @@
                   "attenuationTag": "",
                   "attenuationGroup": "default",
                   "attackProperty": {
-                    "damagePercentage": 1.5,
+                    "damagePercentage": 1,
                     "damagePercentageRatio": 0,
                     "elementType": "Fire",
                     "elementDurability": 50,
@@ -1467,7 +1480,7 @@
           "modifierName": "Abyss_Fire_ImpulseArea_AddGV"
         }
       ],
-      "JPKNDOGGOIN": [
+      "onFieldExit": [
         {
           "$type": "ApplyModifier",
           "target": "Owner",
@@ -1580,11 +1593,11 @@
             },
             {
               "$type": "HideUIBillBoard",
-              "COCENMAFJGD": true
+              "hide": true
             },
             {
               "$type": "EnableHitBoxByName",
-              "EACGOCFODIC": [
+              "hitBoxNames": [
                 "HitBox",
                 "HeadBox"
               ]
@@ -1599,7 +1612,7 @@
           "onRemoved": [
             {
               "$type": "EnableHitBoxByName",
-              "EACGOCFODIC": [
+              "hitBoxNames": [
                 "HitBox",
                 "HeadBox"
               ],
@@ -1667,8 +1680,8 @@
         {
           "$type": "TryFindBlinkPoint",
           "target": "SelfAttackTarget",
-          "DGICDMAKHOJ": 60,
-          "JLCCGHLNHOI": 5,
+          "forwardAngle": 60,
+          "minRange": 5,
           "maxRange": 7
         },
         {
@@ -1736,7 +1749,7 @@
               "attenuationTag": "",
               "attenuationGroup": "default",
               "attackProperty": {
-                "damagePercentage": 1,
+                "damagePercentage": 0.666,
                 "damagePercentageRatio": 0,
                 "elementType": "Fire",
                 "elementDurability": 50,
@@ -1791,13 +1804,13 @@
                 "BeHit",
                 "BeHitThrow"
               ],
-              "OKFKMBDCDHO": "DefendTrigger",
-              "OKEAOJGNCNJ": 0.2,
-              "CLALNDAGFGJ": 0,
-              "LCJAOCJNEJJ": 8,
-              "EAEELLPBGHO": false,
-              "HFCIHIJGLMA": 0,
-              "GOLCBAPOOLF": [
+              "defendTriggerID": "DefendTrigger",
+              "defendProbability": 0.2,
+              "defendProbabilityDelta": 0,
+              "GNHIJJCBFIL": 8,
+              "alwaysRecover": false,
+              "OJBMIGCGLGG": 0,
+              "onDefendSucceded": [
                 {
                   "$type": "TriggerAbility",
                   "abilityName": "Abyss_Fire_ForceBlink"
@@ -1861,11 +1874,11 @@
             },
             {
               "$type": "HideUIBillBoard",
-              "COCENMAFJGD": true
+              "hide": true
             },
             {
               "$type": "EnableHitBoxByName",
-              "EACGOCFODIC": [
+              "hitBoxNames": [
                 "HitBox",
                 "HeadBox"
               ]
@@ -1880,7 +1893,7 @@
           "onRemoved": [
             {
               "$type": "EnableHitBoxByName",
-              "EACGOCFODIC": [
+              "hitBoxNames": [
                 "HitBox",
                 "HeadBox"
               ],
@@ -1928,8 +1941,8 @@
         {
           "$type": "TryFindBlinkPoint",
           "target": "SelfAttackTarget",
-          "DGICDMAKHOJ": 30,
-          "JLCCGHLNHOI": 9,
+          "forwardAngle": 30,
+          "minRange": 9,
           "maxRange": 12
         },
         {
@@ -2113,11 +2126,11 @@
             },
             {
               "$type": "HideUIBillBoard",
-              "COCENMAFJGD": true
+              "hide": true
             },
             {
               "$type": "EnableHitBoxByName",
-              "EACGOCFODIC": [
+              "hitBoxNames": [
                 "HitBox",
                 "HeadBox",
                 "HitBox_ElementShield"
@@ -2148,7 +2161,7 @@
             },
             {
               "$type": "EnableHitBoxByName",
-              "EACGOCFODIC": [
+              "hitBoxNames": [
                 "HitBox",
                 "HeadBox"
               ],
@@ -2278,7 +2291,7 @@
             "direction": {
               "$type": "ConfigDirectionByAttackTarget"
             },
-            "ANAGBFPADIE": true
+            "alongGround": true
           }
         }
       ]
@@ -2341,7 +2354,7 @@
               "attenuationTag": "",
               "attenuationGroup": "default",
               "attackProperty": {
-                "damagePercentage": 0.75,
+                "damagePercentage": 0.5,
                 "damagePercentageRatio": 0,
                 "elementType": "Fire",
                 "elementDurability": 50,
@@ -2634,7 +2647,7 @@
               "attenuationTag": "Abyss_Fire_FireEnergy",
               "attenuationGroup": "Abyss_Fire_FireEnergy_Attenuation",
               "attackProperty": {
-                "damagePercentage": 1,
+                "damagePercentage": 0.666,
                 "damagePercentageRatio": 0,
                 "elementType": "Fire",
                 "elementDurability": 50,
@@ -2689,7 +2702,7 @@
               "attenuationTag": "Abyss_Fire_FireEnergy",
               "attenuationGroup": "Abyss_Fire_FireEnergy_Attenuation",
               "attackProperty": {
-                "damagePercentage": 1,
+                "damagePercentage": 0.666,
                 "damagePercentageRatio": 0,
                 "elementType": "Fire",
                 "elementDurability": 50,
@@ -2743,7 +2756,7 @@
               "attenuationTag": "Abyss_Fire_FireEnergy",
               "attenuationGroup": "Abyss_Fire_FireEnergy_Attenuation",
               "attackProperty": {
-                "damagePercentage": 1,
+                "damagePercentage": 0.666,
                 "damagePercentageRatio": 0,
                 "elementType": "Fire",
                 "elementDurability": 50,
@@ -2778,30 +2791,30 @@
       "abilityMixins": [
         {
           "$type": "SteerAttackMixin",
-          "EHNAPMMMNFI": [
+          "steerStateIDs": [
             "NormalAtk"
           ],
           "angularSpeed": 180,
-          "NCAENFOANAG": "",
-          "BBHBLAIEHAJ": 12
+          "attackTrigger": "",
+          "attackDistance": 12
         },
         {
           "$type": "SteerAttackMixin",
-          "EHNAPMMMNFI": [
+          "steerStateIDs": [
             "SpecialAtk"
           ],
           "angularSpeed": 180,
-          "NCAENFOANAG": "",
-          "BBHBLAIEHAJ": 12
+          "attackTrigger": "",
+          "attackDistance": 12
         },
         {
           "$type": "SteerAttackMixin",
-          "EHNAPMMMNFI": [
+          "steerStateIDs": [
             "RandomAction"
           ],
           "angularSpeed": 180,
-          "NCAENFOANAG": "",
-          "BBHBLAIEHAJ": 12
+          "attackTrigger": "",
+          "attackDistance": 12
         }
       ]
     }

@@ -13,7 +13,7 @@
         },
         {
           "$type": "EnableHitBoxByName",
-          "EACGOCFODIC": [
+          "hitBoxNames": [
             "CoreBox"
           ]
         }
@@ -67,14 +67,14 @@
             },
             {
               "$type": "EnableHitBoxByName",
-              "EACGOCFODIC": [
+              "hitBoxNames": [
                 "CoreBox"
               ],
               "setEnable": true
             },
             {
               "$type": "EnableHitBoxByName",
-              "EACGOCFODIC": [
+              "hitBoxNames": [
                 "MainBox"
               ]
             }
@@ -82,13 +82,13 @@
           "onRemoved": [
             {
               "$type": "EnableHitBoxByName",
-              "EACGOCFODIC": [
+              "hitBoxNames": [
                 "CoreBox"
               ]
             },
             {
               "$type": "EnableHitBoxByName",
-              "EACGOCFODIC": [
+              "hitBoxNames": [
                 "MainBox"
               ],
               "setEnable": true
@@ -166,8 +166,8 @@
             },
             "onGround": true
           },
-          "JLCCGHLNHOI": 8,
-          "GDCBDDNNPCM": 0.67
+          "minRange": 8,
+          "timeRange": 0.67
         },
         {
           "$type": "RushMove",
@@ -199,9 +199,9 @@
             },
             "onGround": true
           },
-          "JLCCGHLNHOI": 8,
+          "minRange": 8,
           "maxRange": 40,
-          "GDCBDDNNPCM": 0.67
+          "timeRange": 0.67
         }
       ]
     }
@@ -373,7 +373,7 @@
               "attenuationTag": "",
               "attenuationGroup": "default",
               "attackProperty": {
-                "damagePercentage": 0.4,
+                "damagePercentage": 0.266,
                 "damagePercentageRatio": 0,
                 "elementDurability": 100
               },
@@ -410,13 +410,20 @@
           "modifierName": "UNIQUE_Monster_Apparatus_Enigma_BionicInsecta_ShieldState"
         }
       ],
+      "abilitySpecials": {
+        "ShieldTime": 15
+      },
       "modifiers": {
         "UNIQUE_Monster_Apparatus_Enigma_BionicInsecta_ShieldState": {
           "modifierName": "",
           "isUnique": true,
-          "duration": 15,
+          "duration": "ShieldTime",
           "elementDurability": 100,
-          "thinkInterval": 14,
+          "thinkInterval": [
+            "ShieldTime",
+            1,
+            "SUB"
+          ],
           "modifierMixins": [
             {
               "$type": "MonsterDefendMixin",
@@ -424,13 +431,13 @@
                 "NormalIdle",
                 "Turn"
               ],
-              "OKFKMBDCDHO": "",
-              "DEHPOLDCMNJ": 120,
-              "OKEAOJGNCNJ": 1,
-              "CLALNDAGFGJ": 0,
-              "LCJAOCJNEJJ": 0,
-              "HFCIHIJGLMA": 0,
-              "GOLCBAPOOLF": [
+              "defendTriggerID": "",
+              "defendAngle": 120,
+              "defendProbability": 1,
+              "defendProbabilityDelta": 0,
+              "GNHIJJCBFIL": 0,
+              "OJBMIGCGLGG": 0,
+              "onDefendSucceded": [
                 {
                   "$type": "SetGlobalValue",
                   "value": 0,
@@ -473,7 +480,7 @@
                   }
                 }
               ],
-              "DMNPECJHBHG": true
+              "defendCountInterval": true
             }
           ],
           "onAdded": [
@@ -496,6 +503,14 @@
           "onThinkInterval": [
             {
               "$type": "ApplyModifier",
+              "predicates": [
+                {
+                  "$type": "ByTargetGlobalValue",
+                  "key": "_Monster_Apparatus_Enigma_BionicInsecta_KarkataTag",
+                  "value": 0,
+                  "compareType": "NoneOrEqual"
+                }
+              ],
               "modifierName": "ShieldUpEnd_Latency"
             }
           ]
@@ -508,6 +523,7 @@
             {
               "$type": "SendEffectTrigger",
               "parameter": "ShieldDisappear",
+              "attachPoint": "",
               "effectPattern": "Eff_Monster_Apparatus_Enigma_BionicInsecta_Shield"
             }
           ]
@@ -518,6 +534,43 @@
           "$type": "SetPoseBool",
           "boolID": "ShieldUp",
           "value": true
+        },
+        {
+          "$type": "Predicated",
+          "targetPredicates": [
+            {
+              "$type": "ByTargetGlobalValue",
+              "key": "_Monster_Apparatus_Enigma_BionicInsecta_KarkataTag",
+              "value": 0,
+              "compareType": "NoneOrEqual"
+            }
+          ],
+          "failActions": [
+            {
+              "$type": "Predicated",
+              "targetPredicates": [
+                {
+                  "$type": "ByTargetGlobalValue",
+                  "key": "_Monster_Apparatus_Enigma_BionicInsecta_KarkataTag",
+                  "value": 1
+                }
+              ],
+              "successActions": [
+                {
+                  "$type": "SetOverrideMapValue",
+                  "value": 25,
+                  "overrideMapKey": "ShieldTime"
+                }
+              ],
+              "failActions": [
+                {
+                  "$type": "SetOverrideMapValue",
+                  "value": 0,
+                  "overrideMapKey": "ShieldTime"
+                }
+              ]
+            }
+          ]
         }
       ],
       "onKill": [
@@ -535,76 +588,76 @@
       "abilityMixins": [
         {
           "$type": "SteerAttackMixin",
-          "EHNAPMMMNFI": [
+          "steerStateIDs": [
             "NormalAtk"
           ],
-          "EOOBFBGMGLD": 0.25,
-          "IMHBEGIKDKB": 0.43,
+          "startNormalizedTime": 0.25,
+          "endNormalizedTime": 0.43,
           "angularSpeed": 90,
-          "NCAENFOANAG": ""
+          "attackTrigger": ""
         },
         {
           "$type": "SteerAttackMixin",
-          "EHNAPMMMNFI": [
+          "steerStateIDs": [
             "ShieldCannon"
           ],
-          "IMHBEGIKDKB": 0.3,
+          "endNormalizedTime": 0.3,
           "angularSpeed": 90,
-          "NCAENFOANAG": ""
+          "attackTrigger": ""
         },
         {
           "$type": "SteerAttackMixin",
-          "EHNAPMMMNFI": [
+          "steerStateIDs": [
             "JumpAtk"
           ],
-          "IMHBEGIKDKB": 0.48,
+          "endNormalizedTime": 0.48,
           "angularSpeed": 90,
-          "NCAENFOANAG": ""
+          "attackTrigger": ""
         },
         {
           "$type": "SteerAttackMixin",
-          "EHNAPMMMNFI": [
+          "steerStateIDs": [
             "ShieldUpBS"
           ],
-          "IMHBEGIKDKB": 0.28,
+          "endNormalizedTime": 0.28,
           "angularSpeed": 90,
-          "NCAENFOANAG": ""
+          "attackTrigger": ""
         },
         {
           "$type": "SteerAttackMixin",
-          "EHNAPMMMNFI": [
+          "steerStateIDs": [
             "Turn"
           ],
-          "IMHBEGIKDKB": 999,
+          "endNormalizedTime": 999,
           "angularSpeed": 60,
-          "NCAENFOANAG": ""
+          "attackTrigger": ""
         },
         {
           "$type": "SteerAttackMixin",
-          "EHNAPMMMNFI": [
+          "steerStateIDs": [
             "ChargeAtkLoop"
           ],
-          "IMHBEGIKDKB": 999,
+          "endNormalizedTime": 999,
           "angularSpeed": 30,
-          "NCAENFOANAG": ""
+          "attackTrigger": ""
         },
         {
           "$type": "SteerAttackMixin",
-          "EHNAPMMMNFI": [
+          "steerStateIDs": [
             "ChargeAtkTurn"
           ],
-          "IMHBEGIKDKB": 999,
+          "endNormalizedTime": 999,
           "angularSpeed": 90,
-          "NCAENFOANAG": ""
+          "attackTrigger": ""
         },
         {
           "$type": "SteerAttackMixin",
-          "EHNAPMMMNFI": [
+          "steerStateIDs": [
             "ChargeAtkAS"
           ],
-          "IMHBEGIKDKB": 0.12,
+          "endNormalizedTime": 0.12,
           "angularSpeed": 90,
-          "NCAENFOANAG": ""
+          "attackTrigger": ""
         }
       ]
     }
@@ -655,7 +708,7 @@
             {
               "$type": "StartDither",
               "duration": 0.2,
-              "BPFAJPNHJIB": true
+              "reverse": true
             }
           ]
         },

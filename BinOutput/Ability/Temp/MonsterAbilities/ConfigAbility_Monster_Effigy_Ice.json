@@ -27,6 +27,7 @@
           "poseIDs": [
             1,
             101,
+            102,
             201,
             301,
             902
@@ -62,6 +63,7 @@
               "$type": "AttachToPoseIDMixin",
               "poseIDs": [
                 101,
+                102,
                 201
               ],
               "modifierName": "EnergyCoreStandby"
@@ -122,6 +124,7 @@
               "$type": "SendEffectTrigger",
               "canBeHandledOnRecover": true,
               "parameter": "Standby",
+              "attachPoint": "",
               "effectPattern": "Eff_Monster_Effigy_Ice_EnergyCore"
             }
           ],
@@ -129,6 +132,7 @@
             {
               "$type": "SendEffectTrigger",
               "parameter": "StandbyFree",
+              "attachPoint": "",
               "effectPattern": "Eff_Monster_Effigy_Ice_EnergyCore"
             }
           ]
@@ -178,12 +182,27 @@
             "NeedleWheelCharge_Loop3",
             "NeedleWheelCharge_AS01",
             "NeedleWheelCharge_AS02",
+            "NeedleWheelCharge_Activity_BS",
+            "NeedleWheelCharge_Activity_Aiming1",
+            "NeedleWheelCharge_Activity_Aiming2",
+            "NeedleWheelCharge_Activity_Aiming3",
+            "NeedleWheelCharge_Activity_Loop1",
+            "NeedleWheelCharge_Activity_Loop2",
+            "NeedleWheelCharge_Activity_Loop3",
+            "NeedleWheelCharge_Activity_AS01",
+            "NeedleWheelCharge_Activity_AS02",
             "NeedleSpinningShoot_BS",
             "NeedleSpinningShoot_Loop",
             "NeedleSpinningShoot_AS",
+            "NeedleSpinningShoot_Activity_BS",
+            "NeedleSpinningShoot_Activity_Loop",
+            "NeedleSpinningShoot_Activity_AS",
             "SpikeStrike_BS01",
             "SpikeStrike_BS02",
             "SpikeStrike_BS03",
+            "SpikeStrike_Activity_BS01",
+            "SpikeStrike_Activity_BS02",
+            "SpikeStrike_Activity_BS03",
             "ReturnToBorn",
             "ReturnToBorn_Blink",
             "ReturnToBorn_AS"
@@ -194,9 +213,13 @@
           "$type": "AttachToAnimatorStateIDMixin",
           "stateIDs": [
             "NeedleWheelCharge_CoreExpose",
+            "NeedleWheelCharge_Activity_CoreExpose",
             "NeedleSpinningShoot_CoreExpose",
+            "NeedleSpinningShoot_Activity_CoreExpose",
             "SpikeStrike_CoreExpose1",
             "SpikeStrike_CoreExpose2",
+            "SpikeStrike_Activity_CoreExpose1",
+            "SpikeStrike_Activity_CoreExpose2",
             "Revive_Stunning_BS",
             "Stunning_Standby",
             "Revive_Stunning_AS01"
@@ -216,6 +239,7 @@
           "$type": "AttachToPoseIDMixin",
           "poseIDs": [
             101,
+            102,
             201,
             301
           ],
@@ -251,7 +275,7 @@
             },
             {
               "$type": "EnableHitBoxByName",
-              "EACGOCFODIC": [
+              "hitBoxNames": [
                 "ShieldHitBox1",
                 "ShieldHitBox2",
                 "ShieldHitBox3",
@@ -271,7 +295,7 @@
           "onRemoved": [
             {
               "$type": "EnableHitBoxByName",
-              "EACGOCFODIC": [
+              "hitBoxNames": [
                 "ShieldHitBox1",
                 "ShieldHitBox2",
                 "ShieldHitBox3",
@@ -301,7 +325,7 @@
                 "direction": {
                   "$type": "ConfigDirectionByBackToHitBoxCenter"
                 },
-                "ANAGBFPADIE": true
+                "alongGround": true
               }
             }
           ]
@@ -326,7 +350,7 @@
             },
             {
               "$type": "HideUIBillBoard",
-              "COCENMAFJGD": true
+              "hide": true
             }
           ]
         },
@@ -390,10 +414,20 @@
           "onBeingHit": [
             {
               "$type": "SetAnimatorTrigger",
+              "predicates": [
+                {
+                  "$type": "ByHitLevel"
+                }
+              ],
               "triggerID": "Shake"
             },
             {
               "$type": "FireEffect",
+              "predicates": [
+                {
+                  "$type": "ByHitLevel"
+                }
+              ],
               "effectPattern": "Eff_Monster_Effigy_Ice_BeHit_Core",
               "born": {
                 "$type": "ConfigBornByHitPoint",
@@ -435,11 +469,11 @@
         },
         {
           "$type": "AttachAbilityStateResistance",
-          "resistanceListID": 12003
+          "resistanceListID": 13002
         },
         {
           "$type": "EnableHitBoxByName",
-          "EACGOCFODIC": [
+          "hitBoxNames": [
             "ShieldHitBox1",
             "ShieldHitBox2",
             "ShieldHitBox3",
@@ -450,6 +484,13 @@
             "ShieldHitBox8"
           ],
           "setEnable": true
+        },
+        {
+          "$type": "SetGlobalValue",
+          "value": 1,
+          "key": "_IS_EFFIGY_ICE_",
+          "maxValue": 0,
+          "minValue": 0
         }
       ]
     }
@@ -570,7 +611,7 @@
         },
         {
           "$type": "ServerFinishWatcherMixin",
-          "GPGMPHIIAMD": 82089,
+          "watcherId": 82089,
           "predicates": [
             {
               "$type": "ByTargetGlobalValue",
@@ -582,7 +623,7 @@
         },
         {
           "$type": "ServerFinishWatcherMixin",
-          "GPGMPHIIAMD": 82090,
+          "watcherId": 82090,
           "predicates": [
             {
               "$type": "ByTargetGlobalValue",
@@ -595,7 +636,9 @@
       ],
       "abilitySpecials": {
         "Effigy_Ice_ReviveMaxHPRatio": 0.5,
-        "Effigy_Ice_ReviveHPStep": 0.05
+        "Effigy_Ice_ReviveHPStep": 0.05,
+        "Effigy_Ice_ReviveHPStep_ExtraModifyRatio": 1,
+        "Effigy_Ice_ReviveStateShieldDurability": 2200
       },
       "modifiers": {
         "RevivingStateModifier": {
@@ -604,7 +647,7 @@
           "onAdded": [
             {
               "$type": "EnablePartControl",
-              "JEBAOIKDKPN": [
+              "partRootNames": [
                 "ReviveSkillDirection"
               ],
               "enable": true
@@ -750,7 +793,7 @@
           "modifierName": "",
           "isUnique": true,
           "elementType": "Frozen",
-          "elementDurability": 2200,
+          "elementDurability": "Effigy_Ice_ReviveStateShieldDurability",
           "thinkInterval": 3,
           "modifierMixins": [
             {
@@ -817,6 +860,14 @@
                   "key": "_EFFIGY_ICE_REVIVINGFX_",
                   "maxValue": 0,
                   "minValue": 0
+                },
+                {
+                  "$type": "ServerMonsterLog",
+                  "paramList": [
+                    2,
+                    1,
+                    1
+                  ]
                 }
               ],
               "showDamageText": ""
@@ -835,7 +886,11 @@
               "successActions": [
                 {
                   "$type": "HealHP",
-                  "amountByTargetMaxHPRatio": "Effigy_Ice_ReviveHPStep"
+                  "amountByTargetMaxHPRatio": [
+                    "Effigy_Ice_ReviveHPStep",
+                    "Effigy_Ice_ReviveHPStep_ExtraModifyRatio",
+                    "MUL"
+                  ]
                 },
                 {
                   "$type": "FireEffect",
@@ -845,10 +900,18 @@
             },
             {
               "$type": "EnableHitBoxByName",
-              "EACGOCFODIC": [
+              "hitBoxNames": [
                 "RevivingStateHitBox"
               ],
               "setEnable": true
+            },
+            {
+              "$type": "ServerMonsterLog",
+              "paramList": [
+                2,
+                1,
+                0
+              ]
             }
           ],
           "onRemoved": [
@@ -859,8 +922,14 @@
               }
             },
             {
+              "$type": "KillGadget",
+              "gadgetInfo": {
+                "configID": 42004415
+              }
+            },
+            {
               "$type": "EnableHitBoxByName",
-              "EACGOCFODIC": [
+              "hitBoxNames": [
                 "RevivingStateHitBox"
               ]
             }
@@ -956,7 +1025,7 @@
                         "direction": {
                           "$type": "ConfigDirectionByBackToHitBoxCenter"
                         },
-                        "ANAGBFPADIE": true
+                        "alongGround": true
                       }
                     }
                   ]
@@ -977,7 +1046,11 @@
               "successActions": [
                 {
                   "$type": "HealHP",
-                  "amountByTargetMaxHPRatio": "Effigy_Ice_ReviveHPStep"
+                  "amountByTargetMaxHPRatio": [
+                    "Effigy_Ice_ReviveHPStep",
+                    "Effigy_Ice_ReviveHPStep_ExtraModifyRatio",
+                    "MUL"
+                  ]
                 },
                 {
                   "$type": "FireEffect",
@@ -991,10 +1064,6 @@
           "modifierName": "",
           "elementDurability": 100,
           "onAdded": [
-            {
-              "$type": "AttachEffect",
-              "effectPattern": "Eff_Monster_Effigy_Ice_Revive_AS"
-            },
             {
               "$type": "HealHP",
               "predicates": [
@@ -1033,7 +1102,7 @@
             },
             {
               "$type": "ReTriggerAISkillInitialCD",
-              "FJNGOGJOBEE": [
+              "skillIDs": [
                 411
               ]
             }
@@ -1119,6 +1188,40 @@
           "key": "_EFFIGY_ICE_REVIVECOUNT_",
           "maxValue": 0,
           "minValue": 0
+        },
+        {
+          "$type": "Predicated",
+          "targetPredicates": [
+            {
+              "$type": "ByTargetGlobalValue",
+              "key": "_EFFIGY_ELITE_TAG",
+              "value": 1
+            }
+          ],
+          "successActions": [
+            {
+              "$type": "SetOverrideMapValue",
+              "value": 0.75,
+              "overrideMapKey": "Effigy_Ice_ReviveHPStep_ExtraModifyRatio"
+            },
+            {
+              "$type": "SetOverrideMapValue",
+              "value": 4200,
+              "overrideMapKey": "Effigy_Ice_ReviveStateShieldDurability"
+            }
+          ],
+          "failActions": [
+            {
+              "$type": "SetOverrideMapValue",
+              "value": 1,
+              "overrideMapKey": "Effigy_Ice_ReviveHPStep_ExtraModifyRatio"
+            },
+            {
+              "$type": "SetOverrideMapValue",
+              "value": 2200,
+              "overrideMapKey": "Effigy_Ice_ReviveStateShieldDurability"
+            }
+          ]
         }
       ]
     }
@@ -1133,6 +1236,7 @@
           "poseIDs": [
             1,
             101,
+            102,
             201,
             902
           ],
@@ -1311,11 +1415,11 @@
             },
             {
               "$type": "HideUIBillBoard",
-              "COCENMAFJGD": true
+              "hide": true
             },
             {
               "$type": "EnableHitBoxByName",
-              "EACGOCFODIC": [
+              "hitBoxNames": [
                 "ShieldHitBox1",
                 "ShieldHitBox2",
                 "ShieldHitBox3",
@@ -1339,13 +1443,14 @@
             {
               "$type": "SendEffectTrigger",
               "parameter": "StandbyFree",
+              "attachPoint": "",
               "effectPattern": "Eff_Monster_Effigy_Ice_EnergyCore"
             }
           ],
           "onRemoved": [
             {
               "$type": "EnableHitBoxByName",
-              "EACGOCFODIC": [
+              "hitBoxNames": [
                 "ShieldHitBox1",
                 "ShieldHitBox2",
                 "ShieldHitBox3",
@@ -1387,6 +1492,7 @@
                 }
               ],
               "parameter": "Standby",
+              "attachPoint": "",
               "effectPattern": "Eff_Monster_Effigy_Ice_EnergyCore"
             }
           ]
@@ -1409,9 +1515,9 @@
           "born": {
             "$type": "ConfigBornBySelf"
           },
-          "JCAMCEOBIFG": true,
+          "sightGroupWithOwner": true,
           "gadgetID": 42004006,
-          "CEBMHIFOHJM": true
+          "byServer": true
         },
         {
           "$type": "SetGlobalPos",
@@ -1449,7 +1555,7 @@
             {
               "$type": "TryFindBlinkPoint",
               "target": "Target",
-              "DGICDMAKHOJ": 360
+              "forwardAngle": 360
             }
           ]
         }
@@ -1476,7 +1582,7 @@
             {
               "$type": "TryFindBlinkPoint",
               "target": "Target",
-              "DGICDMAKHOJ": 360,
+              "forwardAngle": 360,
               "maxRange": 6
             }
           ]
@@ -1587,7 +1693,7 @@
             },
             {
               "$type": "EnableHitBoxByName",
-              "EACGOCFODIC": [
+              "hitBoxNames": [
                 "RevivingStateHitBox"
               ]
             }
@@ -1746,9 +1852,9 @@
                       "maxRandomRange": 4
                     },
                     "onGround": true,
-                    "FOILCBGLNDF": 6,
-                    "JBNMHNDDJJC": 0,
-                    "GCJBBHLBLLG": 50
+                    "linearOffset": 6,
+                    "linearMin": 0,
+                    "linearMax": 50
                   },
                   "gadgetID": 42004012,
                   "campID": 4001
@@ -1793,10 +1899,10 @@
                           "maxRandomRange": 2.5
                         },
                         "onGround": true,
-                        "FOILCBGLNDF": -12.5,
-                        "EENGAGGBALM": false,
-                        "JBNMHNDDJJC": 0,
-                        "GCJBBHLBLLG": 50
+                        "linearOffset": -12.5,
+                        "baseOnTarget": false,
+                        "linearMin": 0,
+                        "linearMax": 50
                       },
                       "gadgetID": 42004012,
                       "campID": 4001
@@ -1841,9 +1947,9 @@
                               "maxRandomRange": 2.5
                             },
                             "onGround": true,
-                            "FOILCBGLNDF": 20,
-                            "JBNMHNDDJJC": 0,
-                            "GCJBBHLBLLG": 50
+                            "linearOffset": 20,
+                            "linearMin": 0,
+                            "linearMax": 50
                           },
                           "gadgetID": 42004012,
                           "campID": 4001
@@ -2044,63 +2150,103 @@
       "abilityMixins": [
         {
           "$type": "SteerAttackMixin",
-          "EHNAPMMMNFI": [
+          "steerStateIDs": [
             "RangeAtk"
           ],
-          "IMHBEGIKDKB": 3,
+          "endNormalizedTime": 3,
           "angularSpeed": 150,
-          "NCAENFOANAG": "",
-          "BBHBLAIEHAJ": 12
+          "attackTrigger": "",
+          "attackDistance": 12
         },
         {
           "$type": "SteerAttackMixin",
-          "EHNAPMMMNFI": [
+          "steerStateIDs": [
+            "RangeAtk_Activity"
+          ],
+          "endNormalizedTime": 3,
+          "angularSpeed": 150,
+          "attackTrigger": "",
+          "attackDistance": 12
+        },
+        {
+          "$type": "SteerAttackMixin",
+          "steerStateIDs": [
             "SingleAtk"
           ],
-          "IMHBEGIKDKB": 0.1,
+          "endNormalizedTime": 0.1,
           "angularSpeed": 150,
-          "NCAENFOANAG": "",
-          "BBHBLAIEHAJ": 12
+          "attackTrigger": "",
+          "attackDistance": 12
         },
         {
           "$type": "SteerAttackMixin",
-          "EHNAPMMMNFI": [
+          "steerStateIDs": [
             "SingleAtk_Rush"
           ],
-          "IMHBEGIKDKB": 3,
+          "endNormalizedTime": 3,
           "angularSpeed": 180,
-          "NCAENFOANAG": "SingleAtk_RushStop",
-          "BBHBLAIEHAJ": 4
+          "attackTrigger": "SingleAtk_RushStop",
+          "attackDistance": 4
         },
         {
           "$type": "SteerAttackMixin",
-          "EHNAPMMMNFI": [
+          "steerStateIDs": [
             "NeedleWheelCharge_BS"
           ],
-          "EOOBFBGMGLD": 0.2,
+          "startNormalizedTime": 0.2,
           "angularSpeed": 180,
-          "NCAENFOANAG": "",
-          "BBHBLAIEHAJ": 7.5
+          "attackTrigger": "",
+          "attackDistance": 7.5
         },
         {
           "$type": "SteerAttackMixin",
-          "EHNAPMMMNFI": [
+          "steerStateIDs": [
             "NeedleWheelCharge_Aiming"
           ],
-          "IMHBEGIKDKB": 10,
+          "endNormalizedTime": 10,
           "angularSpeed": 360,
-          "NCAENFOANAG": "",
-          "BBHBLAIEHAJ": 7.5
+          "attackTrigger": "",
+          "attackDistance": 7.5
         },
         {
           "$type": "SteerAttackMixin",
-          "EHNAPMMMNFI": [
+          "steerStateIDs": [
             "NeedleWheelCharge_Loop"
           ],
-          "IMHBEGIKDKB": 10,
+          "endNormalizedTime": 10,
           "angularSpeed": 40,
-          "NCAENFOANAG": "",
-          "BBHBLAIEHAJ": 7.5
+          "attackTrigger": "",
+          "attackDistance": 7.5
+        },
+        {
+          "$type": "SteerAttackMixin",
+          "steerStateIDs": [
+            "NeedleWheelCharge_Activity_BS"
+          ],
+          "startNormalizedTime": 0.2,
+          "angularSpeed": 180,
+          "attackTrigger": "",
+          "attackDistance": 7.5
+        },
+        {
+          "$type": "SteerAttackMixin",
+          "steerStateIDs": [
+            "NeedleWheelCharge_Activity_Aiming"
+          ],
+          "endNormalizedTime": 10,
+          "angularSpeed": 720,
+          "attackTrigger": "",
+          "attackDistance": 7.5
+        },
+        {
+          "$type": "SteerAttackMixin",
+          "steerStateIDs": [
+            "NeedleWheelCharge_Activity_Loop"
+          ],
+          "endNormalizedTime": 10,
+          "angularSpeed": 40,
+          "attackTrigger": "",
+          "attackDistance": 7.5
         }
       ]
     }
@@ -2176,7 +2322,11 @@
             "RangeAtk_BS1",
             "RangeAtk_BS2",
             "RangeAtk_Loop1",
-            "RangeAtk_Loop2"
+            "RangeAtk_Loop2",
+            "RangeAtk_Activity_BS1",
+            "RangeAtk_Activity_BS2",
+            "RangeAtk_Activity_Loop1",
+            "RangeAtk_Activity_Loop2"
           ],
           "modifierName": "Effigy_Ice_RangeAtk_Effect"
         }
@@ -2564,10 +2714,10 @@
             },
             "attackInfo": {
               "attackTag": "",
-              "attenuationTag": "Effigy_Ice_IceBarrage_MinorBullet",
-              "attenuationGroup": "Effigy_Ice_Attenuation_2",
+              "attenuationTag": "Effigy_Ice_RangeAtk_Minor",
+              "attenuationGroup": "Effigy_Ice_RangeAtk",
               "attackProperty": {
-                "damagePercentage": 0.125,
+                "damagePercentage": 0.25,
                 "damagePercentageRatio": 0,
                 "elementType": "Ice",
                 "elementDurability": 50,
@@ -2677,7 +2827,15 @@
             "NeedleWheelCharge_Loop1",
             "NeedleWheelCharge_Loop2",
             "NeedleWheelCharge_Loop3",
-            "NeedleWheelCharge_AS01"
+            "NeedleWheelCharge_AS01",
+            "NeedleWheelCharge_Activity_BS",
+            "NeedleWheelCharge_Activity_Aiming1",
+            "NeedleWheelCharge_Activity_Aiming2",
+            "NeedleWheelCharge_Activity_Aiming3",
+            "NeedleWheelCharge_Activity_Loop1",
+            "NeedleWheelCharge_Activity_Loop2",
+            "NeedleWheelCharge_Activity_Loop3",
+            "NeedleWheelCharge_Activity_AS01"
           ],
           "modifierName": "UNIQUE_NeedleWheelChargeEffect"
         },
@@ -2690,7 +2848,14 @@
             "NeedleWheelCharge_Loop1",
             "NeedleWheelCharge_Loop2",
             "NeedleWheelCharge_Loop3",
-            "NeedleWheelCharge_AS01"
+            "NeedleWheelCharge_AS01",
+            "NeedleWheelCharge_Activity_Aiming1",
+            "NeedleWheelCharge_Activity_Aiming2",
+            "NeedleWheelCharge_Activity_Aiming3",
+            "NeedleWheelCharge_Activity_Loop1",
+            "NeedleWheelCharge_Activity_Loop2",
+            "NeedleWheelCharge_Activity_Loop3",
+            "NeedleWheelCharge_Activity_AS01"
           ],
           "modifierName": "UNIQUE_NeedleWheelChargeAttackEvent"
         }
@@ -2871,9 +3036,10 @@
         {
           "$type": "DoActionByStateIDMixin",
           "stateIDs": [
-            "NeedleSpinningShoot_BS"
+            "NeedleSpinningShoot_BS",
+            "NeedleSpinningShoot_Activity_BS"
           ],
-          "KELPBOLPMNI": [
+          "enterActions": [
             {
               "$type": "FireEffect",
               "effectPattern": "Eff_Monster_Effigy_Ice_NeedleSpinningShoot_BS"
@@ -2887,7 +3053,12 @@
             "NeedleSpinningShoot_Loop",
             "NeedleSpinningShoot_AS",
             "NeedleSpinningShoot_CoreExpose",
-            "NeedleSpinningShoot_Reform"
+            "NeedleSpinningShoot_Reform",
+            "NeedleSpinningShoot_Activity_BS",
+            "NeedleSpinningShoot_Activity_Loop",
+            "NeedleSpinningShoot_Activity_AS",
+            "NeedleSpinningShoot_Activity_CoreExpose",
+            "NeedleSpinningShoot_Activity_Reform"
           ],
           "modifierName": "NeedleSpinningShoot_Duration"
         },
@@ -2897,6 +3068,26 @@
           "modifierName": "NeedleSpinningShoot_CreateIceFog",
           "normalizeStart": 0.97,
           "normalizeEnd": 2
+        },
+        {
+          "$type": "AttachToNormalizedTimeMixin",
+          "stateID": "NeedleSpinningShoot_Activity_Loop",
+          "modifierName": "NeedleSpinningShoot_CreateIceFog",
+          "normalizeStart": 0.97,
+          "normalizeEnd": 2
+        },
+        {
+          "$type": "AttachToNormalizedTimeMixin",
+          "stateID": "NeedleSpinningShoot_Activity_Loop",
+          "modifierName": "NeedleSpinningShoot_Activity_LaunchMultibullet",
+          "predicates": [
+            {
+              "$type": "ByTargetGlobalValue",
+              "key": "_EFFIGY_ELITE_TAG",
+              "value": 1
+            }
+          ],
+          "normalizeEnd": 0.9
         }
       ],
       "modifiers": {
@@ -2944,6 +3135,21 @@
               },
               "gadgetID": 42004403,
               "campID": 4001
+            }
+          ]
+        },
+        "NeedleSpinningShoot_Activity_LaunchMultibullet": {
+          "modifierName": "",
+          "elementDurability": 100,
+          "onAdded": [
+            {
+              "$type": "TriggerBullet",
+              "bulletID": 42004418,
+              "born": {
+                "$type": "ConfigBornByAttachPoint",
+                "attachPointName": "NeedleSpinningShoot_MultibulletPoint"
+              },
+              "lifeByOwnerIsAlive": true
             }
           ]
         }
@@ -3019,9 +3225,10 @@
         {
           "$type": "DoActionByAnimatorStateIDMixin",
           "stateIDs": [
-            "SpikeStrike_BS01"
+            "SpikeStrike_BS01",
+            "SpikeStrike_Activity_BS01"
           ],
-          "KELPBOLPMNI": [
+          "enterActions": [
             {
               "$type": "FireEffect",
               "effectPattern": "Eff_Monster_Effigy_Ice_SpikeStrike_BS"
@@ -3043,6 +3250,22 @@
             "SpikeStrike_CoreExpose2"
           ],
           "modifierName": "SpikeStrike_ProtectSpikeLauncher"
+        },
+        {
+          "$type": "AttachToAnimatorStateIDMixin",
+          "stateIDs": [
+            "SpikeStrike_Activity_CoreExpose1",
+            "SpikeStrike_Activity_CoreExpose2"
+          ],
+          "modifierName": "SpikeStrike_Activity_SpikeLauncher"
+        },
+        {
+          "$type": "AttachToAnimatorStateIDMixin",
+          "stateIDs": [
+            "SpikeStrike_Activity_CoreExpose1",
+            "SpikeStrike_Activity_CoreExpose2"
+          ],
+          "modifierName": "SpikeStrike_Activity_ProtectSpikeLauncher"
         }
       ],
       "modifiers": {
@@ -3074,7 +3297,7 @@
                     },
                     "onGround": true,
                     "onGroundRaycastUpDist": 0.2,
-                    "BIOOFAHEGLA": 0.5
+                    "timeForPredictive": 0.5
                   },
                   "gadgetID": 42004407,
                   "campID": 4001
@@ -3106,7 +3329,7 @@
                     },
                     "onGround": true,
                     "onGroundRaycastUpDist": 0.2,
-                    "BIOOFAHEGLA": 0.5
+                    "timeForPredictive": 0.5
                   },
                   "gadgetID": 42004407,
                   "campID": 4001
@@ -3167,6 +3390,718 @@
               ]
             }
           ]
+        },
+        "SpikeStrike_Activity_SpikeLauncher": {
+          "modifierName": "",
+          "elementDurability": 100,
+          "thinkInterval": 0.3,
+          "onAdded": [
+            {
+              "$type": "Predicated",
+              "target": "SelfAttackTarget",
+              "targetPredicates": [
+                {
+                  "$type": "ByTargetPositionToSelfPosition",
+                  "value": 6.25
+                }
+              ],
+              "successActions": [
+                {
+                  "$type": "CreateGadget",
+                  "target": "SelfAttackTarget",
+                  "lifeByOwnerIsAlive": true,
+                  "born": {
+                    "$type": "ConfigBornByPredicatePoint",
+                    "bornRandom": {
+                      "$type": "BornRandomFromCenter",
+                      "minRandomRange": 0,
+                      "maxRandomRange": 1
+                    },
+                    "onGround": true,
+                    "onGroundRaycastUpDist": 0.2,
+                    "timeForPredictive": 0.5
+                  },
+                  "gadgetID": 42004407,
+                  "campID": 4001
+                }
+              ]
+            }
+          ],
+          "onThinkInterval": [
+            {
+              "$type": "Predicated",
+              "target": "SelfAttackTarget",
+              "targetPredicates": [
+                {
+                  "$type": "ByTargetPositionToSelfPosition",
+                  "value": 6.25
+                }
+              ],
+              "successActions": [
+                {
+                  "$type": "CreateGadget",
+                  "target": "SelfAttackTarget",
+                  "lifeByOwnerIsAlive": true,
+                  "born": {
+                    "$type": "ConfigBornByPredicatePoint",
+                    "bornRandom": {
+                      "$type": "BornRandomFromCenter",
+                      "minRandomRange": 0,
+                      "maxRandomRange": 1
+                    },
+                    "onGround": true,
+                    "onGroundRaycastUpDist": 0.2,
+                    "timeForPredictive": 0.5
+                  },
+                  "gadgetID": 42004407,
+                  "campID": 4001
+                }
+              ]
+            }
+          ]
+        },
+        "SpikeStrike_Activity_ProtectSpikeLauncher": {
+          "modifierName": "",
+          "elementDurability": 100,
+          "thinkInterval": 0.2,
+          "onAdded": [
+            {
+              "$type": "Predicated",
+              "targetPredicates": [
+                {
+                  "$type": "ByTargetGlobalValue",
+                  "key": "_EFFIGY_ICE_ICESPIKE_ROUND_",
+                  "value": 0
+                }
+              ],
+              "successActions": [
+                {
+                  "$type": "CreateGadget",
+                  "lifeByOwnerIsAlive": true,
+                  "born": {
+                    "$type": "ConfigBornByAttachPoint",
+                    "onGround": true,
+                    "onGroundRaycastUpDist": 0.2,
+                    "attachPointName": "SpikePoint1"
+                  },
+                  "gadgetID": 42004407,
+                  "campID": 4001
+                },
+                {
+                  "$type": "CreateGadget",
+                  "lifeByOwnerIsAlive": true,
+                  "born": {
+                    "$type": "ConfigBornByAttachPoint",
+                    "onGround": true,
+                    "onGroundRaycastUpDist": 0.2,
+                    "attachPointName": "SpikePoint7"
+                  },
+                  "gadgetID": 42004407,
+                  "campID": 4001
+                },
+                {
+                  "$type": "CreateGadget",
+                  "lifeByOwnerIsAlive": true,
+                  "born": {
+                    "$type": "ConfigBornByAttachPoint",
+                    "onGround": true,
+                    "onGroundRaycastUpDist": 0.2,
+                    "attachPointName": "SpikePoint13"
+                  },
+                  "gadgetID": 42004407,
+                  "campID": 4001
+                }
+              ]
+            },
+            {
+              "$type": "Predicated",
+              "targetPredicates": [
+                {
+                  "$type": "ByTargetGlobalValue",
+                  "key": "_EFFIGY_ICE_ICESPIKE_ROUND_",
+                  "value": 1
+                }
+              ],
+              "successActions": [
+                {
+                  "$type": "CreateGadget",
+                  "lifeByOwnerIsAlive": true,
+                  "born": {
+                    "$type": "ConfigBornByAttachPoint",
+                    "onGround": true,
+                    "onGroundRaycastUpDist": 0.2,
+                    "attachPointName": "SpikePoint2"
+                  },
+                  "gadgetID": 42004407,
+                  "campID": 4001
+                },
+                {
+                  "$type": "CreateGadget",
+                  "lifeByOwnerIsAlive": true,
+                  "born": {
+                    "$type": "ConfigBornByAttachPoint",
+                    "onGround": true,
+                    "onGroundRaycastUpDist": 0.2,
+                    "attachPointName": "SpikePoint8"
+                  },
+                  "gadgetID": 42004407,
+                  "campID": 4001
+                },
+                {
+                  "$type": "CreateGadget",
+                  "lifeByOwnerIsAlive": true,
+                  "born": {
+                    "$type": "ConfigBornByAttachPoint",
+                    "onGround": true,
+                    "onGroundRaycastUpDist": 0.2,
+                    "attachPointName": "SpikePoint14"
+                  },
+                  "gadgetID": 42004407,
+                  "campID": 4001
+                }
+              ]
+            },
+            {
+              "$type": "Predicated",
+              "targetPredicates": [
+                {
+                  "$type": "ByTargetGlobalValue",
+                  "key": "_EFFIGY_ICE_ICESPIKE_ROUND_",
+                  "value": 2
+                }
+              ],
+              "successActions": [
+                {
+                  "$type": "CreateGadget",
+                  "lifeByOwnerIsAlive": true,
+                  "born": {
+                    "$type": "ConfigBornByAttachPoint",
+                    "onGround": true,
+                    "onGroundRaycastUpDist": 0.2,
+                    "attachPointName": "SpikePoint3"
+                  },
+                  "gadgetID": 42004407,
+                  "campID": 4001
+                },
+                {
+                  "$type": "CreateGadget",
+                  "lifeByOwnerIsAlive": true,
+                  "born": {
+                    "$type": "ConfigBornByAttachPoint",
+                    "onGround": true,
+                    "onGroundRaycastUpDist": 0.2,
+                    "attachPointName": "SpikePoint9"
+                  },
+                  "gadgetID": 42004407,
+                  "campID": 4001
+                },
+                {
+                  "$type": "CreateGadget",
+                  "lifeByOwnerIsAlive": true,
+                  "born": {
+                    "$type": "ConfigBornByAttachPoint",
+                    "onGround": true,
+                    "onGroundRaycastUpDist": 0.2,
+                    "attachPointName": "SpikePoint15"
+                  },
+                  "gadgetID": 42004407,
+                  "campID": 4001
+                }
+              ]
+            },
+            {
+              "$type": "Predicated",
+              "targetPredicates": [
+                {
+                  "$type": "ByTargetGlobalValue",
+                  "key": "_EFFIGY_ICE_ICESPIKE_ROUND_",
+                  "value": 3
+                }
+              ],
+              "successActions": [
+                {
+                  "$type": "CreateGadget",
+                  "lifeByOwnerIsAlive": true,
+                  "born": {
+                    "$type": "ConfigBornByAttachPoint",
+                    "onGround": true,
+                    "onGroundRaycastUpDist": 0.2,
+                    "attachPointName": "SpikePoint4"
+                  },
+                  "gadgetID": 42004407,
+                  "campID": 4001
+                },
+                {
+                  "$type": "CreateGadget",
+                  "lifeByOwnerIsAlive": true,
+                  "born": {
+                    "$type": "ConfigBornByAttachPoint",
+                    "onGround": true,
+                    "onGroundRaycastUpDist": 0.2,
+                    "attachPointName": "SpikePoint10"
+                  },
+                  "gadgetID": 42004407,
+                  "campID": 4001
+                },
+                {
+                  "$type": "CreateGadget",
+                  "lifeByOwnerIsAlive": true,
+                  "born": {
+                    "$type": "ConfigBornByAttachPoint",
+                    "onGround": true,
+                    "onGroundRaycastUpDist": 0.2,
+                    "attachPointName": "SpikePoint16"
+                  },
+                  "gadgetID": 42004407,
+                  "campID": 4001
+                }
+              ]
+            },
+            {
+              "$type": "Predicated",
+              "targetPredicates": [
+                {
+                  "$type": "ByTargetGlobalValue",
+                  "key": "_EFFIGY_ICE_ICESPIKE_ROUND_",
+                  "value": 4
+                }
+              ],
+              "successActions": [
+                {
+                  "$type": "CreateGadget",
+                  "lifeByOwnerIsAlive": true,
+                  "born": {
+                    "$type": "ConfigBornByAttachPoint",
+                    "onGround": true,
+                    "onGroundRaycastUpDist": 0.2,
+                    "attachPointName": "SpikePoint5"
+                  },
+                  "gadgetID": 42004407,
+                  "campID": 4001
+                },
+                {
+                  "$type": "CreateGadget",
+                  "lifeByOwnerIsAlive": true,
+                  "born": {
+                    "$type": "ConfigBornByAttachPoint",
+                    "onGround": true,
+                    "onGroundRaycastUpDist": 0.2,
+                    "attachPointName": "SpikePoint11"
+                  },
+                  "gadgetID": 42004407,
+                  "campID": 4001
+                },
+                {
+                  "$type": "CreateGadget",
+                  "lifeByOwnerIsAlive": true,
+                  "born": {
+                    "$type": "ConfigBornByAttachPoint",
+                    "onGround": true,
+                    "onGroundRaycastUpDist": 0.2,
+                    "attachPointName": "SpikePoint17"
+                  },
+                  "gadgetID": 42004407,
+                  "campID": 4001
+                }
+              ]
+            },
+            {
+              "$type": "Predicated",
+              "targetPredicates": [
+                {
+                  "$type": "ByTargetGlobalValue",
+                  "key": "_EFFIGY_ICE_ICESPIKE_ROUND_",
+                  "value": 5
+                }
+              ],
+              "successActions": [
+                {
+                  "$type": "CreateGadget",
+                  "lifeByOwnerIsAlive": true,
+                  "born": {
+                    "$type": "ConfigBornByAttachPoint",
+                    "onGround": true,
+                    "onGroundRaycastUpDist": 0.2,
+                    "attachPointName": "SpikePoint6"
+                  },
+                  "gadgetID": 42004407,
+                  "campID": 4001
+                },
+                {
+                  "$type": "CreateGadget",
+                  "lifeByOwnerIsAlive": true,
+                  "born": {
+                    "$type": "ConfigBornByAttachPoint",
+                    "onGround": true,
+                    "onGroundRaycastUpDist": 0.2,
+                    "attachPointName": "SpikePoint12"
+                  },
+                  "gadgetID": 42004407,
+                  "campID": 4001
+                },
+                {
+                  "$type": "CreateGadget",
+                  "lifeByOwnerIsAlive": true,
+                  "born": {
+                    "$type": "ConfigBornByAttachPoint",
+                    "onGround": true,
+                    "onGroundRaycastUpDist": 0.2,
+                    "attachPointName": "SpikePoint18"
+                  },
+                  "gadgetID": 42004407,
+                  "campID": 4001
+                }
+              ]
+            },
+            {
+              "$type": "Predicated",
+              "targetPredicates": [
+                {
+                  "$type": "ByTargetGlobalValue",
+                  "key": "_EFFIGY_ICE_ICESPIKE_ROUND_",
+                  "value": 5
+                }
+              ],
+              "successActions": [
+                {
+                  "$type": "SetGlobalValue",
+                  "value": 0,
+                  "key": "_EFFIGY_ICE_ICESPIKE_ROUND_",
+                  "maxValue": 0,
+                  "minValue": 0
+                }
+              ],
+              "failActions": [
+                {
+                  "$type": "AddGlobalValue",
+                  "value": 1,
+                  "key": "_EFFIGY_ICE_ICESPIKE_ROUND_",
+                  "useLimitRange": true,
+                  "maxValue": 10,
+                  "minValue": 0
+                }
+              ]
+            }
+          ],
+          "onThinkInterval": [
+            {
+              "$type": "Predicated",
+              "targetPredicates": [
+                {
+                  "$type": "ByTargetGlobalValue",
+                  "key": "_EFFIGY_ICE_ICESPIKE_ROUND_",
+                  "value": 0
+                }
+              ],
+              "successActions": [
+                {
+                  "$type": "CreateGadget",
+                  "lifeByOwnerIsAlive": true,
+                  "born": {
+                    "$type": "ConfigBornByAttachPoint",
+                    "onGround": true,
+                    "onGroundRaycastUpDist": 0.2,
+                    "attachPointName": "SpikePoint1"
+                  },
+                  "gadgetID": 42004407,
+                  "campID": 4001
+                },
+                {
+                  "$type": "CreateGadget",
+                  "lifeByOwnerIsAlive": true,
+                  "born": {
+                    "$type": "ConfigBornByAttachPoint",
+                    "onGround": true,
+                    "onGroundRaycastUpDist": 0.2,
+                    "attachPointName": "SpikePoint7"
+                  },
+                  "gadgetID": 42004407,
+                  "campID": 4001
+                },
+                {
+                  "$type": "CreateGadget",
+                  "lifeByOwnerIsAlive": true,
+                  "born": {
+                    "$type": "ConfigBornByAttachPoint",
+                    "onGround": true,
+                    "onGroundRaycastUpDist": 0.2,
+                    "attachPointName": "SpikePoint13"
+                  },
+                  "gadgetID": 42004407,
+                  "campID": 4001
+                }
+              ]
+            },
+            {
+              "$type": "Predicated",
+              "targetPredicates": [
+                {
+                  "$type": "ByTargetGlobalValue",
+                  "key": "_EFFIGY_ICE_ICESPIKE_ROUND_",
+                  "value": 1
+                }
+              ],
+              "successActions": [
+                {
+                  "$type": "CreateGadget",
+                  "lifeByOwnerIsAlive": true,
+                  "born": {
+                    "$type": "ConfigBornByAttachPoint",
+                    "onGround": true,
+                    "onGroundRaycastUpDist": 0.2,
+                    "attachPointName": "SpikePoint2"
+                  },
+                  "gadgetID": 42004407,
+                  "campID": 4001
+                },
+                {
+                  "$type": "CreateGadget",
+                  "lifeByOwnerIsAlive": true,
+                  "born": {
+                    "$type": "ConfigBornByAttachPoint",
+                    "onGround": true,
+                    "onGroundRaycastUpDist": 0.2,
+                    "attachPointName": "SpikePoint8"
+                  },
+                  "gadgetID": 42004407,
+                  "campID": 4001
+                },
+                {
+                  "$type": "CreateGadget",
+                  "lifeByOwnerIsAlive": true,
+                  "born": {
+                    "$type": "ConfigBornByAttachPoint",
+                    "onGround": true,
+                    "onGroundRaycastUpDist": 0.2,
+                    "attachPointName": "SpikePoint14"
+                  },
+                  "gadgetID": 42004407,
+                  "campID": 4001
+                }
+              ]
+            },
+            {
+              "$type": "Predicated",
+              "targetPredicates": [
+                {
+                  "$type": "ByTargetGlobalValue",
+                  "key": "_EFFIGY_ICE_ICESPIKE_ROUND_",
+                  "value": 2
+                }
+              ],
+              "successActions": [
+                {
+                  "$type": "CreateGadget",
+                  "lifeByOwnerIsAlive": true,
+                  "born": {
+                    "$type": "ConfigBornByAttachPoint",
+                    "onGround": true,
+                    "onGroundRaycastUpDist": 0.2,
+                    "attachPointName": "SpikePoint3"
+                  },
+                  "gadgetID": 42004407,
+                  "campID": 4001
+                },
+                {
+                  "$type": "CreateGadget",
+                  "lifeByOwnerIsAlive": true,
+                  "born": {
+                    "$type": "ConfigBornByAttachPoint",
+                    "onGround": true,
+                    "onGroundRaycastUpDist": 0.2,
+                    "attachPointName": "SpikePoint9"
+                  },
+                  "gadgetID": 42004407,
+                  "campID": 4001
+                },
+                {
+                  "$type": "CreateGadget",
+                  "lifeByOwnerIsAlive": true,
+                  "born": {
+                    "$type": "ConfigBornByAttachPoint",
+                    "onGround": true,
+                    "onGroundRaycastUpDist": 0.2,
+                    "attachPointName": "SpikePoint15"
+                  },
+                  "gadgetID": 42004407,
+                  "campID": 4001
+                }
+              ]
+            },
+            {
+              "$type": "Predicated",
+              "targetPredicates": [
+                {
+                  "$type": "ByTargetGlobalValue",
+                  "key": "_EFFIGY_ICE_ICESPIKE_ROUND_",
+                  "value": 3
+                }
+              ],
+              "successActions": [
+                {
+                  "$type": "CreateGadget",
+                  "lifeByOwnerIsAlive": true,
+                  "born": {
+                    "$type": "ConfigBornByAttachPoint",
+                    "onGround": true,
+                    "onGroundRaycastUpDist": 0.2,
+                    "attachPointName": "SpikePoint4"
+                  },
+                  "gadgetID": 42004407,
+                  "campID": 4001
+                },
+                {
+                  "$type": "CreateGadget",
+                  "lifeByOwnerIsAlive": true,
+                  "born": {
+                    "$type": "ConfigBornByAttachPoint",
+                    "onGround": true,
+                    "onGroundRaycastUpDist": 0.2,
+                    "attachPointName": "SpikePoint10"
+                  },
+                  "gadgetID": 42004407,
+                  "campID": 4001
+                },
+                {
+                  "$type": "CreateGadget",
+                  "lifeByOwnerIsAlive": true,
+                  "born": {
+                    "$type": "ConfigBornByAttachPoint",
+                    "onGround": true,
+                    "onGroundRaycastUpDist": 0.2,
+                    "attachPointName": "SpikePoint16"
+                  },
+                  "gadgetID": 42004407,
+                  "campID": 4001
+                }
+              ]
+            },
+            {
+              "$type": "Predicated",
+              "targetPredicates": [
+                {
+                  "$type": "ByTargetGlobalValue",
+                  "key": "_EFFIGY_ICE_ICESPIKE_ROUND_",
+                  "value": 4
+                }
+              ],
+              "successActions": [
+                {
+                  "$type": "CreateGadget",
+                  "lifeByOwnerIsAlive": true,
+                  "born": {
+                    "$type": "ConfigBornByAttachPoint",
+                    "onGround": true,
+                    "onGroundRaycastUpDist": 0.2,
+                    "attachPointName": "SpikePoint5"
+                  },
+                  "gadgetID": 42004407,
+                  "campID": 4001
+                },
+                {
+                  "$type": "CreateGadget",
+                  "lifeByOwnerIsAlive": true,
+                  "born": {
+                    "$type": "ConfigBornByAttachPoint",
+                    "onGround": true,
+                    "onGroundRaycastUpDist": 0.2,
+                    "attachPointName": "SpikePoint11"
+                  },
+                  "gadgetID": 42004407,
+                  "campID": 4001
+                },
+                {
+                  "$type": "CreateGadget",
+                  "lifeByOwnerIsAlive": true,
+                  "born": {
+                    "$type": "ConfigBornByAttachPoint",
+                    "onGround": true,
+                    "onGroundRaycastUpDist": 0.2,
+                    "attachPointName": "SpikePoint17"
+                  },
+                  "gadgetID": 42004407,
+                  "campID": 4001
+                }
+              ]
+            },
+            {
+              "$type": "Predicated",
+              "targetPredicates": [
+                {
+                  "$type": "ByTargetGlobalValue",
+                  "key": "_EFFIGY_ICE_ICESPIKE_ROUND_",
+                  "value": 5
+                }
+              ],
+              "successActions": [
+                {
+                  "$type": "CreateGadget",
+                  "lifeByOwnerIsAlive": true,
+                  "born": {
+                    "$type": "ConfigBornByAttachPoint",
+                    "onGround": true,
+                    "onGroundRaycastUpDist": 0.2,
+                    "attachPointName": "SpikePoint6"
+                  },
+                  "gadgetID": 42004407,
+                  "campID": 4001
+                },
+                {
+                  "$type": "CreateGadget",
+                  "lifeByOwnerIsAlive": true,
+                  "born": {
+                    "$type": "ConfigBornByAttachPoint",
+                    "onGround": true,
+                    "onGroundRaycastUpDist": 0.2,
+                    "attachPointName": "SpikePoint12"
+                  },
+                  "gadgetID": 42004407,
+                  "campID": 4001
+                },
+                {
+                  "$type": "CreateGadget",
+                  "lifeByOwnerIsAlive": true,
+                  "born": {
+                    "$type": "ConfigBornByAttachPoint",
+                    "onGround": true,
+                    "onGroundRaycastUpDist": 0.2,
+                    "attachPointName": "SpikePoint18"
+                  },
+                  "gadgetID": 42004407,
+                  "campID": 4001
+                }
+              ]
+            },
+            {
+              "$type": "Predicated",
+              "targetPredicates": [
+                {
+                  "$type": "ByTargetGlobalValue",
+                  "key": "_EFFIGY_ICE_ICESPIKE_ROUND_",
+                  "value": 5
+                }
+              ],
+              "successActions": [
+                {
+                  "$type": "SetGlobalValue",
+                  "value": 0,
+                  "key": "_EFFIGY_ICE_ICESPIKE_ROUND_",
+                  "maxValue": 0,
+                  "minValue": 0
+                }
+              ],
+              "failActions": [
+                {
+                  "$type": "AddGlobalValue",
+                  "value": 1,
+                  "key": "_EFFIGY_ICE_ICESPIKE_ROUND_",
+                  "useLimitRange": true,
+                  "maxValue": 10,
+                  "minValue": 0
+                }
+              ]
+            }
+          ]
         }
       }
     }
@@ -3187,7 +4122,7 @@
               "born": {
                 "$type": "ConfigBornByTarget",
                 "onGround": true,
-                "ANAGBFPADIE": true
+                "alongGround": true
               }
             },
             {
@@ -3219,7 +4154,7 @@
                   "born": {
                     "$type": "ConfigBornBySelf",
                     "onGround": true,
-                    "ANAGBFPADIE": true
+                    "alongGround": true
                   },
                   "height": 2,
                   "radius": 1
@@ -3256,7 +4191,7 @@
           "born": {
             "$type": "ConfigBornByTarget",
             "onGround": true,
-            "ANAGBFPADIE": true
+            "alongGround": true
           }
         },
         {
@@ -3285,17 +4220,17 @@
           "stateIDs": [
             "Revive_IceBarrage_BS"
           ],
-          "KELPBOLPMNI": [
+          "enterActions": [
             {
               "$type": "EnablePartControl",
-              "JEBAOIKDKPN": [
+              "partRootNames": [
                 "ReviveSkillDirection"
               ],
               "enable": true
             },
             {
               "$type": "ShowReminder",
-              "angularVelocityThreshold": 400031
+              "id": 400031
             }
           ]
         },
@@ -3304,10 +4239,10 @@
           "stateIDs": [
             "Revive_IceBarrage_AS"
           ],
-          "KELPBOLPMNI": [
+          "enterActions": [
             {
               "$type": "EnablePartControl",
-              "JEBAOIKDKPN": [
+              "partRootNames": [
                 "ReviveSkillDirection"
               ],
               "enable": true
@@ -3319,10 +4254,10 @@
           "stateIDs": [
             "Revive_IceBarrage_Loop01"
           ],
-          "KELPBOLPMNI": [
+          "enterActions": [
             {
               "$type": "EnablePartControl",
-              "JEBAOIKDKPN": [
+              "partRootNames": [
                 "ReviveSkillDirection"
               ]
             },
@@ -3338,90 +4273,250 @@
       ],
       "onAbilityStart": [
         {
-          "$type": "TriggerBullet",
-          "predicates": [
+          "$type": "Predicated",
+          "target": "Target",
+          "targetPredicates": [
             {
               "$type": "ByTargetGlobalValue",
               "target": "Self",
-              "key": "_EFFIGY_ICE_ICEBARRAGE_BULLETCOUNT_",
-              "value": 0
-            }
-          ],
-          "bulletID": 42004404,
-          "born": {
-            "$type": "ConfigBornByAttachPoint",
-            "offset": {
-              "z": 1.5
-            },
-            "direction": {
-              "$type": "ConfigDirectionByAttachPoint",
-              "randomAngleHor": 5,
-              "IOIAHLPJDMH": 15,
-              "attachPointName": "IceBarrageMid",
-              "attachPointTargetType": "Self"
-            },
-            "attachPointName": "TopBulletSource"
-          }
-        },
-        {
-          "$type": "TriggerBullet",
-          "predicates": [
-            {
-              "$type": "ByTargetGlobalValue",
-              "target": "Self",
-              "key": "_EFFIGY_ICE_ICEBARRAGE_BULLETCOUNT_",
+              "key": "_EFFIGY_ELITE_TAG",
               "value": 1
             }
           ],
-          "bulletID": 42004404,
-          "born": {
-            "$type": "ConfigBornByAttachPoint",
-            "offset": {
-              "z": 1.5
-            },
-            "direction": {
-              "$type": "ConfigDirectionByAttachPoint",
-              "randomAngleHor": 5,
-              "IOIAHLPJDMH": 15,
-              "attachPointName": "IceBarrageL",
-              "attachPointTargetType": "Self"
-            },
-            "attachPointName": "TopBulletSource"
-          }
-        },
-        {
-          "$type": "TriggerBullet",
-          "predicates": [
+          "successActions": [
             {
-              "$type": "ByTargetGlobalValue",
-              "target": "Self",
+              "$type": "TriggerBullet",
+              "predicates": [
+                {
+                  "$type": "ByTargetGlobalValue",
+                  "target": "Self",
+                  "key": "_EFFIGY_ICE_ICEBARRAGE_BULLETCOUNT_",
+                  "value": 0
+                }
+              ],
+              "bulletID": 42004419,
+              "born": {
+                "$type": "ConfigBornByAttachPoint",
+                "offset": {
+                  "z": 1.5
+                },
+                "direction": {
+                  "$type": "ConfigDirectionByAttachPoint",
+                  "attachPointName": "IceBarrageMid",
+                  "attachPointTargetType": "Self"
+                },
+                "attachPointName": "TopBulletSource"
+              }
+            },
+            {
+              "$type": "TriggerBullet",
+              "predicates": [
+                {
+                  "$type": "ByTargetGlobalValue",
+                  "target": "Self",
+                  "key": "_EFFIGY_ICE_ICEBARRAGE_BULLETCOUNT_",
+                  "value": 1
+                }
+              ],
+              "bulletID": 42004419,
+              "born": {
+                "$type": "ConfigBornByAttachPoint",
+                "offset": {
+                  "z": 1.5
+                },
+                "direction": {
+                  "$type": "ConfigDirectionByAttachPoint",
+                  "attachPointName": "IceBarrageMidL",
+                  "attachPointTargetType": "Self"
+                },
+                "attachPointName": "TopBulletSource"
+              }
+            },
+            {
+              "$type": "TriggerBullet",
+              "predicates": [
+                {
+                  "$type": "ByTargetGlobalValue",
+                  "target": "Self",
+                  "key": "_EFFIGY_ICE_ICEBARRAGE_BULLETCOUNT_",
+                  "value": 2
+                }
+              ],
+              "bulletID": 42004419,
+              "born": {
+                "$type": "ConfigBornByAttachPoint",
+                "offset": {
+                  "z": 1.5
+                },
+                "direction": {
+                  "$type": "ConfigDirectionByAttachPoint",
+                  "attachPointName": "IceBarrageMidR",
+                  "attachPointTargetType": "Self"
+                },
+                "attachPointName": "TopBulletSource"
+              }
+            },
+            {
+              "$type": "TriggerBullet",
+              "predicates": [
+                {
+                  "$type": "ByTargetGlobalValue",
+                  "target": "Self",
+                  "key": "_EFFIGY_ICE_ICEBARRAGE_BULLETCOUNT_",
+                  "value": 3
+                }
+              ],
+              "bulletID": 42004419,
+              "born": {
+                "$type": "ConfigBornByAttachPoint",
+                "offset": {
+                  "z": 1.5
+                },
+                "direction": {
+                  "$type": "ConfigDirectionByAttachPoint",
+                  "attachPointName": "IceBarrageL",
+                  "attachPointTargetType": "Self"
+                },
+                "attachPointName": "TopBulletSource"
+              }
+            },
+            {
+              "$type": "TriggerBullet",
+              "predicates": [
+                {
+                  "$type": "ByTargetGlobalValue",
+                  "target": "Self",
+                  "key": "_EFFIGY_ICE_ICEBARRAGE_BULLETCOUNT_",
+                  "value": 4
+                }
+              ],
+              "bulletID": 42004419,
+              "born": {
+                "$type": "ConfigBornByAttachPoint",
+                "offset": {
+                  "z": 1.5
+                },
+                "direction": {
+                  "$type": "ConfigDirectionByAttachPoint",
+                  "attachPointName": "IceBarrageR",
+                  "attachPointTargetType": "Self"
+                },
+                "attachPointName": "TopBulletSource"
+              }
+            },
+            {
+              "$type": "AddGlobalValue",
+              "value": 1,
               "key": "_EFFIGY_ICE_ICEBARRAGE_BULLETCOUNT_",
-              "value": 2
+              "useLimitRange": true,
+              "maxValue": 4,
+              "minValue": 0
+            },
+            {
+              "$type": "ServerMonsterLog",
+              "paramList": [
+                2,
+                2,
+                0
+              ]
             }
           ],
-          "bulletID": 42004404,
-          "born": {
-            "$type": "ConfigBornByAttachPoint",
-            "offset": {
-              "z": 1.5
+          "failActions": [
+            {
+              "$type": "TriggerBullet",
+              "predicates": [
+                {
+                  "$type": "ByTargetGlobalValue",
+                  "target": "Self",
+                  "key": "_EFFIGY_ICE_ICEBARRAGE_BULLETCOUNT_",
+                  "value": 0
+                }
+              ],
+              "bulletID": 42004404,
+              "born": {
+                "$type": "ConfigBornByAttachPoint",
+                "offset": {
+                  "z": 1.5
+                },
+                "direction": {
+                  "$type": "ConfigDirectionByAttachPoint",
+                  "randomAngleHor": 5,
+                  "randomAngleVer": 15,
+                  "attachPointName": "IceBarrageMid",
+                  "attachPointTargetType": "Self"
+                },
+                "attachPointName": "TopBulletSource"
+              }
             },
-            "direction": {
-              "$type": "ConfigDirectionByAttachPoint",
-              "randomAngleHor": 5,
-              "IOIAHLPJDMH": 15,
-              "attachPointName": "IceBarrageR",
-              "attachPointTargetType": "Self"
+            {
+              "$type": "TriggerBullet",
+              "predicates": [
+                {
+                  "$type": "ByTargetGlobalValue",
+                  "target": "Self",
+                  "key": "_EFFIGY_ICE_ICEBARRAGE_BULLETCOUNT_",
+                  "value": 1
+                }
+              ],
+              "bulletID": 42004404,
+              "born": {
+                "$type": "ConfigBornByAttachPoint",
+                "offset": {
+                  "z": 1.5
+                },
+                "direction": {
+                  "$type": "ConfigDirectionByAttachPoint",
+                  "randomAngleHor": 5,
+                  "randomAngleVer": 15,
+                  "attachPointName": "IceBarrageL",
+                  "attachPointTargetType": "Self"
+                },
+                "attachPointName": "TopBulletSource"
+              }
             },
-            "attachPointName": "TopBulletSource"
-          }
-        },
-        {
-          "$type": "AddGlobalValue",
-          "value": 1,
-          "key": "_EFFIGY_ICE_ICEBARRAGE_BULLETCOUNT_",
-          "useLimitRange": true,
-          "maxValue": 2,
-          "minValue": 0
+            {
+              "$type": "TriggerBullet",
+              "predicates": [
+                {
+                  "$type": "ByTargetGlobalValue",
+                  "target": "Self",
+                  "key": "_EFFIGY_ICE_ICEBARRAGE_BULLETCOUNT_",
+                  "value": 2
+                }
+              ],
+              "bulletID": 42004404,
+              "born": {
+                "$type": "ConfigBornByAttachPoint",
+                "offset": {
+                  "z": 1.5
+                },
+                "direction": {
+                  "$type": "ConfigDirectionByAttachPoint",
+                  "randomAngleHor": 5,
+                  "randomAngleVer": 15,
+                  "attachPointName": "IceBarrageR",
+                  "attachPointTargetType": "Self"
+                },
+                "attachPointName": "TopBulletSource"
+              }
+            },
+            {
+              "$type": "AddGlobalValue",
+              "value": 1,
+              "key": "_EFFIGY_ICE_ICEBARRAGE_BULLETCOUNT_",
+              "useLimitRange": true,
+              "maxValue": 2,
+              "minValue": 0
+            },
+            {
+              "$type": "ServerMonsterLog",
+              "paramList": [
+                2,
+                2,
+                0
+              ]
+            }
+          ]
         }
       ]
     }
@@ -3467,7 +4562,7 @@
                   }
                 }
               },
-              "IBGEDNNBIOF": "Owner"
+              "ownerIs": "Owner"
             },
             {
               "$type": "FireEffect",
@@ -3494,7 +4589,7 @@
                   }
                 }
               },
-              "IBGEDNNBIOF": "Owner"
+              "ownerIs": "Owner"
             },
             {
               "$type": "FireEffect",
@@ -3569,14 +4664,42 @@
           "targetType": "Enemy"
         },
         {
-          "$type": "CreateGadget",
-          "born": {
-            "$type": "ConfigBornBySelf",
-            "onGround": true,
-            "ANAGBFPADIE": true
-          },
-          "gadgetID": 42004410,
-          "campID": 4001
+          "$type": "Predicated",
+          "target": "Owner",
+          "targetPredicates": [
+            {
+              "$type": "ByTargetGlobalValue",
+              "key": "_EFFIGY_ELITE_TAG",
+              "value": 1
+            }
+          ],
+          "successActions": [
+            {
+              "$type": "CreateGadget",
+              "ownerIs": "Owner",
+              "born": {
+                "$type": "ConfigBornBySelf",
+                "onGround": true,
+                "alongGround": true
+              },
+              "DALBNLDENDA": true,
+              "gadgetID": 42004415,
+              "campID": 4001
+            }
+          ],
+          "failActions": [
+            {
+              "$type": "CreateGadget",
+              "born": {
+                "$type": "ConfigBornBySelf",
+                "onGround": true,
+                "alongGround": true
+              },
+              "DALBNLDENDA": true,
+              "gadgetID": 42004410,
+              "campID": 4001
+            }
+          ]
         }
       ]
     }
@@ -3690,17 +4813,78 @@
                           }
                         },
                         {
-                          "$type": "TriggerBullet",
-                          "bulletID": 42004411,
-                          "born": {
-                            "$type": "ConfigBornBySelf",
-                            "offset": {
-                              "y": 0.25
-                            },
-                            "direction": {
-                              "$type": "ConfigDirectionByAttackTarget"
+                          "$type": "Predicated",
+                          "target": "Target",
+                          "targetPredicates": [
+                            {
+                              "$type": "ByTargetGlobalValue",
+                              "target": "OriginOwner",
+                              "key": "_EFFIGY_ELITE_TAG",
+                              "value": 1
                             }
-                          }
+                          ],
+                          "successActions": [
+                            {
+                              "$type": "Predicated",
+                              "target": "Target",
+                              "targetPredicates": [
+                                {
+                                  "$type": "ByTargetGlobalValue",
+                                  "target": "Team",
+                                  "key": "Team_HypostasisChallenge_Ice_BreakShield",
+                                  "value": 1
+                                }
+                              ],
+                              "successActions": [
+                                {
+                                  "$type": "TriggerBullet",
+                                  "bulletID": 42004420,
+                                  "born": {
+                                    "$type": "ConfigBornBySelf",
+                                    "offset": {
+                                      "y": 0.25
+                                    },
+                                    "direction": {
+                                      "$type": "ConfigDirectionByAttackTarget"
+                                    }
+                                  },
+                                  "DALBNLDENDA": true
+                                }
+                              ],
+                              "failActions": [
+                                {
+                                  "$type": "TriggerBullet",
+                                  "bulletID": 42004416,
+                                  "born": {
+                                    "$type": "ConfigBornBySelf",
+                                    "offset": {
+                                      "y": 0.25
+                                    },
+                                    "direction": {
+                                      "$type": "ConfigDirectionByAttackTarget"
+                                    }
+                                  },
+                                  "DALBNLDENDA": true
+                                }
+                              ]
+                            }
+                          ],
+                          "failActions": [
+                            {
+                              "$type": "TriggerBullet",
+                              "bulletID": 42004411,
+                              "born": {
+                                "$type": "ConfigBornBySelf",
+                                "offset": {
+                                  "y": 0.25
+                                },
+                                "direction": {
+                                  "$type": "ConfigDirectionByAttackTarget"
+                                }
+                              },
+                              "DALBNLDENDA": true
+                            }
+                          ]
                         },
                         {
                           "$type": "SetGlobalValue",
@@ -3782,18 +4966,81 @@
                           "setTarget": false
                         },
                         {
-                          "$type": "TriggerBullet",
-                          "bulletID": 42004411,
-                          "born": {
-                            "$type": "ConfigBornBySelf",
-                            "offset": {
-                              "y": 0.25
-                            },
-                            "direction": {
-                              "$type": "ConfigDirectionByGlobalValue",
-                              "directionKey": "_ABILITY_Effigy_Ice_Revive_IceBarrage_BulletOnGround_KickDir"
+                          "$type": "Predicated",
+                          "target": "Target",
+                          "targetPredicates": [
+                            {
+                              "$type": "ByTargetGlobalValue",
+                              "target": "OriginOwner",
+                              "key": "_EFFIGY_ELITE_TAG",
+                              "value": 1
                             }
-                          }
+                          ],
+                          "successActions": [
+                            {
+                              "$type": "Predicated",
+                              "target": "Target",
+                              "targetPredicates": [
+                                {
+                                  "$type": "ByTargetGlobalValue",
+                                  "target": "Team",
+                                  "key": "Team_HypostasisChallenge_Ice_BreakShield",
+                                  "value": 1
+                                }
+                              ],
+                              "successActions": [
+                                {
+                                  "$type": "TriggerBullet",
+                                  "bulletID": 42004420,
+                                  "born": {
+                                    "$type": "ConfigBornBySelf",
+                                    "offset": {
+                                      "y": 0.25
+                                    },
+                                    "direction": {
+                                      "$type": "ConfigDirectionByGlobalValue",
+                                      "directionKey": "_ABILITY_Effigy_Ice_Revive_IceBarrage_BulletOnGround_KickDir"
+                                    }
+                                  },
+                                  "DALBNLDENDA": true
+                                }
+                              ],
+                              "failActions": [
+                                {
+                                  "$type": "TriggerBullet",
+                                  "bulletID": 42004416,
+                                  "born": {
+                                    "$type": "ConfigBornBySelf",
+                                    "offset": {
+                                      "y": 0.25
+                                    },
+                                    "direction": {
+                                      "$type": "ConfigDirectionByGlobalValue",
+                                      "directionKey": "_ABILITY_Effigy_Ice_Revive_IceBarrage_BulletOnGround_KickDir"
+                                    }
+                                  },
+                                  "DALBNLDENDA": true
+                                }
+                              ]
+                            }
+                          ],
+                          "failActions": [
+                            {
+                              "$type": "TriggerBullet",
+                              "bulletID": 42004411,
+                              "born": {
+                                "$type": "ConfigBornBySelf",
+                                "offset": {
+                                  "y": 0.25
+                                },
+                                "direction": {
+                                  "$type": "ConfigDirectionByGlobalValue",
+                                  "directionKey": "_ABILITY_Effigy_Ice_Revive_IceBarrage_BulletOnGround_KickDir"
+                                }
+                              },
+                              "DALBNLDENDA": true
+                            }
+                          ]
                         },
                         {
                           "$type": "SetGlobalValue",
@@ -3879,17 +5126,78 @@
                           }
                         },
                         {
-                          "$type": "TriggerBullet",
-                          "bulletID": 42004411,
-                          "born": {
-                            "$type": "ConfigBornBySelf",
-                            "offset": {
-                              "y": 0.25
-                            },
-                            "direction": {
-                              "$type": "ConfigDirectionByAttackTarget"
+                          "$type": "Predicated",
+                          "target": "Target",
+                          "targetPredicates": [
+                            {
+                              "$type": "ByTargetGlobalValue",
+                              "target": "OriginOwner",
+                              "key": "_EFFIGY_ELITE_TAG",
+                              "value": 1
                             }
-                          }
+                          ],
+                          "successActions": [
+                            {
+                              "$type": "Predicated",
+                              "target": "Target",
+                              "targetPredicates": [
+                                {
+                                  "$type": "ByTargetGlobalValue",
+                                  "target": "Team",
+                                  "key": "Team_HypostasisChallenge_Ice_BreakShield",
+                                  "value": 1
+                                }
+                              ],
+                              "successActions": [
+                                {
+                                  "$type": "TriggerBullet",
+                                  "bulletID": 42004420,
+                                  "born": {
+                                    "$type": "ConfigBornBySelf",
+                                    "offset": {
+                                      "y": 0.25
+                                    },
+                                    "direction": {
+                                      "$type": "ConfigDirectionByAttackTarget"
+                                    }
+                                  },
+                                  "DALBNLDENDA": true
+                                }
+                              ],
+                              "failActions": [
+                                {
+                                  "$type": "TriggerBullet",
+                                  "bulletID": 42004416,
+                                  "born": {
+                                    "$type": "ConfigBornBySelf",
+                                    "offset": {
+                                      "y": 0.25
+                                    },
+                                    "direction": {
+                                      "$type": "ConfigDirectionByAttackTarget"
+                                    }
+                                  },
+                                  "DALBNLDENDA": true
+                                }
+                              ]
+                            }
+                          ],
+                          "failActions": [
+                            {
+                              "$type": "TriggerBullet",
+                              "bulletID": 42004411,
+                              "born": {
+                                "$type": "ConfigBornBySelf",
+                                "offset": {
+                                  "y": 0.25
+                                },
+                                "direction": {
+                                  "$type": "ConfigDirectionByAttackTarget"
+                                }
+                              },
+                              "DALBNLDENDA": true
+                            }
+                          ]
                         },
                         {
                           "$type": "SetGlobalValue",
@@ -3971,18 +5279,81 @@
                           "setTarget": false
                         },
                         {
-                          "$type": "TriggerBullet",
-                          "bulletID": 42004411,
-                          "born": {
-                            "$type": "ConfigBornBySelf",
-                            "offset": {
-                              "y": 0.25
-                            },
-                            "direction": {
-                              "$type": "ConfigDirectionByGlobalValue",
-                              "directionKey": "_ABILITY_Effigy_Ice_Revive_IceBarrage_BulletOnGround_KickDir"
+                          "$type": "Predicated",
+                          "target": "Target",
+                          "targetPredicates": [
+                            {
+                              "$type": "ByTargetGlobalValue",
+                              "target": "OriginOwner",
+                              "key": "_EFFIGY_ELITE_TAG",
+                              "value": 1
                             }
-                          }
+                          ],
+                          "successActions": [
+                            {
+                              "$type": "Predicated",
+                              "target": "Target",
+                              "targetPredicates": [
+                                {
+                                  "$type": "ByTargetGlobalValue",
+                                  "target": "Team",
+                                  "key": "Team_HypostasisChallenge_Ice_BreakShield",
+                                  "value": 1
+                                }
+                              ],
+                              "successActions": [
+                                {
+                                  "$type": "TriggerBullet",
+                                  "bulletID": 42004420,
+                                  "born": {
+                                    "$type": "ConfigBornBySelf",
+                                    "offset": {
+                                      "y": 0.25
+                                    },
+                                    "direction": {
+                                      "$type": "ConfigDirectionByGlobalValue",
+                                      "directionKey": "_ABILITY_Effigy_Ice_Revive_IceBarrage_BulletOnGround_KickDir"
+                                    }
+                                  },
+                                  "DALBNLDENDA": true
+                                }
+                              ],
+                              "failActions": [
+                                {
+                                  "$type": "TriggerBullet",
+                                  "bulletID": 42004416,
+                                  "born": {
+                                    "$type": "ConfigBornBySelf",
+                                    "offset": {
+                                      "y": 0.25
+                                    },
+                                    "direction": {
+                                      "$type": "ConfigDirectionByGlobalValue",
+                                      "directionKey": "_ABILITY_Effigy_Ice_Revive_IceBarrage_BulletOnGround_KickDir"
+                                    }
+                                  },
+                                  "DALBNLDENDA": true
+                                }
+                              ]
+                            }
+                          ],
+                          "failActions": [
+                            {
+                              "$type": "TriggerBullet",
+                              "bulletID": 42004411,
+                              "born": {
+                                "$type": "ConfigBornBySelf",
+                                "offset": {
+                                  "y": 0.25
+                                },
+                                "direction": {
+                                  "$type": "ConfigDirectionByGlobalValue",
+                                  "directionKey": "_ABILITY_Effigy_Ice_Revive_IceBarrage_BulletOnGround_KickDir"
+                                }
+                              },
+                              "DALBNLDENDA": true
+                            }
+                          ]
                         },
                         {
                           "$type": "SetGlobalValue",
@@ -4008,6 +5379,15 @@
                         }
                       ]
                     }
+                  ]
+                },
+                {
+                  "$type": "ServerMonsterLog",
+                  "target": "OriginOwner",
+                  "paramList": [
+                    2,
+                    2,
+                    1
                   ]
                 }
               ]
@@ -4097,6 +5477,10 @@
     "Default": {
       "$type": "ConfigAbility",
       "abilityName": "Bullet_Effigy_Ice_Revive_IceBarrage_BulletKicked",
+      "abilitySpecials": {
+        "ShieldDamageMultiplier": 1,
+        "ShieldDamageMultiplier_Extra": 1
+      },
       "modifiers": {
         "Effigy_Ice_Revive_IceBarrage_BulletKicked_HitDetector": {
           "modifierName": "",
@@ -4163,12 +5547,154 @@
                 {
                   "$type": "AddElementDurability",
                   "target": "Target",
-                  "value": -1000,
+                  "value": [
+                    0,
+                    1000,
+                    "ShieldDamageMultiplier",
+                    "MUL",
+                    "ShieldDamageMultiplier_Extra",
+                    "MUL",
+                    "SUB"
+                  ],
                   "modifierName": "UNIQUE_Effigy_Ice_RevivingStateShield",
                   "elementType": "Frozen",
                   "useLimitRange": true,
                   "maxValue": 9000,
                   "minValue": 0
+                },
+                {
+                  "$type": "ServerMonsterLog",
+                  "target": "Target",
+                  "paramList": [
+                    2,
+                    3,
+                    1
+                  ]
+                },
+                {
+                  "$type": "ServerMonsterLog",
+                  "target": "Target",
+                  "predicates": [
+                    {
+                      "$type": "ByTargetOverrideMapValue",
+                      "target": "Self",
+                      "targetAbilityName": "Bullet_Effigy_Ice_Revive_IceBarrage_BulletKicked",
+                      "targetKey": "ShieldDamageMultiplier",
+                      "targetValue": 1
+                    }
+                  ],
+                  "paramList": [
+                    2,
+                    4,
+                    1
+                  ]
+                }
+              ]
+            },
+            {
+              "$type": "Predicated",
+              "target": "Target",
+              "targetPredicates": [
+                {
+                  "$type": "ByTargetGlobalValue",
+                  "key": "_EFFIGY_ICE_ICEWALL_",
+                  "value": 1
+                }
+              ],
+              "successActions": [
+                {
+                  "$type": "TriggerAttackEvent",
+                  "attackEvent": {
+                    "attackPattern": {
+                      "$type": "ConfigAttackBox",
+                      "triggerType": "TriggerNoRepeat",
+                      "ignoreMassive": true,
+                      "born": {
+                        "$type": "ConfigBornBySelf"
+                      },
+                      "size": {
+                        "x": 0.1,
+                        "y": 0.1,
+                        "z": 0.1
+                      }
+                    },
+                    "attackInfo": {
+                      "attackTag": "",
+                      "attenuationTag": "",
+                      "attenuationGroup": "default",
+                      "attackProperty": {
+                        "damagePercentage": 0,
+                        "damagePercentageRatio": 0,
+                        "elementDurability": 100
+                      },
+                      "hitPattern": {
+                        "onHitEffectName": "none",
+                        "hitImpulseType": "LV0",
+                        "hitHaltTimeScale": 0.05
+                      },
+                      "forceCameraShake": true,
+                      "cameraShake": {
+                        "shakeType": "CustomVector",
+                        "shakeRange": 0.5,
+                        "shakeTime": 1,
+                        "shakeDistance": 35,
+                        "shakeDir": {
+                          "y": 2
+                        },
+                        "extension": {
+                          "baseOnCamera": true,
+                          "rangeAttenuation": 0
+                        }
+                      }
+                    }
+                  }
+                },
+                {
+                  "$type": "AddElementDurability",
+                  "target": "Target",
+                  "value": -75,
+                  "modifierName": "UNIQUE_Effigy_Ice_IceWallShield",
+                  "elementType": "Frozen",
+                  "useLimitRange": true,
+                  "maxValue": 9000,
+                  "minValue": 0
+                },
+                {
+                  "$type": "AddElementDurability",
+                  "target": "Target",
+                  "value": -75,
+                  "modifierName": "UNIQUE_Effigy_Ice_IceWallShield_Reverse",
+                  "elementType": "Frozen",
+                  "useLimitRange": true,
+                  "maxValue": 9000,
+                  "minValue": 0
+                },
+                {
+                  "$type": "ServerMonsterLog",
+                  "target": "TargetOriginOwner",
+                  "paramList": [
+                    2,
+                    3,
+                    0
+                  ]
+                },
+                {
+                  "$type": "ServerMonsterLog",
+                  "target": "TargetOriginOwner",
+                  "predicates": [
+                    {
+                      "$type": "ByTargetOverrideMapValue",
+                      "target": "Self",
+                      "targetAbilityName": "Bullet_Effigy_Ice_Revive_IceBarrage_BulletKicked",
+                      "targetKey": "ShieldDamageMultiplier",
+                      "targetValue": 1
+                    }
+                  ],
+                  "paramList": [
+                    2,
+                    4,
+                    0
+                  ]
                 }
               ]
             }
@@ -4194,6 +5720,56 @@
           "key": "_EFFIGY_ICE_KICKEDBULLET_",
           "maxValue": 0,
           "minValue": 0
+        },
+        {
+          "$type": "Predicated",
+          "target": "OriginOwner",
+          "targetPredicates": [
+            {
+              "$type": "ByTargetGlobalValue",
+              "key": "_EFFIGY_ELITE_TAG",
+              "value": 1
+            }
+          ],
+          "successActions": [
+            {
+              "$type": "SetOverrideMapValue",
+              "value": 2,
+              "overrideMapKey": "ShieldDamageMultiplier_Extra"
+            }
+          ],
+          "failActions": [
+            {
+              "$type": "SetOverrideMapValue",
+              "value": 1,
+              "overrideMapKey": "ShieldDamageMultiplier_Extra"
+            }
+          ]
+        },
+        {
+          "$type": "Predicated",
+          "targetPredicates": [
+            {
+              "$type": "ByTargetGlobalValue",
+              "key": "_EFFIGY_ICE_KICKEDBULLET_DOUBLESHIELDDAMAGE_",
+              "value": 0,
+              "compareType": "NoneOrEqual"
+            }
+          ],
+          "successActions": [
+            {
+              "$type": "SetOverrideMapValue",
+              "value": 1,
+              "overrideMapKey": "ShieldDamageMultiplier"
+            }
+          ],
+          "failActions": [
+            {
+              "$type": "SetGlobalValueToOverrideMap",
+              "globalValueKey": "_EFFIGY_ICE_KICKEDBULLET_DOUBLESHIELDDAMAGE_",
+              "overrideMapKey": "ShieldDamageMultiplier"
+            }
+          ]
         }
       ],
       "onAbilityStart": [
@@ -4202,9 +5778,19 @@
           "target": "Target",
           "targetPredicates": [
             {
-              "$type": "ByTargetGlobalValue",
-              "key": "_EFFIGY_ICE_ISREVIVING_",
-              "value": 1
+              "$type": "ByAny",
+              "predicates": [
+                {
+                  "$type": "ByTargetGlobalValue",
+                  "key": "_EFFIGY_ICE_ISREVIVING_",
+                  "value": 1
+                },
+                {
+                  "$type": "ByTargetGlobalValue",
+                  "key": "_EFFIGY_ICE_ICEWALL_",
+                  "value": 1
+                }
+              ]
             }
           ],
           "successActions": [
@@ -4275,6 +5861,294 @@
   {
     "Default": {
       "$type": "ConfigAbility",
+      "abilityName": "Bullet_Effigy_Ice_Revive_IceBarrage_BulletKicked_DoubleShieldDamageMarker",
+      "onAdded": [
+        {
+          "$type": "SetGlobalValue",
+          "value": 1.5,
+          "key": "_EFFIGY_ICE_KICKEDBULLET_DOUBLESHIELDDAMAGE_",
+          "maxValue": 0,
+          "minValue": 0
+        }
+      ]
+    }
+  },
+  {
+    "Default": {
+      "$type": "ConfigAbility",
+      "abilityName": "Bullet_Effigy_Ice_Revive_IceBarrage_BulletKicked_ActivityMarker",
+      "onAdded": [
+        {
+          "$type": "SetGlobalValue",
+          "value": 1,
+          "key": "_EFFIGY_ICE_KICKEDBULLET_ACTIVITY_",
+          "maxValue": 0,
+          "minValue": 0
+        }
+      ]
+    }
+  },
+  {
+    "Default": {
+      "$type": "ConfigAbility",
+      "abilityName": "Bullet_Effigy_Ice_Revive_IceWallMarker_01",
+      "modifiers": {
+        "SetIceWall01AliveGV": {
+          "modifierName": "",
+          "duration": 1,
+          "elementDurability": 100,
+          "onAdded": [
+            {
+              "$type": "SetGlobalValue",
+              "value": 0,
+              "key": "_EFFIGY_ICE_ICEWALL_ISALIVE_01",
+              "maxValue": 0,
+              "minValue": 0
+            }
+          ]
+        }
+      },
+      "onAbilityStart": [
+        {
+          "$type": "ApplyModifier",
+          "otherTargets": {
+            "$type": "SelectTargetsByShape",
+            "topLimit": 99,
+            "sortType": "Nearest",
+            "shapeName": "CircleR50",
+            "campTargetType": "AllExceptSelf",
+            "sizeRatio": 1
+          },
+          "predicates": [
+            {
+              "$type": "ByTargetGlobalValue",
+              "key": "_IS_EFFIGY_ICE_",
+              "value": 1
+            }
+          ],
+          "modifierName": "SetIceWall01AliveGV"
+        }
+      ]
+    }
+  },
+  {
+    "Default": {
+      "$type": "ConfigAbility",
+      "abilityName": "Bullet_Effigy_Ice_Revive_IceWallMarker_02",
+      "modifiers": {
+        "SetIceWall02AliveGV": {
+          "modifierName": "",
+          "duration": 1,
+          "elementDurability": 100,
+          "onAdded": [
+            {
+              "$type": "SetGlobalValue",
+              "value": 0,
+              "key": "_EFFIGY_ICE_ICEWALL_ISALIVE_02",
+              "maxValue": 0,
+              "minValue": 0
+            }
+          ]
+        }
+      },
+      "onAbilityStart": [
+        {
+          "$type": "ApplyModifier",
+          "otherTargets": {
+            "$type": "SelectTargetsByShape",
+            "topLimit": 99,
+            "sortType": "Nearest",
+            "shapeName": "CircleR50",
+            "campTargetType": "AllExceptSelf",
+            "sizeRatio": 1
+          },
+          "predicates": [
+            {
+              "$type": "ByTargetGlobalValue",
+              "key": "_IS_EFFIGY_ICE_",
+              "value": 1
+            }
+          ],
+          "modifierName": "SetIceWall02AliveGV"
+        }
+      ]
+    }
+  },
+  {
+    "Default": {
+      "$type": "ConfigAbility",
+      "abilityName": "Bullet_Effigy_Ice_Revive_IceWallMarker_03",
+      "modifiers": {
+        "SetIceWall03AliveGV": {
+          "modifierName": "",
+          "duration": 1,
+          "elementDurability": 100,
+          "onAdded": [
+            {
+              "$type": "SetGlobalValue",
+              "value": 0,
+              "key": "_EFFIGY_ICE_ICEWALL_ISALIVE_03",
+              "maxValue": 0,
+              "minValue": 0
+            }
+          ]
+        }
+      },
+      "onAbilityStart": [
+        {
+          "$type": "ApplyModifier",
+          "otherTargets": {
+            "$type": "SelectTargetsByShape",
+            "topLimit": 99,
+            "sortType": "Nearest",
+            "shapeName": "CircleR50",
+            "campTargetType": "AllExceptSelf",
+            "sizeRatio": 1
+          },
+          "predicates": [
+            {
+              "$type": "ByTargetGlobalValue",
+              "key": "_IS_EFFIGY_ICE_",
+              "value": 1
+            }
+          ],
+          "modifierName": "SetIceWall03AliveGV"
+        }
+      ]
+    }
+  },
+  {
+    "Default": {
+      "$type": "ConfigAbility",
+      "abilityName": "Bullet_Effigy_Ice_Revive_IceWallMarker_Reverse01",
+      "modifiers": {
+        "SetIceWallReverse01AliveGV": {
+          "modifierName": "",
+          "duration": 1,
+          "elementDurability": 100,
+          "onAdded": [
+            {
+              "$type": "SetGlobalValue",
+              "value": 0,
+              "key": "_EFFIGY_ICE_ICEWALL_REVERSE_ISALIVE_01",
+              "maxValue": 0,
+              "minValue": 0
+            }
+          ]
+        }
+      },
+      "onAbilityStart": [
+        {
+          "$type": "ApplyModifier",
+          "otherTargets": {
+            "$type": "SelectTargetsByShape",
+            "topLimit": 99,
+            "sortType": "Nearest",
+            "shapeName": "CircleR50",
+            "campTargetType": "AllExceptSelf",
+            "sizeRatio": 1
+          },
+          "predicates": [
+            {
+              "$type": "ByTargetGlobalValue",
+              "key": "_IS_EFFIGY_ICE_",
+              "value": 1
+            }
+          ],
+          "modifierName": "SetIceWallReverse01AliveGV"
+        }
+      ]
+    }
+  },
+  {
+    "Default": {
+      "$type": "ConfigAbility",
+      "abilityName": "Bullet_Effigy_Ice_Revive_IceWallMarker_Reverse02",
+      "modifiers": {
+        "SetIceWallReverse02AliveGV": {
+          "modifierName": "",
+          "duration": 1,
+          "elementDurability": 100,
+          "onAdded": [
+            {
+              "$type": "SetGlobalValue",
+              "value": 0,
+              "key": "_EFFIGY_ICE_ICEWALL_REVERSE_ISALIVE_02",
+              "maxValue": 0,
+              "minValue": 0
+            }
+          ]
+        }
+      },
+      "onAbilityStart": [
+        {
+          "$type": "ApplyModifier",
+          "otherTargets": {
+            "$type": "SelectTargetsByShape",
+            "topLimit": 99,
+            "sortType": "Nearest",
+            "shapeName": "CircleR50",
+            "campTargetType": "AllExceptSelf",
+            "sizeRatio": 1
+          },
+          "predicates": [
+            {
+              "$type": "ByTargetGlobalValue",
+              "key": "_IS_EFFIGY_ICE_",
+              "value": 1
+            }
+          ],
+          "modifierName": "SetIceWallReverse02AliveGV"
+        }
+      ]
+    }
+  },
+  {
+    "Default": {
+      "$type": "ConfigAbility",
+      "abilityName": "Bullet_Effigy_Ice_Revive_IceWallMarker_Reverse03",
+      "modifiers": {
+        "SetIceWallReverse03AliveGV": {
+          "modifierName": "",
+          "duration": 1,
+          "elementDurability": 100,
+          "onAdded": [
+            {
+              "$type": "SetGlobalValue",
+              "value": 0,
+              "key": "_EFFIGY_ICE_ICEWALL_REVERSE_ISALIVE_03",
+              "maxValue": 0,
+              "minValue": 0
+            }
+          ]
+        }
+      },
+      "onAbilityStart": [
+        {
+          "$type": "ApplyModifier",
+          "otherTargets": {
+            "$type": "SelectTargetsByShape",
+            "topLimit": 99,
+            "sortType": "Nearest",
+            "shapeName": "CircleR50",
+            "campTargetType": "AllExceptSelf",
+            "sizeRatio": 1
+          },
+          "predicates": [
+            {
+              "$type": "ByTargetGlobalValue",
+              "key": "_IS_EFFIGY_ICE_",
+              "value": 1
+            }
+          ],
+          "modifierName": "SetIceWallReverse03AliveGV"
+        }
+      ]
+    }
+  },
+  {
+    "Default": {
+      "$type": "ConfigAbility",
       "abilityName": "Monster_Effigy_Ice_Revive_NeedleAttack",
       "abilityMixins": [
         {
@@ -4293,7 +6167,7 @@
           "stateIDs": [
             "Revive_NeedleAttack_Loop0"
           ],
-          "KELPBOLPMNI": [
+          "enterActions": [
             {
               "$type": "SetGlobalDir",
               "key": "_ABILITY_Effigy_Ice_Revive_SkillDirection",
@@ -4324,7 +6198,7 @@
           "stateIDs": [
             "Revive_NeedleAttack_Loop1"
           ],
-          "KELPBOLPMNI": [
+          "enterActions": [
             {
               "$type": "SetGlobalDir",
               "key": "_ABILITY_Effigy_Ice_Revive_SkillDirection",
@@ -4348,7 +6222,7 @@
           "stateIDs": [
             "Revive_NeedleAttack_Loop2"
           ],
-          "KELPBOLPMNI": [
+          "enterActions": [
             {
               "$type": "SetGlobalDir",
               "key": "_ABILITY_Effigy_Ice_Revive_SkillDirection",
@@ -4372,7 +6246,7 @@
           "stateIDs": [
             "Revive_NeedleAttack_Loop3"
           ],
-          "KELPBOLPMNI": [
+          "enterActions": [
             {
               "$type": "SetGlobalDir",
               "key": "_ABILITY_Effigy_Ice_Revive_SkillDirection",
@@ -4399,7 +6273,7 @@
           "onAdded": [
             {
               "$type": "EnablePartControl",
-              "JEBAOIKDKPN": [
+              "partRootNames": [
                 "ReviveSkillDirection"
               ],
               "enable": true
@@ -4725,7 +6599,7 @@
       "onAdded": [
         {
           "$type": "EnablePartControl",
-          "JEBAOIKDKPN": [
+          "partRootNames": [
             "ReviveSkillDirection"
           ],
           "enable": true
@@ -5347,6 +7221,751 @@
         {
           "$type": "AttachModifier",
           "modifierName": "Regisvine_Ice_IceWave_Delay"
+        }
+      ]
+    }
+  },
+  {
+    "Default": {
+      "$type": "ConfigAbility",
+      "abilityName": "Effigy_Ice_RangeAtk_Activity_Shield",
+      "modifiers": {
+        "Effect": {
+          "modifierName": "",
+          "elementDurability": 100,
+          "onAdded": [
+            {
+              "$type": "AttachEffect",
+              "effectPattern": "Eff_Monster_Effigy_Ice_RangeAtk_Bullet02"
+            },
+            {
+              "$type": "AttachEffect",
+              "effectPattern": "Eff_Monster_Effigy_Ice_RangeAtk_Trail02"
+            }
+          ]
+        },
+        "Submissile": {
+          "modifierName": "",
+          "duration": 0.6,
+          "elementDurability": 100,
+          "onRemoved": [
+            {
+              "$type": "SetSelfAttackTarget",
+              "otherTargets": {
+                "$type": "SelectTargetsByShape",
+                "topLimit": 1,
+                "sortType": "Nearest",
+                "shapeName": "CircleR50",
+                "campTargetType": "AllExceptSelf",
+                "sizeRatio": 1
+              },
+              "predicates": [
+                {
+                  "$type": "ByEntityTypes",
+                  "entityTypes": [
+                    "Avatar"
+                  ]
+                }
+              ]
+            },
+            {
+              "$type": "TriggerBullet",
+              "bulletID": 42004401,
+              "born": {
+                "$type": "ConfigBornBySelf",
+                "direction": {
+                  "$type": "ConfigDirectionByEntity",
+                  "angleOffset": {
+                    "x": 45
+                  }
+                }
+              },
+              "ownerIs": "Owner",
+              "DALBNLDENDA": true
+            },
+            {
+              "$type": "TriggerBullet",
+              "bulletID": 42004401,
+              "born": {
+                "$type": "ConfigBornBySelf",
+                "direction": {
+                  "$type": "ConfigDirectionByEntity"
+                }
+              },
+              "ownerIs": "Owner",
+              "DALBNLDENDA": true
+            },
+            {
+              "$type": "TriggerBullet",
+              "bulletID": 42004401,
+              "born": {
+                "$type": "ConfigBornBySelf",
+                "direction": {
+                  "$type": "ConfigDirectionByEntity",
+                  "angleOffset": {
+                    "x": -45
+                  }
+                }
+              },
+              "ownerIs": "Owner",
+              "DALBNLDENDA": true
+            },
+            {
+              "$type": "FireEffect",
+              "effectPattern": "Eff_Monster_Effigy_Ice_RangeAtk_Fire02"
+            },
+            {
+              "$type": "KillSelf"
+            }
+          ]
+        }
+      },
+      "onAdded": [
+        {
+          "$type": "ApplyModifier",
+          "modifierName": "Effect"
+        },
+        {
+          "$type": "ApplyModifier",
+          "modifierName": "Submissile"
+        }
+      ],
+      "onAbilityStart": [
+        {
+          "$type": "FireEffect",
+          "effectPattern": "Eff_Monster_Effigy_Ice_RangeAtk_Hit02"
+        },
+        {
+          "$type": "TriggerAttackEvent",
+          "attackEvent": {
+            "attackPattern": {
+              "$type": "ConfigAttackSphere",
+              "triggerType": "TriggerNoRepeat",
+              "born": {
+                "$type": "ConfigBornByCollisionPoint"
+              },
+              "radius": 1.25
+            },
+            "attackInfo": {
+              "attackTag": "",
+              "attenuationTag": "Effigy_Ice_RangeAtk",
+              "attenuationGroup": "Effigy_Ice_Attenuation_2",
+              "attackProperty": {
+                "damagePercentage": 0.5,
+                "damagePercentageRatio": 0,
+                "elementType": "Ice",
+                "elementDurability": 50,
+                "strikeType": "Blunt",
+                "enBreak": 50
+              },
+              "hitPattern": {
+                "onHitEffectName": "none",
+                "hitImpulseType": "LV4",
+                "hitHaltTimeScale": 0.01
+              },
+              "cameraShake": {
+                "shakeRange": 0.06,
+                "shakeTime": 0.09
+              },
+              "canBeModifiedBy": "OriginOwner"
+            }
+          },
+          "targetType": "Enemy"
+        }
+      ]
+    }
+  },
+  {
+    "Default": {
+      "$type": "ConfigAbility",
+      "abilityName": "Bullet_Effigy_Ice_Revive_IceWall",
+      "abilitySpecials": {
+        "Effigy_Ice_IceWall_ShieldDurability": 150
+      },
+      "modifiers": {
+        "Effigy_Ice_IceWallCreate_Delay": {
+          "modifierName": "",
+          "duration": 0.2,
+          "elementDurability": 100,
+          "onRemoved": [
+            {
+              "$type": "FireEffect",
+              "effectPattern": "Eff_Monster_Effigy_Ice_IceWall_Activity_BS"
+            },
+            {
+              "$type": "ApplyModifier",
+              "modifierName": "UNIQUE_Effigy_Ice_IceWallShield"
+            }
+          ]
+        },
+        "UNIQUE_Effigy_Ice_IceWallShield": {
+          "modifierName": "",
+          "isUnique": true,
+          "elementType": "Frozen",
+          "elementDurability": "Effigy_Ice_IceWall_ShieldDurability",
+          "modifierMixins": [
+            {
+              "$type": "ShieldBarMixin",
+              "onShieldBroken": [
+                {
+                  "$type": "ServerMonsterLog",
+                  "target": "Owner",
+                  "paramList": [
+                    2,
+                    5,
+                    1
+                  ]
+                },
+                {
+                  "$type": "TriggerAbility",
+                  "abilityName": "Bullet_Effigy_Ice_Revive_IceWallMarker_01"
+                },
+                {
+                  "$type": "TriggerAbility",
+                  "abilityName": "Bullet_Effigy_Ice_Revive_IceWallMarker_02"
+                },
+                {
+                  "$type": "TriggerAbility",
+                  "abilityName": "Bullet_Effigy_Ice_Revive_IceWallMarker_03"
+                },
+                {
+                  "$type": "TriggerAbility",
+                  "abilityName": "Bullet_Effigy_Ice_Revive_IceWall"
+                }
+              ],
+              "showDamageText": ""
+            },
+            {
+              "$type": "AttachModifierToElementDurabilityMixin",
+              "valueSteps": [
+                -0.5,
+                [
+                  "Effigy_Ice_IceWall_ShieldDurability",
+                  0.5,
+                  "SUB"
+                ],
+                [
+                  "Effigy_Ice_IceWall_ShieldDurability",
+                  0.5,
+                  "ADD"
+                ]
+              ],
+              "modifierNameSteps": [
+                "IceWallPhase2",
+                "IceWallPhase1"
+              ]
+            }
+          ],
+          "onAdded": [
+            {
+              "$type": "AttachEffect",
+              "effectPattern": "Eff_Monster_Effigy_Ice_IceWall_Activity_Loop",
+              "born": {
+                "$type": "ConfigBornBySelf",
+                "onGround": true
+              }
+            },
+            {
+              "$type": "EnablePushColliderName",
+              "pushColliderNames": [
+                "PushCollider_R",
+                "PushCollider_R_Extra",
+                "PushCollider_L",
+                "PushCollider_L_Extra"
+              ],
+              "setEnable": true
+            }
+          ],
+          "onBeingHit": [
+            {
+              "$type": "Predicated",
+              "target": "Target",
+              "targetPredicates": [
+                {
+                  "$type": "ByTargetGlobalValue",
+                  "key": "_EFFIGY_ICE_KICKEDBULLET_",
+                  "value": 1
+                }
+              ],
+              "successActions": [
+                {
+                  "$type": "FireEffect",
+                  "effectPattern": "Eff_Monster_Effigy_Ice_IceWall_Activity_BeHit",
+                  "born": {
+                    "$type": "ConfigBornByHitPoint"
+                  }
+                }
+              ],
+              "failActions": [
+                {
+                  "$type": "Predicated",
+                  "targetPredicates": [
+                    {
+                      "$type": "ByAny",
+                      "predicates": [
+                        {
+                          "$type": "ByHitElement",
+                          "element": "Fire"
+                        },
+                        {
+                          "$type": "ByHitElement",
+                          "element": "Electric"
+                        },
+                        {
+                          "$type": "ByHitElement",
+                          "element": "Water"
+                        },
+                        {
+                          "$type": "ByHitElement",
+                          "element": "Wind"
+                        },
+                        {
+                          "$type": "ByHitElement",
+                          "element": "Rock"
+                        },
+                        {
+                          "$type": "ByHitStrikeType",
+                          "strikeType": "Blunt"
+                        }
+                      ]
+                    }
+                  ],
+                  "successActions": [
+                    {
+                      "$type": "FireEffect",
+                      "effectPattern": "Eff_Monster_Effigy_Ice_IceWall_Activity_BeHit",
+                      "born": {
+                        "$type": "ConfigBornByHitPoint"
+                      }
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "$type": "Predicated",
+              "target": "Target",
+              "targetPredicates": [
+                {
+                  "$type": "ByAttackTags",
+                  "attackTags": [
+                    "BossChallenge_Rune_Fire_Hit"
+                  ]
+                }
+              ],
+              "successActions": [
+                {
+                  "$type": "ServerMonsterLog",
+                  "target": "Owner",
+                  "paramList": [
+                    2,
+                    5,
+                    0
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        "IceWallPhase1": {
+          "modifierName": "",
+          "elementDurability": 100
+        },
+        "IceWallPhase2": {
+          "modifierName": "",
+          "elementDurability": 100,
+          "onAdded": [
+            {
+              "$type": "AttachEffect",
+              "effectPattern": "Eff_Monster_Effigy_Ice_IceWall_Activity_Loop_Break",
+              "born": {
+                "$type": "ConfigBornBySelf",
+                "onGround": true
+              }
+            }
+          ]
+        }
+      },
+      "onAdded": [
+        {
+          "$type": "SetGlobalValue",
+          "value": 1,
+          "key": "_EFFIGY_ICE_ICEWALL_",
+          "maxValue": 0,
+          "minValue": 0
+        },
+        {
+          "$type": "AttachAbilityStateResistance",
+          "resistanceListID": 12002
+        },
+        {
+          "$type": "EnablePushColliderName",
+          "pushColliderNames": [
+            "PushCollider_R",
+            "PushCollider_R_Extra",
+            "PushCollider_L",
+            "PushCollider_L_Extra"
+          ]
+        },
+        {
+          "$type": "ApplyModifier",
+          "modifierName": "Effigy_Ice_IceWallCreate_Delay"
+        }
+      ],
+      "onAbilityStart": [
+        {
+          "$type": "RemoveUniqueModifier",
+          "modifierName": "UNIQUE_Effigy_Ice_IceWallShield"
+        },
+        {
+          "$type": "RemoveModifier",
+          "modifierName": "Effigy_Ice_IceWallCreate_Delay"
+        },
+        {
+          "$type": "FireEffect",
+          "effectPattern": "Eff_Monster_Effigy_Ice_IceWall_Activity_AS"
+        },
+        {
+          "$type": "KillSelf"
+        }
+      ]
+    }
+  },
+  {
+    "Default": {
+      "$type": "ConfigAbility",
+      "abilityName": "Bullet_Effigy_Ice_Revive_IceWall_Reverse",
+      "abilitySpecials": {
+        "Effigy_Ice_IceWall_ShieldDurability": 150
+      },
+      "modifiers": {
+        "Effigy_Ice_IceWallCreate_Delay": {
+          "modifierName": "",
+          "duration": 0.2,
+          "elementDurability": 100,
+          "onRemoved": [
+            {
+              "$type": "FireEffect",
+              "effectPattern": "Eff_Monster_Effigy_Ice_IceWall_Activity_BS_Reverse"
+            },
+            {
+              "$type": "ApplyModifier",
+              "modifierName": "UNIQUE_Effigy_Ice_IceWallShield_Reverse"
+            }
+          ]
+        },
+        "UNIQUE_Effigy_Ice_IceWallShield_Reverse": {
+          "modifierName": "",
+          "isUnique": true,
+          "elementType": "Frozen",
+          "elementDurability": "Effigy_Ice_IceWall_ShieldDurability",
+          "modifierMixins": [
+            {
+              "$type": "ShieldBarMixin",
+              "onShieldBroken": [
+                {
+                  "$type": "ServerMonsterLog",
+                  "target": "Owner",
+                  "paramList": [
+                    2,
+                    5,
+                    1
+                  ]
+                },
+                {
+                  "$type": "TriggerAbility",
+                  "abilityName": "Bullet_Effigy_Ice_Revive_IceWallMarker_Reverse01"
+                },
+                {
+                  "$type": "TriggerAbility",
+                  "abilityName": "Bullet_Effigy_Ice_Revive_IceWallMarker_Reverse02"
+                },
+                {
+                  "$type": "TriggerAbility",
+                  "abilityName": "Bullet_Effigy_Ice_Revive_IceWallMarker_Reverse03"
+                },
+                {
+                  "$type": "TriggerAbility",
+                  "abilityName": "Bullet_Effigy_Ice_Revive_IceWall_Reverse"
+                }
+              ],
+              "showDamageText": ""
+            },
+            {
+              "$type": "AttachModifierToElementDurabilityMixin",
+              "valueSteps": [
+                -0.5,
+                [
+                  "Effigy_Ice_IceWall_ShieldDurability",
+                  0.5,
+                  "SUB"
+                ],
+                [
+                  "Effigy_Ice_IceWall_ShieldDurability",
+                  0.5,
+                  "ADD"
+                ]
+              ],
+              "modifierNameSteps": [
+                "IceWallPhase2",
+                "IceWallPhase1"
+              ]
+            }
+          ],
+          "onAdded": [
+            {
+              "$type": "AttachEffect",
+              "effectPattern": "Eff_Monster_Effigy_Ice_IceWall_Activity_Loop_Reverse",
+              "born": {
+                "$type": "ConfigBornBySelf",
+                "onGround": true
+              }
+            },
+            {
+              "$type": "EnablePushColliderName",
+              "pushColliderNames": [
+                "PushCollider_R",
+                "PushCollider_R_Extra",
+                "PushCollider_L",
+                "PushCollider_L_Extra"
+              ],
+              "setEnable": true
+            }
+          ],
+          "onBeingHit": [
+            {
+              "$type": "Predicated",
+              "target": "Target",
+              "targetPredicates": [
+                {
+                  "$type": "ByTargetGlobalValue",
+                  "key": "_EFFIGY_ICE_KICKEDBULLET_",
+                  "value": 1
+                }
+              ],
+              "successActions": [
+                {
+                  "$type": "FireEffect",
+                  "effectPattern": "Eff_Monster_Effigy_Ice_IceWall_Activity_BeHit",
+                  "born": {
+                    "$type": "ConfigBornByHitPoint"
+                  }
+                }
+              ],
+              "failActions": [
+                {
+                  "$type": "Predicated",
+                  "targetPredicates": [
+                    {
+                      "$type": "ByAny",
+                      "predicates": [
+                        {
+                          "$type": "ByHitElement",
+                          "element": "Fire"
+                        },
+                        {
+                          "$type": "ByHitElement",
+                          "element": "Electric"
+                        },
+                        {
+                          "$type": "ByHitElement",
+                          "element": "Water"
+                        },
+                        {
+                          "$type": "ByHitElement",
+                          "element": "Wind"
+                        },
+                        {
+                          "$type": "ByHitElement",
+                          "element": "Rock"
+                        },
+                        {
+                          "$type": "ByHitStrikeType",
+                          "strikeType": "Blunt"
+                        }
+                      ]
+                    }
+                  ],
+                  "successActions": [
+                    {
+                      "$type": "FireEffect",
+                      "effectPattern": "Eff_Monster_Effigy_Ice_IceWall_Activity_BeHit",
+                      "born": {
+                        "$type": "ConfigBornByHitPoint"
+                      }
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "$type": "Predicated",
+              "target": "Target",
+              "targetPredicates": [
+                {
+                  "$type": "ByAttackTags",
+                  "attackTags": [
+                    "BossChallenge_Rune_Fire_Hit"
+                  ]
+                }
+              ],
+              "successActions": [
+                {
+                  "$type": "ServerMonsterLog",
+                  "target": "Owner",
+                  "paramList": [
+                    2,
+                    5,
+                    0
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        "IceWallPhase1": {
+          "modifierName": "",
+          "elementDurability": 100
+        },
+        "IceWallPhase2": {
+          "modifierName": "",
+          "elementDurability": 100,
+          "onAdded": [
+            {
+              "$type": "AttachEffect",
+              "effectPattern": "Eff_Monster_Effigy_Ice_IceWall_Activity_Loop_Break_Reverse",
+              "born": {
+                "$type": "ConfigBornBySelf",
+                "onGround": true
+              }
+            }
+          ]
+        }
+      },
+      "onAdded": [
+        {
+          "$type": "SetGlobalValue",
+          "value": 1,
+          "key": "_EFFIGY_ICE_ICEWALL_",
+          "maxValue": 0,
+          "minValue": 0
+        },
+        {
+          "$type": "AttachAbilityStateResistance",
+          "resistanceListID": 12002
+        },
+        {
+          "$type": "EnablePushColliderName",
+          "pushColliderNames": [
+            "PushCollider_R",
+            "PushCollider_R_Extra",
+            "PushCollider_L",
+            "PushCollider_L_Extra"
+          ]
+        },
+        {
+          "$type": "ApplyModifier",
+          "modifierName": "Effigy_Ice_IceWallCreate_Delay"
+        }
+      ],
+      "onAbilityStart": [
+        {
+          "$type": "RemoveUniqueModifier",
+          "modifierName": "UNIQUE_Effigy_Ice_IceWallShield_Reverse"
+        },
+        {
+          "$type": "RemoveModifier",
+          "modifierName": "Effigy_Ice_IceWallCreate_Delay"
+        },
+        {
+          "$type": "FireEffect",
+          "effectPattern": "Eff_Monster_Effigy_Ice_IceWall_Activity_AS_Reverse"
+        },
+        {
+          "$type": "KillSelf"
+        }
+      ]
+    }
+  },
+  {
+    "Default": {
+      "$type": "ConfigAbility",
+      "abilityName": "Effigy_Ice_NeedleSpinningShoot_Activity_MultiBullet",
+      "onAbilityStart": [
+        {
+          "$type": "FireEffect",
+          "effectPattern": "Eff_Monster_Effigy_Ice_RangeAtk_Hit",
+          "born": {
+            "$type": "ConfigBornByCollisionPoint"
+          }
+        },
+        {
+          "$type": "TriggerAttackEvent",
+          "attackEvent": {
+            "attackPattern": {
+              "$type": "ConfigAttackSphere",
+              "triggerType": "TriggerNoRepeat",
+              "born": {
+                "$type": "ConfigBornByCollisionPoint"
+              },
+              "radius": 1.5
+            },
+            "attackInfo": {
+              "attackTag": "",
+              "attenuationTag": "Effigy_Ice_NeedleSpinningShoot_Activity_MultiBullet",
+              "attenuationGroup": "Effigy_Ice_RangeAtk",
+              "attackProperty": {
+                "damagePercentage": 0.25,
+                "damagePercentageRatio": 0,
+                "elementType": "Ice",
+                "elementDurability": 25,
+                "strikeType": "Default",
+                "enBreak": 0,
+                "attackType": "Range"
+              },
+              "hitPattern": {
+                "onHitEffectName": "none",
+                "hitImpulseType": "LV3",
+                "hitHaltTimeScale": 0.05
+              }
+            }
+          },
+          "targetType": "Enemy"
+        }
+      ]
+    }
+  },
+  {
+    "Default": {
+      "$type": "ConfigAbility",
+      "abilityName": "Effigy_Ice_EliteSkillSetManager",
+      "modifiers": {
+        "Effigy_Ice_SkillSetHandler": {
+          "modifierName": "",
+          "elementDurability": 100,
+          "onAdded": [
+            {
+              "$type": "UseSkillEliteSet",
+              "skillEliteSetID": 1
+            },
+            {
+              "$type": "UseSkillEliteSet",
+              "predicates": [
+                {
+                  "$type": "ByTargetGlobalValue",
+                  "key": "_EFFIGY_ELITE_TAG",
+                  "value": 1
+                }
+              ],
+              "skillEliteSetID": 2
+            }
+          ]
+        }
+      },
+      "onAdded": [
+        {
+          "$type": "ApplyModifier",
+          "modifierName": "Effigy_Ice_SkillSetHandler"
         }
       ]
     }

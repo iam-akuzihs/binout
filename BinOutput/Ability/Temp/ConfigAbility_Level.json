@@ -13,7 +13,7 @@
               "$type": "HealHP",
               "target": "Target",
               "amountByTargetMaxHPRatio": 1,
-              "MDALFAAHHJA": true
+              "muteHealEffect": true
             }
           ]
         }
@@ -35,25 +35,25 @@
       "onAbilityStart": [
         {
           "$type": "SetPaimonLookAtAvatar",
-          "GILCKGAMMGM": "Task",
-          "LIBIGGAPJBH": true,
-          "poseID": 2.2,
+          "from": "Task",
+          "lookat": true,
+          "minTime": 2.2,
           "maxTime": 2.2
         },
         {
           "$type": "PaimonAction",
-          "GILCKGAMMGM": "Task",
-          "AGNGDEBFIDB": "Hope"
+          "from": "Task",
+          "actionName": "Hope"
         },
         {
           "$type": "SetPaimonTempOffset",
-          "GILCKGAMMGM": "Task",
-          "CLBOLBJHPON": {
+          "from": "Task",
+          "offSetPos": {
             "x": 0.25,
             "y": 1.15,
             "z": 3.05
           },
-          "EKAIBDFAODH": 3
+          "time": 3
         }
       ],
       "isDynamicAbility": true
@@ -66,15 +66,15 @@
       "onAbilityStart": [
         {
           "$type": "SetPaimonLookAtCamera",
-          "GILCKGAMMGM": "Task",
-          "LIBIGGAPJBH": true,
-          "poseID": 2.5,
+          "from": "Task",
+          "lookat": true,
+          "minTime": 2.5,
           "maxTime": 2.5
         },
         {
           "$type": "PaimonAction",
-          "GILCKGAMMGM": "Task",
-          "AGNGDEBFIDB": "Guide"
+          "from": "Task",
+          "actionName": "Guide"
         }
       ],
       "isDynamicAbility": true
@@ -273,10 +273,10 @@
           "modifierMixins": [
             {
               "$type": "AvatarChangeSkillMixin",
-              "JEHKGIHLNIE": 1,
+              "index": 1,
               "priority": "Quest",
-              "CNPIEDBKHII": 10037,
-              "CLJNFKPHGEO": 10037
+              "jumpSkillID": 10037,
+              "flySkillID": 10037
             }
           ]
         },
@@ -552,8 +552,8 @@
             },
             {
               "$type": "SetAvatarHitBuckets",
-              "FJAAOJKKHMA": {
-                "KGAKHBEALIL": 4
+              "overrideAvatarHitBucketSetting": {
+                "rangedBucketCount": 4
               }
             }
           ]
@@ -959,7 +959,7 @@
       "abilityMixins": [
         {
           "$type": "MonsterReadyMixin",
-          "EAECIFGFPKF": [
+          "onMonsterReady": [
             {
               "$type": "ApplyModifier",
               "target": "Target",
@@ -1009,7 +1009,7 @@
           "onAdded": [
             {
               "$type": "GenerateElemBall",
-              "BAFEPDDJNEP": "ForceDrop",
+              "dropType": "ForceDrop",
               "configID": 2024,
               "born": {
                 "$type": "ConfigBornByTarget"
@@ -1023,7 +1023,7 @@
               "successActions": [
                 {
                   "$type": "GenerateElemBall",
-                  "BAFEPDDJNEP": "ForceDrop",
+                  "dropType": "ForceDrop",
                   "configID": 2024,
                   "born": {
                     "$type": "ConfigBornByTarget"
@@ -1112,6 +1112,105 @@
   {
     "Default": {
       "$type": "ConfigAbility",
+      "abilityName": "LevelAbility_Challenge_RecoverAllState_Big",
+      "modifiers": {
+        "RecoverAllState": {
+          "modifierName": "",
+          "elementDurability": 100,
+          "thinkInterval": 1,
+          "onThinkInterval": [
+            {
+              "$type": "ReviveDeadAvatar",
+              "target": "AllPlayerAvatars",
+              "doOffStage": true,
+              "predicates": [
+                {
+                  "$type": "ByTargetPositionToSelfPosition",
+                  "logic": "LesserOrEqual",
+                  "value": 20
+                }
+              ],
+              "amountByTargetMaxHPRatio": 1,
+              "cdRatio": 1
+            },
+            {
+              "$type": "ApplyModifier",
+              "target": "AllPlayerAvatars",
+              "doOffStage": true,
+              "predicates": [
+                {
+                  "$type": "ByTargetPositionToSelfPosition",
+                  "logic": "LesserOrEqual",
+                  "value": 20
+                }
+              ],
+              "modifierName": "RecoverHpElemEnergy"
+            }
+          ]
+        },
+        "RecoverHpElemEnergy": {
+          "stacking": "Multiple",
+          "modifierName": "",
+          "duration": 1.1,
+          "elementDurability": 100,
+          "modifierMixins": [
+            {
+              "$type": "ReviveElemEnergyMixin",
+              "period": 1,
+              "baseEnergy": 20,
+              "ratio": 1
+            }
+          ],
+          "onAdded": [
+            {
+              "$type": "HealHP",
+              "doOffStage": true,
+              "amountByTargetMaxHPRatio": 1
+            }
+          ]
+        }
+      },
+      "onAdded": [
+        {
+          "$type": "AttachModifier",
+          "modifierName": "RecoverAllState"
+        }
+      ],
+      "isDynamicAbility": true
+    }
+  },
+  {
+    "Default": {
+      "$type": "ConfigAbility",
+      "abilityName": "LevelAbility_SceneObj_ClearLocalGadget",
+      "abilityMixins": [
+        {
+          "$type": "AttachToGadgetStateMixin",
+          "gadgetState": 201,
+          "modifierName": "State_201"
+        }
+      ],
+      "modifiers": {
+        "State_201": {
+          "modifierName": "",
+          "elementDurability": 100,
+          "onAdded": [
+            {
+              "$type": "ClearLocalGadgets"
+            },
+            {
+              "$type": "ChangeGadgetState",
+              "AJIENKOILPG": 1
+            }
+          ]
+        }
+      },
+      "isDynamicAbility": true
+    }
+  },
+  {
+    "Default": {
+      "$type": "ConfigAbility",
       "abilityName": "Avatar_WindFlora_Dungeon_Load",
       "modifiers": {
         "Avatar_Ready": {
@@ -1124,15 +1223,15 @@
                 {
                   "$type": "ServerLuaCall",
                   "target": "Team",
-                  "MINNFFNDCJH": "SpecificGroup",
+                  "luaCallType": "SpecificGroup",
                   "isTarget": true,
-                  "GHGADIKFEGC": [
+                  "CallParamList": [
                     235800001
                   ],
-                  "PDFANJKMFNK": "action_player_ready_to_go_single",
-                  "LIOGECEPJAH": 0,
-                  "FDDPMCCJIKN": 0,
-                  "KNJMHMKNCKF": 0
+                  "funcName": "action_player_ready_to_go_single",
+                  "FMBBFLMNPOF": 0,
+                  "GBPNAGAPMHB": 0,
+                  "ALBFHLGOPBE": 0
                 }
               ]
             }
@@ -1151,21 +1250,67 @@
   {
     "Default": {
       "$type": "ConfigAbility",
+      "abilityName": "Avatar_CharAmusement_Dungeon_Load",
+      "modifiers": {
+        "UNIQUE_Avatar_FallingDamage": {
+          "modifierName": "",
+          "isUnique": true,
+          "elementDurability": 100,
+          "properties": {
+            "Actor_FallingDamageRatio": -1
+          }
+        },
+        "UNIQUE_Avatar_EnterScene": {
+          "modifierName": "",
+          "isUnique": true,
+          "elementDurability": 100,
+          "onAdded": [
+            {
+              "$type": "ServerLuaCall",
+              "canBeHandledOnRecover": true,
+              "luaCallType": "SpecificGroup",
+              "CallParamList": [
+                251008007
+              ],
+              "funcName": "SLC_CharAmuseMain_PlayerEnter",
+              "FMBBFLMNPOF": 0,
+              "GBPNAGAPMHB": 0,
+              "ALBFHLGOPBE": 0
+            }
+          ]
+        }
+      },
+      "onAdded": [
+        {
+          "$type": "ApplyModifier",
+          "modifierName": "UNIQUE_Avatar_FallingDamage"
+        },
+        {
+          "$type": "ApplyModifier",
+          "modifierName": "UNIQUE_Avatar_EnterScene"
+        }
+      ],
+      "isDynamicAbility": true
+    }
+  },
+  {
+    "Default": {
+      "$type": "ConfigAbility",
       "abilityName": "Avatar_UGC_Dungeon_Ray",
       "abilityMixins": [
         {
           "$type": "DoActionByRayTagMixin",
-          "FEMNLPHLGAG": [
+          "OIFCAEFJMJF": [
             "Down"
           ],
-          "PNKNNJKIDMD": [
+          "PGIIIPJHLEG": [
             1,
             2,
             3,
             4,
             5
           ],
-          "KINJNDIGPJC": [
+          "LCGOJGJOCNC": [
             "UNIQUE_Team_Fire",
             "UNIQUE_Team_Water",
             "UNIQUE_Team_Ice",
@@ -1176,7 +1321,7 @@
         {
           "$type": "AttachModifierToGlobalValueMixin",
           "isUnique": true,
-          "ADMJDEELAPK": "Team",
+          "globalValueTarget": "Team",
           "globalValueKey": "GV_UGC_AvatarCanRocketJump",
           "valueSteps": [
             -0.5,
@@ -1191,7 +1336,7 @@
         {
           "$type": "AttachModifierToGlobalValueMixin",
           "isUnique": true,
-          "ADMJDEELAPK": "Team",
+          "globalValueTarget": "Team",
           "globalValueKey": "SGV_UGCDungeon_Immune",
           "valueSteps": [
             -0.5,
@@ -1425,9 +1570,9 @@
               "canBeHandledOnRecover": true,
               "type": "DungeonJump",
               "enable": true,
-              "MJIDJNMCKCP": {
-                "IMLKBGMCLLH": 3,
-                "HFBNHJBODPH": 5
+              "extention": {
+                "xzMultiplier": 3,
+                "yMultiplier": 5
               }
             }
           ],
@@ -1490,9 +1635,9 @@
                   "$type": "ByIsLocalAvatar"
                 }
               ],
-              "MHPCDOIILCO": 0.5,
-              "HILDBGAJACB": 0.1,
-              "OPJILLKKCNL": 0.2
+              "ditherValue": 0.5,
+              "cutInTime": 0.1,
+              "cutOutTime": 0.2
             }
           ],
           "state": "Invincible"
@@ -1635,7 +1780,7 @@
           "minValue": 0
         }
       ],
-      "ALFIFBFCGGG": [
+      "HNAHBDJDEFP": [
         {
           "$type": "DebugLog",
           "doOffStage": true,
@@ -1660,7 +1805,7 @@
             {
               "$type": "ExecuteGadgetLua",
               "target": "Target",
-              "JFOEGBAHFAC": 201
+              "param1": 201
             }
           ]
         }
@@ -1675,7 +1820,7 @@
       "abilityMixins": [
         {
           "$type": "AttachModifierToGlobalValueMixin",
-          "ADMJDEELAPK": "Team",
+          "globalValueTarget": "Team",
           "globalValueKey": "SGV_UGCDungeon_ForbidSkill",
           "valueSteps": [
             -0.5,
@@ -1696,7 +1841,7 @@
             {
               "$type": "ChangePlayMode",
               "doOffStage": true,
-              "POKMJEIDNJF": true
+              "muteRemoteAction": true
             }
           ]
         },
@@ -1715,7 +1860,7 @@
             {
               "$type": "ChangePlayMode",
               "doOffStage": true,
-              "POKMJEIDNJF": true,
+              "muteRemoteAction": true,
               "predicates": [
                 {
                   "$type": "ByTargetGlobalValue",
@@ -1723,14 +1868,14 @@
                   "value": 1
                 }
               ],
-              "KDNEFEJINAA": "UGCForbidSkill"
+              "toPlayMode": "UGCForbidSkill"
             }
           ],
           "onRemoved": [
             {
               "$type": "ChangePlayMode",
               "doOffStage": true,
-              "POKMJEIDNJF": true
+              "muteRemoteAction": true
             }
           ]
         }
@@ -1739,14 +1884,14 @@
         {
           "$type": "ChangePlayMode",
           "doOffStage": true,
-          "POKMJEIDNJF": true
+          "muteRemoteAction": true
         }
       ],
       "onKill": [
         {
           "$type": "ChangePlayMode",
           "doOffStage": true,
-          "POKMJEIDNJF": true
+          "muteRemoteAction": true
         }
       ],
       "isDynamicAbility": true
@@ -1759,7 +1904,7 @@
       "abilityMixins": [
         {
           "$type": "AttachModifierToGlobalValueMixin",
-          "ADMJDEELAPK": "Team",
+          "globalValueTarget": "Team",
           "globalValueKey": "GV_UGC_Electric_Fairy",
           "valueSteps": [
             -0.5,
@@ -1796,14 +1941,14 @@
             {
               "$type": "FollowAttachPointEffectMixin",
               "modifierName": "UNIQUE_Electric_Fairy_Skill_Init_Lv1",
-              "LBCJDGDFIBC": "FollowPet",
-              "NBMHCGMKGND": true
+              "DKBAPAJMJJG": "FollowPet",
+              "HGDGCIMKBMH": true
             },
             {
               "$type": "FollowAttachPointEffectMixin",
               "modifierName": "UNIQUE_Electric_Fairy_Skill_OnTeam_Lv3",
-              "LBCJDGDFIBC": "ThemePlay",
-              "NBMHCGMKGND": true
+              "DKBAPAJMJJG": "ThemePlay",
+              "HGDGCIMKBMH": true
             }
           ],
           "onAdded": [
@@ -1916,7 +2061,7 @@
               "tags": [
                 "LEVEL1"
               ],
-              "LINPLFNONMI": true
+              "CFINMELCHCA": true
             }
           ],
           "onAdded": [
@@ -2116,6 +2261,7 @@
               "$type": "SendEffectTrigger",
               "target": "Team",
               "parameter": "State",
+              "attachPoint": "",
               "type": "Int",
               "value": 203,
               "effectPattern": "Eff_SceneObj_ThunderSeed_01"
@@ -2124,6 +2270,7 @@
               "$type": "SendEffectTrigger",
               "target": "Team",
               "parameter": "State",
+              "attachPoint": "",
               "type": "Int",
               "value": 203,
               "effectPattern": "Eff_SceneObj_ThunderSeed_02"
@@ -2132,6 +2279,7 @@
               "$type": "SendEffectTrigger",
               "target": "Team",
               "parameter": "State",
+              "attachPoint": "",
               "type": "Int",
               "value": 203,
               "effectPattern": "Eff_SceneObj_ThunderSeed_03"
@@ -2172,6 +2320,7 @@
               "$type": "SendEffectTrigger",
               "target": "Team",
               "parameter": "State",
+              "attachPoint": "",
               "type": "Int",
               "effectPattern": "Eff_SceneObj_ThunderSeed_01"
             },
@@ -2179,6 +2328,7 @@
               "$type": "SendEffectTrigger",
               "target": "Team",
               "parameter": "State",
+              "attachPoint": "",
               "type": "Int",
               "effectPattern": "Eff_SceneObj_ThunderSeed_02"
             },
@@ -2186,6 +2336,7 @@
               "$type": "SendEffectTrigger",
               "target": "Team",
               "parameter": "State",
+              "attachPoint": "",
               "type": "Int",
               "effectPattern": "Eff_SceneObj_ThunderSeed_03"
             }
@@ -2195,6 +2346,7 @@
               "$type": "SendEffectTrigger",
               "target": "Team",
               "parameter": "State",
+              "attachPoint": "",
               "type": "Int",
               "value": 201,
               "effectPattern": "Eff_SceneObj_ThunderSeed_01"
@@ -2203,6 +2355,7 @@
               "$type": "SendEffectTrigger",
               "target": "Team",
               "parameter": "State",
+              "attachPoint": "",
               "type": "Int",
               "value": 201,
               "effectPattern": "Eff_SceneObj_ThunderSeed_02"
@@ -2211,6 +2364,7 @@
               "$type": "SendEffectTrigger",
               "target": "Team",
               "parameter": "State",
+              "attachPoint": "",
               "type": "Int",
               "value": 201,
               "effectPattern": "Eff_SceneObj_ThunderSeed_03"
@@ -2225,6 +2379,7 @@
               "$type": "SendEffectTrigger",
               "target": "Team",
               "parameter": "State",
+              "attachPoint": "",
               "type": "Int",
               "value": 201,
               "effectPattern": "Eff_SceneObj_ThunderSeed_01"
@@ -2233,6 +2388,7 @@
               "$type": "SendEffectTrigger",
               "target": "Team",
               "parameter": "State",
+              "attachPoint": "",
               "type": "Int",
               "value": 201,
               "effectPattern": "Eff_SceneObj_ThunderSeed_02"
@@ -2241,6 +2397,7 @@
               "$type": "SendEffectTrigger",
               "target": "Team",
               "parameter": "State",
+              "attachPoint": "",
               "type": "Int",
               "value": 201,
               "effectPattern": "Eff_SceneObj_ThunderSeed_03"

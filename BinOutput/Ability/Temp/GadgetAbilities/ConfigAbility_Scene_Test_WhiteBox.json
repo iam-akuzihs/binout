@@ -27,6 +27,114 @@
   {
     "Default": {
       "$type": "ConfigAbility",
+      "abilityName": "SceneObj_Gear_MushRoom_Catch",
+      "abilityMixins": [
+        {
+          "$type": "AttachModifierToSelfGlobalValueNoInitMixin",
+          "globalValueKey": "SGV_MushroomMonster_Alert",
+          "valueSteps": [
+            -1,
+            0.5,
+            1.5
+          ],
+          "modifierNameSteps": [
+            "PhaseOne",
+            "PhaseTwo"
+          ]
+        }
+      ],
+      "modifiers": {
+        "CatchCheck": {
+          "modifierName": "",
+          "elementDurability": 100,
+          "onBeingHit": [
+            {
+              "$type": "ServerLuaCall",
+              "predicates": [
+                {
+                  "$type": "ByAttackTags",
+                  "attackTags": [
+                    "Mushroom_Monster_Catch"
+                  ]
+                }
+              ],
+              "luaCallType": "FromGroup",
+              "funcName": "SLC_MushroomMonsterCatch",
+              "FMBBFLMNPOF": 0,
+              "GBPNAGAPMHB": 0,
+              "ALBFHLGOPBE": 0
+            }
+          ]
+        },
+        "PhaseOne": {
+          "modifierName": "",
+          "elementDurability": 100,
+          "onAdded": [
+            {
+              "$type": "Predicated",
+              "otherTargets": {
+                "$type": "SelectTargetsByShape",
+                "topLimit": 1,
+                "sortType": "Nearest",
+                "shapeName": "SphereR5",
+                "campTargetType": "Enemy",
+                "sizeRatio": 1
+              },
+              "targetPredicates": [
+                {
+                  "$type": "ByEntityTypes",
+                  "entityTypes": [
+                    "Avatar"
+                  ]
+                }
+              ],
+              "successActions": [
+                {
+                  "$type": "ServerLuaCall",
+                  "luaCallType": "FromGroup",
+                  "funcName": "SLC_MushroomMonsterAlert",
+                  "FMBBFLMNPOF": 0,
+                  "GBPNAGAPMHB": 0,
+                  "ALBFHLGOPBE": 0
+                }
+              ]
+            }
+          ]
+        },
+        "PhaseTwo": {
+          "modifierName": "",
+          "elementDurability": 100
+        }
+      },
+      "onAdded": [
+        {
+          "$type": "ApplyModifier",
+          "modifierName": "CatchCheck"
+        }
+      ],
+      "onFieldEnter": [
+        {
+          "$type": "ServerLuaCall",
+          "predicates": [
+            {
+              "$type": "ByTargetGlobalValue",
+              "target": "Self",
+              "key": "SGV_MushroomMonster_Alert",
+              "value": 0
+            }
+          ],
+          "luaCallType": "FromGroup",
+          "funcName": "SLC_MushroomMonsterAlert",
+          "FMBBFLMNPOF": 0,
+          "GBPNAGAPMHB": 0,
+          "ALBFHLGOPBE": 0
+        }
+      ]
+    }
+  },
+  {
+    "Default": {
+      "$type": "ConfigAbility",
       "abilityName": "SceneObj_Gear_Test_Chemistry_Controller",
       "abilityMixins": [
         {
@@ -35,7 +143,7 @@
         },
         {
           "$type": "AttachToGadgetStateMixin",
-          "IJNIFFOPHNJ": 201,
+          "gadgetState": 201,
           "modifierName": "GearStart"
         }
       ],
@@ -66,7 +174,7 @@
               },
               "gadgetID": 70900349,
               "campTargetType": "All",
-              "CEBMHIFOHJM": true
+              "byServer": true
             },
             {
               "$type": "DebugLog",
@@ -175,12 +283,13 @@
           "onKill": [
             {
               "$type": "SendEffectTrigger",
-              "parameter": "Disappear"
+              "parameter": "Disappear",
+              "attachPoint": ""
             },
             {
               "$type": "ExecuteGadgetLua",
               "target": "Owner",
-              "JFOEGBAHFAC": 201
+              "param1": 201
             }
           ]
         },
@@ -285,11 +394,11 @@
                   "compareType": "NoneOrEqual"
                 }
               ],
-              "IBGEDNNBIOF": "Other",
+              "ownerIs": "Other",
               "gadgetID": 70900350,
               "campID": 1001,
               "campTargetType": "Enemy",
-              "CEBMHIFOHJM": true
+              "byServer": true
             },
             {
               "$type": "ApplyModifier",
@@ -476,27 +585,27 @@
         },
         {
           "$type": "AttachToGadgetStateMixin",
-          "IJNIFFOPHNJ": 901,
+          "gadgetState": 901,
           "modifierName": "100Point"
         },
         {
           "$type": "AttachToGadgetStateMixin",
-          "IJNIFFOPHNJ": 902,
+          "gadgetState": 902,
           "modifierName": "200Point"
         },
         {
           "$type": "AttachToGadgetStateMixin",
-          "IJNIFFOPHNJ": 903,
+          "gadgetState": 903,
           "modifierName": "300Point"
         },
         {
           "$type": "AttachToGadgetStateMixin",
-          "IJNIFFOPHNJ": 203,
+          "gadgetState": 203,
           "modifierName": "Close"
         },
         {
           "$type": "AttachToGadgetStateMixin",
-          "IJNIFFOPHNJ": 204,
+          "gadgetState": 204,
           "modifierName": "Default"
         }
       ],
@@ -681,7 +790,7 @@
               "value": 1
             }
           ],
-          "JFOEGBAHFAC": 901
+          "param1": 901
         },
         {
           "$type": "KillSelf",
@@ -717,7 +826,7 @@
               "value": 1
             }
           ],
-          "JFOEGBAHFAC": 902
+          "param1": 902
         },
         {
           "$type": "KillSelf",
@@ -753,7 +862,7 @@
               "value": 1
             }
           ],
-          "JFOEGBAHFAC": 903
+          "param1": 903
         },
         {
           "$type": "KillSelf",
@@ -775,22 +884,22 @@
       "abilityMixins": [
         {
           "$type": "AttachToGadgetStateMixin",
-          "IJNIFFOPHNJ": 201,
+          "gadgetState": 201,
           "modifierName": "AND_Select"
         },
         {
           "$type": "AttachToGadgetStateMixin",
-          "IJNIFFOPHNJ": 202,
+          "gadgetState": 202,
           "modifierName": "OR_Select"
         },
         {
           "$type": "AttachToGadgetStateMixin",
-          "IJNIFFOPHNJ": 203,
+          "gadgetState": 203,
           "modifierName": "NOT_Select"
         },
         {
           "$type": "AttachToGadgetStateMixin",
-          "IJNIFFOPHNJ": 204,
+          "gadgetState": 204,
           "modifierName": "XOR_Select"
         }
       ],
@@ -887,7 +996,7 @@
                   "element": "Water"
                 }
               ],
-              "JFOEGBAHFAC": 201
+              "param1": 201
             },
             {
               "$type": "FireEffect",
@@ -917,7 +1026,7 @@
       "abilityMixins": [
         {
           "$type": "AttachToGadgetStateMixin",
-          "IJNIFFOPHNJ": 201,
+          "gadgetState": 201,
           "modifierName": "Fire_Effect"
         }
       ],
@@ -930,7 +1039,7 @@
               "$type": "TriggerPostProcessEffectMixin",
               "postEffectAssetName": "PostEffect_Scene_Fog",
               "duration": 0,
-              "HLGKOHKCGLF": true
+              "isStageEffect": true
             }
           ],
           "onAdded": [
@@ -1014,7 +1123,7 @@
         },
         {
           "$type": "AttachToGadgetStateMixin",
-          "IJNIFFOPHNJ": 204,
+          "gadgetState": 204,
           "modifierName": "FinalEffect"
         }
       ],
@@ -1307,7 +1416,7 @@
               ]
             }
           ],
-          "JFOEGBAHFAC": 202
+          "param1": 202
         },
         {
           "$type": "ExecuteGadgetLua",
@@ -1315,7 +1424,7 @@
             {
               "$type": "ByTargetGadgetState",
               "target": "Self",
-              "IJNIFFOPHNJ": 204
+              "gadgetState": 204
             },
             {
               "$type": "ByEntityTypes",
@@ -1324,7 +1433,7 @@
               ]
             }
           ],
-          "JFOEGBAHFAC": 202
+          "param1": 202
         },
         {
           "$type": "ExecuteGadgetLua",
@@ -1341,7 +1450,7 @@
               ]
             }
           ],
-          "JFOEGBAHFAC": 201
+          "param1": 201
         },
         {
           "$type": "ServerLuaCall",
@@ -1358,11 +1467,11 @@
               ]
             }
           ],
-          "MINNFFNDCJH": "FromGroup",
-          "PDFANJKMFNK": "LuaCallFail",
-          "LIOGECEPJAH": 0,
-          "FDDPMCCJIKN": 0,
-          "KNJMHMKNCKF": 0
+          "luaCallType": "FromGroup",
+          "funcName": "LuaCallFail",
+          "FMBBFLMNPOF": 0,
+          "GBPNAGAPMHB": 0,
+          "ALBFHLGOPBE": 0
         }
       ]
     }
@@ -1378,7 +1487,7 @@
         },
         {
           "$type": "ExecuteGadgetLua",
-          "JFOEGBAHFAC": 201
+          "param1": 201
         }
       ]
     }
@@ -1405,7 +1514,7 @@
       "abilityMixins": [
         {
           "$type": "AttachToGadgetStateMixin",
-          "IJNIFFOPHNJ": 204,
+          "gadgetState": 204,
           "modifierName": "RemoveNormal"
         }
       ],
@@ -1441,7 +1550,7 @@
           "modifierMixins": [
             {
               "$type": "AttachToGadgetStateMixin",
-              "IJNIFFOPHNJ": 201,
+              "gadgetState": 201,
               "modifierName": "Fire_Effect"
             }
           ],
@@ -1511,7 +1620,7 @@
                       "value": 0
                     }
                   ],
-                  "JFOEGBAHFAC": 901
+                  "param1": 901
                 },
                 {
                   "$type": "ApplyModifier",
@@ -1562,7 +1671,7 @@
           "onThinkInterval": [
             {
               "$type": "ExecuteGadgetLua",
-              "JFOEGBAHFAC": 201
+              "param1": 201
             }
           ]
         },
@@ -1630,7 +1739,7 @@
       "abilityMixins": [
         {
           "$type": "AttachToGadgetStateMixin",
-          "IJNIFFOPHNJ": 204,
+          "gadgetState": 204,
           "modifierName": "RemoveNormal"
         }
       ],
@@ -1670,7 +1779,7 @@
           "modifierMixins": [
             {
               "$type": "AttachToGadgetStateMixin",
-              "IJNIFFOPHNJ": 201,
+              "gadgetState": 201,
               "modifierName": "Fire_Effect"
             }
           ],
@@ -1734,7 +1843,7 @@
               "successActions": [
                 {
                   "$type": "ExecuteGadgetLua",
-                  "JFOEGBAHFAC": 901
+                  "param1": 901
                 },
                 {
                   "$type": "RemoveModifier",
@@ -1768,7 +1877,7 @@
                       "value": 0
                     }
                   ],
-                  "JFOEGBAHFAC": 902
+                  "param1": 902
                 },
                 {
                   "$type": "ApplyModifier",
@@ -1819,7 +1928,7 @@
           "onThinkInterval": [
             {
               "$type": "ExecuteGadgetLua",
-              "JFOEGBAHFAC": 201
+              "param1": 201
             }
           ]
         },
@@ -1887,7 +1996,7 @@
       "abilityMixins": [
         {
           "$type": "AttachToGadgetStateMixin",
-          "IJNIFFOPHNJ": 204,
+          "gadgetState": 204,
           "modifierName": "RemoveNormal"
         }
       ],
@@ -1931,7 +2040,7 @@
           "modifierMixins": [
             {
               "$type": "AttachToGadgetStateMixin",
-              "IJNIFFOPHNJ": 201,
+              "gadgetState": 201,
               "modifierName": "Fire_Effect"
             }
           ],
@@ -1995,7 +2104,7 @@
               "successActions": [
                 {
                   "$type": "ExecuteGadgetLua",
-                  "JFOEGBAHFAC": 901
+                  "param1": 901
                 },
                 {
                   "$type": "RemoveModifier",
@@ -2023,7 +2132,7 @@
               "successActions": [
                 {
                   "$type": "ExecuteGadgetLua",
-                  "JFOEGBAHFAC": 902
+                  "param1": 902
                 },
                 {
                   "$type": "RemoveModifier",
@@ -2057,7 +2166,7 @@
                       "value": 0
                     }
                   ],
-                  "JFOEGBAHFAC": 903
+                  "param1": 903
                 },
                 {
                   "$type": "ApplyModifier",
@@ -2108,7 +2217,7 @@
           "onThinkInterval": [
             {
               "$type": "ExecuteGadgetLua",
-              "JFOEGBAHFAC": 201
+              "param1": 201
             }
           ]
         },
@@ -2180,7 +2289,7 @@
         },
         {
           "$type": "AttachToGadgetStateMixin",
-          "IJNIFFOPHNJ": 201,
+          "gadgetState": 201,
           "modifierName": "State_201"
         }
       ],
@@ -2197,7 +2306,7 @@
                   "element": "Wind"
                 }
               ],
-              "JFOEGBAHFAC": 201
+              "param1": 201
             }
           ]
         },
@@ -2287,7 +2396,7 @@
         },
         {
           "$type": "AttachToGadgetStateMixin",
-          "IJNIFFOPHNJ": 201,
+          "gadgetState": 201,
           "modifierName": "State_201"
         }
       ],
@@ -2360,7 +2469,7 @@
           "onRemoved": [
             {
               "$type": "ExecuteGadgetLua",
-              "JFOEGBAHFAC": 201
+              "param1": 201
             }
           ],
           "onBeingHit": [
@@ -2475,7 +2584,7 @@
       "abilityMixins": [
         {
           "$type": "AttachToGadgetStateMixin",
-          "IJNIFFOPHNJ": 102,
+          "gadgetState": 102,
           "modifierName": "CurveTest"
         }
       ],
@@ -2486,7 +2595,7 @@
           "onAdded": [
             {
               "$type": "ExecuteGadgetLua",
-              "JFOEGBAHFAC": 1
+              "param1": 1
             }
           ]
         }
@@ -2636,7 +2745,7 @@
           "minValue": 0
         }
       ],
-      "JPKNDOGGOIN": [
+      "onFieldExit": [
         {
           "$type": "AddGlobalValue",
           "value": -5,
@@ -2750,7 +2859,7 @@
         },
         "GrassMaterial": {
           "modifierName": "",
-          "elementType": "Grass",
+          "elementType": "Wood",
           "elementDurability": 100,
           "isElementDurabilityMutable": false
         },
@@ -2765,7 +2874,7 @@
             {
               "$type": "DoActionByEventMixin",
               "type": "Current",
-              "PDKJAFAIDFL": [
+              "onAbilityStateAdded": [
                 {
                   "abilityState": "ElementBurning",
                   "actions": [
@@ -2783,7 +2892,7 @@
                   ]
                 }
               ],
-              "LDPHCDDGEBA": [
+              "onAbilityStateRemoved": [
                 {
                   "abilityState": "ElementBurning",
                   "actions": [
@@ -2801,7 +2910,7 @@
                   ]
                 }
               ],
-              "LIINFCJLBOP": ""
+              "JACDIIKGBJA": ""
             }
           ]
         }
@@ -2833,7 +2942,7 @@
       "abilityMixins": [
         {
           "$type": "AttachToGadgetStateMixin",
-          "IJNIFFOPHNJ": 201,
+          "gadgetState": 201,
           "modifierName": "Summon_ShootingStar"
         }
       ],
@@ -2943,7 +3052,7 @@
           "onRemoved": [
             {
               "$type": "SetAvatarCanShakeOff",
-              "MGCGHDBAFLM": true
+              "canShakeOff": true
             },
             {
               "$type": "ApplyModifier",
@@ -2998,7 +3107,7 @@
           "modifierMixins": [
             {
               "$type": "TornadoMixin",
-              "FPIBGAICHKA": [
+              "stageZone": [
                 {
                   "shapeName": "CircleR40H40",
                   "strength": 2,
@@ -3045,8 +3154,8 @@
               "born": {
                 "$type": "ConfigBornByTarget"
               },
-              "OIJIOOILAJB": 2,
-              "KGOICCBEAGH": 50
+              "enviroWindStrength": 2,
+              "enviroWindRadius": 50
             }
           ]
         }
@@ -3066,27 +3175,27 @@
       "abilityMixins": [
         {
           "$type": "AttachToGadgetStateMixin",
-          "IJNIFFOPHNJ": 201,
+          "gadgetState": 201,
           "modifierName": "damageup"
         },
         {
           "$type": "AttachToGadgetStateMixin",
-          "IJNIFFOPHNJ": 202,
+          "gadgetState": 202,
           "modifierName": "channelblock"
         },
         {
           "$type": "AttachToGadgetStateMixin",
-          "IJNIFFOPHNJ": 203,
+          "gadgetState": 203,
           "modifierName": "energyplus"
         },
         {
           "$type": "AttachToGadgetStateMixin",
-          "IJNIFFOPHNJ": 204,
+          "gadgetState": 204,
           "modifierName": "scoreplus"
         },
         {
           "$type": "AttachToGadgetStateMixin",
-          "IJNIFFOPHNJ": 901,
+          "gadgetState": 901,
           "modifierName": "debuff"
         }
       ],
@@ -3124,7 +3233,7 @@
               "otherTargets": {
                 "$type": "SelectTargetsByShape",
                 "shapeName": "CircleR5",
-                "HGGKBNKCCFA": "CurLocalAvatar",
+                "centerBasedOn": "CurLocalAvatar",
                 "campTargetType": "All",
                 "campBasedOn": "CurLocalAvatar",
                 "sizeRatio": 1
@@ -3150,7 +3259,7 @@
               "otherTargets": {
                 "$type": "SelectTargetsByShape",
                 "shapeName": "CircleR5",
-                "HGGKBNKCCFA": "CurLocalAvatar",
+                "centerBasedOn": "CurLocalAvatar",
                 "campTargetType": "All",
                 "campBasedOn": "CurLocalAvatar",
                 "sizeRatio": 1
@@ -3227,7 +3336,7 @@
               "otherTargets": {
                 "$type": "SelectTargetsByShape",
                 "shapeName": "CircleR5",
-                "HGGKBNKCCFA": "CurLocalAvatar",
+                "centerBasedOn": "CurLocalAvatar",
                 "campTargetType": "All",
                 "campBasedOn": "CurLocalAvatar",
                 "sizeRatio": 1
@@ -3253,7 +3362,7 @@
               "otherTargets": {
                 "$type": "SelectTargetsByShape",
                 "shapeName": "CircleR5",
-                "HGGKBNKCCFA": "CurLocalAvatar",
+                "centerBasedOn": "CurLocalAvatar",
                 "campTargetType": "All",
                 "campBasedOn": "CurLocalAvatar",
                 "sizeRatio": 1
@@ -3458,8 +3567,7 @@
                 "$type": "ConfigBornBySelf"
               },
               "gadgetID": 70900360,
-              "campID": 5001,
-              "CEBMHIFOHJM": true
+              "byServer": true
             }
           ]
         }
@@ -3495,6 +3603,7 @@
         {
           "$type": "SendEffectTrigger",
           "parameter": "Die",
+          "attachPoint": "",
           "effectPattern": "Eff_Tower_Ball_MoveSpeed_01"
         },
         {
@@ -3533,6 +3642,7 @@
         {
           "$type": "SendEffectTrigger",
           "parameter": "Die",
+          "attachPoint": "",
           "effectPattern": "Eff_Tower_Ball_MoveSpeed_01"
         },
         {
@@ -3548,7 +3658,7 @@
       "abilityMixins": [
         {
           "$type": "AttachToGadgetStateMixin",
-          "IJNIFFOPHNJ": 201,
+          "gadgetState": 201,
           "modifierName": "ElementWindModifier"
         },
         {
@@ -3573,7 +3683,7 @@
           "onAdded": [
             {
               "$type": "ExecuteGadgetLua",
-              "JFOEGBAHFAC": 201
+              "param1": 201
             }
           ]
         },
@@ -3598,7 +3708,7 @@
                   "element": "Electric"
                 }
               ],
-              "JFOEGBAHFAC": 201
+              "param1": 201
             }
           ]
         }
@@ -3615,7 +3725,7 @@
           "modifierName": "ChangeState"
         }
       ],
-      "JPKNDOGGOIN": [
+      "onFieldExit": [
         {
           "$type": "ApplyModifier",
           "modifierName": "ChangeStateBack"
@@ -3630,7 +3740,7 @@
       "abilityMixins": [
         {
           "$type": "AttachToGadgetStateMixin",
-          "IJNIFFOPHNJ": 201,
+          "gadgetState": 201,
           "modifierName": "ElementWindModifier"
         },
         {
@@ -3658,7 +3768,7 @@
                   "element": "Electric"
                 }
               ],
-              "JFOEGBAHFAC": 201
+              "param1": 201
             }
           ],
           "onThinkInterval": [
@@ -3807,7 +3917,7 @@
           "minValue": 0
         }
       ],
-      "JPKNDOGGOIN": [
+      "onFieldExit": [
         {
           "$type": "AddGlobalValue",
           "value": -1,
@@ -3826,7 +3936,7 @@
       "abilityMixins": [
         {
           "$type": "AttachToGadgetStateMixin",
-          "IJNIFFOPHNJ": 201,
+          "gadgetState": 201,
           "modifierName": "ElementthunderModifier"
         },
         {
@@ -3861,7 +3971,7 @@
           "onAdded": [
             {
               "$type": "ExecuteGadgetLua",
-              "JFOEGBAHFAC": 201
+              "param1": 201
             }
           ]
         },
@@ -3982,22 +4092,22 @@
         },
         {
           "$type": "AttachToGadgetStateMixin",
-          "IJNIFFOPHNJ": 901,
+          "gadgetState": 901,
           "modifierName": "Action01"
         },
         {
           "$type": "AttachToGadgetStateMixin",
-          "IJNIFFOPHNJ": 902,
+          "gadgetState": 902,
           "modifierName": "Action02"
         },
         {
           "$type": "AttachToGadgetStateMixin",
-          "IJNIFFOPHNJ": 903,
+          "gadgetState": 903,
           "modifierName": "Action03"
         },
         {
           "$type": "AttachToGadgetStateMixin",
-          "IJNIFFOPHNJ": 202,
+          "gadgetState": 202,
           "modifierName": "Locked"
         }
       ],
@@ -4049,11 +4159,11 @@
                   "value": 0
                 }
               ],
-              "MINNFFNDCJH": "FromGroup",
-              "PDFANJKMFNK": "Stone_Behit",
-              "LIOGECEPJAH": 0,
-              "FDDPMCCJIKN": 0,
-              "KNJMHMKNCKF": 0
+              "luaCallType": "FromGroup",
+              "funcName": "Stone_Behit",
+              "FMBBFLMNPOF": 0,
+              "GBPNAGAPMHB": 0,
+              "ALBFHLGOPBE": 0
             },
             {
               "$type": "SetGlobalValue",
@@ -4117,11 +4227,11 @@
                   "value": 0
                 }
               ],
-              "MINNFFNDCJH": "FromGroup",
-              "PDFANJKMFNK": "Stone_Behit",
-              "LIOGECEPJAH": 0,
-              "FDDPMCCJIKN": 0,
-              "KNJMHMKNCKF": 0
+              "luaCallType": "FromGroup",
+              "funcName": "Stone_Behit",
+              "FMBBFLMNPOF": 0,
+              "GBPNAGAPMHB": 0,
+              "ALBFHLGOPBE": 0
             },
             {
               "$type": "SetGlobalValue",
@@ -4185,11 +4295,11 @@
                   "value": 0
                 }
               ],
-              "MINNFFNDCJH": "FromGroup",
-              "PDFANJKMFNK": "Stone_Behit",
-              "LIOGECEPJAH": 0,
-              "FDDPMCCJIKN": 0,
-              "KNJMHMKNCKF": 0
+              "luaCallType": "FromGroup",
+              "funcName": "Stone_Behit",
+              "FMBBFLMNPOF": 0,
+              "GBPNAGAPMHB": 0,
+              "ALBFHLGOPBE": 0
             },
             {
               "$type": "SetGlobalValue",
@@ -4253,11 +4363,11 @@
                   "value": 0
                 }
               ],
-              "MINNFFNDCJH": "FromGroup",
-              "PDFANJKMFNK": "Stone_Behit",
-              "LIOGECEPJAH": 0,
-              "FDDPMCCJIKN": 0,
-              "KNJMHMKNCKF": 0
+              "luaCallType": "FromGroup",
+              "funcName": "Stone_Behit",
+              "FMBBFLMNPOF": 0,
+              "GBPNAGAPMHB": 0,
+              "ALBFHLGOPBE": 0
             },
             {
               "$type": "SetGlobalValue",
@@ -4406,7 +4516,7 @@
           "onBeingHit": [
             {
               "$type": "ExecuteGadgetLua",
-              "JFOEGBAHFAC": 201
+              "param1": 201
             }
           ]
         },
@@ -4416,7 +4526,7 @@
           "onBeingHit": [
             {
               "$type": "ExecuteGadgetLua",
-              "JFOEGBAHFAC": 201
+              "param1": 201
             }
           ]
         },
@@ -4430,7 +4540,7 @@
           "onBeingHit": [
             {
               "$type": "ExecuteGadgetLua",
-              "JFOEGBAHFAC": 202
+              "param1": 202
             }
           ]
         },
@@ -4440,7 +4550,7 @@
           "onBeingHit": [
             {
               "$type": "ExecuteGadgetLua",
-              "JFOEGBAHFAC": 202
+              "param1": 202
             }
           ]
         },
@@ -4454,7 +4564,7 @@
           "onBeingHit": [
             {
               "$type": "ExecuteGadgetLua",
-              "JFOEGBAHFAC": 203
+              "param1": 203
             }
           ]
         },
@@ -4464,7 +4574,7 @@
           "onBeingHit": [
             {
               "$type": "ExecuteGadgetLua",
-              "JFOEGBAHFAC": 203
+              "param1": 203
             }
           ]
         },
@@ -4478,7 +4588,7 @@
           "onBeingHit": [
             {
               "$type": "ExecuteGadgetLua",
-              "JFOEGBAHFAC": 204
+              "param1": 204
             }
           ]
         },
@@ -4488,7 +4598,7 @@
           "onBeingHit": [
             {
               "$type": "ExecuteGadgetLua",
-              "JFOEGBAHFAC": 204
+              "param1": 204
             }
           ]
         },
@@ -4526,17 +4636,17 @@
       "abilityMixins": [
         {
           "$type": "AttachToGadgetStateMixin",
-          "IJNIFFOPHNJ": 902,
+          "gadgetState": 902,
           "modifierName": "CurrectLightOn"
         },
         {
           "$type": "AttachToGadgetStateMixin",
-          "IJNIFFOPHNJ": 901,
+          "gadgetState": 901,
           "modifierName": "FinishLightOn"
         },
         {
           "$type": "AttachToGadgetStateMixin",
-          "IJNIFFOPHNJ": 201,
+          "gadgetState": 201,
           "modifierName": "RotationEffect"
         },
         {
@@ -4565,11 +4675,11 @@
                   ]
                 }
               ],
-              "MINNFFNDCJH": "FromGroup",
-              "PDFANJKMFNK": "SquareBeHit",
-              "LIOGECEPJAH": 0,
-              "FDDPMCCJIKN": 0,
-              "KNJMHMKNCKF": 0
+              "luaCallType": "FromGroup",
+              "funcName": "SquareBeHit",
+              "FMBBFLMNPOF": 0,
+              "GBPNAGAPMHB": 0,
+              "ALBFHLGOPBE": 0
             }
           ]
         },
@@ -4663,7 +4773,7 @@
         },
         {
           "$type": "ExecuteGadgetLua",
-          "JFOEGBAHFAC": 102
+          "param1": 102
         }
       ]
     }
@@ -4679,7 +4789,7 @@
         },
         {
           "$type": "ExecuteGadgetLua",
-          "JFOEGBAHFAC": 103
+          "param1": 103
         }
       ]
     }
@@ -4695,7 +4805,7 @@
         },
         {
           "$type": "ExecuteGadgetLua",
-          "JFOEGBAHFAC": 104
+          "param1": 104
         }
       ]
     }
@@ -4711,7 +4821,7 @@
         },
         {
           "$type": "ExecuteGadgetLua",
-          "JFOEGBAHFAC": 101
+          "param1": 101
         }
       ]
     }
@@ -4723,17 +4833,17 @@
       "abilityMixins": [
         {
           "$type": "AttachToGadgetStateMixin",
-          "IJNIFFOPHNJ": 902,
+          "gadgetState": 902,
           "modifierName": "CurrectLightOn"
         },
         {
           "$type": "AttachToGadgetStateMixin",
-          "IJNIFFOPHNJ": 901,
+          "gadgetState": 901,
           "modifierName": "FinishLightOn"
         },
         {
           "$type": "AttachToGadgetStateMixin",
-          "IJNIFFOPHNJ": 201,
+          "gadgetState": 201,
           "modifierName": "RotationEffect"
         },
         {
@@ -4824,7 +4934,7 @@
       "abilityMixins": [
         {
           "$type": "AttachToGadgetStateMixin",
-          "IJNIFFOPHNJ": 201,
+          "gadgetState": 201,
           "modifierName": "PuzzleDone"
         },
         {
@@ -4883,7 +4993,7 @@
         },
         {
           "$type": "AttachToGadgetStateMixin",
-          "IJNIFFOPHNJ": 201,
+          "gadgetState": 201,
           "modifierName": "SetDie"
         }
       ],
@@ -5047,11 +5157,11 @@
             },
             {
               "$type": "ServerLuaCall",
-              "MINNFFNDCJH": "FromGroup",
-              "PDFANJKMFNK": "MovePlatform",
-              "LIOGECEPJAH": 0,
-              "FDDPMCCJIKN": 0,
-              "KNJMHMKNCKF": 0
+              "luaCallType": "FromGroup",
+              "funcName": "MovePlatform",
+              "FMBBFLMNPOF": 0,
+              "GBPNAGAPMHB": 0,
+              "ALBFHLGOPBE": 0
             }
           ]
         },
@@ -5167,7 +5277,7 @@
           ]
         }
       ],
-      "JPKNDOGGOIN": [
+      "onFieldExit": [
         {
           "$type": "SetGlobalValue",
           "value": 0,
@@ -5207,12 +5317,12 @@
       "abilityMixins": [
         {
           "$type": "AttachToGadgetStateMixin",
-          "IJNIFFOPHNJ": 203,
+          "gadgetState": 203,
           "modifierName": "GearAction01"
         },
         {
           "$type": "AttachToGadgetStateMixin",
-          "IJNIFFOPHNJ": 201,
+          "gadgetState": 201,
           "modifierName": "GearStart"
         }
       ],
@@ -5255,7 +5365,7 @@
           "onRemoved": [
             {
               "$type": "ExecuteGadgetLua",
-              "JFOEGBAHFAC": 203
+              "param1": 203
             }
           ]
         },
@@ -5283,7 +5393,7 @@
       "abilityMixins": [
         {
           "$type": "AttachToGadgetStateMixin",
-          "IJNIFFOPHNJ": 201,
+          "gadgetState": 201,
           "modifierName": "ReturnToDefault"
         }
       ],
@@ -5308,11 +5418,11 @@
       "onAbilityStart": [
         {
           "$type": "ServerLuaCall",
-          "MINNFFNDCJH": "FromGroup",
-          "PDFANJKMFNK": "PhotoTakenSuccessfully",
-          "LIOGECEPJAH": 0,
-          "FDDPMCCJIKN": 0,
-          "KNJMHMKNCKF": 0
+          "luaCallType": "FromGroup",
+          "funcName": "PhotoTakenSuccessfully",
+          "FMBBFLMNPOF": 0,
+          "GBPNAGAPMHB": 0,
+          "ALBFHLGOPBE": 0
         }
       ]
     }
@@ -5328,7 +5438,7 @@
         },
         {
           "$type": "AttachToGadgetStateMixin",
-          "IJNIFFOPHNJ": 201,
+          "gadgetState": 201,
           "modifierName": "ElectricPowerSource"
         }
       ],
@@ -5346,7 +5456,7 @@
           "onBeingHit": [
             {
               "$type": "ExecuteGadgetLua",
-              "JFOEGBAHFAC": 201
+              "param1": 201
             }
           ]
         },
@@ -5405,7 +5515,7 @@
               "predicates": [
                 {
                   "$type": "ByTargetIsSelf",
-                  "HAJPDPIGFCJ": false
+                  "KGPAMIBIODB": false
                 }
               ],
               "value": 1,
@@ -5417,7 +5527,7 @@
               "$type": "AttachEffect",
               "target": "Applier",
               "effectPattern": "Eff_SceneObj_Gear_Electric_Port",
-              "NIIJEHMEGGF": true
+              "DIBJFNNBPCG": true
             }
           ],
           "onRemoved": [
@@ -5623,12 +5733,12 @@
         },
         {
           "$type": "AttachToGadgetStateMixin",
-          "IJNIFFOPHNJ": 201,
+          "gadgetState": 201,
           "modifierName": "ElectricPowerSource"
         },
         {
           "$type": "AttachToGadgetStateMixin",
-          "IJNIFFOPHNJ": 203,
+          "gadgetState": 203,
           "modifierName": "Locked"
         }
       ],
@@ -5686,7 +5796,7 @@
           "onBeingHit": [
             {
               "$type": "ExecuteGadgetLua",
-              "JFOEGBAHFAC": 201
+              "param1": 201
             }
           ]
         },
@@ -5707,9 +5817,9 @@
           "modifierMixins": [
             {
               "$type": "ConnectLineMixin",
-              "JAGMAGJDHJK": "ElectricPowerSource",
-              "GAGIEJKLKAN": "ElectricPowerCollector",
-              "JKJMJMKEBBD": "isTerminal"
+              "BFLEPHAHIIL": "ElectricPowerSource",
+              "AIJEDFGDAJE": "ElectricPowerCollector",
+              "AABMGIKDEGF": "isTerminal"
             }
           ],
           "onAdded": [
@@ -5725,7 +5835,7 @@
               "$type": "AttachEffect",
               "target": "Applier",
               "effectPattern": "Eff_SceneObj_ElectircPowerSource_01_Lightning",
-              "NIIJEHMEGGF": true
+              "DIBJFNNBPCG": true
             }
           ],
           "onRemoved": [
@@ -5745,9 +5855,9 @@
           "modifierMixins": [
             {
               "$type": "ConnectLineMixin",
-              "JAGMAGJDHJK": "ElectricPowerSource",
-              "GAGIEJKLKAN": "ElectricPowerCollector",
-              "JKJMJMKEBBD": "isTerminal",
+              "BFLEPHAHIIL": "ElectricPowerSource",
+              "AIJEDFGDAJE": "ElectricPowerCollector",
+              "AABMGIKDEGF": "isTerminal",
               "otherTargets": {
                 "$type": "SelectTargetsByShape",
                 "sortType": "Nearest",
@@ -5794,6 +5904,7 @@
           "onAdded": [
             {
               "$type": "SetGlobalValue",
+              "doOffStage": true,
               "value": 1,
               "key": "connectCount",
               "maxValue": 0,
@@ -5807,12 +5918,13 @@
                 "$type": "ConfigBornByAttachPoint",
                 "attachPointName": "RootNode"
               },
-              "NIIJEHMEGGF": true
+              "DIBJFNNBPCG": true
             }
           ],
           "onRemoved": [
             {
               "$type": "SetGlobalValue",
+              "doOffStage": true,
               "value": 0,
               "key": "connectCount",
               "maxValue": 0,
@@ -5859,12 +5971,12 @@
         },
         {
           "$type": "AttachToGadgetStateMixin",
-          "IJNIFFOPHNJ": 201,
+          "gadgetState": 201,
           "modifierName": "NormalPhase"
         },
         {
           "$type": "AttachToGadgetStateMixin",
-          "IJNIFFOPHNJ": 203,
+          "gadgetState": 203,
           "modifierName": "Locked"
         }
       ],
@@ -5913,7 +6025,7 @@
           "onAdded": [
             {
               "$type": "ExecuteGadgetLua",
-              "JFOEGBAHFAC": 201
+              "param1": 201
             },
             {
               "$type": "AttachEffect",
@@ -6035,7 +6147,7 @@
       "abilityMixins": [
         {
           "$type": "AttachToGadgetStateMixin",
-          "IJNIFFOPHNJ": 903,
+          "gadgetState": 903,
           "modifierName": "SHOOT"
         },
         {
@@ -6059,7 +6171,7 @@
                 },
                 "attachPointName": "ShootPoint"
               },
-              "IBGEDNNBIOF": "CurLocalAvatar",
+              "ownerIs": "CurLocalAvatar",
               "propOwnerIs": "CurLocalAvatar"
             }
           ]
@@ -6079,7 +6191,7 @@
                 },
                 "attachPointName": "ShootPoint"
               },
-              "IBGEDNNBIOF": "CurLocalAvatar",
+              "ownerIs": "CurLocalAvatar",
               "propOwnerIs": "CurLocalAvatar"
             },
             {
@@ -6098,7 +6210,7 @@
                 },
                 "attachPointName": "ShootPoint"
               },
-              "IBGEDNNBIOF": "CurLocalAvatar",
+              "ownerIs": "CurLocalAvatar",
               "propOwnerIs": "CurLocalAvatar"
             }
           ]
@@ -6117,38 +6229,38 @@
         },
         {
           "$type": "AttachToGadgetStateMixin",
-          "IJNIFFOPHNJ": 201,
+          "gadgetState": 201,
           "modifierName": "Phase2"
         },
         {
           "$type": "AttachToGadgetStateMixin",
-          "IJNIFFOPHNJ": 202,
+          "gadgetState": 202,
           "modifierName": "Phase3"
         },
         {
           "$type": "AttachToGadgetStateMixin",
-          "IJNIFFOPHNJ": 204,
+          "gadgetState": 204,
           "modifierName": "Start"
         },
         {
           "$type": "AttachToGadgetStateMixin",
-          "IJNIFFOPHNJ": 203,
+          "gadgetState": 203,
           "modifierName": "EndPhase"
         },
         {
           "$type": "AttachToGadgetStateMixin",
-          "IJNIFFOPHNJ": 901,
+          "gadgetState": 901,
           "modifierName": "Phase2_Protect_EFF"
         },
         {
           "$type": "AttachToGadgetStateMixin",
-          "IJNIFFOPHNJ": 902,
+          "gadgetState": 902,
           "modifierName": "Phase3_Protect_EFF"
         },
         {
           "$type": "GadgetChargeMixin",
-          "JHELCHGCHEB": "Fire",
-          "AHIABCCIFMP": 0.8,
+          "EECEHLHAKJM": "Fire",
+          "FLFOGAGPCCA": 0.8,
           "valueSteps": [
             0.5,
             100,
@@ -6163,7 +6275,7 @@
             "EndPhase"
           ],
           "globalValueKey": "chargepoint",
-          "MEPHFHFPMKA": "ratiopoint"
+          "PIPPGKFEHLP": "ratiopoint"
         }
       ],
       "modifiers": {
@@ -6216,6 +6328,7 @@
             {
               "$type": "SendEffectTrigger",
               "parameter": "IsOn",
+              "attachPoint": "",
               "type": "Bool",
               "value": 1,
               "effectPattern": "Eff_Pot_NightBerth_L"
@@ -6228,7 +6341,7 @@
           "onAdded": [
             {
               "$type": "ExecuteGadgetLua",
-              "JFOEGBAHFAC": 901
+              "param1": 901
             }
           ]
         },
@@ -6243,6 +6356,7 @@
             {
               "$type": "SendEffectTrigger",
               "parameter": "IsOn",
+              "attachPoint": "",
               "type": "Bool",
               "value": 1,
               "effectPattern": "Eff_Pot_NightBerth_L"
@@ -6260,6 +6374,7 @@
             {
               "$type": "SendEffectTrigger",
               "parameter": "Boil",
+              "attachPoint": "",
               "type": "Bool",
               "value": 1,
               "effectPattern": "Eff_Pot_Boil_Water"
@@ -6267,6 +6382,7 @@
             {
               "$type": "SendEffectTrigger",
               "parameter": "IsOn",
+              "attachPoint": "",
               "type": "Bool",
               "value": 1,
               "effectPattern": "Eff_Pot_NightBerth_N"
@@ -6274,6 +6390,7 @@
             {
               "$type": "SendEffectTrigger",
               "parameter": "IsOn",
+              "attachPoint": "",
               "type": "Bool",
               "value": 1,
               "effectPattern": "Eff_Pot_NightBerth_L"
@@ -6286,7 +6403,7 @@
           "onAdded": [
             {
               "$type": "ExecuteGadgetLua",
-              "JFOEGBAHFAC": 902
+              "param1": 902
             }
           ]
         },
@@ -6301,6 +6418,7 @@
             {
               "$type": "SendEffectTrigger",
               "parameter": "Boil",
+              "attachPoint": "",
               "type": "Bool",
               "value": 1,
               "effectPattern": "Eff_Pot_Boil_Water"
@@ -6308,6 +6426,7 @@
             {
               "$type": "SendEffectTrigger",
               "parameter": "IsOn",
+              "attachPoint": "",
               "type": "Bool",
               "value": 1,
               "effectPattern": "Eff_Pot_NightBerth_N"
@@ -6315,6 +6434,7 @@
             {
               "$type": "SendEffectTrigger",
               "parameter": "IsOn",
+              "attachPoint": "",
               "type": "Bool",
               "value": 1,
               "effectPattern": "Eff_Pot_NightBerth_L"
@@ -6328,6 +6448,7 @@
             {
               "$type": "SendEffectTrigger",
               "parameter": "IsOn",
+              "attachPoint": "",
               "type": "Bool",
               "value": 1,
               "effectPattern": "Eff_Pot_NightBerth_H"
@@ -6335,6 +6456,7 @@
             {
               "$type": "SendEffectTrigger",
               "parameter": "IsOn",
+              "attachPoint": "",
               "type": "Bool",
               "value": 1,
               "effectPattern": "Eff_Pot_NightBerth_N"
@@ -6342,6 +6464,7 @@
             {
               "$type": "SendEffectTrigger",
               "parameter": "IsOn",
+              "attachPoint": "",
               "type": "Bool",
               "value": 1,
               "effectPattern": "Eff_Pot_NightBerth_L"
@@ -6353,6 +6476,7 @@
             {
               "$type": "SendEffectTrigger",
               "parameter": "Boil",
+              "attachPoint": "",
               "type": "Bool",
               "value": 1,
               "effectPattern": "Eff_Pot_Boil_Water"
@@ -6399,12 +6523,12 @@
         },
         {
           "$type": "AttachToGadgetStateMixin",
-          "IJNIFFOPHNJ": 201,
+          "gadgetState": 201,
           "modifierName": "PHASE2"
         },
         {
           "$type": "AttachToGadgetStateMixin",
-          "IJNIFFOPHNJ": 202,
+          "gadgetState": 202,
           "modifierName": "Locked"
         }
       ],
@@ -6421,7 +6545,7 @@
             {
               "$type": "EnablePartControl",
               "doOffStage": true,
-              "JEBAOIKDKPN": [
+              "partRootNames": [
                 "RootNode"
               ],
               "enable": true
@@ -6430,7 +6554,7 @@
               "$type": "SetPartControlTarget",
               "target": "Applier",
               "doOffStage": true,
-              "JEBAOIKDKPN": [
+              "partRootNames": [
                 "RootNode"
               ]
             },
@@ -6443,7 +6567,7 @@
             {
               "$type": "EnablePartControl",
               "doOffStage": true,
-              "JEBAOIKDKPN": [
+              "partRootNames": [
                 "RootNode"
               ]
             }
@@ -6455,9 +6579,9 @@
           "modifierMixins": [
             {
               "$type": "ConnectLineMixin",
-              "JAGMAGJDHJK": "MagneticGearCallBack",
-              "GAGIEJKLKAN": "MagneticGearCallBack",
-              "JKJMJMKEBBD": "isTerminal"
+              "BFLEPHAHIIL": "MagneticGearCallBack",
+              "AIJEDFGDAJE": "MagneticGearCallBack",
+              "AABMGIKDEGF": "isTerminal"
             }
           ],
           "onAdded": [
@@ -6475,7 +6599,7 @@
           "onAdded": [
             {
               "$type": "EnablePartControl",
-              "JEBAOIKDKPN": [
+              "partRootNames": [
                 "RootNode"
               ]
             },
@@ -6497,9 +6621,9 @@
           "modifierMixins": [
             {
               "$type": "ConnectLineMixin",
-              "JAGMAGJDHJK": "MagneticGearCallBack",
-              "GAGIEJKLKAN": "MagneticGearCallBack",
-              "JKJMJMKEBBD": "isTerminal",
+              "BFLEPHAHIIL": "MagneticGearCallBack",
+              "AIJEDFGDAJE": "MagneticGearCallBack",
+              "AABMGIKDEGF": "isTerminal",
               "otherTargets": {
                 "$type": "SelectTargetsByShape",
                 "sortType": "Nearest",
@@ -6528,7 +6652,7 @@
           "onAdded": [
             {
               "$type": "EnablePartControl",
-              "JEBAOIKDKPN": [
+              "partRootNames": [
                 "RootNode"
               ]
             },
@@ -6545,7 +6669,7 @@
           "onAdded": [
             {
               "$type": "EnablePartControl",
-              "JEBAOIKDKPN": [
+              "partRootNames": [
                 "RootNode"
               ]
             },
@@ -6569,7 +6693,7 @@
         },
         {
           "$type": "AttachToGadgetStateMixin",
-          "IJNIFFOPHNJ": 201,
+          "gadgetState": 201,
           "modifierName": "PHASE2"
         }
       ],
@@ -6596,8 +6720,8 @@
             {
               "$type": "DoWatcherSystemAction",
               "doOffStage": false,
-              "GPGMPHIIAMD": 1115,
-              "KLCNAOOJHNO": true
+              "watcherId": 1115,
+              "authorityOnly": true
             }
           ]
         }
@@ -6622,32 +6746,32 @@
         },
         {
           "$type": "AttachToGadgetStateMixin",
-          "IJNIFFOPHNJ": 201,
+          "gadgetState": 201,
           "modifierName": "RatioPillarZero"
         },
         {
           "$type": "AttachToGadgetStateMixin",
-          "IJNIFFOPHNJ": 203,
+          "gadgetState": 203,
           "modifierName": "RatioPillarOne"
         },
         {
           "$type": "AttachToGadgetStateMixin",
-          "IJNIFFOPHNJ": 204,
+          "gadgetState": 204,
           "modifierName": "RatioPillarTwo"
         },
         {
           "$type": "AttachToGadgetStateMixin",
-          "IJNIFFOPHNJ": 901,
+          "gadgetState": 901,
           "modifierName": "RatioPillarThree"
         },
         {
           "$type": "AttachToGadgetStateMixin",
-          "IJNIFFOPHNJ": 902,
+          "gadgetState": 902,
           "modifierName": "RatioPillarFour"
         },
         {
           "$type": "AttachToGadgetStateMixin",
-          "IJNIFFOPHNJ": 903,
+          "gadgetState": 903,
           "modifierName": "RatioPillarFourExtra"
         }
       ],
@@ -6838,7 +6962,7 @@
               "predicates": [
                 {
                   "$type": "ByTargetGadgetState",
-                  "IJNIFFOPHNJ": 204
+                  "gadgetState": 204
                 }
               ],
               "modifierName": "LightConnect"
@@ -6852,7 +6976,7 @@
               "predicates": [
                 {
                   "$type": "ByTargetGadgetState",
-                  "IJNIFFOPHNJ": 204
+                  "gadgetState": 204
                 }
               ],
               "value": 1,
@@ -6879,7 +7003,7 @@
               "predicates": [
                 {
                   "$type": "ByTargetGadgetState",
-                  "IJNIFFOPHNJ": 204
+                  "gadgetState": 204
                 }
               ],
               "value": 0,
@@ -6902,7 +7026,7 @@
               "predicates": [
                 {
                   "$type": "ByTargetGadgetState",
-                  "IJNIFFOPHNJ": 901
+                  "gadgetState": 901
                 }
               ],
               "modifierName": "LightConnect"
@@ -6916,7 +7040,7 @@
               "predicates": [
                 {
                   "$type": "ByTargetGadgetState",
-                  "IJNIFFOPHNJ": 901
+                  "gadgetState": 901
                 }
               ],
               "value": 1,
@@ -6951,7 +7075,7 @@
               "predicates": [
                 {
                   "$type": "ByTargetGadgetState",
-                  "IJNIFFOPHNJ": 901
+                  "gadgetState": 901
                 }
               ],
               "value": 0,
@@ -6977,11 +7101,11 @@
                   "predicates": [
                     {
                       "$type": "ByTargetGadgetState",
-                      "IJNIFFOPHNJ": 902
+                      "gadgetState": 902
                     },
                     {
                       "$type": "ByTargetGadgetState",
-                      "IJNIFFOPHNJ": 903
+                      "gadgetState": 903
                     }
                   ]
                 }
@@ -7000,11 +7124,11 @@
                   "predicates": [
                     {
                       "$type": "ByTargetGadgetState",
-                      "IJNIFFOPHNJ": 902
+                      "gadgetState": 902
                     },
                     {
                       "$type": "ByTargetGadgetState",
-                      "IJNIFFOPHNJ": 903
+                      "gadgetState": 903
                     }
                   ]
                 }
@@ -7044,11 +7168,11 @@
                   "predicates": [
                     {
                       "$type": "ByTargetGadgetState",
-                      "IJNIFFOPHNJ": 902
+                      "gadgetState": 902
                     },
                     {
                       "$type": "ByTargetGadgetState",
-                      "IJNIFFOPHNJ": 903
+                      "gadgetState": 903
                     }
                   ]
                 }
@@ -7095,7 +7219,7 @@
               "predicates": [
                 {
                   "$type": "ByTargetGadgetState",
-                  "IJNIFFOPHNJ": 202
+                  "gadgetState": 202
                 }
               ],
               "modifierName": "LightConnect"
@@ -7109,7 +7233,7 @@
               "predicates": [
                 {
                   "$type": "ByTargetGadgetState",
-                  "IJNIFFOPHNJ": 202
+                  "gadgetState": 202
                 }
               ],
               "value": 1,
@@ -7144,7 +7268,7 @@
               "predicates": [
                 {
                   "$type": "ByTargetGadgetState",
-                  "IJNIFFOPHNJ": 202
+                  "gadgetState": 202
                 }
               ],
               "value": 0,
@@ -7168,12 +7292,12 @@
         },
         {
           "$type": "AttachToGadgetStateMixin",
-          "IJNIFFOPHNJ": 201,
+          "gadgetState": 201,
           "modifierName": "RatioPillarZero"
         },
         {
           "$type": "AttachToGadgetStateMixin",
-          "IJNIFFOPHNJ": 202,
+          "gadgetState": 202,
           "modifierName": "RatioPillarStart"
         }
       ],
@@ -7256,7 +7380,7 @@
               "targetPredicates": [
                 {
                   "$type": "ByTargetGadgetState",
-                  "IJNIFFOPHNJ": 203
+                  "gadgetState": 203
                 }
               ],
               "successActions": [
@@ -7286,7 +7410,7 @@
               "predicates": [
                 {
                   "$type": "ByTargetGadgetState",
-                  "IJNIFFOPHNJ": 203
+                  "gadgetState": 203
                 }
               ],
               "value": 0,
@@ -7463,17 +7587,17 @@
         },
         {
           "$type": "AttachToGadgetStateMixin",
-          "IJNIFFOPHNJ": 203,
+          "gadgetState": 203,
           "modifierName": "NormalExtra"
         },
         {
           "$type": "AttachToGadgetStateMixin",
-          "IJNIFFOPHNJ": 201,
+          "gadgetState": 201,
           "modifierName": "Flee"
         },
         {
           "$type": "AttachToGadgetStateMixin",
-          "IJNIFFOPHNJ": 202,
+          "gadgetState": 202,
           "modifierName": "Empty"
         }
       ],
@@ -7538,17 +7662,17 @@
         },
         {
           "$type": "AttachToGadgetStateMixin",
-          "IJNIFFOPHNJ": 201,
+          "gadgetState": 201,
           "modifierName": "Flee"
         },
         {
           "$type": "AttachToGadgetStateMixin",
-          "IJNIFFOPHNJ": 202,
+          "gadgetState": 202,
           "modifierName": "Empty"
         },
         {
           "$type": "AttachToGadgetStateMixin",
-          "IJNIFFOPHNJ": 203,
+          "gadgetState": 203,
           "modifierName": "NormalExtra"
         },
         {
@@ -7557,7 +7681,7 @@
         },
         {
           "$type": "AttachToDayNightMixin",
-          "EJILBAEBENJ": "Night",
+          "time": "Night",
           "modifierName": "MoonfinFishingNight"
         }
       ],
@@ -7726,12 +7850,12 @@
         },
         {
           "$type": "AttachToGadgetStateMixin",
-          "IJNIFFOPHNJ": 201,
+          "gadgetState": 201,
           "modifierName": "IsGhostToAllied"
         },
         {
           "$type": "AttachToGadgetStateMixin",
-          "IJNIFFOPHNJ": 202,
+          "gadgetState": 202,
           "modifierName": "IsGhostToEnemy"
         }
       ],
@@ -7886,7 +8010,7 @@
         },
         {
           "$type": "AttachToGadgetStateMixin",
-          "IJNIFFOPHNJ": 201,
+          "gadgetState": 201,
           "modifierName": "Phase2"
         }
       ],
@@ -7897,7 +8021,7 @@
           "onAdded": [
             {
               "$type": "AttachEffect",
-              "POKMJEIDNJF": true,
+              "muteRemoteAction": true,
               "effectPattern": "Eff_SceneObj_HiddenDoor_01_Close"
             }
           ]
@@ -7908,7 +8032,7 @@
           "onAdded": [
             {
               "$type": "AttachEffect",
-              "POKMJEIDNJF": true,
+              "muteRemoteAction": true,
               "effectPattern": "Eff_SceneObj_HiddenDoor_01_Open"
             }
           ]
@@ -7941,7 +8065,7 @@
                   "value": 1
                 }
               ],
-              "JFOEGBAHFAC": 201
+              "param1": 201
             },
             {
               "$type": "ExecuteGadgetLua",
@@ -7971,7 +8095,7 @@
           "modifierName": "OpenWatcher"
         }
       ],
-      "JPKNDOGGOIN": [
+      "onFieldExit": [
         {
           "$type": "RemoveModifier",
           "target": "Target",
@@ -7994,7 +8118,7 @@
               "tags": [
                 "LEVEL1"
               ],
-              "LINPLFNONMI": true
+              "CFINMELCHCA": true
             }
           ]
         },
@@ -8026,12 +8150,12 @@
         },
         {
           "$type": "AttachToGadgetStateMixin",
-          "IJNIFFOPHNJ": 201,
+          "gadgetState": 201,
           "modifierName": "Open"
         },
         {
           "$type": "AttachToGadgetStateMixin",
-          "IJNIFFOPHNJ": 202,
+          "gadgetState": 202,
           "modifierName": "CheaterTest"
         }
       ],
@@ -8105,10 +8229,10 @@
           "successActions": [
             {
               "$type": "ServerLuaCall",
-              "PDFANJKMFNK": "GadgetCallClearThreat",
-              "LIOGECEPJAH": 0,
-              "FDDPMCCJIKN": 0,
-              "KNJMHMKNCKF": 0
+              "funcName": "GadgetCallClearThreat",
+              "FMBBFLMNPOF": 0,
+              "GBPNAGAPMHB": 0,
+              "ALBFHLGOPBE": 0
             },
             {
               "$type": "DebugLog",
@@ -8117,19 +8241,388 @@
           ]
         }
       ],
-      "JPKNDOGGOIN": [
+      "onFieldExit": [
         {
           "$type": "ServerLuaCall",
-          "PDFANJKMFNK": "GadgetCallSetThreat",
-          "LIOGECEPJAH": 0,
-          "FDDPMCCJIKN": 0,
-          "KNJMHMKNCKF": 0
+          "funcName": "GadgetCallSetThreat",
+          "FMBBFLMNPOF": 0,
+          "GBPNAGAPMHB": 0,
+          "ALBFHLGOPBE": 0
         },
         {
           "$type": "DebugLog",
           "content": "### Dog SmokeDevice: Player Exit Smoke！！！！###"
         }
       ]
+    }
+  },
+  {
+    "Default": {
+      "$type": "ConfigAbility",
+      "abilityName": "SceneObj_Other_Sumeru_Property_Ani_Prop_GardenHint_01",
+      "abilityMixins": [
+        {
+          "$type": "AttachToGadgetStateMixin",
+          "modifierName": "Default"
+        },
+        {
+          "$type": "AttachToGadgetStateMixin",
+          "gadgetState": 201,
+          "modifierName": "Active_01"
+        },
+        {
+          "$type": "AttachToGadgetStateMixin",
+          "gadgetState": 202,
+          "modifierName": "Active_02"
+        }
+      ],
+      "modifiers": {
+        "Default": {
+          "modifierName": "",
+          "elementDurability": 100
+        },
+        "Active_01": {
+          "modifierName": "",
+          "elementDurability": 100,
+          "onAdded": [
+            {
+              "$type": "AttachEffect",
+              "effectPattern": "Eff_QuestGuide_Position",
+              "scale": 0.3
+            }
+          ]
+        },
+        "Active_02": {
+          "modifierName": "",
+          "elementDurability": 100,
+          "onAdded": [
+            {
+              "$type": "AttachEffect",
+              "effectPattern": "Eff_QuestGuide_Position",
+              "scale": 0.7
+            }
+          ]
+        }
+      }
+    }
+  },
+  {
+    "Default": {
+      "$type": "ConfigAbility",
+      "abilityName": "SceneObj_Area_Fd_Property_Ani_Prop_KaiHeMen_01",
+      "abilityMixins": [
+        {
+          "$type": "AttachToGadgetStateMixin",
+          "modifierName": "Closed"
+        },
+        {
+          "$type": "AttachToGadgetStateMixin",
+          "gadgetState": 301,
+          "modifierName": "Opened"
+        },
+        {
+          "$type": "AttachToGadgetStateMixin",
+          "gadgetState": 202,
+          "modifierName": "TryToClose"
+        },
+        {
+          "$type": "AttachToGadgetStateMixin",
+          "gadgetState": 201,
+          "modifierName": "TryToOpen"
+        }
+      ],
+      "modifiers": {
+        "Opened": {
+          "modifierName": "",
+          "elementDurability": 100,
+          "onAdded": [
+            {
+              "$type": "SetGlobalValue",
+              "value": 1,
+              "key": "IsOpen",
+              "maxValue": 0,
+              "minValue": 0
+            }
+          ]
+        },
+        "Closed": {
+          "modifierName": "",
+          "elementDurability": 100,
+          "onAdded": [
+            {
+              "$type": "SetGlobalValue",
+              "value": 0,
+              "key": "IsOpen",
+              "maxValue": 0,
+              "minValue": 0
+            }
+          ]
+        },
+        "TryToOpen": {
+          "modifierName": "",
+          "duration": 3,
+          "elementDurability": 100,
+          "onAdded": [
+            {
+              "$type": "SetAnimatorTrigger",
+              "predicates": [
+                {
+                  "$type": "ByTargetGlobalValue",
+                  "key": "IsOpen",
+                  "value": 0
+                }
+              ],
+              "triggerID": "Open"
+            }
+          ],
+          "onRemoved": [
+            {
+              "$type": "ChangeGadgetState",
+              "AJIENKOILPG": 301
+            }
+          ]
+        },
+        "TryToClose": {
+          "modifierName": "",
+          "duration": 3,
+          "elementDurability": 100,
+          "onAdded": [
+            {
+              "$type": "SetAnimatorTrigger",
+              "predicates": [
+                {
+                  "$type": "ByTargetGlobalValue",
+                  "key": "IsOpen",
+                  "value": 1
+                }
+              ],
+              "triggerID": "Close"
+            }
+          ],
+          "onRemoved": [
+            {
+              "$type": "ChangeGadgetState"
+            }
+          ]
+        }
+      }
+    }
+  },
+  {
+    "Default": {
+      "$type": "ConfigAbility",
+      "abilityName": "SceneObj_Area_Fd_Property_Ani_Prop_GeLiKe_01",
+      "modifiers": {
+        "BeHitBlunt": {
+          "modifierName": "",
+          "elementDurability": 100,
+          "onBeingHit": [
+            {
+              "$type": "Predicated",
+              "targetPredicates": [
+                {
+                  "$type": "ByHitStrikeType",
+                  "strikeType": "Blunt"
+                }
+              ],
+              "successActions": [
+                {
+                  "$type": "FireEffect",
+                  "effectPattern": "Eff_SceneObj_StonePillar_01_Broken"
+                },
+                {
+                  "$type": "KillSelf"
+                }
+              ]
+            }
+          ]
+        }
+      },
+      "onAdded": [
+        {
+          "$type": "AttachModifier",
+          "modifierName": "BeHitBlunt"
+        }
+      ]
+    }
+  },
+  {
+    "Default": {
+      "$type": "ConfigAbility",
+      "abilityName": "SceneObj_Area_Fd_Property_Ani_Prop_TengHu_01",
+      "modifiers": {
+        "BeHitBlunt": {
+          "modifierName": "",
+          "elementDurability": 100,
+          "onBeingHit": [
+            {
+              "$type": "Predicated",
+              "targetPredicates": [
+                {
+                  "$type": "ByHitStrikeType",
+                  "strikeType": "Blunt"
+                }
+              ],
+              "successActions": [
+                {
+                  "$type": "FireEffect",
+                  "effectPattern": "Eff_SceneObj_StonePillar_01_Broken"
+                },
+                {
+                  "$type": "KillSelf"
+                }
+              ]
+            }
+          ]
+        }
+      },
+      "onAdded": [
+        {
+          "$type": "AttachModifier",
+          "modifierName": "BeHitBlunt"
+        }
+      ]
+    }
+  },
+  {
+    "Default": {
+      "$type": "ConfigAbility",
+      "abilityName": "SceneObj_Area_Fd_Property_Ani_Prop_DunJiFangBei_01",
+      "abilityMixins": [
+        {
+          "$type": "AttachToGadgetStateMixin",
+          "modifierName": "S_Default"
+        },
+        {
+          "$type": "AttachToGadgetStateMixin",
+          "gadgetState": 201,
+          "modifierName": "GearStart"
+        },
+        {
+          "$type": "AttachToGadgetStateMixin",
+          "gadgetState": 202,
+          "modifierName": "Interact_Forbid"
+        }
+      ],
+      "modifiers": {
+        "S_Default": {
+          "modifierName": "",
+          "elementDurability": 100,
+          "onAdded": [
+            {
+              "$type": "SetAnimatorInt",
+              "intID": "gadgetState",
+              "value": 0
+            }
+          ],
+          "onBeingHit": [
+            {
+              "$type": "ChangeGadgetState",
+              "predicates": [
+                {
+                  "$type": "ByHitStrikeType",
+                  "strikeType": "Blunt"
+                }
+              ],
+              "AJIENKOILPG": 201
+            }
+          ]
+        },
+        "GearStart": {
+          "modifierName": "",
+          "elementDurability": 100,
+          "state": "DenyLockOn",
+          "onAdded": [
+            {
+              "$type": "SetAnimatorInt",
+              "intID": "gadgetState",
+              "value": 201
+            },
+            {
+              "$type": "AttachEffect",
+              "effectPattern": "Eff_SceneObj_Elem_Blank"
+            }
+          ]
+        },
+        "Interact_Forbid": {
+          "modifierName": "",
+          "elementDurability": 100,
+          "state": "DenyLockOn",
+          "onAdded": [
+            {
+              "$type": "SetAnimatorInt",
+              "intID": "gadgetState",
+              "value": 0
+            },
+            {
+              "$type": "AttachEffect",
+              "effectPattern": "Eff_Item_SpecialTreasureBox_LockIdle"
+            }
+          ],
+          "onRemoved": [
+            {
+              "$type": "FireEffect",
+              "effectPattern": "Eff_Item_SpecialTreasureBox_Unlock"
+            }
+          ]
+        }
+      }
+    }
+  },
+  {
+    "Default": {
+      "$type": "ConfigAbility",
+      "abilityName": "SceneObj_Area_Fd_Property_Ani_Prop_QiQiu_01",
+      "abilityMixins": [
+        {
+          "$type": "AttachToGadgetStateMixin",
+          "modifierName": "Normal"
+        },
+        {
+          "$type": "AttachToGadgetStateMixin",
+          "gadgetState": 201,
+          "modifierName": "Hide"
+        }
+      ],
+      "modifiers": {
+        "Normal": {
+          "modifierName": "",
+          "elementDurability": 100,
+          "onAdded": [
+            {
+              "$type": "EnableSceneTransformByName",
+              "transformNames": [
+                "Head"
+              ],
+              "setEnable": true
+            }
+          ],
+          "onBeingHit": [
+            {
+              "$type": "ChangeGadgetState",
+              "predicates": [
+                {
+                  "$type": "ByHitStrikeType",
+                  "strikeType": "Blunt"
+                }
+              ],
+              "AJIENKOILPG": 201
+            }
+          ]
+        },
+        "Hide": {
+          "modifierName": "",
+          "elementDurability": 100,
+          "onAdded": [
+            {
+              "$type": "EnableSceneTransformByName",
+              "transformNames": [
+                "Head"
+              ]
+            }
+          ]
+        }
+      }
     }
   }
 ]
