@@ -141,14 +141,6 @@
             "$type": "ConfigBornByAttachPoint",
             "attachPointName": "FirePoint_03"
           }
-        },
-        {
-          "$type": "TriggerBullet",
-          "bulletID": 42609025,
-          "born": {
-            "$type": "ConfigBornByAttachPoint",
-            "attachPointName": "FirePoint_04"
-          }
         }
       ]
     }
@@ -193,14 +185,15 @@
             },
             "attackInfo": {
               "attackTag": "",
-              "attenuationTag": "",
-              "attenuationGroup": "default",
+              "attenuationTag": "OverdoseBullet",
+              "attenuationGroup": "FungusFightV2_Seq2",
               "attackProperty": {
-                "damagePercentage": 0.33,
+                "damagePercentage": 0.5,
                 "damagePercentageRatio": 0,
                 "elementType": "Wind",
                 "elementDurability": 25,
-                "enBreak": 15
+                "enBreak": 15,
+                "attackType": "Range"
               },
               "hitPattern": {
                 "onHitEffectName": "default",
@@ -220,24 +213,48 @@
       "abilityName": "Fungus_Deux_BVB_HealingWaving",
       "abilityMixins": [
         {
-          "$type": "DoActionByAnimatorStateIDMixin",
+          "$type": "DoActionByStateIDMixin",
           "stateIDs": [
-            "HealingWaving"
+            "UnionBurst"
           ],
-          "enterActions": [
+          "exitActions": [
             {
-              "$type": "ApplyModifier",
-              "modifierName": "HealingWavingStates"
+              "$type": "ClearAIManualCommand"
             }
           ]
         }
       ],
+      "onAbilityStart": [
+        {
+          "$type": "CreateGadget",
+          "otherTargets": {
+            "$type": "SelectTargetsByShape",
+            "topLimit": 1,
+            "sortType": "LowHpRatio",
+            "shapeName": "CircleR30H10",
+            "campTargetType": "SelfCamp",
+            "sizeRatio": 1
+          },
+          "born": {
+            "$type": "ConfigBornByTarget",
+            "onGround": true
+          },
+          "JAEOKOAACJP": true,
+          "gadgetID": 42609029
+        }
+      ]
+    }
+  },
+  {
+    "Default": {
+      "$type": "ConfigAbility",
+      "abilityName": "Fungus_Deux_BVB_HealingWaving_Gadget",
       "modifiers": {
         "HealingWavingStates": {
           "modifierName": "",
-          "duration": 6.1,
+          "duration": 3.1,
           "elementDurability": 100,
-          "thinkInterval": 1.5,
+          "thinkInterval": 0.75,
           "onAdded": [
             {
               "$type": "AttachEffect",
@@ -253,7 +270,7 @@
               "$type": "ApplyModifier",
               "otherTargets": {
                 "$type": "SelectTargetsByShape",
-                "shapeName": "CircleR30H5",
+                "shapeName": "CircleR5H4",
                 "campTargetType": "SelfCamp",
                 "sizeRatio": 1
               },
@@ -267,13 +284,50 @@
                 }
               ],
               "modifierName": "HealingWaving_HealEffect"
+            }
+          ]
+        },
+        "HealingWaving_HealEffect": {
+          "modifierName": "",
+          "duration": 0.2,
+          "elementType": "Wind",
+          "elementDurability": 50,
+          "onAdded": [
+            {
+              "$type": "HealHP",
+              "amountByTargetMaxHPRatio": 0.125
             },
+            {
+              "$type": "FireEffect",
+              "effectPattern": "Eff_Monster_Fungus_Deux_Wind_HealFx"
+            }
+          ]
+        }
+      },
+      "onAdded": [
+        {
+          "$type": "ApplyModifier",
+          "modifierName": "HealingWavingStates"
+        }
+      ]
+    }
+  },
+  {
+    "Default": {
+      "$type": "ConfigAbility",
+      "abilityName": "Fungus_Deux_BVB_Passive_SpeedUp",
+      "modifiers": {
+        "Passive_SpeedUp_Handler": {
+          "modifierName": "",
+          "elementDurability": 100,
+          "thinkInterval": 3,
+          "onThinkInterval": [
             {
               "$type": "ApplyModifier",
               "otherTargets": {
                 "$type": "SelectTargetsByShape",
-                "shapeName": "CircleR4_5H5",
-                "campTargetType": "Enemy",
+                "shapeName": "CircleR20",
+                "campTargetType": "SelfCamp",
                 "sizeRatio": 1
               },
               "predicates": [
@@ -285,53 +339,26 @@
                   ]
                 }
               ],
-              "modifierName": "HealingWaving_Damage"
+              "modifierName": "SpeedUp_Modifier"
             }
           ]
         },
-        "HealingWaving_HealEffect": {
+        "SpeedUp_Modifier": {
           "modifierName": "",
-          "duration": 0.2,
-          "elementType": "Wind",
-          "elementDurability": 75,
-          "onAdded": [
-            {
-              "$type": "HealHP",
-              "amountByTargetMaxHPRatio": 0.075
-            },
-            {
-              "$type": "FireEffect",
-              "effectPattern": "Eff_Monster_Fungus_Deux_Wind_HealFx"
-            }
-          ]
-        },
-        "HealingWaving_Damage": {
-          "modifierName": "",
-          "duration": 0.2,
+          "duration": 3.5,
           "elementDurability": 100,
-          "onAdded": [
-            {
-              "$type": "DamageByAttackValue",
-              "attackInfo": {
-                "attackTag": "",
-                "attenuationTag": "",
-                "attenuationGroup": "default",
-                "attackProperty": {
-                  "damagePercentage": 1.39,
-                  "damagePercentageRatio": 0,
-                  "elementType": "Wind",
-                  "elementDurability": 25,
-                  "enBreak": 25
-                },
-                "hitPattern": {
-                  "onHitEffectName": "default",
-                  "hitImpulseType": "LV1"
-                }
-              }
-            }
-          ]
+          "properties": {
+            "Animator_MoveSpeedRatio": 0.15,
+            "Actor_ElemMasteryDelta": 50
+          }
         }
-      }
+      },
+      "onAdded": [
+        {
+          "$type": "ApplyModifier",
+          "modifierName": "Passive_SpeedUp_Handler"
+        }
+      ]
     }
   },
   {

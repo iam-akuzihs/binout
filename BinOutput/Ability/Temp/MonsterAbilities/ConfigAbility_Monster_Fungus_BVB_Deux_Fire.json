@@ -2,6 +2,192 @@
   {
     "Default": {
       "$type": "ConfigAbility",
+      "abilityName": "Fungus_Deux_BVB_Fire_FireBomb_NormalAttack",
+      "abilitySpecials": {
+        "attack_ratio_enhanced": 0.1
+      },
+      "modifiers": {
+        "UnionBurst_Enhanced_Stacking": {
+          "stacking": "MultipleAllRefresh",
+          "stackingOption": {
+            "abilitySpecialName": "",
+            "maxModifierNumForMultipleType": 5
+          },
+          "modifierName": "",
+          "elementDurability": 100,
+          "properties": {
+            "Actor_AttackRatio": "attack_ratio_enhanced"
+          }
+        },
+        "AttackBuff_Buffer": {
+          "modifierName": "",
+          "duration": 0.2,
+          "elementDurability": 100,
+          "onRemoved": [
+            {
+              "$type": "ApplyModifier",
+              "modifierName": "UnionBurst_Enhanced_Stacking"
+            }
+          ]
+        },
+        "UnionBurst_Monitor": {
+          "modifierName": "",
+          "elementDurability": 100,
+          "onAttackLanded": [
+            {
+              "$type": "Predicated",
+              "target": "Target",
+              "targetPredicates": [
+                {
+                  "$type": "ByAttackTags",
+                  "attackTags": [
+                    "Deux_BVB_Fire_FireBomb"
+                  ]
+                }
+              ],
+              "successActions": [
+                {
+                  "$type": "RemoveModifier",
+                  "modifierName": "UnionBurst_Enhanced_Stacking"
+                }
+              ]
+            }
+          ]
+        }
+      },
+      "onAdded": [
+        {
+          "$type": "ApplyModifier",
+          "modifierName": "UnionBurst_Monitor"
+        }
+      ],
+      "onAbilityStart": [
+        {
+          "$type": "TriggerAttackEvent",
+          "attackEvent": {
+            "attackPattern": {
+              "$type": "ConfigAttackCircle",
+              "triggerType": "TriggerNoRepeat",
+              "height": 1,
+              "fanAngle": 75,
+              "radius": 2.7
+            },
+            "attackInfo": {
+              "attackTag": "",
+              "attenuationTag": "FireNormalAttack",
+              "attenuationGroup": "FungusFightV2_Seq1",
+              "attackProperty": {
+                "damagePercentage": 2,
+                "damagePercentageRatio": 0,
+                "elementType": "Fire",
+                "elementDurability": 25,
+                "enBreak": 0,
+                "attackType": "Range"
+              },
+              "hitPattern": {
+                "onHitEffectName": "default",
+                "hitImpulseType": "LV1"
+              }
+            }
+          },
+          "targetType": "Enemy"
+        },
+        {
+          "$type": "FireEffect",
+          "effectPattern": "Eff_Monster_Fungus_Deux_Fire_FlameFountain_P1"
+        },
+        {
+          "$type": "ApplyModifier",
+          "modifierName": "AttackBuff_Buffer"
+        }
+      ]
+    }
+  },
+  {
+    "Default": {
+      "$type": "ConfigAbility",
+      "abilityName": "Fungus_Deux_BVB_Fire_FireBomb_Trigger",
+      "onAbilityStart": [
+        {
+          "$type": "CreateGadget",
+          "target": "SelfAttackTarget",
+          "gadgetID": 42609022
+        }
+      ]
+    }
+  },
+  {
+    "Default": {
+      "$type": "ConfigAbility",
+      "abilityName": "Fungus_Deux_BVB_Fire_FireBomb_Gadget",
+      "modifiers": {
+        "FireBomb_Gadget_Handler": {
+          "modifierName": "",
+          "duration": 0.7,
+          "elementDurability": 100,
+          "onAdded": [
+            {
+              "$type": "FireEffect",
+              "effectPattern": "Eff_Monster_Fungus_Deux_Fire_FlameImpact_BS"
+            }
+          ],
+          "onRemoved": [
+            {
+              "$type": "FireEffect",
+              "effectPattern": "Eff_Monster_Fungus_Deux_Fire_FlameImpact_Blast"
+            },
+            {
+              "$type": "DamageByAttackValue",
+              "otherTargets": {
+                "$type": "SelectTargetsByShape",
+                "shapeName": "FungusAOE_R5",
+                "campTargetType": "Enemy",
+                "sizeRatio": 1
+              },
+              "attackInfo": {
+                "attackTag": "Deux_BVB_Fire_FireBomb",
+                "attenuationTag": "",
+                "attenuationGroup": "default",
+                "attackProperty": {
+                  "damagePercentage": 10,
+                  "damagePercentageRatio": 0,
+                  "elementType": "Fire",
+                  "elementDurability": 50,
+                  "attackType": "Range"
+                },
+                "hitPattern": {
+                  "onHitEffectName": "default",
+                  "hitImpulseType": "LV3"
+                },
+                "canBeModifiedBy": "Owner"
+              }
+            }
+          ]
+        }
+      },
+      "onAdded": [
+        {
+          "$type": "ApplyModifier",
+          "modifierName": "FireBomb_Gadget_Handler"
+        }
+      ]
+    }
+  },
+  {
+    "Default": {
+      "$type": "ConfigAbility",
+      "abilityName": "Fungus_Deux_BVB_Fire_FlameFountain_Trigger"
+    }
+  },
+  {
+    "Default": {
+      "$type": "ConfigAbility",
+      "abilityName": "Fungus_Deux_BVB_Fire_FlameFountain_Gadget"
+    }
+  },
+  {
+    "Default": {
+      "$type": "ConfigAbility",
       "abilityName": "Fungus_Deux_BVB_Fire_FlameImpact",
       "abilityMixins": [
         {
@@ -70,160 +256,6 @@
           "modifierName": "FlameImpact_AttackLanded_Monitor"
         }
       ]
-    }
-  },
-  {
-    "Default": {
-      "$type": "ConfigAbility",
-      "abilityName": "Fungus_Deux_BVB_Fire_FireBomb_Trigger",
-      "onAbilityStart": [
-        {
-          "$type": "CreateGadget",
-          "target": "SelfAttackTarget",
-          "born": {
-            "$type": "ConfigBornByPredicatePoint",
-            "onGround": true,
-            "timeForPredictive": 0.2
-          },
-          "gadgetID": 42609022
-        }
-      ]
-    }
-  },
-  {
-    "Default": {
-      "$type": "ConfigAbility",
-      "abilityName": "Fungus_Deux_BVB_Fire_FireBomb_Gadget",
-      "modifiers": {
-        "FireBomb_Gadget_Handler": {
-          "modifierName": "",
-          "duration": 0.1,
-          "elementDurability": 100,
-          "onAdded": [
-            {
-              "$type": "FireEffect",
-              "effectPattern": "Eff_Monster_Fungus_Deux_Fire_FireBomb_Start"
-            },
-            {
-              "$type": "ApplyModifier",
-              "otherTargets": {
-                "$type": "SelectTargetsByShape",
-                "shapeName": "CircleR2_75H4",
-                "campTargetType": "Enemy",
-                "sizeRatio": 1
-              },
-              "predicates": [
-                {
-                  "$type": "ByEntityTypes",
-                  "entityTypes": [
-                    "Monster",
-                    "Partner"
-                  ]
-                }
-              ],
-              "modifierName": "FireBomb_Stuck_On_Enemy"
-            },
-            {
-              "$type": "ActCameraShake",
-              "cameraShake": {
-                "shakeType": "CustomVector",
-                "shakeRange": 0.2,
-                "shakeTime": 0.15,
-                "shakeDistance": 13.5,
-                "shakeDir": {
-                  "x": 0.4,
-                  "y": 1,
-                  "z": 1
-                },
-                "extension": {
-                  "baseCycle": 0.05,
-                  "cycleDamping": 0.2
-                }
-              }
-            }
-          ]
-        },
-        "FireBomb_Stuck_On_Enemy": {
-          "modifierName": "",
-          "duration": 8,
-          "elementDurability": 100,
-          "thinkInterval": 2.5,
-          "onAdded": [
-            {
-              "$type": "DamageByAttackValue",
-              "attackInfo": {
-                "attackTag": "FireBomb_Attack",
-                "attenuationTag": "",
-                "attenuationGroup": "default",
-                "attackProperty": {
-                  "damagePercentage": 8.37,
-                  "damagePercentageRatio": 0,
-                  "elementType": "Fire",
-                  "elementDurability": 50,
-                  "enBreak": 60,
-                  "attackType": "Range"
-                },
-                "hitPattern": {
-                  "onHitEffectName": "default",
-                  "hitImpulseType": "",
-                  "overrideHitImpulse": {
-                    "hitLevel": "Air",
-                    "hitImpulseX": 0,
-                    "hitImpulseY": 660
-                  }
-                }
-              }
-            },
-            {
-              "$type": "FireEffect",
-              "effectPattern": "Eff_Monster_Fungus_Deux_Fire_FireBomb_Attach"
-            }
-          ],
-          "onThinkInterval": [
-            {
-              "$type": "DamageByAttackValue",
-              "attackInfo": {
-                "attackTag": "",
-                "attenuationTag": "Fungus_FireBomb",
-                "attenuationGroup": "FungusFight_General",
-                "attackProperty": {
-                  "damagePercentage": 1.05,
-                  "damagePercentageRatio": 0,
-                  "elementType": "Fire",
-                  "elementDurability": 25,
-                  "enBreak": 10
-                },
-                "hitPattern": {
-                  "onHitEffectName": "default",
-                  "hitImpulseType": "LV1"
-                }
-              }
-            },
-            {
-              "$type": "FireEffect",
-              "effectPattern": "Eff_Monster_Fungus_Deux_Fire_FireBomb_End"
-            }
-          ]
-        }
-      },
-      "onAdded": [
-        {
-          "$type": "ApplyModifier",
-          "modifierName": "FireBomb_Gadget_Handler"
-        }
-      ]
-    }
-  },
-  {
-    "Default": {
-      "$type": "ConfigAbility",
-      "abilityName": "Fungus_Deux_BVB_Fire_FlameFountain_Trigger"
-    }
-  },
-  {
-    "Default": {
-      "$type": "ConfigAbility",
-      "abilityName": "Fungus_Deux_BVB_Fire_FlameFountain_Gadget"
     }
   }
 ]

@@ -46,7 +46,8 @@
             "offset": {
               "y": 1.2,
               "z": -0.5
-            }
+            },
+            "useRotation": true
           }
         }
       ]
@@ -121,20 +122,98 @@
   {
     "Default": {
       "$type": "ConfigAbility",
-      "abilityName": "Fungus_Trois_BVB_Ice_FrozenStorm",
+      "abilityName": "Fungus_Trois_BVB_Ice_Blizzard",
+      "modifiers": {
+        "Recover_On_Being_Hit": {
+          "modifierName": "",
+          "elementDurability": 100,
+          "onBeingHit": [
+            {
+              "$type": "Predicated",
+              "targetPredicates": [
+                {
+                  "$type": "ByTargetGlobalValue",
+                  "target": "Self",
+                  "key": "_Heal_Cooldown_",
+                  "value": 0,
+                  "compareType": "NoneOrEqual"
+                }
+              ],
+              "successActions": [
+                {
+                  "$type": "ApplyModifier",
+                  "modifierName": "HealHP_Timer"
+                },
+                {
+                  "$type": "HealHP",
+                  "amountByCasterMaxHPRatio": 0.05
+                }
+              ]
+            }
+          ]
+        },
+        "HealHP_Timer": {
+          "modifierName": "",
+          "duration": 0.1,
+          "elementDurability": 100,
+          "onAdded": [
+            {
+              "$type": "SetGlobalValue",
+              "value": 1,
+              "key": "_Heal_Cooldown_",
+              "maxValue": 0,
+              "minValue": 0
+            }
+          ],
+          "onRemoved": [
+            {
+              "$type": "SetGlobalValue",
+              "value": 0,
+              "key": "_Heal_Cooldown_",
+              "maxValue": 0,
+              "minValue": 0
+            }
+          ]
+        }
+      },
+      "onAdded": [
+        {
+          "$type": "ApplyModifier",
+          "modifierName": "Recover_On_Being_Hit"
+        }
+      ],
+      "onAbilityStart": [
+        {
+          "$type": "CreateGadget",
+          "born": {
+            "$type": "ConfigBornBySelf",
+            "onGround": true,
+            "useRotation": true
+          },
+          "gadgetID": 42609028
+        }
+      ]
+    }
+  },
+  {
+    "Default": {
+      "$type": "ConfigAbility",
+      "abilityName": "Fungus_Trois_BVB_Ice_Blizzard_Gadget",
       "modifiers": {
         "FrozenStorm_State": {
           "modifierName": "",
-          "duration": 7.25,
+          "duration": 4.1,
           "elementDurability": 100,
-          "thinkInterval": 0.6,
-          "properties": {
-            "Animator_MoveSpeedRatio": 0.66
-          },
+          "thinkInterval": 1,
           "onAdded": [
             {
               "$type": "AttachEffect",
-              "effectPattern": "Eff_Monster_Fungus_Trois_Ice_FrozenStorm"
+              "effectPattern": "Eff_Monster_Fungus_Trois_Ice_Blizzard"
+            }
+          ],
+          "onRemoved": [
+            {
+              "$type": "KillSelf"
             }
           ],
           "onThinkInterval": [
@@ -142,20 +221,21 @@
               "$type": "DamageByAttackValue",
               "otherTargets": {
                 "$type": "SelectTargetsByShape",
-                "shapeName": "CircleR6",
+                "shapeName": "FungusAOE_R5",
                 "campTargetType": "Enemy",
                 "sizeRatio": 1
               },
               "attackInfo": {
                 "attackTag": "",
-                "attenuationTag": "FungusFrozenStorm",
-                "attenuationGroup": "default",
+                "attenuationTag": "FrozenStorm",
+                "attenuationGroup": "FungusFightV2_Seq1",
                 "attackProperty": {
-                  "damagePercentage": 0.3,
+                  "damagePercentage": 3,
                   "damagePercentageRatio": 0,
                   "elementType": "Ice",
-                  "elementDurability": 10,
-                  "enBreak": 0
+                  "elementDurability": 25,
+                  "enBreak": 60,
+                  "attackType": "Range"
                 },
                 "hitPattern": {
                   "onHitEffectName": "default",
@@ -166,7 +246,7 @@
           ]
         }
       },
-      "onAbilityStart": [
+      "onAdded": [
         {
           "$type": "ApplyModifier",
           "modifierName": "FrozenStorm_State"

@@ -33,15 +33,71 @@
           ]
         }
       },
+      "onAdded": [
+        {
+          "$type": "SetGlobalValue",
+          "value": 1,
+          "key": "_NORMAL_ATTACK_COUNT_",
+          "maxValue": 0,
+          "minValue": 0
+        }
+      ],
       "onAbilityStart": [
         {
-          "$type": "TriggerBullet",
-          "bulletID": 42609017,
-          "born": {
-            "$type": "ConfigBornByAttachPoint",
-            "attachPointName": "BulletSource",
-            "attachPointTargetType": "Self"
-          }
+          "$type": "Predicated",
+          "targetPredicates": [
+            {
+              "$type": "ByTargetGlobalValue",
+              "target": "Self",
+              "key": "_NORMAL_ATTACK_COUNT_",
+              "value": 3,
+              "compareType": "MoreThanAndEqual"
+            }
+          ],
+          "successActions": [
+            {
+              "$type": "TriggerBullet",
+              "bulletID": 42609027,
+              "born": {
+                "$type": "ConfigBornByAttachPoint",
+                "direction": {
+                  "$type": "ConfigDirectionByAttackTarget"
+                },
+                "useRotation": true,
+                "attachPointName": "BulletSource",
+                "attachPointTargetType": "Self"
+              }
+            },
+            {
+              "$type": "SetGlobalValue",
+              "value": 1,
+              "key": "_NORMAL_ATTACK_COUNT_",
+              "maxValue": 0,
+              "minValue": 0
+            }
+          ],
+          "failActions": [
+            {
+              "$type": "TriggerBullet",
+              "bulletID": 42609017,
+              "born": {
+                "$type": "ConfigBornByAttachPoint",
+                "direction": {
+                  "$type": "ConfigDirectionByAttackTarget"
+                },
+                "useRotation": true,
+                "attachPointName": "BulletSource",
+                "attachPointTargetType": "Self"
+              }
+            },
+            {
+              "$type": "AddGlobalValue",
+              "value": 1,
+              "key": "_NORMAL_ATTACK_COUNT_",
+              "maxValue": 0,
+              "minValue": 0
+            }
+          ]
         },
         {
           "$type": "FireEffect",
@@ -83,6 +139,7 @@
           "effectPattern": "Eff_Monster_Fungus_Un_Gamma_Water_Shoot_HitOverdose",
           "born": {
             "$type": "ConfigBornByAttachPoint",
+            "useRotation": true,
             "attachPointName": "RootNode"
           }
         },
@@ -99,13 +156,81 @@
             },
             "attackInfo": {
               "attackTag": "",
-              "attenuationTag": "Water_Bullet",
-              "attenuationGroup": "FungusFight_General",
+              "attenuationTag": "WaterBullet",
+              "attenuationGroup": "FungusFightV2_Seq1",
               "attackProperty": {
-                "damagePercentage": 1.41,
+                "damagePercentage": 3,
                 "damagePercentageRatio": 0,
                 "elementType": "Water",
-                "elementDurability": 25
+                "elementDurability": 25,
+                "attackType": "Range"
+              },
+              "hitPattern": {
+                "onHitEffectName": "default",
+                "hitImpulseType": "LV1"
+              },
+              "canBeModifiedBy": "Owner"
+            }
+          },
+          "targetType": "Enemy"
+        }
+      ]
+    }
+  },
+  {
+    "Default": {
+      "$type": "ConfigAbility",
+      "abilityName": "Fungus_Un_BVB_Water_SuperWaterBullet",
+      "modifiers": {
+        "WaterBullet_Display": {
+          "modifierName": "",
+          "elementType": "Water",
+          "elementDurability": 100,
+          "onAdded": [
+            {
+              "$type": "AttachEffect",
+              "effectPattern": "Eff_Monster_Fungus_Un_Water_SuperWaterBullet"
+            }
+          ]
+        }
+      },
+      "onAdded": [
+        {
+          "$type": "AttachModifier",
+          "modifierName": "WaterBullet_Display"
+        }
+      ],
+      "onAbilityStart": [
+        {
+          "$type": "FireEffect",
+          "effectPattern": "Eff_Monster_Fungus_Un_Water_SuperWaterBullet_Blast",
+          "born": {
+            "$type": "ConfigBornByAttachPoint",
+            "useRotation": true,
+            "attachPointName": "RootNode"
+          }
+        },
+        {
+          "$type": "TriggerAttackEvent",
+          "attackEvent": {
+            "attackPattern": {
+              "$type": "ConfigAttackSphere",
+              "triggerType": "TriggerNoRepeat",
+              "born": {
+                "$type": "ConfigBornByCollisionPoint"
+              },
+              "radius": 4
+            },
+            "attackInfo": {
+              "attackTag": "",
+              "attenuationTag": "WaterBullet",
+              "attenuationGroup": "FungusFightV2_Seq1",
+              "attackProperty": {
+                "damagePercentage": 5,
+                "damagePercentageRatio": 0,
+                "elementType": "Water",
+                "elementDurability": 25,
+                "attackType": "Range"
               },
               "hitPattern": {
                 "onHitEffectName": "default",
@@ -131,9 +256,10 @@
             "offset": {
               "z": 3.2
             },
-            "onGround": true
+            "onGround": true,
+            "useRotation": true
           },
-          "MALEKPEEJIE": true,
+          "JAEOKOAACJP": true,
           "gadgetID": 42609018
         }
       ]
@@ -146,7 +272,7 @@
       "modifiers": {
         "SprayBloomingGadget": {
           "modifierName": "",
-          "duration": 2.25,
+          "duration": 0.75,
           "elementDurability": 100,
           "onAdded": [
             {
@@ -163,7 +289,7 @@
               "$type": "ApplyModifier",
               "otherTargets": {
                 "$type": "SelectTargetsByShape",
-                "shapeName": "CircleR30H5",
+                "shapeName": "CircleR30H10",
                 "campTargetType": "SelfCamp",
                 "sizeRatio": 1
               },
@@ -209,7 +335,7 @@
           "onAdded": [
             {
               "$type": "HealHP",
-              "amountByTargetMaxHPRatio": 0.45
+              "amountByTargetMaxHPRatio": 0.4
             },
             {
               "$type": "FireEffect",
@@ -229,7 +355,7 @@
                 "attenuationTag": "",
                 "attenuationGroup": "default",
                 "attackProperty": {
-                  "damagePercentage": 4.62,
+                  "damagePercentage": 4.5,
                   "damagePercentageRatio": 0,
                   "elementType": "Water",
                   "elementDurability": 50,
@@ -292,6 +418,7 @@
           "bulletID": 42609024,
           "born": {
             "$type": "ConfigBornByAttachPoint",
+            "useRotation": true,
             "attachPointName": "BulletSource",
             "attachPointTargetType": "Self"
           }
@@ -343,6 +470,7 @@
           "effectPattern": "Eff_Monster_Fungus_Un_Gamma_Water_Shoot_HitNormal",
           "born": {
             "$type": "ConfigBornByAttachPoint",
+            "useRotation": true,
             "attachPointName": "RootNode"
           }
         }
@@ -408,6 +536,7 @@
               "effectPattern": "Eff_Monster_Fungus_Un_Gamma_Water_Shoot_ASNormal",
               "born": {
                 "$type": "ConfigBornByAttachPoint",
+                "useRotation": true,
                 "attachPointName": "RootNode"
               }
             }
@@ -462,7 +591,8 @@
                   "$type": "ConfigAttackSphere",
                   "triggerType": "TriggerNoRepeat",
                   "born": {
-                    "$type": "ConfigBornBySelf"
+                    "$type": "ConfigBornBySelf",
+                    "useRotation": true
                   },
                   "radius": 1.5
                 },

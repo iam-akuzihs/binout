@@ -97,11 +97,11 @@
               "radius": 1
             },
             "attackInfo": {
-              "attackTag": "",
+              "attackTag": "Electro_Bullet",
               "attenuationTag": "Electro_Bullet",
-              "attenuationGroup": "FungusFight_General",
+              "attenuationGroup": "FungusFightV2_Seq1",
               "attackProperty": {
-                "damagePercentage": 0.61,
+                "damagePercentage": 1.5,
                 "damagePercentageRatio": 0,
                 "elementType": "Electric",
                 "elementDurability": 25
@@ -194,33 +194,134 @@
     "Default": {
       "$type": "ConfigAbility",
       "abilityName": "Fungus_Deux_BVB_Electro_ElecCharge",
-      "abilitySpecials": {
-        "attack_ratio_enhanced": 0.4
-      },
       "modifiers": {
         "Fungus_ElecCharge": {
           "modifierName": "",
-          "duration": 10,
+          "duration": 16,
           "elementDurability": 100,
-          "properties": {
-            "Actor_AttackRatio": "attack_ratio_enhanced"
-          },
-          "state": "AttackUp",
           "onAdded": [
             {
               "$type": "FireEffect",
               "effectPattern": "Eff_Monster_Fungus_Deux_Electric_ElecCharge_Team"
             }
+          ],
+          "onAttackLanded": [
+            {
+              "$type": "Predicated",
+              "target": "Other",
+              "targetPredicates": [
+                {
+                  "$type": "ByNot",
+                  "predicates": [
+                    {
+                      "$type": "ByHasModifier",
+                      "target": "Caster",
+                      "modifierName": "ThunderStrike_Timer"
+                    },
+                    {
+                      "$type": "ByAttackTags",
+                      "attackTags": [
+                        "ThunderStrike"
+                      ]
+                    }
+                  ]
+                }
+              ],
+              "successActions": [
+                {
+                  "$type": "DamageByAttackValue",
+                  "target": "Other",
+                  "attackInfo": {
+                    "attackTag": "ThunderStrike",
+                    "attenuationTag": "",
+                    "attenuationGroup": "default",
+                    "attackProperty": {
+                      "damagePercentage": 2,
+                      "damagePercentageRatio": 0,
+                      "elementType": "Electric",
+                      "elementDurability": 25,
+                      "enBreak": 25
+                    },
+                    "hitPattern": {
+                      "onHitEffectName": "default",
+                      "hitImpulseType": "LV0"
+                    }
+                  }
+                },
+                {
+                  "$type": "FireEffect",
+                  "target": "Other",
+                  "effectPattern": "Eff_Monster_Fungus_Deux_Electric_Thunder"
+                },
+                {
+                  "$type": "ApplyModifier",
+                  "target": "Caster",
+                  "modifierName": "ThunderStrike_Timer"
+                }
+              ]
+            }
           ]
         },
-        "Fungus_ElecCharge_Self": {
+        "Fungus_ElecCharge_Handler": {
           "modifierName": "",
-          "duration": 10,
+          "duration": 12,
           "elementDurability": 100,
-          "properties": {
-            "Actor_AttackRatio": "attack_ratio_enhanced"
-          },
-          "state": "AttackUp"
+          "onAdded": [
+            {
+              "$type": "AttachModifier",
+              "otherTargets": {
+                "$type": "SelectTargetsByShape",
+                "shapeName": "CircleR30H10",
+                "campTargetType": "Alliance",
+                "sizeRatio": 1
+              },
+              "predicates": [
+                {
+                  "$type": "ByEntityTypes",
+                  "entityTypes": [
+                    "Monster",
+                    "Avatar",
+                    "Partner"
+                  ]
+                }
+              ],
+              "modifierName": "Fungus_ElecCharge"
+            },
+            {
+              "$type": "SetGlobalValue",
+              "value": 4,
+              "key": "_ElecCharge_Remaining_Count_",
+              "maxValue": 0,
+              "minValue": 0
+            }
+          ]
+        },
+        "ThunderStrike_Timer": {
+          "modifierName": "",
+          "duration": 1.5,
+          "elementDurability": 100,
+          "onAdded": [
+            {
+              "$type": "AddGlobalValue",
+              "value": -1,
+              "key": "_ElecCharge_Remaining_Count_",
+              "maxValue": 0,
+              "minValue": 0
+            },
+            {
+              "$type": "RemoveModifier",
+              "predicates": [
+                {
+                  "$type": "ByTargetGlobalValue",
+                  "target": "Self",
+                  "key": "_ElecCharge_Remaining_Count_",
+                  "value": 0,
+                  "compareType": "LessAndEqual"
+                }
+              ],
+              "modifierName": "Fungus_ElecCharge_Handler"
+            }
+          ]
         }
       },
       "onAbilityStart": [
@@ -229,27 +330,33 @@
           "effectPattern": "Eff_Monster_Fungus_Deux_Electric_ElecCharge"
         },
         {
-          "$type": "ApplyModifier",
-          "otherTargets": {
-            "$type": "SelectTargetsByShape",
-            "shapeName": "CircleR30H5",
-            "campTargetType": "Alliance",
-            "sizeRatio": 1
-          },
-          "predicates": [
-            {
-              "$type": "ByEntityTypes",
-              "entityTypes": [
-                "Partner",
-                "Monster"
-              ]
-            }
-          ],
-          "modifierName": "Fungus_ElecCharge"
+          "$type": "RemoveModifier",
+          "modifierName": "Fungus_ElecCharge_Handler"
         },
         {
           "$type": "ApplyModifier",
-          "modifierName": "Fungus_ElecCharge_Self"
+          "modifierName": "Fungus_ElecCharge_Handler"
+        }
+      ]
+    }
+  },
+  {
+    "Default": {
+      "$type": "ConfigAbility",
+      "abilityName": "Fungus_Deux_BVB_Electro_ElemMastery",
+      "modifiers": {
+        "Passive_ElementalMastery_Handler": {
+          "modifierName": "",
+          "elementDurability": 100,
+          "properties": {
+            "Actor_ElemMasteryDelta": 150
+          }
+        }
+      },
+      "onAdded": [
+        {
+          "$type": "ApplyModifier",
+          "modifierName": "Passive_ElementalMastery_Handler"
         }
       ]
     }

@@ -23,8 +23,57 @@
               "effectPattern": "Eff_Monster_Fungus_Trois_Gamma_Fire_ExplodeDecayed_Loop"
             }
           ]
+        },
+        "AttackLanded_Monitor": {
+          "modifierName": "",
+          "elementDurability": 100,
+          "onAttackLanded": [
+            {
+              "$type": "Predicated",
+              "target": "Target",
+              "targetPredicates": [
+                {
+                  "$type": "ByAttackTags",
+                  "attackTags": [
+                    "Trois_BVB_Fire"
+                  ]
+                }
+              ],
+              "successActions": [
+                {
+                  "$type": "ApplyModifier",
+                  "target": "Target",
+                  "predicates": [
+                    {
+                      "$type": "ByEntityTypes",
+                      "entityTypes": [
+                        "Monster",
+                        "Partner"
+                      ]
+                    }
+                  ],
+                  "modifierName": "Trois_Fire_Passive_AttackDebuff"
+                }
+              ]
+            }
+          ]
+        },
+        "Trois_Fire_Passive_AttackDebuff": {
+          "modifierName": "",
+          "duration": 6,
+          "elementDurability": 100,
+          "properties": {
+            "Actor_AttackRatio": -0.4
+          },
+          "state": "DefenseDown"
         }
       },
+      "onAdded": [
+        {
+          "$type": "ApplyModifier",
+          "modifierName": "AttackLanded_Monitor"
+        }
+      ],
       "onAbilityStart": [
         {
           "$type": "TriggerAttackEvent",
@@ -33,16 +82,17 @@
               "$type": "ConfigAttackSphere",
               "triggerType": "TriggerNoRepeat",
               "born": {
-                "$type": "ConfigBornBySelf"
+                "$type": "ConfigBornBySelf",
+                "useRotation": true
               },
-              "radius": 3.23
+              "radius": 3
             },
             "attackInfo": {
-              "attackTag": "",
-              "attenuationTag": "Fire_Explode",
-              "attenuationGroup": "FungusFight_General",
+              "attackTag": "Trois_BVB_Fire",
+              "attenuationTag": "Explode_Attack",
+              "attenuationGroup": "FungusFightV2_Seq1",
               "attackProperty": {
-                "damagePercentage": 0.78,
+                "damagePercentage": 3,
                 "damagePercentageRatio": 0,
                 "elementType": "Fire",
                 "elementDurability": 25,
@@ -94,7 +144,8 @@
                   "$type": "ConfigAttackSphere",
                   "triggerType": "TriggerNoRepeat",
                   "born": {
-                    "$type": "ConfigBornBySelf"
+                    "$type": "ConfigBornBySelf",
+                    "useRotation": true
                   },
                   "radius": 2.7
                 },
@@ -132,6 +183,107 @@
     "Default": {
       "$type": "ConfigAbility",
       "abilityName": "Fungus_Trois_BVB_Fire_FlameStorm",
+      "modifiers": {
+        "FlameStorm_State": {
+          "modifierName": "",
+          "duration": 4.1,
+          "elementDurability": 100,
+          "thinkInterval": 0.5,
+          "onAdded": [
+            {
+              "$type": "SetPoseBool",
+              "boolID": "InFlameStorm",
+              "value": true
+            },
+            {
+              "$type": "AttachEffect",
+              "effectPattern": "Eff_Monster_Fungus_Trois_Fire_VortexOfFire"
+            },
+            {
+              "$type": "TriggerAttackEvent",
+              "attackEvent": {
+                "attackPattern": {
+                  "$type": "ConfigAttackSphere",
+                  "triggerType": "TriggerNoRepeat",
+                  "born": {
+                    "$type": "ConfigBornBySelf",
+                    "useRotation": true
+                  },
+                  "radius": 2.1
+                },
+                "attackInfo": {
+                  "attackTag": "Trois_BVB_Fire",
+                  "attenuationTag": "FireRing",
+                  "attenuationGroup": "FungusFightV2_Seq1",
+                  "attackProperty": {
+                    "damagePercentage": 1.67,
+                    "damagePercentageRatio": 0,
+                    "elementType": "Fire",
+                    "elementDurability": 25,
+                    "attackType": "Range"
+                  },
+                  "hitPattern": {
+                    "onHitEffectName": "default",
+                    "hitImpulseType": "LV1"
+                  }
+                }
+              },
+              "targetType": "Enemy"
+            }
+          ],
+          "onRemoved": [
+            {
+              "$type": "SetPoseBool",
+              "boolID": "InFlameStorm"
+            }
+          ],
+          "onThinkInterval": [
+            {
+              "$type": "TriggerAttackEvent",
+              "attackEvent": {
+                "attackPattern": {
+                  "$type": "ConfigAttackSphere",
+                  "triggerType": "TriggerNoRepeat",
+                  "born": {
+                    "$type": "ConfigBornBySelf",
+                    "useRotation": true
+                  },
+                  "radius": 2.1
+                },
+                "attackInfo": {
+                  "attackTag": "Trois_BVB_Fire",
+                  "attenuationTag": "FireRing",
+                  "attenuationGroup": "FungusFightV2_Seq1",
+                  "attackProperty": {
+                    "damagePercentage": 1.67,
+                    "damagePercentageRatio": 0,
+                    "elementType": "Fire",
+                    "elementDurability": 25,
+                    "attackType": "Range"
+                  },
+                  "hitPattern": {
+                    "onHitEffectName": "default",
+                    "hitImpulseType": "LV1"
+                  }
+                }
+              },
+              "targetType": "Enemy"
+            }
+          ]
+        }
+      },
+      "onAbilityStart": [
+        {
+          "$type": "ApplyModifier",
+          "modifierName": "FlameStorm_State"
+        }
+      ]
+    }
+  },
+  {
+    "Default": {
+      "$type": "ConfigAbility",
+      "abilityName": "Fungus_Trois_BVB_Fire_FlameStorm_Backup",
       "abilityMixins": [
         {
           "$type": "AttachToAnimatorStateIDMixin",
@@ -220,6 +372,7 @@
                 "offset": {
                   "y": -0.5
                 },
+                "useRotation": true,
                 "attachPointName": "RootNode"
               },
               "strength": 3.75,
@@ -289,7 +442,8 @@
               "$type": "ConfigAttackSphere",
               "triggerType": "TriggerNoRepeat",
               "born": {
-                "$type": "ConfigBornBySelf"
+                "$type": "ConfigBornBySelf",
+                "useRotation": true
               },
               "radius": 5
             },
