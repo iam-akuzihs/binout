@@ -1,24 +1,6 @@
 [
   {
     "Default": {
-      "$type": "ConfigAbility",
-      "abilityName": "Activity_ActivityTeamChain_TeamControlBuff",
-      "abilityMixins": [
-        {
-          "$type": "AttachModifierToSelfGlobalValueMixin",
-          "globalValueKey": "_GO_CJB_TRIGGER",
-          "defaultGlobalValueOnCreate": 0,
-          "valueSteps": [
-            -0.5,
-            0.5,
-            1.5
-          ],
-          "modifierNameSteps": [
-            "No_CJB_Trigger",
-            "Has_CJB_Trigger"
-          ]
-        }
-      ],
       "abilitySpecials": {
         "AvatarBuffDuration": 0,
         "CJBDamageRatio": 0,
@@ -26,276 +8,1183 @@
         "ChooseCD": 0,
         "MaxCJBNum": 0
       },
-      "modifiers": {
-        "No_CJB_Trigger": {
-          "modifierName": "",
-          "elementDurability": 100
-        },
-        "Has_CJB_Trigger": {
-          "modifierName": "",
-          "elementDurability": 100,
-          "onAdded": [
-            {
-              "$type": "ApplyModifier",
-              "modifierName": "ChooseMonster_CD"
-            },
-            {
-              "$type": "SetGlobalValue",
-              "value": 1,
-              "key": "_CJB_NUM",
-              "maxValue": 0,
-              "minValue": 0
-            },
-            {
-              "$type": "ApplyModifier",
-              "modifierName": "Reset_CJB_Value"
-            }
-          ]
-        },
-        "Reset_CJB_Value": {
-          "modifierName": "",
-          "duration": 0.3,
-          "elementDurability": 100,
-          "onRemoved": [
-            {
-              "$type": "SetGlobalValue",
-              "value": 0,
-              "key": "_GO_CJB_TRIGGER",
-              "maxValue": 0,
-              "minValue": 0
-            }
-          ]
-        },
-        "ChooseMonster_CD": {
-          "modifierName": "",
-          "duration": "ChooseCD",
-          "elementDurability": 100,
-          "onAdded": [
-            {
-              "$type": "SetGlobalValue",
-              "value": 1,
-              "key": "_CHOOSE_IN_CD",
-              "maxValue": 0,
-              "minValue": 0
-            }
-          ],
-          "onRemoved": [
-            {
-              "$type": "SetGlobalValue",
-              "value": 0,
-              "key": "_CHOOSE_IN_CD",
-              "maxValue": 0,
-              "minValue": 0
-            }
-          ]
-        },
-        "Activity_ActivityTeamChain_AvatarCJBBuff": {
-          "modifierName": "",
-          "elementDurability": 100,
-          "modifierMixins": [
-            {
-              "$type": "CurLocalAvatarMixinV2",
-              "modifierName": "Activity_ActivityTeamChain_AvatarCJBBuff_OnBattle"
-            }
-          ]
-        },
-        "CJB_DAMAGE_INCD": {
-          "modifierName": "",
-          "duration": "CJBCD",
-          "elementDurability": 100,
-          "onAdded": [
-            {
-              "$type": "SetGlobalValue",
-              "value": 1,
-              "key": "_CJB_IN_CD",
-              "maxValue": 0,
-              "minValue": 0
-            },
-            {
-              "$type": "AddGlobalValue",
-              "value": 1,
-              "key": "_CJB_NUM",
-              "useLimitRange": true,
-              "maxValue": 10,
-              "minValue": 0
-            }
-          ],
-          "onRemoved": [
-            {
-              "$type": "SetGlobalValue",
-              "value": 0,
-              "key": "_CJB_IN_CD",
-              "maxValue": 0,
-              "minValue": 0
-            }
-          ]
-        },
-        "Activity_ActivityTeamChain_AvatarCJBBuff_OnBattle": {
-          "modifierName": "",
-          "elementDurability": 100,
-          "onAttackLanded": [
-            {
-              "$type": "Predicated",
-              "target": "Other",
-              "targetPredicates": [
-                {
-                  "$type": "ByEntityTypes",
-                  "entityTypes": [
-                    "Monster"
-                  ]
-                },
-                {
-                  "$type": "ByTargetGlobalValue",
-                  "target": "Team",
-                  "key": "_CJB_IN_CD",
-                  "value": 0,
-                  "compareType": "NoneOrEqual"
-                },
-                {
-                  "$type": "ByTargetGlobalValue",
-                  "target": "Team",
-                  "key": "_CJB_NUM",
-                  "value": "MaxCJBNum",
-                  "compareType": "LessAndEqual"
-                },
-                {
-                  "$type": "ByTargetGlobalValue",
-                  "target": "Team",
-                  "key": "_CHOOSE_IN_CD",
-                  "value": 1
-                }
-              ],
-              "successActions": [
-                {
-                  "$type": "FireEffect",
-                  "target": "Other",
-                  "effectPattern": "Eff_EnergyDisk_ElementalBurst_Wave_R40",
-                  "born": {
-                    "$type": "ConfigBornByTarget"
-                  },
-                  "scale": 1
-                },
-                {
-                  "$type": "TriggerAttackEvent",
-                  "target": "CurLocalAvatar",
-                  "doOffStage": false,
-                  "attackEvent": {
-                    "attackPattern": {
-                      "$type": "ConfigAttackSphere",
-                      "triggerType": "TriggerNoRepeat",
-                      "born": {
-                        "$type": "ConfigBornByHitPoint"
-                      },
-                      "radius": 4
-                    },
-                    "attackInfo": {
-                      "attackTag": "",
-                      "attenuationTag": "",
-                      "attenuationGroup": "default",
-                      "attackProperty": {
-                        "damagePercentageRatio": 0,
-                        "elementDurability": 0,
-                        "ignoreAttackerProperty": true,
-                        "enBreak": 25,
-                        "attackType": "Melee",
-                        "damageExtra": [
-                          "CJBDamageRatio",
-                          "DamageSystemValue",
-                          "MUL"
-                        ],
-                        "trueDamage": true,
-                        "ignoreModifyDamage": true,
-                        "__exp_arkhe": 0
-                      },
-                      "hitPattern": {
-                        "onHitEffectName": "default",
-                        "__unk_Q3893899620": "",
-                        "hitImpulseType": "LV2",
-                        "hitHaltTimeScale": 0.02
-                      }
-                    }
-                  },
-                  "targetType": "Enemy"
-                },
-                {
-                  "$type": "ApplyModifier",
-                  "target": "Team",
-                  "modifierName": "CJB_DAMAGE_INCD"
-                }
-              ]
-            }
-          ]
-        }
-      },
       "onAdded": [
         {
-          "$type": "CKIGIJHHILP",
-          "key": "DamageSystemValue",
           "type": "ElementLevelCo",
-          "param3": -1
+          "key": "DamageSystemValue",
+          "__unk_Q4125547569": -1,
+          "__unk_Q2273802443": false,
+          "ENDHIDDELEF": -1,
+          "doOffStage": false,
+          "KHMDLFFCJID": "None",
+          "muteRemoteAction": false,
+          "canBeHandledOnRecover": false,
+          "doAfterDie": true,
+          "target": "Self",
+          "__unk_Q4244652216": {
+            "__unk_Q2921880475": false,
+            "__unk_Q3587015628": ""
+          },
+          "$type": "GBCDGAMJOBP"
         },
         {
-          "$type": "ApplyModifier",
-          "modifierName": "Activity_ActivityTeamChain_AvatarCJBBuff"
+          "__unk_Q4125547569": -1,
+          "__unk_Q2273802443": false,
+          "modifierName": "Activity_ActivityTeamChain_AvatarCJBBuff",
+          "doOffStage": false,
+          "KHMDLFFCJID": "None",
+          "muteRemoteAction": false,
+          "canBeHandledOnRecover": false,
+          "doAfterDie": true,
+          "target": "Self",
+          "__unk_Q4244652216": {
+            "__unk_Q2921880475": false,
+            "__unk_Q3587015628": ""
+          },
+          "$type": "ApplyModifier"
         }
       ],
-      "isDynamicAbility": true
-    }
-  },
-  {
-    "Default": {
-      "$type": "ConfigAbility",
-      "abilityName": "Activity_ActivityTeamChainV3.4_TideBuff",
+      "isDynamicAbility": true,
+      "abilityName": "Activity_ActivityTeamChain_TeamControlBuff",
       "abilityMixins": [
         {
-          "$type": "AttachModifierToGlobalValueMixin",
-          "globalValueKey": "_IN_HIGH_TIDE_V3.4",
+          "AHJCPGPPEBD": false,
+          "__unk_Q4125547569": -1,
+          "modifierNameSteps": [
+            "No_CJB_Trigger",
+            "Has_CJB_Trigger"
+          ],
+          "isUnique": false,
+          "removeAppliedModifier": true,
+          "defaultGlobalValueOnCreate": 0,
+          "globalValueKey": "_GO_CJB_TRIGGER",
+          "globalValueTarget": "Self",
+          "JICMHKGNJFH": "Idle",
+          "KIGAINKENGL": false,
+          "__unk_Q3695777311": false,
+          "__unk_Q4244652216": {
+            "__unk_Q2921880475": false,
+            "__unk_Q3587015628": ""
+          },
           "valueSteps": [
             -0.5,
             0.5,
             1.5
           ],
-          "modifierNameSteps": [
-            "Crazy_In_Peace",
-            "Crazy_DamageUp"
-          ]
-        },
-        {
-          "$type": "MPPPFECOOIH",
-          "key": "_IN_HIGH_TIDE_V3.4",
-          "useLimitRange": true,
-          "maxValue": 1,
-          "minValue": 0
+          "$type": "AttachModifierToSelfGlobalValueMixin"
         }
       ],
+      "EINMHCJCNBG": 0,
+      "HKGAKPLKEEJ": false,
+      "IPONDLMHIOC": false,
+      "MBLAAGJLEED": false,
+      "modifiers": {
+        "No_CJB_Trigger": {
+          "fireEventWhenApply": false,
+          "useDummyAbility": false,
+          "onThinkIntervalIsFixedUpdate": false,
+          "ALGHEGPCFAL": -1,
+          "ALGLHMNGAIK": false,
+          "stackingOption": {
+            "enableMixedUnique": false,
+            "abilitySpecialName": "",
+            "uniqueModifierCondition": "Greater"
+          },
+          "AMOJAACLEBF": false,
+          "BKADNGDPKBB": false,
+          "reduceDurablityIgnoreTimeScale": false,
+          "elementDurability": 100,
+          "EICKDCDCEOK": false,
+          "EINMHCJCNBG": 0,
+          "elementType": "None",
+          "FEOGJLMCKDI": false,
+          "trimThinkInterval": false,
+          "state": "None",
+          "overrideWeaponElement": false,
+          "FNCDEKOAAOE": false,
+          "isUnique": false,
+          "GCOMLBIIIGL": false,
+          "isElementDurabilityMutable": true,
+          "timeScale": "Owner",
+          "HIGGGNHGEEM": false,
+          "__unk_Q3323398612": 0,
+          "modifierName": "",
+          "ICBDJNHEFFB": false,
+          "ICLPOOJCEPI": false,
+          "IICJDNBLMMD": 0,
+          "IPNNJKHJKPN": false,
+          "purgeIncrement": 0,
+          "JIAFDJBDEFH": false,
+          "thinkIntervalIgnoreTimeScale": false,
+          "LECFPDIICCE": false,
+          "isLimitedProperties": false,
+          "LMENDAOJCBK": {
+            "__unk_Q3130794202": false
+          },
+          "MEHFAOLMCAP": -1,
+          "buffID": 0,
+          "NOCILDGOBBH": false,
+          "isDurabilityGlobal": false,
+          "OJMEBIHEKDC": false,
+          "PCAMCNDOFPM": "NormallySynced",
+          "stacking": "Refresh"
+        },
+        "Has_CJB_Trigger": {
+          "fireEventWhenApply": false,
+          "useDummyAbility": false,
+          "onThinkIntervalIsFixedUpdate": false,
+          "ALGHEGPCFAL": -1,
+          "ALGLHMNGAIK": false,
+          "stackingOption": {
+            "enableMixedUnique": false,
+            "abilitySpecialName": "",
+            "uniqueModifierCondition": "Greater"
+          },
+          "AMOJAACLEBF": false,
+          "onAdded": [
+            {
+              "__unk_Q4125547569": -1,
+              "__unk_Q2273802443": false,
+              "modifierName": "ChooseMonster_CD",
+              "doOffStage": false,
+              "KHMDLFFCJID": "None",
+              "muteRemoteAction": false,
+              "canBeHandledOnRecover": false,
+              "doAfterDie": true,
+              "target": "Self",
+              "__unk_Q4244652216": {
+                "__unk_Q2921880475": false,
+                "__unk_Q3587015628": ""
+              },
+              "$type": "ApplyModifier"
+            },
+            {
+              "useLimitRange": false,
+              "randomInRange": false,
+              "key": "_CJB_NUM",
+              "__unk_Q4125547569": -1,
+              "__unk_Q2273802443": false,
+              "maxValue": 0,
+              "doOffStage": false,
+              "KHMDLFFCJID": "None",
+              "muteRemoteAction": false,
+              "value": 1,
+              "OBMLNHBNEGD": false,
+              "canBeHandledOnRecover": false,
+              "doAfterDie": true,
+              "target": "Self",
+              "__unk_Q4244652216": {
+                "__unk_Q2921880475": false,
+                "__unk_Q3587015628": ""
+              },
+              "minValue": 0,
+              "$type": "SetGlobalValue"
+            },
+            {
+              "__unk_Q4125547569": -1,
+              "__unk_Q2273802443": false,
+              "modifierName": "Reset_CJB_Value",
+              "doOffStage": false,
+              "KHMDLFFCJID": "None",
+              "muteRemoteAction": false,
+              "canBeHandledOnRecover": false,
+              "doAfterDie": true,
+              "target": "Self",
+              "__unk_Q4244652216": {
+                "__unk_Q2921880475": false,
+                "__unk_Q3587015628": ""
+              },
+              "$type": "ApplyModifier"
+            }
+          ],
+          "BKADNGDPKBB": false,
+          "reduceDurablityIgnoreTimeScale": false,
+          "elementDurability": 100,
+          "EICKDCDCEOK": false,
+          "EINMHCJCNBG": 0,
+          "elementType": "None",
+          "FEOGJLMCKDI": false,
+          "trimThinkInterval": false,
+          "state": "None",
+          "overrideWeaponElement": false,
+          "FNCDEKOAAOE": false,
+          "isUnique": false,
+          "GCOMLBIIIGL": false,
+          "isElementDurabilityMutable": true,
+          "timeScale": "Owner",
+          "HIGGGNHGEEM": false,
+          "__unk_Q3323398612": 0,
+          "modifierName": "",
+          "ICBDJNHEFFB": false,
+          "ICLPOOJCEPI": false,
+          "IICJDNBLMMD": 0,
+          "IPNNJKHJKPN": false,
+          "purgeIncrement": 0,
+          "JIAFDJBDEFH": false,
+          "thinkIntervalIgnoreTimeScale": false,
+          "LECFPDIICCE": false,
+          "isLimitedProperties": false,
+          "LMENDAOJCBK": {
+            "__unk_Q3130794202": false
+          },
+          "MEHFAOLMCAP": -1,
+          "buffID": 0,
+          "NOCILDGOBBH": false,
+          "isDurabilityGlobal": false,
+          "OJMEBIHEKDC": false,
+          "PCAMCNDOFPM": "NormallySynced",
+          "stacking": "Refresh"
+        },
+        "Reset_CJB_Value": {
+          "fireEventWhenApply": false,
+          "useDummyAbility": false,
+          "onThinkIntervalIsFixedUpdate": false,
+          "ALGHEGPCFAL": -1,
+          "ALGLHMNGAIK": false,
+          "stackingOption": {
+            "enableMixedUnique": false,
+            "abilitySpecialName": "",
+            "uniqueModifierCondition": "Greater"
+          },
+          "AMOJAACLEBF": false,
+          "BKADNGDPKBB": false,
+          "reduceDurablityIgnoreTimeScale": false,
+          "elementDurability": 100,
+          "EICKDCDCEOK": false,
+          "EINMHCJCNBG": 0,
+          "elementType": "None",
+          "FEOGJLMCKDI": false,
+          "trimThinkInterval": false,
+          "state": "None",
+          "overrideWeaponElement": false,
+          "FNCDEKOAAOE": false,
+          "isUnique": false,
+          "GCOMLBIIIGL": false,
+          "isElementDurabilityMutable": true,
+          "timeScale": "Owner",
+          "HIGGGNHGEEM": false,
+          "__unk_Q3323398612": 0,
+          "modifierName": "",
+          "ICBDJNHEFFB": false,
+          "ICLPOOJCEPI": false,
+          "IICJDNBLMMD": 0,
+          "IPNNJKHJKPN": false,
+          "purgeIncrement": 0,
+          "JIAFDJBDEFH": false,
+          "thinkIntervalIgnoreTimeScale": false,
+          "LECFPDIICCE": false,
+          "isLimitedProperties": false,
+          "LMENDAOJCBK": {
+            "__unk_Q3130794202": false
+          },
+          "onRemoved": [
+            {
+              "useLimitRange": false,
+              "randomInRange": false,
+              "key": "_GO_CJB_TRIGGER",
+              "__unk_Q4125547569": -1,
+              "__unk_Q2273802443": false,
+              "maxValue": 0,
+              "doOffStage": false,
+              "KHMDLFFCJID": "None",
+              "muteRemoteAction": false,
+              "value": 0,
+              "OBMLNHBNEGD": false,
+              "canBeHandledOnRecover": false,
+              "doAfterDie": true,
+              "target": "Self",
+              "__unk_Q4244652216": {
+                "__unk_Q2921880475": false,
+                "__unk_Q3587015628": ""
+              },
+              "minValue": 0,
+              "$type": "SetGlobalValue"
+            }
+          ],
+          "MEHFAOLMCAP": -1,
+          "buffID": 0,
+          "duration": 0.3,
+          "NOCILDGOBBH": false,
+          "isDurabilityGlobal": false,
+          "OJMEBIHEKDC": false,
+          "PCAMCNDOFPM": "NormallySynced",
+          "stacking": "Refresh"
+        },
+        "ChooseMonster_CD": {
+          "fireEventWhenApply": false,
+          "useDummyAbility": false,
+          "onThinkIntervalIsFixedUpdate": false,
+          "ALGHEGPCFAL": -1,
+          "ALGLHMNGAIK": false,
+          "stackingOption": {
+            "enableMixedUnique": false,
+            "abilitySpecialName": "",
+            "uniqueModifierCondition": "Greater"
+          },
+          "AMOJAACLEBF": false,
+          "onAdded": [
+            {
+              "useLimitRange": false,
+              "randomInRange": false,
+              "key": "_CHOOSE_IN_CD",
+              "__unk_Q4125547569": -1,
+              "__unk_Q2273802443": false,
+              "maxValue": 0,
+              "doOffStage": false,
+              "KHMDLFFCJID": "None",
+              "muteRemoteAction": false,
+              "value": 1,
+              "OBMLNHBNEGD": false,
+              "canBeHandledOnRecover": false,
+              "doAfterDie": true,
+              "target": "Self",
+              "__unk_Q4244652216": {
+                "__unk_Q2921880475": false,
+                "__unk_Q3587015628": ""
+              },
+              "minValue": 0,
+              "$type": "SetGlobalValue"
+            }
+          ],
+          "BKADNGDPKBB": false,
+          "reduceDurablityIgnoreTimeScale": false,
+          "elementDurability": 100,
+          "EICKDCDCEOK": false,
+          "EINMHCJCNBG": 0,
+          "elementType": "None",
+          "FEOGJLMCKDI": false,
+          "trimThinkInterval": false,
+          "state": "None",
+          "overrideWeaponElement": false,
+          "FNCDEKOAAOE": false,
+          "isUnique": false,
+          "GCOMLBIIIGL": false,
+          "isElementDurabilityMutable": true,
+          "timeScale": "Owner",
+          "HIGGGNHGEEM": false,
+          "__unk_Q3323398612": 0,
+          "modifierName": "",
+          "ICBDJNHEFFB": false,
+          "ICLPOOJCEPI": false,
+          "IICJDNBLMMD": 0,
+          "IPNNJKHJKPN": false,
+          "purgeIncrement": 0,
+          "JIAFDJBDEFH": false,
+          "thinkIntervalIgnoreTimeScale": false,
+          "LECFPDIICCE": false,
+          "isLimitedProperties": false,
+          "LMENDAOJCBK": {
+            "__unk_Q3130794202": false
+          },
+          "onRemoved": [
+            {
+              "useLimitRange": false,
+              "randomInRange": false,
+              "key": "_CHOOSE_IN_CD",
+              "__unk_Q4125547569": -1,
+              "__unk_Q2273802443": false,
+              "maxValue": 0,
+              "doOffStage": false,
+              "KHMDLFFCJID": "None",
+              "muteRemoteAction": false,
+              "value": 0,
+              "OBMLNHBNEGD": false,
+              "canBeHandledOnRecover": false,
+              "doAfterDie": true,
+              "target": "Self",
+              "__unk_Q4244652216": {
+                "__unk_Q2921880475": false,
+                "__unk_Q3587015628": ""
+              },
+              "minValue": 0,
+              "$type": "SetGlobalValue"
+            }
+          ],
+          "MEHFAOLMCAP": -1,
+          "buffID": 0,
+          "duration": "ChooseCD",
+          "NOCILDGOBBH": false,
+          "isDurabilityGlobal": false,
+          "OJMEBIHEKDC": false,
+          "PCAMCNDOFPM": "NormallySynced",
+          "stacking": "Refresh"
+        },
+        "Activity_ActivityTeamChain_AvatarCJBBuff": {
+          "fireEventWhenApply": false,
+          "useDummyAbility": false,
+          "onThinkIntervalIsFixedUpdate": false,
+          "ALGHEGPCFAL": -1,
+          "ALGLHMNGAIK": false,
+          "stackingOption": {
+            "enableMixedUnique": false,
+            "abilitySpecialName": "",
+            "uniqueModifierCondition": "Greater"
+          },
+          "AMOJAACLEBF": false,
+          "BKADNGDPKBB": false,
+          "reduceDurablityIgnoreTimeScale": false,
+          "elementDurability": 100,
+          "EICKDCDCEOK": false,
+          "EINMHCJCNBG": 0,
+          "elementType": "None",
+          "FEOGJLMCKDI": false,
+          "trimThinkInterval": false,
+          "state": "None",
+          "overrideWeaponElement": false,
+          "FNCDEKOAAOE": false,
+          "modifierMixins": [
+            {
+              "__unk_Q4125547569": -1,
+              "isUnique": false,
+              "modifierName": "Activity_ActivityTeamChain_AvatarCJBBuff_OnBattle",
+              "__unk_Q3695777311": false,
+              "NKCKBPLJKGJ": false,
+              "__unk_Q4244652216": {
+                "__unk_Q2921880475": false,
+                "__unk_Q3587015628": ""
+              },
+              "$type": "CurLocalAvatarMixinV2"
+            }
+          ],
+          "isUnique": false,
+          "GCOMLBIIIGL": false,
+          "isElementDurabilityMutable": true,
+          "timeScale": "Owner",
+          "HIGGGNHGEEM": false,
+          "__unk_Q3323398612": 0,
+          "modifierName": "",
+          "ICBDJNHEFFB": false,
+          "ICLPOOJCEPI": false,
+          "IICJDNBLMMD": 0,
+          "IPNNJKHJKPN": false,
+          "purgeIncrement": 0,
+          "JIAFDJBDEFH": false,
+          "thinkIntervalIgnoreTimeScale": false,
+          "LECFPDIICCE": false,
+          "isLimitedProperties": false,
+          "LMENDAOJCBK": {
+            "__unk_Q3130794202": false
+          },
+          "MEHFAOLMCAP": -1,
+          "buffID": 0,
+          "NOCILDGOBBH": false,
+          "isDurabilityGlobal": false,
+          "OJMEBIHEKDC": false,
+          "PCAMCNDOFPM": "NormallySynced",
+          "stacking": "Refresh"
+        },
+        "CJB_DAMAGE_INCD": {
+          "fireEventWhenApply": false,
+          "useDummyAbility": false,
+          "onThinkIntervalIsFixedUpdate": false,
+          "ALGHEGPCFAL": -1,
+          "ALGLHMNGAIK": false,
+          "stackingOption": {
+            "enableMixedUnique": false,
+            "abilitySpecialName": "",
+            "uniqueModifierCondition": "Greater"
+          },
+          "AMOJAACLEBF": false,
+          "onAdded": [
+            {
+              "useLimitRange": false,
+              "randomInRange": false,
+              "key": "_CJB_IN_CD",
+              "__unk_Q4125547569": -1,
+              "__unk_Q2273802443": false,
+              "maxValue": 0,
+              "doOffStage": false,
+              "KHMDLFFCJID": "None",
+              "muteRemoteAction": false,
+              "value": 1,
+              "OBMLNHBNEGD": false,
+              "canBeHandledOnRecover": false,
+              "doAfterDie": true,
+              "target": "Self",
+              "__unk_Q4244652216": {
+                "__unk_Q2921880475": false,
+                "__unk_Q3587015628": ""
+              },
+              "minValue": 0,
+              "$type": "SetGlobalValue"
+            },
+            {
+              "useLimitRange": true,
+              "randomInRange": false,
+              "key": "_CJB_NUM",
+              "__unk_Q4125547569": -1,
+              "__unk_Q2273802443": false,
+              "maxValue": 10,
+              "doOffStage": false,
+              "KHMDLFFCJID": "None",
+              "muteRemoteAction": false,
+              "value": 1,
+              "OBMLNHBNEGD": false,
+              "canBeHandledOnRecover": false,
+              "doAfterDie": true,
+              "target": "Self",
+              "__unk_Q4244652216": {
+                "__unk_Q2921880475": false,
+                "__unk_Q3587015628": ""
+              },
+              "minValue": 0,
+              "$type": "AddGlobalValue"
+            }
+          ],
+          "BKADNGDPKBB": false,
+          "reduceDurablityIgnoreTimeScale": false,
+          "elementDurability": 100,
+          "EICKDCDCEOK": false,
+          "EINMHCJCNBG": 0,
+          "elementType": "None",
+          "FEOGJLMCKDI": false,
+          "trimThinkInterval": false,
+          "state": "None",
+          "overrideWeaponElement": false,
+          "FNCDEKOAAOE": false,
+          "isUnique": false,
+          "GCOMLBIIIGL": false,
+          "isElementDurabilityMutable": true,
+          "timeScale": "Owner",
+          "HIGGGNHGEEM": false,
+          "__unk_Q3323398612": 0,
+          "modifierName": "",
+          "ICBDJNHEFFB": false,
+          "ICLPOOJCEPI": false,
+          "IICJDNBLMMD": 0,
+          "IPNNJKHJKPN": false,
+          "purgeIncrement": 0,
+          "JIAFDJBDEFH": false,
+          "thinkIntervalIgnoreTimeScale": false,
+          "LECFPDIICCE": false,
+          "isLimitedProperties": false,
+          "LMENDAOJCBK": {
+            "__unk_Q3130794202": false
+          },
+          "onRemoved": [
+            {
+              "useLimitRange": false,
+              "randomInRange": false,
+              "key": "_CJB_IN_CD",
+              "__unk_Q4125547569": -1,
+              "__unk_Q2273802443": false,
+              "maxValue": 0,
+              "doOffStage": false,
+              "KHMDLFFCJID": "None",
+              "muteRemoteAction": false,
+              "value": 0,
+              "OBMLNHBNEGD": false,
+              "canBeHandledOnRecover": false,
+              "doAfterDie": true,
+              "target": "Self",
+              "__unk_Q4244652216": {
+                "__unk_Q2921880475": false,
+                "__unk_Q3587015628": ""
+              },
+              "minValue": 0,
+              "$type": "SetGlobalValue"
+            }
+          ],
+          "MEHFAOLMCAP": -1,
+          "buffID": 0,
+          "duration": "CJBCD",
+          "NOCILDGOBBH": false,
+          "isDurabilityGlobal": false,
+          "OJMEBIHEKDC": false,
+          "PCAMCNDOFPM": "NormallySynced",
+          "stacking": "Refresh"
+        },
+        "Activity_ActivityTeamChain_AvatarCJBBuff_OnBattle": {
+          "fireEventWhenApply": false,
+          "useDummyAbility": false,
+          "onThinkIntervalIsFixedUpdate": false,
+          "ALGHEGPCFAL": -1,
+          "ALGLHMNGAIK": false,
+          "stackingOption": {
+            "enableMixedUnique": false,
+            "abilitySpecialName": "",
+            "uniqueModifierCondition": "Greater"
+          },
+          "AMOJAACLEBF": false,
+          "BKADNGDPKBB": false,
+          "reduceDurablityIgnoreTimeScale": false,
+          "elementDurability": 100,
+          "EICKDCDCEOK": false,
+          "EINMHCJCNBG": 0,
+          "elementType": "None",
+          "FEOGJLMCKDI": false,
+          "trimThinkInterval": false,
+          "onAttackLanded": [
+            {
+              "successActions": [
+                {
+                  "useY": false,
+                  "CEPBKBGCHFF": "",
+                  "__unk_Q4125547569": -1,
+                  "EDBGKFNKFCI": false,
+                  "effectPattern": "Eff_EnergyDisk_ElementalBurst_Wave_R40",
+                  "__unk_Q2273802443": false,
+                  "GCBLCFEPLEP": false,
+                  "HOFMOLFHLCG": false,
+                  "doOffStage": false,
+                  "born": {
+                    "onGround": false,
+                    "CNIPHLJJEHA": {
+                      "ANLJGLBGHNO": 0,
+                      "CJPLOKJFIMJ": 0,
+                      "HLGNNOEOBPJ": false
+                    },
+                    "offset": {},
+                    "HPMIIPNIHNB": false,
+                    "LIKCDACGCJP": 10,
+                    "onGroundRaycastUpDist": 2,
+                    "NJIGPLAMGKL": false,
+                    "useRotation": false,
+                    "$type": "ConfigBornByTarget"
+                  },
+                  "KHMDLFFCJID": "None",
+                  "scale": 1,
+                  "muteRemoteAction": false,
+                  "MJAAFFBGKKF": false,
+                  "canBeHandledOnRecover": false,
+                  "doAfterDie": true,
+                  "target": "Other",
+                  "__unk_Q4244652216": {
+                    "__unk_Q2921880475": false,
+                    "__unk_Q3587015628": ""
+                  },
+                  "PCKDBMIAPKM": false,
+                  "PMMODMFNAME": false,
+                  "$type": "FireEffect"
+                },
+                {
+                  "targetType": "Enemy",
+                  "__unk_Q4125547569": -1,
+                  "__unk_Q2273802443": false,
+                  "FCPHBBDGKDI": 0,
+                  "GOOLBBMLLOB": false,
+                  "doOffStage": false,
+                  "KHMDLFFCJID": "None",
+                  "muteRemoteAction": false,
+                  "canBeHandledOnRecover": false,
+                  "doAfterDie": true,
+                  "target": "CurLocalAvatar",
+                  "__unk_Q4244652216": {
+                    "__unk_Q2921880475": false,
+                    "__unk_Q3587015628": ""
+                  },
+                  "attackEvent": {
+                    "attackInfo": {
+                      "bulletWane": {
+                        "CAGEJDLIHLD": 0,
+                        "hitLevelWaneMin": "Shake",
+                        "EHMLEMKCMPM": 3.4028235e+38,
+                        "FDJNGGLEGAN": 3.4028235e+38,
+                        "GJDDIMFGOHI": 0,
+                        "GJLFNGCPGOA": 0,
+                        "GOHABALPLMI": 0,
+                        "HIHNDONFNHB": 3.4028235e+38,
+                        "NECGNLIPIJM": 0
+                      },
+                      "canBeModifiedBy": "None",
+                      "CHMBDCGKNAE": "OriginOwner",
+                      "canHitHead": false,
+                      "__unk_Q3296203363": "None",
+                      "attenuationGroup": "default",
+                      "hitPattern": {
+                        "AEIAENNIAAK": {
+                          "duration": 0,
+                          "INFBMPBLHIO": {
+                            "text": "",
+                            "IJJGOBKKCNC": false,
+                            "PKOEDONNCLB": 0
+                          }
+                        },
+                        "recurring": false,
+                        "canBeDefenceHalt": false,
+                        "onHitEffectName": "default",
+                        "hitLevel": "Mute",
+                        "ELAFGELPBIB": "Default",
+                        "hitImpulseType": "LV2",
+                        "GMLHNPGOMKF": {
+                          "offset": {
+                            "$type": "Vector"
+                          },
+                          "angleOffset": {
+                            "$type": "Vector"
+                          },
+                          "MPKNHEKOIFF": true,
+                          "NMDECIMFKDJ": false,
+                          "OLOGENKMHEL": 1
+                        },
+                        "retreatType": "ByAttacker",
+                        "hitHaltTime": 0,
+                        "MMOKGPLBMOA": false,
+                        "overrideHitImpulse": {
+                          "hitLevel": "Mute"
+                        },
+                        "NEKPPFMGNPA": false,
+                        "__unk_Q3893899620": "",
+                        "hitHaltTimeScale": 0.02,
+                        "OGJMBPAMIIH": false,
+                        "POPKAMFDFFP": {
+                          "$type": "Vector"
+                        }
+                      },
+                      "attackTag": "",
+                      "cameraShake": {
+                        "shakeDistance": 20,
+                        "shakeRange": 0,
+                        "extension": {
+                          "rangeAttenuation": 0.5,
+                          "DGKALDKDHIF": false,
+                          "EKEEGDAFEOF": false,
+                          "FFCJDJLDEOM": true,
+                          "cycleDamping": 0.12,
+                          "baseCycle": 0.12,
+                          "INJKDHLNDDJ": false,
+                          "LJFBMJHNHEO": false,
+                          "NMPNEBKEONI": false,
+                          "PFKPPNDBBAM": 0
+                        },
+                        "shakeTime": 0,
+                        "shakeType": "Center",
+                        "shakeDir": {
+                          "$type": "Vector"
+                        }
+                      },
+                      "forceCameraShake": false,
+                      "attackProperty": {
+                        "damageExtra": [
+                          "CJBDamageRatio",
+                          "DamageSystemValue",
+                          "MUL"
+                        ],
+                        "__unk_Q672068008": {
+                          "ABFODLKMHHC": false,
+                          "HFKPJFOIOCM": false
+                        },
+                        "elementDurability": 0,
+                        "overrideByWeapon": false,
+                        "attackType": "Melee",
+                        "damagePercentageRatio": 0,
+                        "elementType": "None",
+                        "trueDamage": true,
+                        "elementRank": 1,
+                        "IIBJDCCPPEJ": false,
+                        "ignoreModifyDamage": true,
+                        "__exp_arkhe": 0,
+                        "enHeadBreak": 0,
+                        "ignoreAttackerProperty": true,
+                        "strikeType": "None",
+                        "enBreak": 25
+                      },
+                      "NHGAMNNPHOE": false,
+                      "attenuationTag": "",
+                      "OCIEHCNLENA": {},
+                      "ONFAOKKEEOL": 0
+                    },
+                    "attackPattern": {
+                      "triggerCD": 0,
+                      "checkHitLayerType": "OnlyHitBox",
+                      "massiveAttackRatio": 1,
+                      "FONNGMPAEIE": 0,
+                      "triggerType": "TriggerNoRepeat",
+                      "useCustomShape": false,
+                      "ILJKGMFFBKM": false,
+                      "radius": 4,
+                      "born": {
+                        "onGround": false,
+                        "CNIPHLJJEHA": {
+                          "ANLJGLBGHNO": 0,
+                          "CJPLOKJFIMJ": 0,
+                          "HLGNNOEOBPJ": false
+                        },
+                        "offset": {},
+                        "HPMIIPNIHNB": false,
+                        "LIKCDACGCJP": 10,
+                        "onGroundRaycastUpDist": 2,
+                        "NJIGPLAMGKL": false,
+                        "useRotation": false,
+                        "$type": "ConfigBornByHitPoint"
+                      },
+                      "LPNAKCKJCFK": false,
+                      "filterByFrame": false,
+                      "ignoreMassive": false,
+                      "hitScene": {
+                        "EEMMOCJNIBF": {
+                          "offset": {
+                            "$type": "Vector"
+                          },
+                          "angleOffset": {
+                            "$type": "Vector"
+                          },
+                          "MPKNHEKOIFF": true,
+                          "NMDECIMFKDJ": false,
+                          "OLOGENKMHEL": 1
+                        },
+                        "defaultEffect": ""
+                      },
+                      "PMGEMILEKND": "AllEntities",
+                      "detectDirection": "None",
+                      "$type": "ConfigAttackSphere"
+                    }
+                  },
+                  "$type": "TriggerAttackEvent"
+                },
+                {
+                  "__unk_Q4125547569": -1,
+                  "__unk_Q2273802443": false,
+                  "modifierName": "CJB_DAMAGE_INCD",
+                  "doOffStage": false,
+                  "KHMDLFFCJID": "None",
+                  "muteRemoteAction": false,
+                  "canBeHandledOnRecover": false,
+                  "doAfterDie": true,
+                  "target": "Team",
+                  "__unk_Q4244652216": {
+                    "__unk_Q2921880475": false,
+                    "__unk_Q3587015628": ""
+                  },
+                  "$type": "ApplyModifier"
+                }
+              ],
+              "__unk_Q4125547569": -1,
+              "__unk_Q2273802443": false,
+              "targetPredicates": [
+                {
+                  "KEAECDOLGCN": -1,
+                  "reject": false,
+                  "NCJILCMGBHO": false,
+                  "entityTypes": [
+                    "Monster"
+                  ],
+                  "target": "Target",
+                  "$type": "ByEntityTypes"
+                },
+                {
+                  "key": "_CJB_IN_CD",
+                  "forceByCaster": false,
+                  "value": 0,
+                  "compareType": "NoneOrEqual",
+                  "target": "Team",
+                  "$type": "ByTargetGlobalValue"
+                },
+                {
+                  "key": "_CJB_NUM",
+                  "forceByCaster": false,
+                  "value": "MaxCJBNum",
+                  "compareType": "LessAndEqual",
+                  "target": "Team",
+                  "$type": "ByTargetGlobalValue"
+                },
+                {
+                  "key": "_CHOOSE_IN_CD",
+                  "forceByCaster": false,
+                  "value": 1,
+                  "compareType": "Equal",
+                  "target": "Team",
+                  "$type": "ByTargetGlobalValue"
+                }
+              ],
+              "doOffStage": false,
+              "KHMDLFFCJID": "None",
+              "muteRemoteAction": false,
+              "canBeHandledOnRecover": false,
+              "doAfterDie": true,
+              "target": "Other",
+              "__unk_Q4244652216": {
+                "__unk_Q2921880475": false,
+                "__unk_Q3587015628": ""
+              },
+              "$type": "Predicated"
+            }
+          ],
+          "state": "None",
+          "overrideWeaponElement": false,
+          "FNCDEKOAAOE": false,
+          "isUnique": false,
+          "GCOMLBIIIGL": false,
+          "isElementDurabilityMutable": true,
+          "timeScale": "Owner",
+          "HIGGGNHGEEM": false,
+          "__unk_Q3323398612": 0,
+          "modifierName": "",
+          "ICBDJNHEFFB": false,
+          "ICLPOOJCEPI": false,
+          "IICJDNBLMMD": 0,
+          "IPNNJKHJKPN": false,
+          "purgeIncrement": 0,
+          "JIAFDJBDEFH": false,
+          "thinkIntervalIgnoreTimeScale": false,
+          "LECFPDIICCE": false,
+          "isLimitedProperties": false,
+          "LMENDAOJCBK": {
+            "__unk_Q3130794202": false
+          },
+          "MEHFAOLMCAP": -1,
+          "buffID": 0,
+          "NOCILDGOBBH": false,
+          "isDurabilityGlobal": false,
+          "OJMEBIHEKDC": false,
+          "PCAMCNDOFPM": "NormallySynced",
+          "stacking": "Refresh"
+        }
+      },
+      "PCCDGEAGBLE": false
+    }
+  },
+  {
+    "Default": {
       "abilitySpecials": {
         "DamageUp": 0
       },
+      "onAdded": [
+        {
+          "useLimitRange": false,
+          "randomInRange": false,
+          "key": "_IN_HIGH_TIDE_V3.4",
+          "__unk_Q4125547569": -1,
+          "__unk_Q2273802443": false,
+          "maxValue": 0,
+          "doOffStage": false,
+          "KHMDLFFCJID": "None",
+          "muteRemoteAction": false,
+          "value": 0,
+          "OBMLNHBNEGD": false,
+          "canBeHandledOnRecover": false,
+          "doAfterDie": true,
+          "target": "Self",
+          "__unk_Q4244652216": {
+            "__unk_Q2921880475": false,
+            "__unk_Q3587015628": ""
+          },
+          "minValue": 0,
+          "$type": "SetGlobalValue"
+        }
+      ],
+      "isDynamicAbility": true,
+      "abilityName": "Activity_ActivityTeamChainV3.4_TideBuff",
+      "abilityMixins": [
+        {
+          "BMHEDEFHHKN": "RegisterOnce",
+          "BOPEIAACCJJ": false,
+          "__unk_Q4125547569": -1,
+          "modifierNameSteps": [
+            "Crazy_In_Peace",
+            "Crazy_DamageUp"
+          ],
+          "isUnique": false,
+          "removeAppliedModifier": true,
+          "globalValueKey": "_IN_HIGH_TIDE_V3.4",
+          "globalValueTarget": "Self",
+          "KIGAINKENGL": false,
+          "__unk_Q3695777311": false,
+          "MDCPPJEAPDD": true,
+          "NIPEIMFGJKM": false,
+          "__unk_Q4244652216": {
+            "__unk_Q2921880475": false,
+            "__unk_Q3587015628": ""
+          },
+          "valueSteps": [
+            -0.5,
+            0.5,
+            1.5
+          ],
+          "PNGEANPCMHF": true,
+          "$type": "AttachModifierToGlobalValueMixin"
+        },
+        {
+          "useLimitRange": true,
+          "key": "_IN_HIGH_TIDE_V3.4",
+          "__unk_Q4125547569": -1,
+          "isUnique": false,
+          "maxValue": 1,
+          "__unk_Q3695777311": false,
+          "__unk_Q4244652216": {
+            "__unk_Q2921880475": false,
+            "__unk_Q3587015628": ""
+          },
+          "minValue": 0,
+          "$type": "GEDDHOIEBKE"
+        }
+      ],
+      "EINMHCJCNBG": 0,
+      "HKGAKPLKEEJ": false,
+      "IPONDLMHIOC": false,
+      "MBLAAGJLEED": false,
       "modifiers": {
         "Crazy_In_Peace": {
+          "fireEventWhenApply": false,
+          "useDummyAbility": false,
+          "onThinkIntervalIsFixedUpdate": false,
+          "ALGHEGPCFAL": -1,
+          "ALGLHMNGAIK": false,
+          "stackingOption": {
+            "enableMixedUnique": false,
+            "abilitySpecialName": "",
+            "uniqueModifierCondition": "Greater"
+          },
+          "AMOJAACLEBF": false,
+          "BKADNGDPKBB": false,
+          "reduceDurablityIgnoreTimeScale": false,
+          "elementDurability": 100,
+          "EICKDCDCEOK": false,
+          "EINMHCJCNBG": 0,
+          "elementType": "None",
+          "FEOGJLMCKDI": false,
+          "trimThinkInterval": false,
+          "state": "None",
+          "overrideWeaponElement": false,
+          "FNCDEKOAAOE": false,
+          "isUnique": false,
+          "GCOMLBIIIGL": false,
+          "isElementDurabilityMutable": true,
+          "timeScale": "Owner",
+          "HIGGGNHGEEM": false,
+          "__unk_Q3323398612": 0,
           "modifierName": "",
-          "elementDurability": 100
+          "ICBDJNHEFFB": false,
+          "ICLPOOJCEPI": false,
+          "IICJDNBLMMD": 0,
+          "IPNNJKHJKPN": false,
+          "purgeIncrement": 0,
+          "JIAFDJBDEFH": false,
+          "thinkIntervalIgnoreTimeScale": false,
+          "LECFPDIICCE": false,
+          "isLimitedProperties": false,
+          "LMENDAOJCBK": {
+            "__unk_Q3130794202": false
+          },
+          "MEHFAOLMCAP": -1,
+          "buffID": 0,
+          "NOCILDGOBBH": false,
+          "isDurabilityGlobal": false,
+          "OJMEBIHEKDC": false,
+          "PCAMCNDOFPM": "NormallySynced",
+          "stacking": "Refresh"
         },
         "Crazy_DamageUp": {
-          "modifierName": "",
-          "elementDurability": 100,
-          "modifierMixins": [
-            {
-              "$type": "CurLocalAvatarMixinV2",
-              "modifierName": "Crazy_DamageUp_TeamChainV3.4_Eff"
-            }
-          ],
+          "fireEventWhenApply": false,
+          "useDummyAbility": false,
+          "onThinkIntervalIsFixedUpdate": false,
+          "ALGHEGPCFAL": -1,
+          "ALGLHMNGAIK": false,
+          "stackingOption": {
+            "enableMixedUnique": false,
+            "abilitySpecialName": "",
+            "uniqueModifierCondition": "Greater"
+          },
+          "AMOJAACLEBF": false,
           "onAdded": [
             {
-              "$type": "AttachModifier",
+              "__unk_Q4125547569": -1,
+              "__unk_Q2273802443": false,
+              "modifierName": "Crazy_DamageUp_TeamChainV3.4",
+              "doOffStage": false,
+              "KHMDLFFCJID": "None",
+              "muteRemoteAction": false,
+              "canBeHandledOnRecover": false,
+              "doAfterDie": true,
               "target": "AllPlayerAvatars",
-              "modifierName": "Crazy_DamageUp_TeamChainV3.4"
+              "__unk_Q4244652216": {
+                "__unk_Q2921880475": false,
+                "__unk_Q3587015628": ""
+              },
+              "$type": "AttachModifier"
             }
-          ]
+          ],
+          "BKADNGDPKBB": false,
+          "reduceDurablityIgnoreTimeScale": false,
+          "elementDurability": 100,
+          "EICKDCDCEOK": false,
+          "EINMHCJCNBG": 0,
+          "elementType": "None",
+          "FEOGJLMCKDI": false,
+          "trimThinkInterval": false,
+          "state": "None",
+          "overrideWeaponElement": false,
+          "FNCDEKOAAOE": false,
+          "modifierMixins": [
+            {
+              "__unk_Q4125547569": -1,
+              "isUnique": false,
+              "modifierName": "Crazy_DamageUp_TeamChainV3.4_Eff",
+              "__unk_Q3695777311": false,
+              "NKCKBPLJKGJ": false,
+              "__unk_Q4244652216": {
+                "__unk_Q2921880475": false,
+                "__unk_Q3587015628": ""
+              },
+              "$type": "CurLocalAvatarMixinV2"
+            }
+          ],
+          "isUnique": false,
+          "GCOMLBIIIGL": false,
+          "isElementDurabilityMutable": true,
+          "timeScale": "Owner",
+          "HIGGGNHGEEM": false,
+          "__unk_Q3323398612": 0,
+          "modifierName": "",
+          "ICBDJNHEFFB": false,
+          "ICLPOOJCEPI": false,
+          "IICJDNBLMMD": 0,
+          "IPNNJKHJKPN": false,
+          "purgeIncrement": 0,
+          "JIAFDJBDEFH": false,
+          "thinkIntervalIgnoreTimeScale": false,
+          "LECFPDIICCE": false,
+          "isLimitedProperties": false,
+          "LMENDAOJCBK": {
+            "__unk_Q3130794202": false
+          },
+          "MEHFAOLMCAP": -1,
+          "buffID": 0,
+          "NOCILDGOBBH": false,
+          "isDurabilityGlobal": false,
+          "OJMEBIHEKDC": false,
+          "PCAMCNDOFPM": "NormallySynced",
+          "stacking": "Refresh"
         },
         "Crazy_DamageUp_TeamChainV3.4": {
-          "modifierName": "",
+          "fireEventWhenApply": false,
+          "useDummyAbility": false,
+          "onThinkIntervalIsFixedUpdate": false,
+          "ALGHEGPCFAL": -1,
+          "ALGLHMNGAIK": false,
+          "stackingOption": {
+            "enableMixedUnique": false,
+            "abilitySpecialName": "",
+            "uniqueModifierCondition": "Greater"
+          },
+          "AMOJAACLEBF": false,
+          "BKADNGDPKBB": false,
+          "reduceDurablityIgnoreTimeScale": false,
           "elementDurability": 100,
+          "EICKDCDCEOK": false,
+          "EINMHCJCNBG": 0,
+          "elementType": "None",
+          "FEOGJLMCKDI": false,
+          "trimThinkInterval": false,
+          "state": "AttackUp",
+          "overrideWeaponElement": false,
+          "FNCDEKOAAOE": false,
+          "isUnique": false,
+          "GCOMLBIIIGL": false,
+          "isElementDurabilityMutable": true,
+          "timeScale": "Owner",
+          "HIGGGNHGEEM": false,
+          "__unk_Q3323398612": 0,
+          "modifierName": "",
+          "ICBDJNHEFFB": false,
+          "ICLPOOJCEPI": false,
+          "IICJDNBLMMD": 0,
+          "IPNNJKHJKPN": false,
+          "purgeIncrement": 0,
+          "JIAFDJBDEFH": false,
+          "thinkIntervalIgnoreTimeScale": false,
+          "LECFPDIICCE": false,
+          "isLimitedProperties": false,
           "properties": {
             "Actor_FireAddHurtDelta": "DamageUp",
             "Actor_ElecAddHurtDelta": "DamageUp",
@@ -306,275 +1195,883 @@
             "Actor_RockAddHurtDelta": "DamageUp",
             "Actor_PhysicalAddHurtDelta": "DamageUp"
           },
-          "state": "AttackUp"
+          "LMENDAOJCBK": {
+            "__unk_Q3130794202": false
+          },
+          "MEHFAOLMCAP": -1,
+          "buffID": 0,
+          "NOCILDGOBBH": false,
+          "isDurabilityGlobal": false,
+          "OJMEBIHEKDC": false,
+          "PCAMCNDOFPM": "NormallySynced",
+          "stacking": "Refresh"
         },
         "Crazy_DamageUp_TeamChainV3.4_Eff": {
+          "fireEventWhenApply": false,
+          "useDummyAbility": false,
+          "onThinkIntervalIsFixedUpdate": false,
+          "ALGHEGPCFAL": -1,
+          "ALGLHMNGAIK": false,
+          "stackingOption": {
+            "enableMixedUnique": false,
+            "abilitySpecialName": "",
+            "uniqueModifierCondition": "Greater"
+          },
+          "AMOJAACLEBF": false,
+          "BKADNGDPKBB": false,
+          "reduceDurablityIgnoreTimeScale": false,
+          "elementDurability": 100,
+          "EICKDCDCEOK": false,
+          "EINMHCJCNBG": 0,
+          "elementType": "None",
+          "FEOGJLMCKDI": false,
+          "trimThinkInterval": false,
+          "state": "None",
+          "overrideWeaponElement": false,
+          "FNCDEKOAAOE": false,
+          "isUnique": false,
+          "GCOMLBIIIGL": false,
+          "isElementDurabilityMutable": true,
+          "timeScale": "Owner",
+          "HIGGGNHGEEM": false,
+          "__unk_Q3323398612": 0,
           "modifierName": "",
-          "elementDurability": 100
+          "ICBDJNHEFFB": false,
+          "ICLPOOJCEPI": false,
+          "IICJDNBLMMD": 0,
+          "IPNNJKHJKPN": false,
+          "purgeIncrement": 0,
+          "JIAFDJBDEFH": false,
+          "thinkIntervalIgnoreTimeScale": false,
+          "LECFPDIICCE": false,
+          "isLimitedProperties": false,
+          "LMENDAOJCBK": {
+            "__unk_Q3130794202": false
+          },
+          "MEHFAOLMCAP": -1,
+          "buffID": 0,
+          "NOCILDGOBBH": false,
+          "isDurabilityGlobal": false,
+          "OJMEBIHEKDC": false,
+          "PCAMCNDOFPM": "NormallySynced",
+          "stacking": "Refresh"
         }
       },
-      "onAdded": [
-        {
-          "$type": "SetGlobalValue",
-          "value": 0,
-          "key": "_IN_HIGH_TIDE_V3.4",
-          "maxValue": 0,
-          "minValue": 0
-        }
-      ],
-      "isDynamicAbility": true
+      "PCCDGEAGBLE": false
     }
   },
   {
     "Default": {
-      "$type": "ConfigAbility",
-      "abilityName": "Activity_TeamChain_LockedAvatar",
       "abilitySpecials": {
         "DamageUpRatio": 0,
         "OffStageInterval": 0,
         "Energy": 0
       },
+      "onAdded": [
+        {
+          "__unk_Q4125547569": -1,
+          "__unk_Q2273802443": false,
+          "modifierName": "UNIQUE_TeamChain_LockedAvatar",
+          "doOffStage": false,
+          "KHMDLFFCJID": "None",
+          "muteRemoteAction": false,
+          "canBeHandledOnRecover": false,
+          "doAfterDie": true,
+          "target": "Self",
+          "__unk_Q4244652216": {
+            "__unk_Q2921880475": false,
+            "__unk_Q3587015628": ""
+          },
+          "$type": "AttachModifier"
+        },
+        {
+          "__unk_Q4125547569": -1,
+          "__unk_Q2273802443": false,
+          "modifierName": "UNIQUE_TeamChain_LockedAvatar_OffStage",
+          "doOffStage": true,
+          "KHMDLFFCJID": "None",
+          "muteRemoteAction": false,
+          "canBeHandledOnRecover": false,
+          "doAfterDie": true,
+          "target": "Self",
+          "__unk_Q4244652216": {
+            "__unk_Q2921880475": false,
+            "__unk_Q3587015628": ""
+          },
+          "$type": "AttachModifier"
+        }
+      ],
+      "isDynamicAbility": true,
+      "abilityName": "Activity_TeamChain_LockedAvatar",
+      "EINMHCJCNBG": 0,
+      "HKGAKPLKEEJ": false,
+      "IPONDLMHIOC": false,
+      "MBLAAGJLEED": false,
       "modifiers": {
         "UNIQUE_TeamChain_LockedAvatar": {
-          "modifierName": "",
-          "isUnique": true,
+          "fireEventWhenApply": false,
+          "useDummyAbility": false,
+          "onThinkIntervalIsFixedUpdate": false,
+          "ALGHEGPCFAL": -1,
+          "ALGLHMNGAIK": false,
+          "stackingOption": {
+            "enableMixedUnique": false,
+            "abilitySpecialName": "",
+            "uniqueModifierCondition": "Greater"
+          },
+          "AMOJAACLEBF": false,
+          "BKADNGDPKBB": false,
+          "reduceDurablityIgnoreTimeScale": false,
           "elementDurability": 100,
+          "EICKDCDCEOK": false,
+          "EINMHCJCNBG": 0,
+          "elementType": "None",
+          "FEOGJLMCKDI": false,
+          "trimThinkInterval": false,
+          "state": "None",
+          "overrideWeaponElement": false,
+          "FNCDEKOAAOE": false,
           "modifierMixins": [
             {
-              "$type": "ModifyDamageMixin",
+              "attackType": "None",
+              "__unk_Q4125547569": -1,
+              "damagePercentageRatio": "DamageUpRatio",
+              "trueDamage": false,
+              "isUnique": false,
+              "GDEPAAINFFF": {
+                "elementType": "None"
+              },
               "ignoreEventInfo": true,
-              "damagePercentageRatio": "DamageUpRatio"
+              "__unk_Q3695777311": false,
+              "__unk_Q4244652216": {
+                "__unk_Q2921880475": false,
+                "__unk_Q3587015628": ""
+              },
+              "$type": "ModifyDamageMixin"
             }
-          ]
+          ],
+          "isUnique": true,
+          "GCOMLBIIIGL": false,
+          "isElementDurabilityMutable": true,
+          "timeScale": "Owner",
+          "HIGGGNHGEEM": false,
+          "__unk_Q3323398612": 0,
+          "modifierName": "",
+          "ICBDJNHEFFB": false,
+          "ICLPOOJCEPI": false,
+          "IICJDNBLMMD": 0,
+          "IPNNJKHJKPN": false,
+          "purgeIncrement": 0,
+          "JIAFDJBDEFH": false,
+          "thinkIntervalIgnoreTimeScale": false,
+          "LECFPDIICCE": false,
+          "isLimitedProperties": false,
+          "LMENDAOJCBK": {
+            "__unk_Q3130794202": false
+          },
+          "MEHFAOLMCAP": -1,
+          "buffID": 0,
+          "NOCILDGOBBH": false,
+          "isDurabilityGlobal": false,
+          "OJMEBIHEKDC": false,
+          "PCAMCNDOFPM": "NormallySynced",
+          "stacking": "Refresh"
         },
         "UNIQUE_TeamChain_LockedAvatar_OffStage": {
-          "stacking": "Unique",
-          "modifierName": "",
-          "isUnique": true,
+          "fireEventWhenApply": false,
+          "useDummyAbility": false,
+          "onThinkIntervalIsFixedUpdate": false,
+          "ALGHEGPCFAL": -1,
+          "ALGLHMNGAIK": false,
+          "stackingOption": {
+            "enableMixedUnique": false,
+            "abilitySpecialName": "",
+            "uniqueModifierCondition": "Greater"
+          },
+          "AMOJAACLEBF": false,
+          "BKADNGDPKBB": false,
+          "reduceDurablityIgnoreTimeScale": false,
           "elementDurability": 100,
+          "EICKDCDCEOK": false,
+          "EINMHCJCNBG": 0,
           "thinkInterval": "OffStageInterval",
+          "elementType": "None",
+          "FEOGJLMCKDI": false,
+          "trimThinkInterval": false,
+          "state": "None",
+          "overrideWeaponElement": false,
+          "FNCDEKOAAOE": false,
+          "isUnique": true,
+          "GCOMLBIIIGL": false,
+          "isElementDurabilityMutable": true,
+          "timeScale": "Owner",
+          "HIGGGNHGEEM": false,
+          "__unk_Q3323398612": 0,
+          "modifierName": "",
+          "ICBDJNHEFFB": false,
+          "ICLPOOJCEPI": false,
+          "IICJDNBLMMD": 0,
+          "IPNNJKHJKPN": false,
+          "purgeIncrement": 0,
+          "JIAFDJBDEFH": false,
+          "thinkIntervalIgnoreTimeScale": false,
+          "LECFPDIICCE": false,
+          "isLimitedProperties": false,
+          "LMENDAOJCBK": {
+            "__unk_Q3130794202": false
+          },
+          "MEHFAOLMCAP": -1,
+          "buffID": 0,
+          "NOCILDGOBBH": false,
           "onThinkInterval": [
             {
-              "$type": "Predicated",
-              "doOffStage": true,
+              "successActions": [
+                {
+                  "failActions": [
+                    {
+                      "__unk_Q4125547569": -1,
+                      "__unk_Q2273802443": false,
+                      "doOffStage": true,
+                      "KHMDLFFCJID": "None",
+                      "muteRemoteAction": false,
+                      "value": "Energy",
+                      "canBeHandledOnRecover": false,
+                      "doAfterDie": true,
+                      "target": "Self",
+                      "__unk_Q4244652216": {
+                        "__unk_Q2921880475": false,
+                        "__unk_Q3587015628": ""
+                      },
+                      "$type": "ReviveElemEnergy"
+                    }
+                  ],
+                  "__unk_Q4125547569": -1,
+                  "__unk_Q2273802443": false,
+                  "targetPredicates": [
+                    {
+                      "target": "Self",
+                      "$type": "ByIsLocalAvatar"
+                    }
+                  ],
+                  "doOffStage": true,
+                  "KHMDLFFCJID": "None",
+                  "muteRemoteAction": false,
+                  "canBeHandledOnRecover": false,
+                  "doAfterDie": true,
+                  "target": "Self",
+                  "__unk_Q4244652216": {
+                    "__unk_Q2921880475": false,
+                    "__unk_Q3587015628": ""
+                  },
+                  "$type": "Predicated"
+                }
+              ],
+              "__unk_Q4125547569": -1,
+              "__unk_Q2273802443": false,
               "targetPredicates": [
                 {
+                  "target": "Target",
                   "$type": "ByIsCombat"
                 }
               ],
-              "successActions": [
-                {
-                  "$type": "Predicated",
-                  "doOffStage": true,
-                  "targetPredicates": [
-                    {
-                      "$type": "ByIsLocalAvatar",
-                      "target": "Self"
-                    }
-                  ],
-                  "failActions": [
-                    {
-                      "$type": "ReviveElemEnergy",
-                      "doOffStage": true,
-                      "value": "Energy"
-                    }
-                  ]
-                }
-              ]
+              "doOffStage": true,
+              "KHMDLFFCJID": "None",
+              "muteRemoteAction": false,
+              "canBeHandledOnRecover": false,
+              "doAfterDie": true,
+              "target": "Self",
+              "__unk_Q4244652216": {
+                "__unk_Q2921880475": false,
+                "__unk_Q3587015628": ""
+              },
+              "$type": "Predicated"
             }
-          ]
+          ],
+          "isDurabilityGlobal": false,
+          "OJMEBIHEKDC": false,
+          "PCAMCNDOFPM": "NormallySynced",
+          "stacking": "Unique"
         }
       },
-      "onAdded": [
-        {
-          "$type": "AttachModifier",
-          "modifierName": "UNIQUE_TeamChain_LockedAvatar"
-        },
-        {
-          "$type": "AttachModifier",
-          "doOffStage": true,
-          "modifierName": "UNIQUE_TeamChain_LockedAvatar_OffStage"
-        }
-      ],
-      "isDynamicAbility": true
+      "PCCDGEAGBLE": false
     }
   },
   {
     "Default": {
-      "$type": "ConfigAbility",
-      "abilityName": "Activity_TeamChain_ElementAddHurt_Swirl",
       "abilitySpecials": {
         "ElementAddHurt_Swirl": 0
       },
+      "onAdded": [
+        {
+          "__unk_Q4125547569": -1,
+          "__unk_Q2273802443": false,
+          "modifierName": "UNIQUE_TeamChain_ElementAddHurt_Swirl",
+          "doOffStage": false,
+          "KHMDLFFCJID": "None",
+          "muteRemoteAction": false,
+          "canBeHandledOnRecover": false,
+          "doAfterDie": true,
+          "target": "Self",
+          "__unk_Q4244652216": {
+            "__unk_Q2921880475": false,
+            "__unk_Q3587015628": ""
+          },
+          "$type": "AttachModifier"
+        }
+      ],
+      "isDynamicAbility": true,
+      "abilityName": "Activity_TeamChain_ElementAddHurt_Swirl",
+      "EINMHCJCNBG": 0,
+      "HKGAKPLKEEJ": false,
+      "IPONDLMHIOC": false,
+      "MBLAAGJLEED": false,
       "modifiers": {
         "UNIQUE_TeamChain_ElementAddHurt_Swirl": {
-          "stacking": "Unique",
-          "modifierName": "",
-          "isUnique": true,
+          "fireEventWhenApply": false,
+          "useDummyAbility": false,
+          "onThinkIntervalIsFixedUpdate": false,
+          "ALGHEGPCFAL": -1,
+          "ALGLHMNGAIK": false,
+          "stackingOption": {
+            "enableMixedUnique": false,
+            "abilitySpecialName": "",
+            "uniqueModifierCondition": "Greater"
+          },
+          "AMOJAACLEBF": false,
+          "BKADNGDPKBB": false,
+          "reduceDurablityIgnoreTimeScale": false,
           "elementDurability": 100,
+          "EICKDCDCEOK": false,
+          "EINMHCJCNBG": 0,
+          "elementType": "None",
+          "FEOGJLMCKDI": false,
+          "trimThinkInterval": false,
+          "state": "None",
+          "overrideWeaponElement": false,
+          "FNCDEKOAAOE": false,
+          "isUnique": true,
+          "GCOMLBIIIGL": false,
+          "isElementDurabilityMutable": true,
+          "timeScale": "Owner",
+          "HIGGGNHGEEM": false,
+          "__unk_Q3323398612": 0,
+          "modifierName": "",
+          "ICBDJNHEFFB": false,
+          "ICLPOOJCEPI": false,
+          "IICJDNBLMMD": 0,
+          "IPNNJKHJKPN": false,
+          "purgeIncrement": 0,
+          "JIAFDJBDEFH": false,
+          "thinkIntervalIgnoreTimeScale": false,
+          "LECFPDIICCE": false,
+          "isLimitedProperties": true,
           "properties": {
             "Actor_ElemReactSwirlFireDelta": "ElementAddHurt_Swirl",
             "Actor_ElemReactSwirlWaterDelta": "ElementAddHurt_Swirl",
             "Actor_ElemReactSwirlIceDelta": "ElementAddHurt_Swirl",
             "Actor_ElemReactSwirlElectricDelta": "ElementAddHurt_Swirl"
           },
-          "isLimitedProperties": true
+          "LMENDAOJCBK": {
+            "__unk_Q3130794202": false
+          },
+          "MEHFAOLMCAP": -1,
+          "buffID": 0,
+          "NOCILDGOBBH": false,
+          "isDurabilityGlobal": false,
+          "OJMEBIHEKDC": false,
+          "PCAMCNDOFPM": "NormallySynced",
+          "stacking": "Unique"
         }
       },
-      "onAdded": [
-        {
-          "$type": "AttachModifier",
-          "modifierName": "UNIQUE_TeamChain_ElementAddHurt_Swirl"
-        }
-      ],
-      "isDynamicAbility": true
+      "PCCDGEAGBLE": false
     }
   },
   {
     "Default": {
-      "$type": "ConfigAbility",
-      "abilityName": "Activity_TeamChain_Frozen_PercentageRatio",
       "abilitySpecials": {
         "damagePercentageRatio": 0
       },
+      "onAdded": [
+        {
+          "__unk_Q4125547569": -1,
+          "__unk_Q2273802443": false,
+          "modifierName": "Activity_TeamChain_Frozen_PercentageRatio",
+          "doOffStage": false,
+          "KHMDLFFCJID": "None",
+          "muteRemoteAction": false,
+          "canBeHandledOnRecover": false,
+          "doAfterDie": true,
+          "target": "Self",
+          "__unk_Q4244652216": {
+            "__unk_Q2921880475": false,
+            "__unk_Q3587015628": ""
+          },
+          "$type": "AttachModifier"
+        }
+      ],
+      "isDynamicAbility": true,
+      "abilityName": "Activity_TeamChain_Frozen_PercentageRatio",
+      "EINMHCJCNBG": 0,
+      "HKGAKPLKEEJ": false,
+      "IPONDLMHIOC": false,
+      "MBLAAGJLEED": false,
       "modifiers": {
         "Activity_TeamChain_Frozen_PercentageRatio": {
-          "modifierName": "",
+          "fireEventWhenApply": false,
+          "useDummyAbility": false,
+          "onThinkIntervalIsFixedUpdate": false,
+          "ALGHEGPCFAL": -1,
+          "ALGLHMNGAIK": false,
+          "stackingOption": {
+            "enableMixedUnique": false,
+            "abilitySpecialName": "",
+            "uniqueModifierCondition": "Greater"
+          },
+          "AMOJAACLEBF": false,
+          "BKADNGDPKBB": false,
+          "reduceDurablityIgnoreTimeScale": false,
           "elementDurability": 100,
+          "EICKDCDCEOK": false,
+          "EINMHCJCNBG": 0,
+          "elementType": "None",
+          "FEOGJLMCKDI": false,
+          "trimThinkInterval": false,
+          "state": "None",
+          "overrideWeaponElement": false,
+          "FNCDEKOAAOE": false,
           "modifierMixins": [
             {
-              "$type": "ModifyDamageMixin",
-              "ignoreEventInfo": true,
+              "attackType": "None",
+              "__unk_Q4125547569": -1,
               "damagePercentageRatio": "damagePercentageRatio",
               "predicates": [
                 {
-                  "$type": "ByHasAbilityState",
-                  "abilityState": "ElementFrozen"
+                  "abilityState": "ElementFrozen",
+                  "target": "Target",
+                  "$type": "ByHasAbilityState"
                 }
-              ]
+              ],
+              "trueDamage": false,
+              "isUnique": false,
+              "GDEPAAINFFF": {
+                "elementType": "None"
+              },
+              "ignoreEventInfo": true,
+              "__unk_Q3695777311": false,
+              "__unk_Q4244652216": {
+                "__unk_Q2921880475": false,
+                "__unk_Q3587015628": ""
+              },
+              "$type": "ModifyDamageMixin"
             }
-          ]
+          ],
+          "isUnique": false,
+          "GCOMLBIIIGL": false,
+          "isElementDurabilityMutable": true,
+          "timeScale": "Owner",
+          "HIGGGNHGEEM": false,
+          "__unk_Q3323398612": 0,
+          "modifierName": "",
+          "ICBDJNHEFFB": false,
+          "ICLPOOJCEPI": false,
+          "IICJDNBLMMD": 0,
+          "IPNNJKHJKPN": false,
+          "purgeIncrement": 0,
+          "JIAFDJBDEFH": false,
+          "thinkIntervalIgnoreTimeScale": false,
+          "LECFPDIICCE": false,
+          "isLimitedProperties": false,
+          "LMENDAOJCBK": {
+            "__unk_Q3130794202": false
+          },
+          "MEHFAOLMCAP": -1,
+          "buffID": 0,
+          "NOCILDGOBBH": false,
+          "isDurabilityGlobal": false,
+          "OJMEBIHEKDC": false,
+          "PCAMCNDOFPM": "NormallySynced",
+          "stacking": "Refresh"
         }
       },
-      "onAdded": [
-        {
-          "$type": "AttachModifier",
-          "modifierName": "Activity_TeamChain_Frozen_PercentageRatio"
-        }
-      ],
-      "isDynamicAbility": true
+      "PCCDGEAGBLE": false
     }
   },
   {
     "Default": {
-      "$type": "ConfigAbility",
-      "abilityName": "Activity_TeamChain_BurstDamageUp_ReduceCD",
       "abilitySpecials": {
         "ElementalBurst_Rate": 0,
         "Actor_SkillCDMinusRatio": 0
       },
+      "onAdded": [
+        {
+          "__unk_Q4125547569": -1,
+          "__unk_Q2273802443": false,
+          "modifierName": "UNIQUE_TeamChain_BurstDamageUp_ReduceCD",
+          "doOffStage": false,
+          "KHMDLFFCJID": "None",
+          "muteRemoteAction": false,
+          "canBeHandledOnRecover": false,
+          "doAfterDie": true,
+          "target": "Self",
+          "__unk_Q4244652216": {
+            "__unk_Q2921880475": false,
+            "__unk_Q3587015628": ""
+          },
+          "$type": "AttachModifier"
+        }
+      ],
+      "isDynamicAbility": true,
+      "abilityName": "Activity_TeamChain_BurstDamageUp_ReduceCD",
+      "EINMHCJCNBG": 0,
+      "HKGAKPLKEEJ": false,
+      "IPONDLMHIOC": false,
+      "MBLAAGJLEED": false,
       "modifiers": {
         "UNIQUE_TeamChain_BurstDamageUp_ReduceCD": {
-          "modifierName": "",
-          "isUnique": true,
+          "fireEventWhenApply": false,
+          "useDummyAbility": false,
+          "onThinkIntervalIsFixedUpdate": false,
+          "ALGHEGPCFAL": -1,
+          "ALGLHMNGAIK": false,
+          "stackingOption": {
+            "enableMixedUnique": false,
+            "abilitySpecialName": "",
+            "uniqueModifierCondition": "Greater"
+          },
+          "AMOJAACLEBF": false,
+          "BKADNGDPKBB": false,
+          "reduceDurablityIgnoreTimeScale": false,
           "elementDurability": 100,
+          "EICKDCDCEOK": false,
+          "EINMHCJCNBG": 0,
+          "elementType": "None",
+          "FEOGJLMCKDI": false,
+          "trimThinkInterval": false,
+          "state": "None",
+          "overrideWeaponElement": false,
+          "FNCDEKOAAOE": false,
           "modifierMixins": [
             {
-              "$type": "ModifyDamageMixin",
+              "attackType": "None",
+              "__unk_Q4125547569": -1,
+              "damagePercentageRatio": "ElementalBurst_Rate",
+              "trueDamage": false,
+              "isUnique": false,
+              "GDEPAAINFFF": {
+                "elementType": "None"
+              },
+              "ignoreEventInfo": false,
+              "__unk_Q3695777311": false,
+              "__unk_Q4244652216": {
+                "__unk_Q2921880475": false,
+                "__unk_Q3587015628": ""
+              },
               "attackTags": [
                 "Elemental_Burst"
               ],
-              "damagePercentageRatio": "ElementalBurst_Rate"
+              "$type": "ModifyDamageMixin"
             }
           ],
+          "isUnique": true,
+          "GCOMLBIIIGL": false,
+          "isElementDurabilityMutable": true,
+          "timeScale": "Owner",
+          "HIGGGNHGEEM": false,
+          "__unk_Q3323398612": 0,
+          "modifierName": "",
+          "ICBDJNHEFFB": false,
+          "ICLPOOJCEPI": false,
+          "IICJDNBLMMD": 0,
+          "IPNNJKHJKPN": false,
+          "purgeIncrement": 0,
+          "JIAFDJBDEFH": false,
+          "thinkIntervalIgnoreTimeScale": false,
+          "LECFPDIICCE": false,
+          "isLimitedProperties": false,
           "properties": {
             "Actor_SkillCDMinusRatio": "Actor_SkillCDMinusRatio"
-          }
+          },
+          "LMENDAOJCBK": {
+            "__unk_Q3130794202": false
+          },
+          "MEHFAOLMCAP": -1,
+          "buffID": 0,
+          "NOCILDGOBBH": false,
+          "isDurabilityGlobal": false,
+          "OJMEBIHEKDC": false,
+          "PCAMCNDOFPM": "NormallySynced",
+          "stacking": "Refresh"
         }
       },
-      "onAdded": [
-        {
-          "$type": "AttachModifier",
-          "modifierName": "UNIQUE_TeamChain_BurstDamageUp_ReduceCD"
-        }
-      ],
-      "isDynamicAbility": true
+      "PCCDGEAGBLE": false
     }
   },
   {
     "Default": {
-      "$type": "ConfigAbility",
-      "abilityName": "Activity_TeamChain_UltGainEnergy",
       "abilitySpecials": {
         "Duration": 0,
         "Interval": 0,
         "Energy": 0
       },
-      "modifiers": {
-        "UNIQUE_Activity_TeamChain_UltGainEnergy_Handler": {
-          "modifierName": "",
-          "isUnique": true,
-          "elementDurability": 100,
-          "modifierMixins": [
-            {
-              "$type": "OnAvatarUseSkillMixin",
-              "onTriggerUltimateSkill": [
-                {
-                  "$type": "ApplyModifier",
-                  "doOffStage": true,
-                  "modifierName": "UNIQUE_Activity_TeamChain_UltGainEnergy_Effect"
-                }
-              ],
-              "clearSkillIdDelay": 0.2
-            }
-          ]
-        },
-        "UNIQUE_Activity_TeamChain_UltGainEnergy_Effect": {
-          "modifierName": "",
-          "isUnique": true,
-          "duration": "Duration",
-          "elementDurability": 100,
-          "thinkInterval": "Interval",
-          "onThinkInterval": [
-            {
-              "$type": "ReviveElemEnergy",
-              "doOffStage": true,
-              "value": "Energy"
-            }
-          ]
-        }
-      },
       "onAdded": [
         {
-          "$type": "AttachModifier",
+          "__unk_Q4125547569": -1,
+          "__unk_Q2273802443": false,
+          "modifierName": "UNIQUE_Activity_TeamChain_UltGainEnergy_Handler",
           "doOffStage": true,
-          "modifierName": "UNIQUE_Activity_TeamChain_UltGainEnergy_Handler"
+          "KHMDLFFCJID": "None",
+          "muteRemoteAction": false,
+          "canBeHandledOnRecover": false,
+          "doAfterDie": true,
+          "target": "Self",
+          "__unk_Q4244652216": {
+            "__unk_Q2921880475": false,
+            "__unk_Q3587015628": ""
+          },
+          "$type": "AttachModifier"
         }
       ],
-      "isDynamicAbility": true
+      "isDynamicAbility": true,
+      "abilityName": "Activity_TeamChain_UltGainEnergy",
+      "EINMHCJCNBG": 0,
+      "HKGAKPLKEEJ": false,
+      "IPONDLMHIOC": false,
+      "MBLAAGJLEED": false,
+      "modifiers": {
+        "UNIQUE_Activity_TeamChain_UltGainEnergy_Handler": {
+          "fireEventWhenApply": false,
+          "useDummyAbility": false,
+          "onThinkIntervalIsFixedUpdate": false,
+          "ALGHEGPCFAL": -1,
+          "ALGLHMNGAIK": false,
+          "stackingOption": {
+            "enableMixedUnique": false,
+            "abilitySpecialName": "",
+            "uniqueModifierCondition": "Greater"
+          },
+          "AMOJAACLEBF": false,
+          "BKADNGDPKBB": false,
+          "reduceDurablityIgnoreTimeScale": false,
+          "elementDurability": 100,
+          "EICKDCDCEOK": false,
+          "EINMHCJCNBG": 0,
+          "elementType": "None",
+          "FEOGJLMCKDI": false,
+          "trimThinkInterval": false,
+          "state": "None",
+          "overrideWeaponElement": false,
+          "FNCDEKOAAOE": false,
+          "modifierMixins": [
+            {
+              "__unk_Q4125547569": -1,
+              "isUnique": false,
+              "onTriggerUltimateSkill": [
+                {
+                  "__unk_Q4125547569": -1,
+                  "__unk_Q2273802443": false,
+                  "modifierName": "UNIQUE_Activity_TeamChain_UltGainEnergy_Effect",
+                  "doOffStage": true,
+                  "KHMDLFFCJID": "None",
+                  "muteRemoteAction": false,
+                  "canBeHandledOnRecover": false,
+                  "doAfterDie": true,
+                  "target": "Self",
+                  "__unk_Q4244652216": {
+                    "__unk_Q2921880475": false,
+                    "__unk_Q3587015628": ""
+                  },
+                  "$type": "ApplyModifier"
+                }
+              ],
+              "useSkillStart": false,
+              "__unk_Q3695777311": false,
+              "__unk_Q4244652216": {
+                "__unk_Q2921880475": false,
+                "__unk_Q3587015628": ""
+              },
+              "clearSkillIdDelay": 0.2,
+              "$type": "OnAvatarUseSkillMixin"
+            }
+          ],
+          "isUnique": true,
+          "GCOMLBIIIGL": false,
+          "isElementDurabilityMutable": true,
+          "timeScale": "Owner",
+          "HIGGGNHGEEM": false,
+          "__unk_Q3323398612": 0,
+          "modifierName": "",
+          "ICBDJNHEFFB": false,
+          "ICLPOOJCEPI": false,
+          "IICJDNBLMMD": 0,
+          "IPNNJKHJKPN": false,
+          "purgeIncrement": 0,
+          "JIAFDJBDEFH": false,
+          "thinkIntervalIgnoreTimeScale": false,
+          "LECFPDIICCE": false,
+          "isLimitedProperties": false,
+          "LMENDAOJCBK": {
+            "__unk_Q3130794202": false
+          },
+          "MEHFAOLMCAP": -1,
+          "buffID": 0,
+          "NOCILDGOBBH": false,
+          "isDurabilityGlobal": false,
+          "OJMEBIHEKDC": false,
+          "PCAMCNDOFPM": "NormallySynced",
+          "stacking": "Refresh"
+        },
+        "UNIQUE_Activity_TeamChain_UltGainEnergy_Effect": {
+          "fireEventWhenApply": false,
+          "useDummyAbility": false,
+          "onThinkIntervalIsFixedUpdate": false,
+          "ALGHEGPCFAL": -1,
+          "ALGLHMNGAIK": false,
+          "stackingOption": {
+            "enableMixedUnique": false,
+            "abilitySpecialName": "",
+            "uniqueModifierCondition": "Greater"
+          },
+          "AMOJAACLEBF": false,
+          "BKADNGDPKBB": false,
+          "reduceDurablityIgnoreTimeScale": false,
+          "elementDurability": 100,
+          "EICKDCDCEOK": false,
+          "EINMHCJCNBG": 0,
+          "thinkInterval": "Interval",
+          "elementType": "None",
+          "FEOGJLMCKDI": false,
+          "trimThinkInterval": false,
+          "state": "None",
+          "overrideWeaponElement": false,
+          "FNCDEKOAAOE": false,
+          "isUnique": true,
+          "GCOMLBIIIGL": false,
+          "isElementDurabilityMutable": true,
+          "timeScale": "Owner",
+          "HIGGGNHGEEM": false,
+          "__unk_Q3323398612": 0,
+          "modifierName": "",
+          "ICBDJNHEFFB": false,
+          "ICLPOOJCEPI": false,
+          "IICJDNBLMMD": 0,
+          "IPNNJKHJKPN": false,
+          "purgeIncrement": 0,
+          "JIAFDJBDEFH": false,
+          "thinkIntervalIgnoreTimeScale": false,
+          "LECFPDIICCE": false,
+          "isLimitedProperties": false,
+          "LMENDAOJCBK": {
+            "__unk_Q3130794202": false
+          },
+          "MEHFAOLMCAP": -1,
+          "buffID": 0,
+          "duration": "Duration",
+          "NOCILDGOBBH": false,
+          "onThinkInterval": [
+            {
+              "__unk_Q4125547569": -1,
+              "__unk_Q2273802443": false,
+              "doOffStage": true,
+              "KHMDLFFCJID": "None",
+              "muteRemoteAction": false,
+              "value": "Energy",
+              "canBeHandledOnRecover": false,
+              "doAfterDie": true,
+              "target": "Self",
+              "__unk_Q4244652216": {
+                "__unk_Q2921880475": false,
+                "__unk_Q3587015628": ""
+              },
+              "$type": "ReviveElemEnergy"
+            }
+          ],
+          "isDurabilityGlobal": false,
+          "OJMEBIHEKDC": false,
+          "PCAMCNDOFPM": "NormallySynced",
+          "stacking": "Refresh"
+        }
+      },
+      "PCCDGEAGBLE": false
     }
   },
   {
     "Default": {
-      "$type": "ConfigAbility",
-      "abilityName": "Activity_TeamChain_GrassReaction_ElemMasteryDelta",
       "abilitySpecials": {
         "GrassReaction_ElemMasteryDelta": 0,
         "BuffTime": 0,
         "BuffMaxLevel": 0,
         "Multiple_CdTime": 0
       },
+      "onAdded": [
+        {
+          "__unk_Q4125547569": -1,
+          "__unk_Q2273802443": false,
+          "modifierName": "UNIQUE_TeamChain_GrassReaction_ElemMasteryDelta_Handler",
+          "doOffStage": true,
+          "KHMDLFFCJID": "None",
+          "muteRemoteAction": false,
+          "canBeHandledOnRecover": false,
+          "doAfterDie": true,
+          "target": "Self",
+          "__unk_Q4244652216": {
+            "__unk_Q2921880475": false,
+            "__unk_Q3587015628": ""
+          },
+          "$type": "AttachModifier"
+        }
+      ],
+      "isDynamicAbility": true,
+      "abilityName": "Activity_TeamChain_GrassReaction_ElemMasteryDelta",
+      "EINMHCJCNBG": 0,
+      "HKGAKPLKEEJ": false,
+      "IPONDLMHIOC": false,
+      "MBLAAGJLEED": false,
       "modifiers": {
         "UNIQUE_TeamChain_GrassReaction_ElemMasteryDelta_Handler": {
-          "modifierName": "",
-          "isUnique": true,
+          "fireEventWhenApply": false,
+          "useDummyAbility": false,
+          "onThinkIntervalIsFixedUpdate": false,
+          "ALGHEGPCFAL": -1,
+          "ALGLHMNGAIK": false,
+          "stackingOption": {
+            "enableMixedUnique": false,
+            "abilitySpecialName": "",
+            "uniqueModifierCondition": "Greater"
+          },
+          "AMOJAACLEBF": false,
+          "BKADNGDPKBB": false,
+          "reduceDurablityIgnoreTimeScale": false,
           "elementDurability": 100,
+          "EICKDCDCEOK": false,
+          "EINMHCJCNBG": 0,
+          "elementType": "None",
+          "FEOGJLMCKDI": false,
+          "trimThinkInterval": false,
+          "state": "None",
+          "overrideWeaponElement": false,
+          "FNCDEKOAAOE": false,
           "modifierMixins": [
             {
-              "$type": "DoActionByElementReactionMixin",
-              "entityTypes": [
-                "Monster"
+              "actions": [
+                {
+                  "__unk_Q4125547569": -1,
+                  "__unk_Q2273802443": false,
+                  "modifierName": "UNIQUE_TeamChain_GrassReaction_ElemMasteryDelta_Multiple_Handler",
+                  "doOffStage": true,
+                  "KHMDLFFCJID": "None",
+                  "muteRemoteAction": false,
+                  "canBeHandledOnRecover": false,
+                  "doAfterDie": true,
+                  "target": "Team",
+                  "__unk_Q4244652216": {
+                    "__unk_Q2921880475": false,
+                    "__unk_Q3587015628": ""
+                  },
+                  "$type": "ApplyModifier"
+                }
               ],
+              "__unk_Q4125547569": -1,
+              "isUnique": false,
               "reactionTypes": [
                 "Burning",
                 "Overdose",
@@ -584,75 +2081,244 @@
                 "OvergrowMushroomElectric",
                 "OvergrowMushroomFire"
               ],
-              "actions": [
-                {
-                  "$type": "ApplyModifier",
-                  "target": "Team",
-                  "doOffStage": true,
-                  "modifierName": "UNIQUE_TeamChain_GrassReaction_ElemMasteryDelta_Multiple_Handler"
-                }
-              ]
+              "LPENCGLIACG": false,
+              "__unk_Q3695777311": false,
+              "range": 20,
+              "entityTypes": [
+                "Monster"
+              ],
+              "__unk_Q4244652216": {
+                "__unk_Q2921880475": false,
+                "__unk_Q3587015628": ""
+              },
+              "$type": "DoActionByElementReactionMixin"
             }
-          ]
+          ],
+          "isUnique": true,
+          "GCOMLBIIIGL": false,
+          "isElementDurabilityMutable": true,
+          "timeScale": "Owner",
+          "HIGGGNHGEEM": false,
+          "__unk_Q3323398612": 0,
+          "modifierName": "",
+          "ICBDJNHEFFB": false,
+          "ICLPOOJCEPI": false,
+          "IICJDNBLMMD": 0,
+          "IPNNJKHJKPN": false,
+          "purgeIncrement": 0,
+          "JIAFDJBDEFH": false,
+          "thinkIntervalIgnoreTimeScale": false,
+          "LECFPDIICCE": false,
+          "isLimitedProperties": false,
+          "LMENDAOJCBK": {
+            "__unk_Q3130794202": false
+          },
+          "MEHFAOLMCAP": -1,
+          "buffID": 0,
+          "NOCILDGOBBH": false,
+          "isDurabilityGlobal": false,
+          "OJMEBIHEKDC": false,
+          "PCAMCNDOFPM": "NormallySynced",
+          "stacking": "Refresh"
         },
         "UNIQUE_TeamChain_GrassReaction_ElemMasteryDelta_Multiple_Handler": {
-          "stacking": "Unique",
-          "modifierName": "",
-          "isUnique": true,
-          "duration": "Multiple_CdTime",
-          "elementDurability": 100,
+          "fireEventWhenApply": false,
+          "useDummyAbility": false,
+          "onThinkIntervalIsFixedUpdate": false,
+          "ALGHEGPCFAL": -1,
+          "ALGLHMNGAIK": false,
+          "stackingOption": {
+            "enableMixedUnique": false,
+            "abilitySpecialName": "",
+            "uniqueModifierCondition": "Greater"
+          },
+          "AMOJAACLEBF": false,
           "onAdded": [
             {
-              "$type": "ApplyModifier",
-              "target": "CurTeamAvatars",
+              "__unk_Q4125547569": -1,
+              "__unk_Q2273802443": false,
+              "modifierName": "UNIQUE_TeamChain_GrassReaction_ElemMasteryDelta_MultipleEffect",
               "doOffStage": true,
-              "modifierName": "UNIQUE_TeamChain_GrassReaction_ElemMasteryDelta_MultipleEffect"
+              "KHMDLFFCJID": "None",
+              "muteRemoteAction": false,
+              "canBeHandledOnRecover": false,
+              "doAfterDie": true,
+              "target": "CurTeamAvatars",
+              "__unk_Q4244652216": {
+                "__unk_Q2921880475": false,
+                "__unk_Q3587015628": ""
+              },
+              "$type": "ApplyModifier"
             }
-          ]
+          ],
+          "BKADNGDPKBB": false,
+          "reduceDurablityIgnoreTimeScale": false,
+          "elementDurability": 100,
+          "EICKDCDCEOK": false,
+          "EINMHCJCNBG": 0,
+          "elementType": "None",
+          "FEOGJLMCKDI": false,
+          "trimThinkInterval": false,
+          "state": "None",
+          "overrideWeaponElement": false,
+          "FNCDEKOAAOE": false,
+          "isUnique": true,
+          "GCOMLBIIIGL": false,
+          "isElementDurabilityMutable": true,
+          "timeScale": "Owner",
+          "HIGGGNHGEEM": false,
+          "__unk_Q3323398612": 0,
+          "modifierName": "",
+          "ICBDJNHEFFB": false,
+          "ICLPOOJCEPI": false,
+          "IICJDNBLMMD": 0,
+          "IPNNJKHJKPN": false,
+          "purgeIncrement": 0,
+          "JIAFDJBDEFH": false,
+          "thinkIntervalIgnoreTimeScale": false,
+          "LECFPDIICCE": false,
+          "isLimitedProperties": false,
+          "LMENDAOJCBK": {
+            "__unk_Q3130794202": false
+          },
+          "MEHFAOLMCAP": -1,
+          "buffID": 0,
+          "duration": "Multiple_CdTime",
+          "NOCILDGOBBH": false,
+          "isDurabilityGlobal": false,
+          "OJMEBIHEKDC": false,
+          "PCAMCNDOFPM": "NormallySynced",
+          "stacking": "Unique"
         },
         "UNIQUE_TeamChain_GrassReaction_ElemMasteryDelta_MultipleEffect": {
-          "stacking": "MultipleRefreshNoRemove",
+          "fireEventWhenApply": false,
+          "useDummyAbility": false,
+          "onThinkIntervalIsFixedUpdate": false,
+          "ALGHEGPCFAL": -1,
+          "ALGLHMNGAIK": false,
           "stackingOption": {
-            "abilitySpecialName": "",
+            "enableMixedUnique": true,
             "maxModifierNumForMultipleType": "BuffMaxLevel",
-            "enableMixedUnique": true
+            "abilitySpecialName": "",
+            "uniqueModifierCondition": "Greater"
           },
-          "modifierName": "",
-          "isUnique": true,
-          "duration": "BuffTime",
+          "AMOJAACLEBF": false,
+          "BKADNGDPKBB": false,
+          "reduceDurablityIgnoreTimeScale": false,
           "elementDurability": 100,
+          "EICKDCDCEOK": false,
+          "EINMHCJCNBG": 0,
+          "elementType": "None",
+          "FEOGJLMCKDI": false,
+          "trimThinkInterval": false,
+          "state": "AttackUp",
+          "overrideWeaponElement": false,
+          "FNCDEKOAAOE": false,
+          "isUnique": true,
+          "GCOMLBIIIGL": false,
+          "isElementDurabilityMutable": true,
+          "timeScale": "Owner",
+          "HIGGGNHGEEM": false,
+          "__unk_Q3323398612": 0,
+          "modifierName": "",
+          "ICBDJNHEFFB": false,
+          "ICLPOOJCEPI": false,
+          "IICJDNBLMMD": 0,
+          "IPNNJKHJKPN": false,
+          "purgeIncrement": 0,
+          "JIAFDJBDEFH": false,
+          "thinkIntervalIgnoreTimeScale": false,
+          "LECFPDIICCE": false,
+          "isLimitedProperties": false,
           "properties": {
             "Actor_ElemMasteryDelta": "GrassReaction_ElemMasteryDelta"
           },
-          "state": "AttackUp"
+          "LMENDAOJCBK": {
+            "__unk_Q3130794202": false
+          },
+          "MEHFAOLMCAP": -1,
+          "buffID": 0,
+          "duration": "BuffTime",
+          "NOCILDGOBBH": false,
+          "isDurabilityGlobal": false,
+          "OJMEBIHEKDC": false,
+          "PCAMCNDOFPM": "NormallySynced",
+          "stacking": "MultipleRefreshNoRemove"
         }
       },
-      "onAdded": [
-        {
-          "$type": "AttachModifier",
-          "doOffStage": true,
-          "modifierName": "UNIQUE_TeamChain_GrassReaction_ElemMasteryDelta_Handler"
-        }
-      ],
-      "isDynamicAbility": true
+      "PCCDGEAGBLE": false
     }
   },
   {
     "Default": {
-      "$type": "ConfigAbility",
-      "abilityName": "Activity_TeamChain_NormalAttackAndElementalArt_DamageUp",
       "abilitySpecials": {
         "NormalAttackRate": 0,
         "ElementalArtRate": 0
       },
+      "onAdded": [
+        {
+          "__unk_Q4125547569": -1,
+          "__unk_Q2273802443": false,
+          "modifierName": "UNIQUE_TeamChain_NormalAttackAndElementalArt_DamageUp",
+          "doOffStage": false,
+          "KHMDLFFCJID": "None",
+          "muteRemoteAction": false,
+          "canBeHandledOnRecover": false,
+          "doAfterDie": true,
+          "target": "Self",
+          "__unk_Q4244652216": {
+            "__unk_Q2921880475": false,
+            "__unk_Q3587015628": ""
+          },
+          "$type": "ApplyModifier"
+        }
+      ],
+      "isDynamicAbility": true,
+      "abilityName": "Activity_TeamChain_NormalAttackAndElementalArt_DamageUp",
+      "EINMHCJCNBG": 0,
+      "HKGAKPLKEEJ": false,
+      "IPONDLMHIOC": false,
+      "MBLAAGJLEED": false,
       "modifiers": {
         "UNIQUE_TeamChain_NormalAttackAndElementalArt_DamageUp": {
-          "modifierName": "",
-          "isUnique": true,
+          "fireEventWhenApply": false,
+          "useDummyAbility": false,
+          "onThinkIntervalIsFixedUpdate": false,
+          "ALGHEGPCFAL": -1,
+          "ALGLHMNGAIK": false,
+          "stackingOption": {
+            "enableMixedUnique": false,
+            "abilitySpecialName": "",
+            "uniqueModifierCondition": "Greater"
+          },
+          "AMOJAACLEBF": false,
+          "BKADNGDPKBB": false,
+          "reduceDurablityIgnoreTimeScale": false,
           "elementDurability": 100,
+          "EICKDCDCEOK": false,
+          "EINMHCJCNBG": 0,
+          "elementType": "None",
+          "FEOGJLMCKDI": false,
+          "trimThinkInterval": false,
+          "state": "None",
+          "overrideWeaponElement": false,
+          "FNCDEKOAAOE": false,
           "modifierMixins": [
             {
-              "$type": "ModifyDamageMixin",
+              "attackType": "None",
+              "__unk_Q4125547569": -1,
+              "damagePercentageRatio": "NormalAttackRate",
+              "trueDamage": false,
+              "isUnique": false,
+              "GDEPAAINFFF": {
+                "elementType": "None"
+              },
+              "ignoreEventInfo": false,
+              "__unk_Q3695777311": false,
+              "__unk_Q4244652216": {
+                "__unk_Q2921880475": false,
+                "__unk_Q3587015628": ""
+              },
               "attackTags": [
                 "NormalAttack_01",
                 "NormalAttack_02",
@@ -661,225 +2327,722 @@
                 "NormalAttack_05",
                 "NormalAttack_06"
               ],
-              "damagePercentageRatio": "NormalAttackRate"
+              "$type": "ModifyDamageMixin"
             },
             {
-              "$type": "ModifyDamageMixin",
+              "attackType": "None",
+              "__unk_Q4125547569": -1,
+              "damagePercentageRatio": "ElementalArtRate",
+              "trueDamage": false,
+              "isUnique": false,
+              "GDEPAAINFFF": {
+                "elementType": "None"
+              },
+              "ignoreEventInfo": false,
+              "__unk_Q3695777311": false,
+              "__unk_Q4244652216": {
+                "__unk_Q2921880475": false,
+                "__unk_Q3587015628": ""
+              },
               "attackTags": [
                 "Elemental_Art",
                 "Elemental_Art_Hold",
                 "Elemental_Art_Extra"
               ],
-              "damagePercentageRatio": "ElementalArtRate"
+              "$type": "ModifyDamageMixin"
             }
-          ]
+          ],
+          "isUnique": true,
+          "GCOMLBIIIGL": false,
+          "isElementDurabilityMutable": true,
+          "timeScale": "Owner",
+          "HIGGGNHGEEM": false,
+          "__unk_Q3323398612": 0,
+          "modifierName": "",
+          "ICBDJNHEFFB": false,
+          "ICLPOOJCEPI": false,
+          "IICJDNBLMMD": 0,
+          "IPNNJKHJKPN": false,
+          "purgeIncrement": 0,
+          "JIAFDJBDEFH": false,
+          "thinkIntervalIgnoreTimeScale": false,
+          "LECFPDIICCE": false,
+          "isLimitedProperties": false,
+          "LMENDAOJCBK": {
+            "__unk_Q3130794202": false
+          },
+          "MEHFAOLMCAP": -1,
+          "buffID": 0,
+          "NOCILDGOBBH": false,
+          "isDurabilityGlobal": false,
+          "OJMEBIHEKDC": false,
+          "PCAMCNDOFPM": "NormallySynced",
+          "stacking": "Refresh"
         }
       },
-      "onAdded": [
-        {
-          "$type": "ApplyModifier",
-          "modifierName": "UNIQUE_TeamChain_NormalAttackAndElementalArt_DamageUp"
-        }
-      ],
-      "isDynamicAbility": true
+      "PCCDGEAGBLE": false
     }
   },
   {
     "Default": {
-      "$type": "ConfigAbility",
-      "abilityName": "Activity_TeamChain_FallingWindZone",
       "abilitySpecials": {
         "FallingDamageUp": 0,
         "WindZone_CD": 0
       },
+      "onAdded": [
+        {
+          "__unk_Q4125547569": -1,
+          "__unk_Q2273802443": false,
+          "modifierName": "UNIQUE_TeamChain_FallingWindZone_Handler",
+          "doOffStage": false,
+          "KHMDLFFCJID": "None",
+          "muteRemoteAction": false,
+          "canBeHandledOnRecover": false,
+          "doAfterDie": true,
+          "target": "Self",
+          "__unk_Q4244652216": {
+            "__unk_Q2921880475": false,
+            "__unk_Q3587015628": ""
+          },
+          "$type": "AttachModifier"
+        }
+      ],
+      "isDynamicAbility": true,
+      "abilityName": "Activity_TeamChain_FallingWindZone",
+      "EINMHCJCNBG": 0,
+      "HKGAKPLKEEJ": false,
+      "IPONDLMHIOC": false,
+      "MBLAAGJLEED": false,
       "modifiers": {
         "UNIQUE_TeamChain_FallingWindZone_Handler": {
-          "modifierName": "",
-          "isUnique": true,
+          "fireEventWhenApply": false,
+          "useDummyAbility": false,
+          "onThinkIntervalIsFixedUpdate": false,
+          "ALGHEGPCFAL": -1,
+          "ALGLHMNGAIK": false,
+          "stackingOption": {
+            "enableMixedUnique": false,
+            "abilitySpecialName": "",
+            "uniqueModifierCondition": "Greater"
+          },
+          "AMOJAACLEBF": false,
+          "BKADNGDPKBB": false,
+          "reduceDurablityIgnoreTimeScale": false,
           "elementDurability": 100,
-          "modifierMixins": [
-            {
-              "$type": "ModifyDamageMixin",
-              "attackTags": [
-                "FallingAttack"
-              ],
-              "damagePercentageRatio": "FallingDamageUp"
-            }
-          ],
+          "EICKDCDCEOK": false,
+          "EINMHCJCNBG": 0,
+          "elementType": "None",
+          "FEOGJLMCKDI": false,
+          "trimThinkInterval": false,
           "onAttackLanded": [
             {
-              "$type": "Predicated",
-              "target": "Other",
+              "successActions": [
+                {
+                  "__unk_Q4125547569": -1,
+                  "__unk_Q2273802443": false,
+                  "modifierName": "TeamChain_FallingWindZone_WindZoneEffect",
+                  "doOffStage": true,
+                  "KHMDLFFCJID": "None",
+                  "muteRemoteAction": false,
+                  "canBeHandledOnRecover": false,
+                  "doAfterDie": true,
+                  "target": "Self",
+                  "__unk_Q4244652216": {
+                    "__unk_Q2921880475": false,
+                    "__unk_Q3587015628": ""
+                  },
+                  "$type": "ApplyModifier"
+                }
+              ],
+              "__unk_Q4125547569": -1,
+              "__unk_Q2273802443": false,
               "targetPredicates": [
                 {
-                  "$type": "ByEntityTypes",
+                  "KEAECDOLGCN": -1,
+                  "reject": false,
+                  "NCJILCMGBHO": false,
                   "entityTypes": [
                     "Monster"
-                  ]
+                  ],
+                  "target": "Target",
+                  "$type": "ByEntityTypes"
                 },
                 {
-                  "$type": "ByTargetGlobalValue",
-                  "target": "Team",
                   "key": "RogueV2_FallingWindZone_CD",
+                  "forceByCaster": false,
                   "value": 0,
-                  "compareType": "NoneOrEqual"
+                  "compareType": "NoneOrEqual",
+                  "target": "Team",
+                  "$type": "ByTargetGlobalValue"
                 },
                 {
-                  "$type": "ByAttackTags",
                   "target": "Self",
                   "attackTags": [
                     "FallingAttack"
-                  ]
+                  ],
+                  "$type": "ByAttackTags"
                 }
               ],
-              "successActions": [
-                {
-                  "$type": "ApplyModifier",
-                  "doOffStage": true,
-                  "modifierName": "TeamChain_FallingWindZone_WindZoneEffect"
-                }
-              ]
+              "doOffStage": false,
+              "KHMDLFFCJID": "None",
+              "muteRemoteAction": false,
+              "canBeHandledOnRecover": false,
+              "doAfterDie": true,
+              "target": "Other",
+              "__unk_Q4244652216": {
+                "__unk_Q2921880475": false,
+                "__unk_Q3587015628": ""
+              },
+              "$type": "Predicated"
             }
-          ]
+          ],
+          "state": "None",
+          "overrideWeaponElement": false,
+          "FNCDEKOAAOE": false,
+          "modifierMixins": [
+            {
+              "attackType": "None",
+              "__unk_Q4125547569": -1,
+              "damagePercentageRatio": "FallingDamageUp",
+              "trueDamage": false,
+              "isUnique": false,
+              "GDEPAAINFFF": {
+                "elementType": "None"
+              },
+              "ignoreEventInfo": false,
+              "__unk_Q3695777311": false,
+              "__unk_Q4244652216": {
+                "__unk_Q2921880475": false,
+                "__unk_Q3587015628": ""
+              },
+              "attackTags": [
+                "FallingAttack"
+              ],
+              "$type": "ModifyDamageMixin"
+            }
+          ],
+          "isUnique": true,
+          "GCOMLBIIIGL": false,
+          "isElementDurabilityMutable": true,
+          "timeScale": "Owner",
+          "HIGGGNHGEEM": false,
+          "__unk_Q3323398612": 0,
+          "modifierName": "",
+          "ICBDJNHEFFB": false,
+          "ICLPOOJCEPI": false,
+          "IICJDNBLMMD": 0,
+          "IPNNJKHJKPN": false,
+          "purgeIncrement": 0,
+          "JIAFDJBDEFH": false,
+          "thinkIntervalIgnoreTimeScale": false,
+          "LECFPDIICCE": false,
+          "isLimitedProperties": false,
+          "LMENDAOJCBK": {
+            "__unk_Q3130794202": false
+          },
+          "MEHFAOLMCAP": -1,
+          "buffID": 0,
+          "NOCILDGOBBH": false,
+          "isDurabilityGlobal": false,
+          "OJMEBIHEKDC": false,
+          "PCAMCNDOFPM": "NormallySynced",
+          "stacking": "Refresh"
         },
         "TeamChain_FallingWindZone_WindZoneEffect": {
-          "modifierName": "",
-          "duration": 0.2,
+          "fireEventWhenApply": false,
+          "useDummyAbility": false,
+          "onThinkIntervalIsFixedUpdate": false,
+          "ALGHEGPCFAL": -1,
+          "ALGLHMNGAIK": false,
+          "stackingOption": {
+            "enableMixedUnique": false,
+            "abilitySpecialName": "",
+            "uniqueModifierCondition": "Greater"
+          },
+          "AMOJAACLEBF": false,
+          "BKADNGDPKBB": false,
+          "reduceDurablityIgnoreTimeScale": false,
           "elementDurability": 100,
+          "EICKDCDCEOK": false,
+          "EINMHCJCNBG": 0,
+          "elementType": "None",
+          "FEOGJLMCKDI": false,
+          "trimThinkInterval": false,
+          "state": "None",
+          "overrideWeaponElement": false,
+          "FNCDEKOAAOE": false,
+          "isUnique": false,
+          "GCOMLBIIIGL": false,
+          "isElementDurabilityMutable": true,
+          "timeScale": "Owner",
+          "HIGGGNHGEEM": false,
+          "__unk_Q3323398612": 0,
+          "modifierName": "",
+          "ICBDJNHEFFB": false,
+          "ICLPOOJCEPI": false,
+          "IICJDNBLMMD": 0,
+          "IPNNJKHJKPN": false,
+          "purgeIncrement": 0,
+          "JIAFDJBDEFH": false,
+          "thinkIntervalIgnoreTimeScale": false,
+          "LECFPDIICCE": false,
+          "isLimitedProperties": false,
+          "LMENDAOJCBK": {
+            "__unk_Q3130794202": false
+          },
           "onRemoved": [
             {
-              "$type": "CreateGadget",
+              "CNCNPDPPOBM": false,
+              "DNGGENBJMCJ": false,
+              "__unk_Q4125547569": -1,
+              "__unk_Q2273802443": false,
+              "campID": 1001,
+              "lifeByOwnerIsAlive": false,
+              "HGFKANGMGED": false,
+              "JDBMMJPGPMG": false,
+              "JPDDEECJPKF": "Self",
+              "KEMKFABADNN": false,
               "doOffStage": true,
               "born": {
-                "$type": "ConfigBornBySelf",
+                "onGround": false,
+                "CNIPHLJJEHA": {
+                  "ANLJGLBGHNO": 0,
+                  "CJPLOKJFIMJ": 0,
+                  "HLGNNOEOBPJ": false
+                },
                 "offset": {
                   "y": 0.5
                 },
-                "useRotation": true
+                "HPMIIPNIHNB": false,
+                "LIKCDACGCJP": 10,
+                "onGroundRaycastUpDist": 2,
+                "NJIGPLAMGKL": false,
+                "useRotation": true,
+                "$type": "ConfigBornBySelf"
               },
+              "KHMDLFFCJID": "None",
+              "KMADEFDODEJ": 0,
+              "LMOABKLIJLF": false,
+              "muteRemoteAction": false,
+              "campTargetType": "Enemy",
+              "MDCBLGFEOPA": false,
+              "MHDMAPHEJKO": {
+                "CKCDDDCIMIA": 0.5,
+                "enable": false,
+                "LNFDJCGPDBK": 0.5,
+                "NBADGMDMLHG": true,
+                "NOHNOPMDFKM": true
+              },
+              "propOwnerIs": "Self",
+              "MOMGAJPMJAP": 0,
+              "NAMBBLPIIAC": false,
+              "canBeHandledOnRecover": false,
+              "doAfterDie": true,
               "gadgetID": 44000428,
-              "campID": 1001,
-              "campTargetType": "Enemy"
+              "target": "Self",
+              "__unk_Q3722280767": true,
+              "__unk_Q4244652216": {
+                "__unk_Q2921880475": false,
+                "__unk_Q3587015628": ""
+              },
+              "$type": "CreateGadget"
             },
             {
-              "$type": "ApplyModifier",
-              "target": "Team",
+              "__unk_Q4125547569": -1,
+              "__unk_Q2273802443": false,
+              "modifierName": "UNIQUE_TeamChain_FallingWindZone_WindZone_CD",
               "doOffStage": true,
-              "modifierName": "UNIQUE_TeamChain_FallingWindZone_WindZone_CD"
-            }
-          ]
-        },
-        "UNIQUE_TeamChain_FallingWindZone_WindZone_CD": {
-          "stacking": "Unique",
-          "modifierName": "",
-          "isUnique": true,
-          "duration": "WindZone_CD",
-          "elementDurability": 100,
-          "onAdded": [
-            {
-              "$type": "SetGlobalValue",
-              "value": -1,
-              "key": "RogueV2_FallingWindZone_CD",
-              "maxValue": 0,
-              "minValue": 0
+              "KHMDLFFCJID": "None",
+              "muteRemoteAction": false,
+              "canBeHandledOnRecover": false,
+              "doAfterDie": true,
+              "target": "Team",
+              "__unk_Q4244652216": {
+                "__unk_Q2921880475": false,
+                "__unk_Q3587015628": ""
+              },
+              "$type": "ApplyModifier"
             }
           ],
+          "MEHFAOLMCAP": -1,
+          "buffID": 0,
+          "duration": 0.2,
+          "NOCILDGOBBH": false,
+          "isDurabilityGlobal": false,
+          "OJMEBIHEKDC": false,
+          "PCAMCNDOFPM": "NormallySynced",
+          "stacking": "Refresh"
+        },
+        "UNIQUE_TeamChain_FallingWindZone_WindZone_CD": {
+          "fireEventWhenApply": false,
+          "useDummyAbility": false,
+          "onThinkIntervalIsFixedUpdate": false,
+          "ALGHEGPCFAL": -1,
+          "ALGLHMNGAIK": false,
+          "stackingOption": {
+            "enableMixedUnique": false,
+            "abilitySpecialName": "",
+            "uniqueModifierCondition": "Greater"
+          },
+          "AMOJAACLEBF": false,
+          "onAdded": [
+            {
+              "useLimitRange": false,
+              "randomInRange": false,
+              "key": "RogueV2_FallingWindZone_CD",
+              "__unk_Q4125547569": -1,
+              "__unk_Q2273802443": false,
+              "maxValue": 0,
+              "doOffStage": false,
+              "KHMDLFFCJID": "None",
+              "muteRemoteAction": false,
+              "value": -1,
+              "OBMLNHBNEGD": false,
+              "canBeHandledOnRecover": false,
+              "doAfterDie": true,
+              "target": "Self",
+              "__unk_Q4244652216": {
+                "__unk_Q2921880475": false,
+                "__unk_Q3587015628": ""
+              },
+              "minValue": 0,
+              "$type": "SetGlobalValue"
+            }
+          ],
+          "BKADNGDPKBB": false,
+          "reduceDurablityIgnoreTimeScale": false,
+          "elementDurability": 100,
+          "EICKDCDCEOK": false,
+          "EINMHCJCNBG": 0,
+          "elementType": "None",
+          "FEOGJLMCKDI": false,
+          "trimThinkInterval": false,
+          "state": "None",
+          "overrideWeaponElement": false,
+          "FNCDEKOAAOE": false,
+          "isUnique": true,
+          "GCOMLBIIIGL": false,
+          "isElementDurabilityMutable": true,
+          "timeScale": "Owner",
+          "HIGGGNHGEEM": false,
+          "__unk_Q3323398612": 0,
+          "modifierName": "",
+          "ICBDJNHEFFB": false,
+          "ICLPOOJCEPI": false,
+          "IICJDNBLMMD": 0,
+          "IPNNJKHJKPN": false,
+          "purgeIncrement": 0,
+          "JIAFDJBDEFH": false,
+          "thinkIntervalIgnoreTimeScale": false,
+          "LECFPDIICCE": false,
+          "isLimitedProperties": false,
+          "LMENDAOJCBK": {
+            "__unk_Q3130794202": false
+          },
           "onRemoved": [
             {
-              "$type": "SetGlobalValue",
-              "value": 0,
+              "useLimitRange": false,
+              "randomInRange": false,
               "key": "RogueV2_FallingWindZone_CD",
+              "__unk_Q4125547569": -1,
+              "__unk_Q2273802443": false,
               "maxValue": 0,
-              "minValue": 0
+              "doOffStage": false,
+              "KHMDLFFCJID": "None",
+              "muteRemoteAction": false,
+              "value": 0,
+              "OBMLNHBNEGD": false,
+              "canBeHandledOnRecover": false,
+              "doAfterDie": true,
+              "target": "Self",
+              "__unk_Q4244652216": {
+                "__unk_Q2921880475": false,
+                "__unk_Q3587015628": ""
+              },
+              "minValue": 0,
+              "$type": "SetGlobalValue"
             }
-          ]
+          ],
+          "MEHFAOLMCAP": -1,
+          "buffID": 0,
+          "duration": "WindZone_CD",
+          "NOCILDGOBBH": false,
+          "isDurabilityGlobal": false,
+          "OJMEBIHEKDC": false,
+          "PCAMCNDOFPM": "NormallySynced",
+          "stacking": "Unique"
         }
       },
-      "onAdded": [
-        {
-          "$type": "AttachModifier",
-          "modifierName": "UNIQUE_TeamChain_FallingWindZone_Handler"
-        }
-      ],
-      "isDynamicAbility": true
+      "PCCDGEAGBLE": false
     }
   },
   {
     "Default": {
-      "$type": "ConfigAbility",
-      "abilityName": "Activity_TeamChain_Mastery_DamageUp",
       "abilitySpecials": {
         "DamageUpTime": 0,
         "DamageUpRatio": 0
       },
+      "onAdded": [
+        {
+          "__unk_Q4125547569": -1,
+          "__unk_Q2273802443": false,
+          "modifierName": "UNIQUE_TeamChain_Mastery_DamageUp",
+          "doOffStage": true,
+          "KHMDLFFCJID": "None",
+          "muteRemoteAction": false,
+          "canBeHandledOnRecover": false,
+          "doAfterDie": true,
+          "target": "Self",
+          "__unk_Q4244652216": {
+            "__unk_Q2921880475": false,
+            "__unk_Q3587015628": ""
+          },
+          "$type": "AttachModifier"
+        }
+      ],
+      "isDynamicAbility": true,
+      "abilityName": "Activity_TeamChain_Mastery_DamageUp",
+      "EINMHCJCNBG": 0,
+      "HKGAKPLKEEJ": false,
+      "IPONDLMHIOC": false,
+      "MBLAAGJLEED": false,
       "modifiers": {
         "UNIQUE_TeamChain_Mastery_DamageUp": {
-          "modifierName": "",
-          "isUnique": true,
+          "fireEventWhenApply": false,
+          "useDummyAbility": false,
+          "onThinkIntervalIsFixedUpdate": false,
+          "ALGHEGPCFAL": -1,
+          "ALGLHMNGAIK": false,
+          "stackingOption": {
+            "enableMixedUnique": false,
+            "abilitySpecialName": "",
+            "uniqueModifierCondition": "Greater"
+          },
+          "AMOJAACLEBF": false,
+          "BKADNGDPKBB": false,
+          "reduceDurablityIgnoreTimeScale": false,
           "elementDurability": 100,
+          "EICKDCDCEOK": false,
+          "EINMHCJCNBG": 0,
+          "elementType": "None",
+          "FEOGJLMCKDI": false,
+          "trimThinkInterval": false,
+          "state": "None",
+          "overrideWeaponElement": false,
+          "FNCDEKOAAOE": false,
           "modifierMixins": [
             {
-              "$type": "DoActionByElementReactionMixin",
-              "entityTypes": [
-                "Monster"
+              "actions": [
+                {
+                  "__unk_Q4125547569": -1,
+                  "__unk_Q2273802443": false,
+                  "modifierName": "TeamChain_Mastery_BuffEffect",
+                  "doOffStage": true,
+                  "KHMDLFFCJID": "None",
+                  "muteRemoteAction": false,
+                  "canBeHandledOnRecover": false,
+                  "doAfterDie": true,
+                  "target": "CurTeamAvatars",
+                  "__unk_Q4244652216": {
+                    "__unk_Q2921880475": false,
+                    "__unk_Q3587015628": ""
+                  },
+                  "$type": "AttachModifier"
+                }
               ],
+              "__unk_Q4125547569": -1,
+              "isUnique": false,
               "reactionTypes": [
                 "SwirlFire",
                 "SwirlElectric",
                 "SwirlWater",
                 "SwirlIce"
               ],
-              "actions": [
-                {
-                  "$type": "AttachModifier",
-                  "target": "CurTeamAvatars",
-                  "doOffStage": true,
-                  "modifierName": "TeamChain_Mastery_BuffEffect"
-                }
-              ]
+              "LPENCGLIACG": false,
+              "__unk_Q3695777311": false,
+              "range": 20,
+              "entityTypes": [
+                "Monster"
+              ],
+              "__unk_Q4244652216": {
+                "__unk_Q2921880475": false,
+                "__unk_Q3587015628": ""
+              },
+              "$type": "DoActionByElementReactionMixin"
             }
-          ]
+          ],
+          "isUnique": true,
+          "GCOMLBIIIGL": false,
+          "isElementDurabilityMutable": true,
+          "timeScale": "Owner",
+          "HIGGGNHGEEM": false,
+          "__unk_Q3323398612": 0,
+          "modifierName": "",
+          "ICBDJNHEFFB": false,
+          "ICLPOOJCEPI": false,
+          "IICJDNBLMMD": 0,
+          "IPNNJKHJKPN": false,
+          "purgeIncrement": 0,
+          "JIAFDJBDEFH": false,
+          "thinkIntervalIgnoreTimeScale": false,
+          "LECFPDIICCE": false,
+          "isLimitedProperties": false,
+          "LMENDAOJCBK": {
+            "__unk_Q3130794202": false
+          },
+          "MEHFAOLMCAP": -1,
+          "buffID": 0,
+          "NOCILDGOBBH": false,
+          "isDurabilityGlobal": false,
+          "OJMEBIHEKDC": false,
+          "PCAMCNDOFPM": "NormallySynced",
+          "stacking": "Refresh"
         },
         "TeamChain_Mastery_BuffEffect": {
-          "modifierName": "",
-          "duration": "DamageUpTime",
+          "fireEventWhenApply": false,
+          "useDummyAbility": false,
+          "onThinkIntervalIsFixedUpdate": false,
+          "ALGHEGPCFAL": -1,
+          "ALGLHMNGAIK": false,
+          "stackingOption": {
+            "enableMixedUnique": false,
+            "abilitySpecialName": "",
+            "uniqueModifierCondition": "Greater"
+          },
+          "AMOJAACLEBF": false,
+          "BKADNGDPKBB": false,
+          "reduceDurablityIgnoreTimeScale": false,
           "elementDurability": 100,
+          "EICKDCDCEOK": false,
+          "EINMHCJCNBG": 0,
+          "elementType": "None",
+          "FEOGJLMCKDI": false,
+          "trimThinkInterval": false,
+          "state": "None",
+          "overrideWeaponElement": false,
+          "FNCDEKOAAOE": false,
           "modifierMixins": [
             {
-              "$type": "ModifyDamageMixin",
+              "attackType": "None",
+              "__unk_Q4125547569": -1,
+              "damagePercentageRatio": "DamageUpRatio",
+              "trueDamage": false,
+              "isUnique": false,
+              "GDEPAAINFFF": {
+                "elementType": "None"
+              },
               "ignoreEventInfo": true,
-              "damagePercentageRatio": "DamageUpRatio"
+              "__unk_Q3695777311": false,
+              "__unk_Q4244652216": {
+                "__unk_Q2921880475": false,
+                "__unk_Q3587015628": ""
+              },
+              "$type": "ModifyDamageMixin"
             }
-          ]
+          ],
+          "isUnique": false,
+          "GCOMLBIIIGL": false,
+          "isElementDurabilityMutable": true,
+          "timeScale": "Owner",
+          "HIGGGNHGEEM": false,
+          "__unk_Q3323398612": 0,
+          "modifierName": "",
+          "ICBDJNHEFFB": false,
+          "ICLPOOJCEPI": false,
+          "IICJDNBLMMD": 0,
+          "IPNNJKHJKPN": false,
+          "purgeIncrement": 0,
+          "JIAFDJBDEFH": false,
+          "thinkIntervalIgnoreTimeScale": false,
+          "LECFPDIICCE": false,
+          "isLimitedProperties": false,
+          "LMENDAOJCBK": {
+            "__unk_Q3130794202": false
+          },
+          "MEHFAOLMCAP": -1,
+          "buffID": 0,
+          "duration": "DamageUpTime",
+          "NOCILDGOBBH": false,
+          "isDurabilityGlobal": false,
+          "OJMEBIHEKDC": false,
+          "PCAMCNDOFPM": "NormallySynced",
+          "stacking": "Refresh"
         }
       },
-      "onAdded": [
-        {
-          "$type": "AttachModifier",
-          "doOffStage": true,
-          "modifierName": "UNIQUE_TeamChain_Mastery_DamageUp"
-        }
-      ],
-      "isDynamicAbility": true
+      "PCCDGEAGBLE": false
     }
   },
   {
     "Default": {
-      "$type": "ConfigAbility",
-      "abilityName": "Activity_TeamChain_AttackSpeedRatio",
       "abilitySpecials": {
         "AttackSpeedRatio": 0,
         "CriticalUpValue": 0
       },
+      "onAdded": [
+        {
+          "__unk_Q4125547569": -1,
+          "__unk_Q2273802443": false,
+          "modifierName": "UNIQUE_Activity_TeamChain_AttackSpeedRatio",
+          "doOffStage": false,
+          "KHMDLFFCJID": "None",
+          "muteRemoteAction": false,
+          "canBeHandledOnRecover": false,
+          "doAfterDie": true,
+          "target": "Self",
+          "__unk_Q4244652216": {
+            "__unk_Q2921880475": false,
+            "__unk_Q3587015628": ""
+          },
+          "$type": "AttachModifier"
+        }
+      ],
+      "isDynamicAbility": true,
+      "abilityName": "Activity_TeamChain_AttackSpeedRatio",
+      "EINMHCJCNBG": 0,
+      "HKGAKPLKEEJ": false,
+      "IPONDLMHIOC": false,
+      "MBLAAGJLEED": false,
       "modifiers": {
         "UNIQUE_Activity_TeamChain_AttackSpeedRatio": {
-          "stacking": "Unique",
-          "modifierName": "",
-          "isUnique": true,
+          "fireEventWhenApply": false,
+          "useDummyAbility": false,
+          "onThinkIntervalIsFixedUpdate": false,
+          "ALGHEGPCFAL": -1,
+          "ALGLHMNGAIK": false,
+          "stackingOption": {
+            "enableMixedUnique": false,
+            "abilitySpecialName": "",
+            "uniqueModifierCondition": "Greater"
+          },
+          "AMOJAACLEBF": false,
+          "BKADNGDPKBB": false,
+          "reduceDurablityIgnoreTimeScale": false,
           "elementDurability": 100,
+          "EICKDCDCEOK": false,
+          "EINMHCJCNBG": 0,
+          "elementType": "None",
+          "FEOGJLMCKDI": false,
+          "trimThinkInterval": false,
+          "state": "None",
+          "overrideWeaponElement": false,
+          "FNCDEKOAAOE": false,
           "modifierMixins": [
             {
-              "$type": "ModifyDamageMixin",
+              "attackType": "None",
+              "__unk_Q4125547569": -1,
+              "damagePercentageRatio": 0,
+              "trueDamage": false,
+              "isUnique": false,
+              "GDEPAAINFFF": {
+                "elementType": "None"
+              },
+              "bonusCritical": "CriticalUpValue",
+              "ignoreEventInfo": false,
+              "__unk_Q3695777311": false,
+              "__unk_Q4244652216": {
+                "__unk_Q2921880475": false,
+                "__unk_Q3587015628": ""
+              },
               "attackTags": [
                 "NormalAttack_01",
                 "NormalAttack_02",
@@ -888,40 +3051,112 @@
                 "NormalAttack_05",
                 "NormalAttack_06"
               ],
-              "damagePercentageRatio": 0,
-              "bonusCritical": "CriticalUpValue"
+              "$type": "ModifyDamageMixin"
             }
           ],
+          "isUnique": true,
+          "GCOMLBIIIGL": false,
+          "isElementDurabilityMutable": true,
+          "timeScale": "Owner",
+          "HIGGGNHGEEM": false,
+          "__unk_Q3323398612": 0,
+          "modifierName": "",
+          "ICBDJNHEFFB": false,
+          "ICLPOOJCEPI": false,
+          "IICJDNBLMMD": 0,
+          "IPNNJKHJKPN": false,
+          "purgeIncrement": 0,
+          "JIAFDJBDEFH": false,
+          "thinkIntervalIgnoreTimeScale": false,
+          "LECFPDIICCE": false,
+          "isLimitedProperties": true,
           "properties": {
             "Animator_AttackSpeedRatio": "AttackSpeedRatio"
           },
-          "isLimitedProperties": true
+          "LMENDAOJCBK": {
+            "__unk_Q3130794202": false
+          },
+          "MEHFAOLMCAP": -1,
+          "buffID": 0,
+          "NOCILDGOBBH": false,
+          "isDurabilityGlobal": false,
+          "OJMEBIHEKDC": false,
+          "PCAMCNDOFPM": "NormallySynced",
+          "stacking": "Unique"
         }
       },
-      "onAdded": [
-        {
-          "$type": "AttachModifier",
-          "modifierName": "UNIQUE_Activity_TeamChain_AttackSpeedRatio"
-        }
-      ],
-      "isDynamicAbility": true
+      "PCCDGEAGBLE": false
     }
   },
   {
     "Default": {
-      "$type": "ConfigAbility",
-      "abilityName": "Activity_TeamChain_NormalAttackDamageUp",
       "abilitySpecials": {
         "Rate": 0
       },
+      "onAdded": [
+        {
+          "__unk_Q4125547569": -1,
+          "__unk_Q2273802443": false,
+          "modifierName": "UNIQUE_TeamChain_NormalAttackDamageUp",
+          "doOffStage": false,
+          "KHMDLFFCJID": "None",
+          "muteRemoteAction": false,
+          "canBeHandledOnRecover": false,
+          "doAfterDie": true,
+          "target": "Self",
+          "__unk_Q4244652216": {
+            "__unk_Q2921880475": false,
+            "__unk_Q3587015628": ""
+          },
+          "$type": "ApplyModifier"
+        }
+      ],
+      "isDynamicAbility": true,
+      "abilityName": "Activity_TeamChain_NormalAttackDamageUp",
+      "EINMHCJCNBG": 0,
+      "HKGAKPLKEEJ": false,
+      "IPONDLMHIOC": false,
+      "MBLAAGJLEED": false,
       "modifiers": {
         "UNIQUE_TeamChain_NormalAttackDamageUp": {
-          "modifierName": "",
-          "isUnique": true,
+          "fireEventWhenApply": false,
+          "useDummyAbility": false,
+          "onThinkIntervalIsFixedUpdate": false,
+          "ALGHEGPCFAL": -1,
+          "ALGLHMNGAIK": false,
+          "stackingOption": {
+            "enableMixedUnique": false,
+            "abilitySpecialName": "",
+            "uniqueModifierCondition": "Greater"
+          },
+          "AMOJAACLEBF": false,
+          "BKADNGDPKBB": false,
+          "reduceDurablityIgnoreTimeScale": false,
           "elementDurability": 100,
+          "EICKDCDCEOK": false,
+          "EINMHCJCNBG": 0,
+          "elementType": "None",
+          "FEOGJLMCKDI": false,
+          "trimThinkInterval": false,
+          "state": "None",
+          "overrideWeaponElement": false,
+          "FNCDEKOAAOE": false,
           "modifierMixins": [
             {
-              "$type": "ModifyDamageMixin",
+              "attackType": "None",
+              "__unk_Q4125547569": -1,
+              "damagePercentageRatio": "Rate",
+              "trueDamage": false,
+              "isUnique": false,
+              "GDEPAAINFFF": {
+                "elementType": "None"
+              },
+              "ignoreEventInfo": false,
+              "__unk_Q3695777311": false,
+              "__unk_Q4244652216": {
+                "__unk_Q2921880475": false,
+                "__unk_Q3587015628": ""
+              },
               "attackTags": [
                 "NormalAttack_01",
                 "NormalAttack_02",
@@ -930,302 +3165,927 @@
                 "NormalAttack_05",
                 "NormalAttack_06"
               ],
-              "damagePercentageRatio": "Rate"
+              "$type": "ModifyDamageMixin"
             }
-          ]
+          ],
+          "isUnique": true,
+          "GCOMLBIIIGL": false,
+          "isElementDurabilityMutable": true,
+          "timeScale": "Owner",
+          "HIGGGNHGEEM": false,
+          "__unk_Q3323398612": 0,
+          "modifierName": "",
+          "ICBDJNHEFFB": false,
+          "ICLPOOJCEPI": false,
+          "IICJDNBLMMD": 0,
+          "IPNNJKHJKPN": false,
+          "purgeIncrement": 0,
+          "JIAFDJBDEFH": false,
+          "thinkIntervalIgnoreTimeScale": false,
+          "LECFPDIICCE": false,
+          "isLimitedProperties": false,
+          "LMENDAOJCBK": {
+            "__unk_Q3130794202": false
+          },
+          "MEHFAOLMCAP": -1,
+          "buffID": 0,
+          "NOCILDGOBBH": false,
+          "isDurabilityGlobal": false,
+          "OJMEBIHEKDC": false,
+          "PCAMCNDOFPM": "NormallySynced",
+          "stacking": "Refresh"
         }
       },
-      "onAdded": [
-        {
-          "$type": "ApplyModifier",
-          "modifierName": "UNIQUE_TeamChain_NormalAttackDamageUp"
-        }
-      ],
-      "isDynamicAbility": true
+      "PCCDGEAGBLE": false
     }
   },
   {
     "Default": {
-      "$type": "ConfigAbility",
-      "abilityName": "Activity_TeamChain_AttackRatio",
       "abilitySpecials": {
         "AttackRatio": 0
       },
+      "onAdded": [
+        {
+          "__unk_Q4125547569": -1,
+          "__unk_Q2273802443": false,
+          "modifierName": "UNIQUE_Activity_TeamChain_AttackRatio",
+          "doOffStage": false,
+          "KHMDLFFCJID": "None",
+          "muteRemoteAction": false,
+          "canBeHandledOnRecover": false,
+          "doAfterDie": true,
+          "target": "Self",
+          "__unk_Q4244652216": {
+            "__unk_Q2921880475": false,
+            "__unk_Q3587015628": ""
+          },
+          "$type": "AttachModifier"
+        }
+      ],
+      "isDynamicAbility": true,
+      "abilityName": "Activity_TeamChain_AttackRatio",
+      "EINMHCJCNBG": 0,
+      "HKGAKPLKEEJ": false,
+      "IPONDLMHIOC": false,
+      "MBLAAGJLEED": false,
       "modifiers": {
         "UNIQUE_Activity_TeamChain_AttackRatio": {
-          "stacking": "Unique",
-          "modifierName": "",
-          "isUnique": true,
+          "fireEventWhenApply": false,
+          "useDummyAbility": false,
+          "onThinkIntervalIsFixedUpdate": false,
+          "ALGHEGPCFAL": -1,
+          "ALGLHMNGAIK": false,
+          "stackingOption": {
+            "enableMixedUnique": false,
+            "abilitySpecialName": "",
+            "uniqueModifierCondition": "Greater"
+          },
+          "AMOJAACLEBF": false,
+          "BKADNGDPKBB": false,
+          "reduceDurablityIgnoreTimeScale": false,
           "elementDurability": 100,
+          "EICKDCDCEOK": false,
+          "EINMHCJCNBG": 0,
+          "elementType": "None",
+          "FEOGJLMCKDI": false,
+          "trimThinkInterval": false,
+          "state": "None",
+          "overrideWeaponElement": false,
+          "FNCDEKOAAOE": false,
+          "isUnique": true,
+          "GCOMLBIIIGL": false,
+          "isElementDurabilityMutable": true,
+          "timeScale": "Owner",
+          "HIGGGNHGEEM": false,
+          "__unk_Q3323398612": 0,
+          "modifierName": "",
+          "ICBDJNHEFFB": false,
+          "ICLPOOJCEPI": false,
+          "IICJDNBLMMD": 0,
+          "IPNNJKHJKPN": false,
+          "purgeIncrement": 0,
+          "JIAFDJBDEFH": false,
+          "thinkIntervalIgnoreTimeScale": false,
+          "LECFPDIICCE": false,
+          "isLimitedProperties": true,
           "properties": {
             "Actor_AttackRatio": "AttackRatio"
           },
-          "isLimitedProperties": true
+          "LMENDAOJCBK": {
+            "__unk_Q3130794202": false
+          },
+          "MEHFAOLMCAP": -1,
+          "buffID": 0,
+          "NOCILDGOBBH": false,
+          "isDurabilityGlobal": false,
+          "OJMEBIHEKDC": false,
+          "PCAMCNDOFPM": "NormallySynced",
+          "stacking": "Unique"
         }
       },
-      "onAdded": [
-        {
-          "$type": "AttachModifier",
-          "modifierName": "UNIQUE_Activity_TeamChain_AttackRatio"
-        }
-      ],
-      "isDynamicAbility": true
+      "PCCDGEAGBLE": false
     }
   },
   {
     "Default": {
-      "$type": "ConfigAbility",
-      "abilityName": "Activity_TeamChain_CriticalHurtDelta",
       "abilitySpecials": {
         "CriticalHurt": 0
       },
+      "onAdded": [
+        {
+          "__unk_Q4125547569": -1,
+          "__unk_Q2273802443": false,
+          "modifierName": "UNIQUE_Activity_TeamChain_CriticalHurtDelta",
+          "doOffStage": false,
+          "KHMDLFFCJID": "None",
+          "muteRemoteAction": false,
+          "canBeHandledOnRecover": false,
+          "doAfterDie": true,
+          "target": "Self",
+          "__unk_Q4244652216": {
+            "__unk_Q2921880475": false,
+            "__unk_Q3587015628": ""
+          },
+          "$type": "AttachModifier"
+        }
+      ],
+      "isDynamicAbility": true,
+      "abilityName": "Activity_TeamChain_CriticalHurtDelta",
+      "EINMHCJCNBG": 0,
+      "HKGAKPLKEEJ": false,
+      "IPONDLMHIOC": false,
+      "MBLAAGJLEED": false,
       "modifiers": {
         "UNIQUE_Activity_TeamChain_CriticalHurtDelta": {
-          "stacking": "Unique",
-          "modifierName": "",
-          "isUnique": true,
+          "fireEventWhenApply": false,
+          "useDummyAbility": false,
+          "onThinkIntervalIsFixedUpdate": false,
+          "ALGHEGPCFAL": -1,
+          "ALGLHMNGAIK": false,
+          "stackingOption": {
+            "enableMixedUnique": false,
+            "abilitySpecialName": "",
+            "uniqueModifierCondition": "Greater"
+          },
+          "AMOJAACLEBF": false,
+          "BKADNGDPKBB": false,
+          "reduceDurablityIgnoreTimeScale": false,
           "elementDurability": 100,
+          "EICKDCDCEOK": false,
+          "EINMHCJCNBG": 0,
+          "elementType": "None",
+          "FEOGJLMCKDI": false,
+          "trimThinkInterval": false,
+          "state": "None",
+          "overrideWeaponElement": false,
+          "FNCDEKOAAOE": false,
+          "isUnique": true,
+          "GCOMLBIIIGL": false,
+          "isElementDurabilityMutable": true,
+          "timeScale": "Owner",
+          "HIGGGNHGEEM": false,
+          "__unk_Q3323398612": 0,
+          "modifierName": "",
+          "ICBDJNHEFFB": false,
+          "ICLPOOJCEPI": false,
+          "IICJDNBLMMD": 0,
+          "IPNNJKHJKPN": false,
+          "purgeIncrement": 0,
+          "JIAFDJBDEFH": false,
+          "thinkIntervalIgnoreTimeScale": false,
+          "LECFPDIICCE": false,
+          "isLimitedProperties": true,
           "properties": {
             "Actor_CriticalHurtDelta": "CriticalHurt"
           },
-          "isLimitedProperties": true
+          "LMENDAOJCBK": {
+            "__unk_Q3130794202": false
+          },
+          "MEHFAOLMCAP": -1,
+          "buffID": 0,
+          "NOCILDGOBBH": false,
+          "isDurabilityGlobal": false,
+          "OJMEBIHEKDC": false,
+          "PCAMCNDOFPM": "NormallySynced",
+          "stacking": "Unique"
         }
       },
-      "onAdded": [
-        {
-          "$type": "AttachModifier",
-          "modifierName": "UNIQUE_Activity_TeamChain_CriticalHurtDelta"
-        }
-      ],
-      "isDynamicAbility": true
+      "PCCDGEAGBLE": false
     }
   },
   {
     "Default": {
-      "$type": "ConfigAbility",
-      "abilityName": "Activity_TeamChain_ElemMasteryDeltaUp",
       "abilitySpecials": {
         "ElemMasteryDelta": 0
       },
+      "onAdded": [
+        {
+          "__unk_Q4125547569": -1,
+          "__unk_Q2273802443": false,
+          "modifierName": "UNIQUE_Activity_TeamChain_ElemMasteryDeltaUp",
+          "doOffStage": false,
+          "KHMDLFFCJID": "None",
+          "muteRemoteAction": false,
+          "canBeHandledOnRecover": false,
+          "doAfterDie": true,
+          "target": "Self",
+          "__unk_Q4244652216": {
+            "__unk_Q2921880475": false,
+            "__unk_Q3587015628": ""
+          },
+          "$type": "AttachModifier"
+        }
+      ],
+      "isDynamicAbility": true,
+      "abilityName": "Activity_TeamChain_ElemMasteryDeltaUp",
+      "EINMHCJCNBG": 0,
+      "HKGAKPLKEEJ": false,
+      "IPONDLMHIOC": false,
+      "MBLAAGJLEED": false,
       "modifiers": {
         "UNIQUE_Activity_TeamChain_ElemMasteryDeltaUp": {
-          "stacking": "Unique",
-          "modifierName": "",
-          "isUnique": true,
+          "fireEventWhenApply": false,
+          "useDummyAbility": false,
+          "onThinkIntervalIsFixedUpdate": false,
+          "ALGHEGPCFAL": -1,
+          "ALGLHMNGAIK": false,
+          "stackingOption": {
+            "enableMixedUnique": false,
+            "abilitySpecialName": "",
+            "uniqueModifierCondition": "Greater"
+          },
+          "AMOJAACLEBF": false,
+          "BKADNGDPKBB": false,
+          "reduceDurablityIgnoreTimeScale": false,
           "elementDurability": 100,
+          "EICKDCDCEOK": false,
+          "EINMHCJCNBG": 0,
+          "elementType": "None",
+          "FEOGJLMCKDI": false,
+          "trimThinkInterval": false,
+          "state": "None",
+          "overrideWeaponElement": false,
+          "FNCDEKOAAOE": false,
+          "isUnique": true,
+          "GCOMLBIIIGL": false,
+          "isElementDurabilityMutable": true,
+          "timeScale": "Owner",
+          "HIGGGNHGEEM": false,
+          "__unk_Q3323398612": 0,
+          "modifierName": "",
+          "ICBDJNHEFFB": false,
+          "ICLPOOJCEPI": false,
+          "IICJDNBLMMD": 0,
+          "IPNNJKHJKPN": false,
+          "purgeIncrement": 0,
+          "JIAFDJBDEFH": false,
+          "thinkIntervalIgnoreTimeScale": false,
+          "LECFPDIICCE": false,
+          "isLimitedProperties": true,
           "properties": {
             "Actor_ElemMasteryDelta": "ElemMasteryDelta"
           },
-          "isLimitedProperties": true
+          "LMENDAOJCBK": {
+            "__unk_Q3130794202": false
+          },
+          "MEHFAOLMCAP": -1,
+          "buffID": 0,
+          "NOCILDGOBBH": false,
+          "isDurabilityGlobal": false,
+          "OJMEBIHEKDC": false,
+          "PCAMCNDOFPM": "NormallySynced",
+          "stacking": "Unique"
         }
       },
-      "onAdded": [
-        {
-          "$type": "AttachModifier",
-          "modifierName": "UNIQUE_Activity_TeamChain_ElemMasteryDeltaUp"
-        }
-      ],
-      "isDynamicAbility": true
+      "PCCDGEAGBLE": false
     }
   },
   {
     "Default": {
-      "$type": "ConfigAbility",
-      "abilityName": "Activity_TeamChain_BurstDamageUp",
       "abilitySpecials": {
         "Rate": 0
       },
+      "onAdded": [
+        {
+          "__unk_Q4125547569": -1,
+          "__unk_Q2273802443": false,
+          "modifierName": "UNIQUE_TeamChain_BurstDamageUp",
+          "doOffStage": false,
+          "KHMDLFFCJID": "None",
+          "muteRemoteAction": false,
+          "canBeHandledOnRecover": false,
+          "doAfterDie": true,
+          "target": "Self",
+          "__unk_Q4244652216": {
+            "__unk_Q2921880475": false,
+            "__unk_Q3587015628": ""
+          },
+          "$type": "ApplyModifier"
+        }
+      ],
+      "isDynamicAbility": true,
+      "abilityName": "Activity_TeamChain_BurstDamageUp",
+      "EINMHCJCNBG": 0,
+      "HKGAKPLKEEJ": false,
+      "IPONDLMHIOC": false,
+      "MBLAAGJLEED": false,
       "modifiers": {
         "UNIQUE_TeamChain_BurstDamageUp": {
-          "modifierName": "",
-          "isUnique": true,
+          "fireEventWhenApply": false,
+          "useDummyAbility": false,
+          "onThinkIntervalIsFixedUpdate": false,
+          "ALGHEGPCFAL": -1,
+          "ALGLHMNGAIK": false,
+          "stackingOption": {
+            "enableMixedUnique": false,
+            "abilitySpecialName": "",
+            "uniqueModifierCondition": "Greater"
+          },
+          "AMOJAACLEBF": false,
+          "BKADNGDPKBB": false,
+          "reduceDurablityIgnoreTimeScale": false,
           "elementDurability": 100,
+          "EICKDCDCEOK": false,
+          "EINMHCJCNBG": 0,
+          "elementType": "None",
+          "FEOGJLMCKDI": false,
+          "trimThinkInterval": false,
+          "state": "None",
+          "overrideWeaponElement": false,
+          "FNCDEKOAAOE": false,
           "modifierMixins": [
             {
-              "$type": "ModifyDamageMixin",
+              "attackType": "None",
+              "__unk_Q4125547569": -1,
+              "damagePercentageRatio": "Rate",
+              "trueDamage": false,
+              "isUnique": false,
+              "GDEPAAINFFF": {
+                "elementType": "None"
+              },
+              "ignoreEventInfo": false,
+              "__unk_Q3695777311": false,
+              "__unk_Q4244652216": {
+                "__unk_Q2921880475": false,
+                "__unk_Q3587015628": ""
+              },
               "attackTags": [
                 "Elemental_Burst"
               ],
-              "damagePercentageRatio": "Rate"
+              "$type": "ModifyDamageMixin"
             }
-          ]
+          ],
+          "isUnique": true,
+          "GCOMLBIIIGL": false,
+          "isElementDurabilityMutable": true,
+          "timeScale": "Owner",
+          "HIGGGNHGEEM": false,
+          "__unk_Q3323398612": 0,
+          "modifierName": "",
+          "ICBDJNHEFFB": false,
+          "ICLPOOJCEPI": false,
+          "IICJDNBLMMD": 0,
+          "IPNNJKHJKPN": false,
+          "purgeIncrement": 0,
+          "JIAFDJBDEFH": false,
+          "thinkIntervalIgnoreTimeScale": false,
+          "LECFPDIICCE": false,
+          "isLimitedProperties": false,
+          "LMENDAOJCBK": {
+            "__unk_Q3130794202": false
+          },
+          "MEHFAOLMCAP": -1,
+          "buffID": 0,
+          "NOCILDGOBBH": false,
+          "isDurabilityGlobal": false,
+          "OJMEBIHEKDC": false,
+          "PCAMCNDOFPM": "NormallySynced",
+          "stacking": "Refresh"
         }
       },
-      "onAdded": [
-        {
-          "$type": "ApplyModifier",
-          "modifierName": "UNIQUE_TeamChain_BurstDamageUp"
-        }
-      ],
-      "isDynamicAbility": true
+      "PCCDGEAGBLE": false
     }
   },
   {
     "Default": {
-      "$type": "ConfigAbility",
-      "abilityName": "Activity_TeamChain_ElementAddHurt_Wind",
       "abilitySpecials": {
         "ElementAddHurt": 0
       },
+      "onAdded": [
+        {
+          "__unk_Q4125547569": -1,
+          "__unk_Q2273802443": false,
+          "modifierName": "UNIQUE_Activity_TeamChain_ElementAddHurt_Wind",
+          "doOffStage": false,
+          "KHMDLFFCJID": "None",
+          "muteRemoteAction": false,
+          "canBeHandledOnRecover": false,
+          "doAfterDie": true,
+          "target": "Self",
+          "__unk_Q4244652216": {
+            "__unk_Q2921880475": false,
+            "__unk_Q3587015628": ""
+          },
+          "$type": "AttachModifier"
+        }
+      ],
+      "isDynamicAbility": true,
+      "abilityName": "Activity_TeamChain_ElementAddHurt_Wind",
+      "EINMHCJCNBG": 0,
+      "HKGAKPLKEEJ": false,
+      "IPONDLMHIOC": false,
+      "MBLAAGJLEED": false,
       "modifiers": {
         "UNIQUE_Activity_TeamChain_ElementAddHurt_Wind": {
-          "stacking": "Unique",
-          "modifierName": "",
-          "isUnique": true,
+          "fireEventWhenApply": false,
+          "useDummyAbility": false,
+          "onThinkIntervalIsFixedUpdate": false,
+          "ALGHEGPCFAL": -1,
+          "ALGLHMNGAIK": false,
+          "stackingOption": {
+            "enableMixedUnique": false,
+            "abilitySpecialName": "",
+            "uniqueModifierCondition": "Greater"
+          },
+          "AMOJAACLEBF": false,
+          "BKADNGDPKBB": false,
+          "reduceDurablityIgnoreTimeScale": false,
           "elementDurability": 100,
+          "EICKDCDCEOK": false,
+          "EINMHCJCNBG": 0,
+          "elementType": "None",
+          "FEOGJLMCKDI": false,
+          "trimThinkInterval": false,
+          "state": "None",
+          "overrideWeaponElement": false,
+          "FNCDEKOAAOE": false,
+          "isUnique": true,
+          "GCOMLBIIIGL": false,
+          "isElementDurabilityMutable": true,
+          "timeScale": "Owner",
+          "HIGGGNHGEEM": false,
+          "__unk_Q3323398612": 0,
+          "modifierName": "",
+          "ICBDJNHEFFB": false,
+          "ICLPOOJCEPI": false,
+          "IICJDNBLMMD": 0,
+          "IPNNJKHJKPN": false,
+          "purgeIncrement": 0,
+          "JIAFDJBDEFH": false,
+          "thinkIntervalIgnoreTimeScale": false,
+          "LECFPDIICCE": false,
+          "isLimitedProperties": true,
           "properties": {
             "Actor_WindAddHurtDelta": "ElementAddHurt"
           },
-          "isLimitedProperties": true
+          "LMENDAOJCBK": {
+            "__unk_Q3130794202": false
+          },
+          "MEHFAOLMCAP": -1,
+          "buffID": 0,
+          "NOCILDGOBBH": false,
+          "isDurabilityGlobal": false,
+          "OJMEBIHEKDC": false,
+          "PCAMCNDOFPM": "NormallySynced",
+          "stacking": "Unique"
         }
       },
-      "onAdded": [
-        {
-          "$type": "AttachModifier",
-          "modifierName": "UNIQUE_Activity_TeamChain_ElementAddHurt_Wind"
-        }
-      ],
-      "isDynamicAbility": true
+      "PCCDGEAGBLE": false
     }
   },
   {
     "Default": {
-      "$type": "ConfigAbility",
-      "abilityName": "Activity_TeamChain_ElementAddHurt_Fire",
       "abilitySpecials": {
         "ElementAddHurt": 0
       },
+      "onAdded": [
+        {
+          "__unk_Q4125547569": -1,
+          "__unk_Q2273802443": false,
+          "modifierName": "UNIQUE_Activity_TeamChain_ElementAddHurt_Fire",
+          "doOffStage": false,
+          "KHMDLFFCJID": "None",
+          "muteRemoteAction": false,
+          "canBeHandledOnRecover": false,
+          "doAfterDie": true,
+          "target": "Self",
+          "__unk_Q4244652216": {
+            "__unk_Q2921880475": false,
+            "__unk_Q3587015628": ""
+          },
+          "$type": "AttachModifier"
+        }
+      ],
+      "isDynamicAbility": true,
+      "abilityName": "Activity_TeamChain_ElementAddHurt_Fire",
+      "EINMHCJCNBG": 0,
+      "HKGAKPLKEEJ": false,
+      "IPONDLMHIOC": false,
+      "MBLAAGJLEED": false,
       "modifiers": {
         "UNIQUE_Activity_TeamChain_ElementAddHurt_Fire": {
-          "stacking": "Unique",
-          "modifierName": "",
-          "isUnique": true,
+          "fireEventWhenApply": false,
+          "useDummyAbility": false,
+          "onThinkIntervalIsFixedUpdate": false,
+          "ALGHEGPCFAL": -1,
+          "ALGLHMNGAIK": false,
+          "stackingOption": {
+            "enableMixedUnique": false,
+            "abilitySpecialName": "",
+            "uniqueModifierCondition": "Greater"
+          },
+          "AMOJAACLEBF": false,
+          "BKADNGDPKBB": false,
+          "reduceDurablityIgnoreTimeScale": false,
           "elementDurability": 100,
+          "EICKDCDCEOK": false,
+          "EINMHCJCNBG": 0,
+          "elementType": "None",
+          "FEOGJLMCKDI": false,
+          "trimThinkInterval": false,
+          "state": "None",
+          "overrideWeaponElement": false,
+          "FNCDEKOAAOE": false,
+          "isUnique": true,
+          "GCOMLBIIIGL": false,
+          "isElementDurabilityMutable": true,
+          "timeScale": "Owner",
+          "HIGGGNHGEEM": false,
+          "__unk_Q3323398612": 0,
+          "modifierName": "",
+          "ICBDJNHEFFB": false,
+          "ICLPOOJCEPI": false,
+          "IICJDNBLMMD": 0,
+          "IPNNJKHJKPN": false,
+          "purgeIncrement": 0,
+          "JIAFDJBDEFH": false,
+          "thinkIntervalIgnoreTimeScale": false,
+          "LECFPDIICCE": false,
+          "isLimitedProperties": true,
           "properties": {
             "Actor_FireAddHurtDelta": "ElementAddHurt"
           },
-          "isLimitedProperties": true
+          "LMENDAOJCBK": {
+            "__unk_Q3130794202": false
+          },
+          "MEHFAOLMCAP": -1,
+          "buffID": 0,
+          "NOCILDGOBBH": false,
+          "isDurabilityGlobal": false,
+          "OJMEBIHEKDC": false,
+          "PCAMCNDOFPM": "NormallySynced",
+          "stacking": "Unique"
         }
       },
-      "onAdded": [
-        {
-          "$type": "AttachModifier",
-          "modifierName": "UNIQUE_Activity_TeamChain_ElementAddHurt_Fire"
-        }
-      ],
-      "isDynamicAbility": true
+      "PCCDGEAGBLE": false
     }
   },
   {
     "Default": {
-      "$type": "ConfigAbility",
-      "abilityName": "Activity_TeamChain_ElementAddHurt_Elec",
       "abilitySpecials": {
         "ElementAddHurt": 0
       },
+      "onAdded": [
+        {
+          "__unk_Q4125547569": -1,
+          "__unk_Q2273802443": false,
+          "modifierName": "UNIQUE_Activity_TeamChain_ElementAddHurt_Elec",
+          "doOffStage": false,
+          "KHMDLFFCJID": "None",
+          "muteRemoteAction": false,
+          "canBeHandledOnRecover": false,
+          "doAfterDie": true,
+          "target": "Self",
+          "__unk_Q4244652216": {
+            "__unk_Q2921880475": false,
+            "__unk_Q3587015628": ""
+          },
+          "$type": "AttachModifier"
+        }
+      ],
+      "isDynamicAbility": true,
+      "abilityName": "Activity_TeamChain_ElementAddHurt_Elec",
+      "EINMHCJCNBG": 0,
+      "HKGAKPLKEEJ": false,
+      "IPONDLMHIOC": false,
+      "MBLAAGJLEED": false,
       "modifiers": {
         "UNIQUE_Activity_TeamChain_ElementAddHurt_Elec": {
-          "stacking": "Unique",
-          "modifierName": "",
-          "isUnique": true,
+          "fireEventWhenApply": false,
+          "useDummyAbility": false,
+          "onThinkIntervalIsFixedUpdate": false,
+          "ALGHEGPCFAL": -1,
+          "ALGLHMNGAIK": false,
+          "stackingOption": {
+            "enableMixedUnique": false,
+            "abilitySpecialName": "",
+            "uniqueModifierCondition": "Greater"
+          },
+          "AMOJAACLEBF": false,
+          "BKADNGDPKBB": false,
+          "reduceDurablityIgnoreTimeScale": false,
           "elementDurability": 100,
+          "EICKDCDCEOK": false,
+          "EINMHCJCNBG": 0,
+          "elementType": "None",
+          "FEOGJLMCKDI": false,
+          "trimThinkInterval": false,
+          "state": "None",
+          "overrideWeaponElement": false,
+          "FNCDEKOAAOE": false,
+          "isUnique": true,
+          "GCOMLBIIIGL": false,
+          "isElementDurabilityMutable": true,
+          "timeScale": "Owner",
+          "HIGGGNHGEEM": false,
+          "__unk_Q3323398612": 0,
+          "modifierName": "",
+          "ICBDJNHEFFB": false,
+          "ICLPOOJCEPI": false,
+          "IICJDNBLMMD": 0,
+          "IPNNJKHJKPN": false,
+          "purgeIncrement": 0,
+          "JIAFDJBDEFH": false,
+          "thinkIntervalIgnoreTimeScale": false,
+          "LECFPDIICCE": false,
+          "isLimitedProperties": true,
           "properties": {
             "Actor_ElecAddHurtDelta": "ElementAddHurt"
           },
-          "isLimitedProperties": true
+          "LMENDAOJCBK": {
+            "__unk_Q3130794202": false
+          },
+          "MEHFAOLMCAP": -1,
+          "buffID": 0,
+          "NOCILDGOBBH": false,
+          "isDurabilityGlobal": false,
+          "OJMEBIHEKDC": false,
+          "PCAMCNDOFPM": "NormallySynced",
+          "stacking": "Unique"
         }
       },
-      "onAdded": [
-        {
-          "$type": "AttachModifier",
-          "modifierName": "UNIQUE_Activity_TeamChain_ElementAddHurt_Elec"
-        }
-      ],
-      "isDynamicAbility": true
+      "PCCDGEAGBLE": false
     }
   },
   {
     "Default": {
-      "$type": "ConfigAbility",
-      "abilityName": "Activity_TeamChain_ElementAddHurt_Water",
       "abilitySpecials": {
         "ElementAddHurt": 0
       },
+      "onAdded": [
+        {
+          "__unk_Q4125547569": -1,
+          "__unk_Q2273802443": false,
+          "modifierName": "UNIQUE_Activity_TeamChain_ElementAddHurt_Water",
+          "doOffStage": false,
+          "KHMDLFFCJID": "None",
+          "muteRemoteAction": false,
+          "canBeHandledOnRecover": false,
+          "doAfterDie": true,
+          "target": "Self",
+          "__unk_Q4244652216": {
+            "__unk_Q2921880475": false,
+            "__unk_Q3587015628": ""
+          },
+          "$type": "AttachModifier"
+        }
+      ],
+      "isDynamicAbility": true,
+      "abilityName": "Activity_TeamChain_ElementAddHurt_Water",
+      "EINMHCJCNBG": 0,
+      "HKGAKPLKEEJ": false,
+      "IPONDLMHIOC": false,
+      "MBLAAGJLEED": false,
       "modifiers": {
         "UNIQUE_Activity_TeamChain_ElementAddHurt_Water": {
-          "stacking": "Unique",
-          "modifierName": "",
-          "isUnique": true,
+          "fireEventWhenApply": false,
+          "useDummyAbility": false,
+          "onThinkIntervalIsFixedUpdate": false,
+          "ALGHEGPCFAL": -1,
+          "ALGLHMNGAIK": false,
+          "stackingOption": {
+            "enableMixedUnique": false,
+            "abilitySpecialName": "",
+            "uniqueModifierCondition": "Greater"
+          },
+          "AMOJAACLEBF": false,
+          "BKADNGDPKBB": false,
+          "reduceDurablityIgnoreTimeScale": false,
           "elementDurability": 100,
+          "EICKDCDCEOK": false,
+          "EINMHCJCNBG": 0,
+          "elementType": "None",
+          "FEOGJLMCKDI": false,
+          "trimThinkInterval": false,
+          "state": "None",
+          "overrideWeaponElement": false,
+          "FNCDEKOAAOE": false,
+          "isUnique": true,
+          "GCOMLBIIIGL": false,
+          "isElementDurabilityMutable": true,
+          "timeScale": "Owner",
+          "HIGGGNHGEEM": false,
+          "__unk_Q3323398612": 0,
+          "modifierName": "",
+          "ICBDJNHEFFB": false,
+          "ICLPOOJCEPI": false,
+          "IICJDNBLMMD": 0,
+          "IPNNJKHJKPN": false,
+          "purgeIncrement": 0,
+          "JIAFDJBDEFH": false,
+          "thinkIntervalIgnoreTimeScale": false,
+          "LECFPDIICCE": false,
+          "isLimitedProperties": true,
           "properties": {
             "Actor_WaterAddHurtDelta": "ElementAddHurt"
           },
-          "isLimitedProperties": true
+          "LMENDAOJCBK": {
+            "__unk_Q3130794202": false
+          },
+          "MEHFAOLMCAP": -1,
+          "buffID": 0,
+          "NOCILDGOBBH": false,
+          "isDurabilityGlobal": false,
+          "OJMEBIHEKDC": false,
+          "PCAMCNDOFPM": "NormallySynced",
+          "stacking": "Unique"
         }
       },
-      "onAdded": [
-        {
-          "$type": "AttachModifier",
-          "modifierName": "UNIQUE_Activity_TeamChain_ElementAddHurt_Water"
-        }
-      ],
-      "isDynamicAbility": true
+      "PCCDGEAGBLE": false
     }
   },
   {
     "Default": {
-      "$type": "ConfigAbility",
-      "abilityName": "Activity_TeamChain_ElementAddHurt_Grass",
       "abilitySpecials": {
         "ElementAddHurt": 0
       },
+      "onAdded": [
+        {
+          "__unk_Q4125547569": -1,
+          "__unk_Q2273802443": false,
+          "modifierName": "UNIQUE_Activity_TeamChain_ElementAddHurt_Grass",
+          "doOffStage": false,
+          "KHMDLFFCJID": "None",
+          "muteRemoteAction": false,
+          "canBeHandledOnRecover": false,
+          "doAfterDie": true,
+          "target": "Self",
+          "__unk_Q4244652216": {
+            "__unk_Q2921880475": false,
+            "__unk_Q3587015628": ""
+          },
+          "$type": "AttachModifier"
+        }
+      ],
+      "isDynamicAbility": true,
+      "abilityName": "Activity_TeamChain_ElementAddHurt_Grass",
+      "EINMHCJCNBG": 0,
+      "HKGAKPLKEEJ": false,
+      "IPONDLMHIOC": false,
+      "MBLAAGJLEED": false,
       "modifiers": {
         "UNIQUE_Activity_TeamChain_ElementAddHurt_Grass": {
-          "stacking": "Unique",
-          "modifierName": "",
-          "isUnique": true,
+          "fireEventWhenApply": false,
+          "useDummyAbility": false,
+          "onThinkIntervalIsFixedUpdate": false,
+          "ALGHEGPCFAL": -1,
+          "ALGLHMNGAIK": false,
+          "stackingOption": {
+            "enableMixedUnique": false,
+            "abilitySpecialName": "",
+            "uniqueModifierCondition": "Greater"
+          },
+          "AMOJAACLEBF": false,
+          "BKADNGDPKBB": false,
+          "reduceDurablityIgnoreTimeScale": false,
           "elementDurability": 100,
+          "EICKDCDCEOK": false,
+          "EINMHCJCNBG": 0,
+          "elementType": "None",
+          "FEOGJLMCKDI": false,
+          "trimThinkInterval": false,
+          "state": "None",
+          "overrideWeaponElement": false,
+          "FNCDEKOAAOE": false,
+          "isUnique": true,
+          "GCOMLBIIIGL": false,
+          "isElementDurabilityMutable": true,
+          "timeScale": "Owner",
+          "HIGGGNHGEEM": false,
+          "__unk_Q3323398612": 0,
+          "modifierName": "",
+          "ICBDJNHEFFB": false,
+          "ICLPOOJCEPI": false,
+          "IICJDNBLMMD": 0,
+          "IPNNJKHJKPN": false,
+          "purgeIncrement": 0,
+          "JIAFDJBDEFH": false,
+          "thinkIntervalIgnoreTimeScale": false,
+          "LECFPDIICCE": false,
+          "isLimitedProperties": true,
           "properties": {
             "Actor_GrassAddHurtDelta": "ElementAddHurt"
           },
-          "isLimitedProperties": true
+          "LMENDAOJCBK": {
+            "__unk_Q3130794202": false
+          },
+          "MEHFAOLMCAP": -1,
+          "buffID": 0,
+          "NOCILDGOBBH": false,
+          "isDurabilityGlobal": false,
+          "OJMEBIHEKDC": false,
+          "PCAMCNDOFPM": "NormallySynced",
+          "stacking": "Unique"
         }
       },
-      "onAdded": [
-        {
-          "$type": "AttachModifier",
-          "modifierName": "UNIQUE_Activity_TeamChain_ElementAddHurt_Grass"
-        }
-      ],
-      "isDynamicAbility": true
+      "PCCDGEAGBLE": false
     }
   },
   {
     "Default": {
-      "$type": "ConfigAbility",
-      "abilityName": "Activity_TeamChain_ElementAddHurt_Ice",
       "abilitySpecials": {
         "ElementAddHurt": 0
       },
+      "onAdded": [
+        {
+          "__unk_Q4125547569": -1,
+          "__unk_Q2273802443": false,
+          "modifierName": "UNIQUE_Activity_TeamChain_ElementAddHurt_Ice",
+          "doOffStage": false,
+          "KHMDLFFCJID": "None",
+          "muteRemoteAction": false,
+          "canBeHandledOnRecover": false,
+          "doAfterDie": true,
+          "target": "Self",
+          "__unk_Q4244652216": {
+            "__unk_Q2921880475": false,
+            "__unk_Q3587015628": ""
+          },
+          "$type": "AttachModifier"
+        }
+      ],
+      "isDynamicAbility": true,
+      "abilityName": "Activity_TeamChain_ElementAddHurt_Ice",
+      "EINMHCJCNBG": 0,
+      "HKGAKPLKEEJ": false,
+      "IPONDLMHIOC": false,
+      "MBLAAGJLEED": false,
       "modifiers": {
         "UNIQUE_Activity_TeamChain_ElementAddHurt_Ice": {
-          "stacking": "Unique",
-          "modifierName": "",
-          "isUnique": true,
+          "fireEventWhenApply": false,
+          "useDummyAbility": false,
+          "onThinkIntervalIsFixedUpdate": false,
+          "ALGHEGPCFAL": -1,
+          "ALGLHMNGAIK": false,
+          "stackingOption": {
+            "enableMixedUnique": false,
+            "abilitySpecialName": "",
+            "uniqueModifierCondition": "Greater"
+          },
+          "AMOJAACLEBF": false,
+          "BKADNGDPKBB": false,
+          "reduceDurablityIgnoreTimeScale": false,
           "elementDurability": 100,
+          "EICKDCDCEOK": false,
+          "EINMHCJCNBG": 0,
+          "elementType": "None",
+          "FEOGJLMCKDI": false,
+          "trimThinkInterval": false,
+          "state": "None",
+          "overrideWeaponElement": false,
+          "FNCDEKOAAOE": false,
+          "isUnique": true,
+          "GCOMLBIIIGL": false,
+          "isElementDurabilityMutable": true,
+          "timeScale": "Owner",
+          "HIGGGNHGEEM": false,
+          "__unk_Q3323398612": 0,
+          "modifierName": "",
+          "ICBDJNHEFFB": false,
+          "ICLPOOJCEPI": false,
+          "IICJDNBLMMD": 0,
+          "IPNNJKHJKPN": false,
+          "purgeIncrement": 0,
+          "JIAFDJBDEFH": false,
+          "thinkIntervalIgnoreTimeScale": false,
+          "LECFPDIICCE": false,
+          "isLimitedProperties": true,
           "properties": {
             "Actor_IceAddHurtDelta": "ElementAddHurt"
           },
-          "isLimitedProperties": true
+          "LMENDAOJCBK": {
+            "__unk_Q3130794202": false
+          },
+          "MEHFAOLMCAP": -1,
+          "buffID": 0,
+          "NOCILDGOBBH": false,
+          "isDurabilityGlobal": false,
+          "OJMEBIHEKDC": false,
+          "PCAMCNDOFPM": "NormallySynced",
+          "stacking": "Unique"
         }
       },
-      "onAdded": [
-        {
-          "$type": "AttachModifier",
-          "modifierName": "UNIQUE_Activity_TeamChain_ElementAddHurt_Ice"
-        }
-      ],
-      "isDynamicAbility": true
+      "PCCDGEAGBLE": false
     }
   }
 ]
