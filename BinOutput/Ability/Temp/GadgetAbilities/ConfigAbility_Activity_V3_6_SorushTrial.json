@@ -1,0 +1,1143 @@
+[
+  {
+    "Default": {
+      "$type": "ConfigAbility",
+      "abilityName": "Activity_SorushTrialRace_CoinGet_TeamAbility",
+      "abilityMixins": [
+        {
+          "$type": "AttachModifierToSelfGlobalValueMixin",
+          "globalValueKey": "GV_PetalCoinRangeLevel",
+          "defaultGlobalValueOnCreate": 0,
+          "valueSteps": [
+            -0.5,
+            0.5,
+            1.5,
+            100
+          ],
+          "modifierNameSteps": [
+            "Blank",
+            "NormalRange",
+            "SuperRange"
+          ]
+        }
+      ],
+      "modifiers": {
+        "Blank": {
+          "modifierName": "",
+          "elementDurability": 100
+        },
+        "NormalRange": {
+          "modifierName": "",
+          "elementDurability": 100,
+          "thinkInterval": 0.1,
+          "onAdded": [
+            {
+              "$type": "DebugLog",
+              "content": "基础拾取距离"
+            }
+          ],
+          "onThinkInterval": [
+            {
+              "$type": "Predicated",
+              "otherTargets": {
+                "$type": "CDFGNCHMNMA",
+                "topLimit": 6,
+                "sortType": "Nearest",
+                "tag": "IS_PETALCOIN"
+              },
+              "successActions": [
+                {
+                  "$type": "SetGlobalValue",
+                  "target": "Target",
+                  "predicates": [
+                    {
+                      "$type": "ByTargetPositionToSelfPosition",
+                      "logic": "LesserOrEqual",
+                      "compareType": "XYZ",
+                      "value": 3
+                    }
+                  ],
+                  "value": 1,
+                  "key": "GV_PetalPicked",
+                  "maxValue": 0,
+                  "minValue": 0
+                }
+              ]
+            }
+          ]
+        },
+        "SuperRange": {
+          "modifierName": "",
+          "elementDurability": 100,
+          "thinkInterval": 0.1,
+          "modifierMixins": [
+            {
+              "$type": "CurLocalAvatarMixinV2",
+              "modifierName": "Avatar_SuperRange_Eff"
+            }
+          ],
+          "onAdded": [
+            {
+              "$type": "DebugLog",
+              "content": "超级拾取距离"
+            }
+          ],
+          "onThinkInterval": [
+            {
+              "$type": "Predicated",
+              "otherTargets": {
+                "$type": "CDFGNCHMNMA",
+                "topLimit": 6,
+                "sortType": "Nearest",
+                "tag": "IS_PETALCOIN"
+              },
+              "successActions": [
+                {
+                  "$type": "SetGlobalValue",
+                  "target": "Target",
+                  "predicates": [
+                    {
+                      "$type": "ByTargetPositionToSelfPosition",
+                      "logic": "LesserOrEqual",
+                      "compareType": "XYZ",
+                      "value": 6
+                    }
+                  ],
+                  "value": 1,
+                  "key": "GV_PetalPicked",
+                  "maxValue": 0,
+                  "minValue": 0
+                }
+              ]
+            }
+          ]
+        },
+        "Avatar_SuperRange_Eff": {
+          "modifierName": "",
+          "elementDurability": 100,
+          "onAdded": [
+            {
+              "$type": "AttachEffect",
+              "target": "Vehicle",
+              "doOffStage": true,
+              "effectPattern": "Eff_SceneObj_Slusha_Accelerator_01_Sorush"
+            }
+          ]
+        }
+      },
+      "onAdded": [
+        {
+          "$type": "SetGlobalValue",
+          "target": "Team",
+          "value": 1,
+          "key": "GV_PetalCoinRangeLevel",
+          "maxValue": 0,
+          "minValue": 0
+        }
+      ],
+      "onRemoved": [
+        {
+          "$type": "RemoveUniqueModifier",
+          "target": "Team",
+          "modifierName": "UNIQUE_PetalPickRangeBuff"
+        },
+        {
+          "$type": "SetGlobalValue",
+          "target": "Team",
+          "value": 0,
+          "key": "GV_PetalCoinRangeLevel",
+          "maxValue": 0,
+          "minValue": 0
+        }
+      ],
+      "isDynamicAbility": true
+    }
+  },
+  {
+    "Default": {
+      "$type": "ConfigAbility",
+      "abilityName": "SceneObj_Area_Common_Property_Ani_Prop_Floating_Colorful_Petal_01",
+      "abilityMixins": [
+        {
+          "$type": "AttachModifierToGlobalValueMixin",
+          "globalValueKey": "GV_PetalPicked",
+          "valueSteps": [
+            0.5,
+            1.5
+          ],
+          "modifierNameSteps": [
+            "BePicked"
+          ]
+        }
+      ],
+      "modifiers": {
+        "CoinMaterial": {
+          "modifierName": "",
+          "elementDurability": 100,
+          "onAdded": [
+            {
+              "$type": "AttachEffect",
+              "effectPattern": "Eff_SceneObj_Floating_Colorful_Petal_01_Default"
+            }
+          ],
+          "onRemoved": [
+            {
+              "$type": "FireEffect",
+              "effectPattern": "Eff_SceneObj_Floating_Colorful_Petal_01_Collection"
+            },
+            {
+              "$type": "KillSelf"
+            }
+          ]
+        },
+        "BePicked": {
+          "modifierName": "",
+          "elementDurability": 100,
+          "onAdded": [
+            {
+              "$type": "ServerLuaCall",
+              "luaCallType": "CurGalleryControlGroup",
+              "funcName": "SLC_Activity_SorushTrialRace_CoinGet",
+              "MPPMFEDKGHC": 0,
+              "BOKNHLDBKKK": 0,
+              "CHOIIMHDNHK": 0
+            },
+            {
+              "$type": "FireEffect",
+              "target": "Vehicle",
+              "doOffStage": true,
+              "effectPattern": "Eff_SceneObj_Floating_Colorful_Petal_01_Follow",
+              "born": {
+                "$type": "ConfigBornByAttachPoint",
+                "useRotation": true,
+                "attachPointName": "RootNode_FX"
+              }
+            },
+            {
+              "$type": "RemoveModifier",
+              "modifierName": "CoinMaterial"
+            }
+          ]
+        }
+      },
+      "onAdded": [
+        {
+          "$type": "ApplyModifier",
+          "modifierName": "CoinMaterial"
+        },
+        {
+          "$type": "SetGlobalValue",
+          "value": 0,
+          "key": "GV_PetalPicked",
+          "maxValue": 0,
+          "minValue": 0
+        },
+        {
+          "$type": "ChangeTag",
+          "isAdd": true,
+          "tag": "IS_PETALCOIN"
+        }
+      ]
+    }
+  },
+  {
+    "Default": {
+      "$type": "ConfigAbility",
+      "abilityName": "SceneObj_Area_Common_Property_Ani_Prop_Slusha_Accelerator_01",
+      "modifiers": {
+        "StandByEffect": {
+          "modifierName": "",
+          "elementDurability": 100,
+          "onAdded": [
+            {
+              "$type": "AttachEffect",
+              "effectPattern": "Eff_SceneObj_Slusha_Accelerator_01_Loop",
+              "born": {
+                "$type": "ConfigBornByAttachPoint",
+                "useRotation": true,
+                "attachPointName": "RootNode"
+              }
+            }
+          ]
+        },
+        "UNIQUE_PetalPickRangeBuff": {
+          "stacking": "RefreshUniqueDurability",
+          "modifierName": "",
+          "isUnique": true,
+          "duration": 4,
+          "elementDurability": 100,
+          "onAdded": [
+            {
+              "$type": "AddGlobalValue",
+              "target": "Team",
+              "value": 1,
+              "key": "GV_PetalCoinRangeLevel",
+              "useLimitRange": true,
+              "maxValue": 1000,
+              "minValue": 0
+            }
+          ],
+          "onRemoved": [
+            {
+              "$type": "AddGlobalValue",
+              "target": "Team",
+              "value": -1,
+              "key": "GV_PetalCoinRangeLevel",
+              "useLimitRange": true,
+              "maxValue": 1000,
+              "minValue": 0
+            }
+          ]
+        }
+      },
+      "onAdded": [
+        {
+          "$type": "ApplyModifier",
+          "modifierName": "StandByEffect"
+        }
+      ],
+      "onFieldEnter": [
+        {
+          "$type": "Predicated",
+          "target": "Target",
+          "targetPredicates": [
+            {
+              "$type": "ByEntityTypes",
+              "entityTypes": [
+                "Vehicle"
+              ]
+            }
+          ],
+          "successActions": [
+            {
+              "$type": "ApplyModifier",
+              "target": "Team",
+              "modifierName": "UNIQUE_PetalPickRangeBuff"
+            },
+            {
+              "$type": "ReviveStamina",
+              "target": "Vehicle",
+              "doOffStage": true,
+              "value": 1000
+            },
+            {
+              "$type": "AttachEffect",
+              "effectPattern": "Eff_SceneObj_Slusha_Accelerator_01_Broken",
+              "born": {
+                "$type": "ConfigBornByAttachPoint",
+                "useRotation": true,
+                "attachPointName": "RootNode"
+              }
+            }
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "Default": {
+      "$type": "ConfigAbility",
+      "abilityName": "SceneObj_Area_Common_Property_Ani_Prop_AbyssEmitter_01",
+      "abilityMixins": [
+        {
+          "$type": "AttachToGadgetStateMixin",
+          "gadgetState": 201,
+          "modifierName": "Elf_Target_Seeker"
+        },
+        {
+          "$type": "AttachToGadgetStateMixin",
+          "modifierName": "StandBy_Effect"
+        }
+      ],
+      "modifiers": {
+        "StandBy_Effect": {
+          "modifierName": "",
+          "elementDurability": 100,
+          "onAdded": [
+            {
+              "$type": "AttachEffect",
+              "effectPattern": "Eff_SceneObj_AbyssEmitter_01_Blur",
+              "born": {
+                "$type": "ConfigBornByAttachPoint",
+                "useRotation": true,
+                "attachPointName": "RootNode"
+              }
+            }
+          ]
+        },
+        "Blur_Effect": {
+          "modifierName": "",
+          "elementDurability": 100,
+          "thinkInterval": 1,
+          "onThinkInterval": [
+            {
+              "$type": "SetGlobalValue",
+              "value": 0,
+              "key": "NeedEmit",
+              "maxValue": 0,
+              "minValue": 0
+            },
+            {
+              "$type": "Predicated",
+              "otherTargets": {
+                "$type": "SelectTargetsByLCTrigger",
+                "campTargetType": "All"
+              },
+              "targetPredicates": [
+                {
+                  "$type": "ByEntityTypes",
+                  "entityTypes": [
+                    "Vehicle"
+                  ]
+                }
+              ],
+              "successActions": [
+                {
+                  "$type": "SetGlobalValue",
+                  "value": 1,
+                  "key": "NeedEmit",
+                  "maxValue": 0,
+                  "minValue": 0
+                }
+              ]
+            },
+            {
+              "$type": "Predicated",
+              "targetPredicates": [
+                {
+                  "$type": "ByTargetGlobalValue",
+                  "key": "NeedEmit",
+                  "value": 1
+                }
+              ],
+              "successActions": [
+                {
+                  "$type": "ChangeGadgetState",
+                  "predicates": [
+                    {
+                      "$type": "ByTargetGlobalValue",
+                      "target": "Self",
+                      "key": "AlreadyEmit",
+                      "value": 0
+                    }
+                  ],
+                  "MNIDCPKMMNN": 201
+                }
+              ],
+              "failActions": [
+                {
+                  "$type": "ChangeGadgetState"
+                }
+              ]
+            }
+          ]
+        },
+        "Elf_Target_Seeker": {
+          "modifierName": "",
+          "elementDurability": 100,
+          "thinkInterval": 5,
+          "onAdded": [
+            {
+              "$type": "AttachEffect",
+              "effectPattern": "Eff_SceneObj_AbyssEmitter_01",
+              "born": {
+                "$type": "ConfigBornByAttachPoint",
+                "useRotation": true,
+                "attachPointName": "RootNode"
+              }
+            },
+            {
+              "$type": "SetSelfAttackTarget",
+              "otherTargets": {
+                "$type": "SelectTargetsByLCTrigger",
+                "campTargetType": "All"
+              },
+              "predicates": [
+                {
+                  "$type": "ByEntityTypes",
+                  "entityTypes": [
+                    "Vehicle"
+                  ]
+                }
+              ]
+            },
+            {
+              "$type": "ApplyModifier",
+              "predicates": [
+                {
+                  "$type": "ByHasAttackTarget"
+                }
+              ],
+              "modifierName": "Elf_Bullet_Queue"
+            },
+            {
+              "$type": "SetGlobalValue",
+              "value": 1,
+              "key": "AlreadyEmit",
+              "maxValue": 0,
+              "minValue": 0
+            }
+          ],
+          "onRemoved": [
+            {
+              "$type": "SetGlobalValue",
+              "value": 0,
+              "key": "AlreadyEmit",
+              "maxValue": 0,
+              "minValue": 0
+            }
+          ],
+          "onThinkInterval": [
+            {
+              "$type": "SetSelfAttackTarget",
+              "otherTargets": {
+                "$type": "SelectTargetsByLCTrigger",
+                "campTargetType": "All"
+              },
+              "predicates": [
+                {
+                  "$type": "ByEntityTypes",
+                  "entityTypes": [
+                    "Vehicle"
+                  ]
+                }
+              ]
+            },
+            {
+              "$type": "ApplyModifier",
+              "predicates": [
+                {
+                  "$type": "ByHasAttackTarget"
+                }
+              ],
+              "modifierName": "Elf_Bullet_Queue"
+            }
+          ]
+        },
+        "Elf_Bullet_Queue": {
+          "modifierName": "",
+          "duration": 0.1,
+          "elementDurability": 100,
+          "onAdded": [
+            {
+              "$type": "FireEffect",
+              "effectPattern": "Eff_SceneObj_AbyssEmitter_BulletHell_01_Shoot",
+              "born": {
+                "$type": "ConfigBornByAttachPoint",
+                "useRotation": true,
+                "attachPointName": "ShootPoint1"
+              }
+            }
+          ],
+          "onRemoved": [
+            {
+              "$type": "TriggerBullet",
+              "predicates": [
+                {
+                  "$type": "ByHasAttackTarget"
+                }
+              ],
+              "bulletID": 70291103,
+              "born": {
+                "$type": "ConfigBornByAttachPoint",
+                "direction": {
+                  "$type": "ConfigDirectionByDefault",
+                  "angleOffset": {
+                    "y": 45
+                  }
+                },
+                "useRotation": true,
+                "attachPointName": "ShootPoint1"
+              },
+              "lifeByOwnerIsAlive": true
+            },
+            {
+              "$type": "TriggerBullet",
+              "predicates": [
+                {
+                  "$type": "ByHasAttackTarget"
+                }
+              ],
+              "bulletID": 70291103,
+              "born": {
+                "$type": "ConfigBornByAttachPoint",
+                "direction": {
+                  "$type": "ConfigDirectionByDefault",
+                  "angleOffset": {
+                    "y": 30
+                  }
+                },
+                "useRotation": true,
+                "attachPointName": "ShootPoint1"
+              },
+              "lifeByOwnerIsAlive": true
+            },
+            {
+              "$type": "TriggerBullet",
+              "predicates": [
+                {
+                  "$type": "ByHasAttackTarget"
+                }
+              ],
+              "bulletID": 70291103,
+              "born": {
+                "$type": "ConfigBornByAttachPoint",
+                "direction": {
+                  "$type": "ConfigDirectionByDefault",
+                  "angleOffset": {
+                    "y": 15
+                  }
+                },
+                "useRotation": true,
+                "attachPointName": "ShootPoint1"
+              },
+              "lifeByOwnerIsAlive": true
+            },
+            {
+              "$type": "TriggerBullet",
+              "predicates": [
+                {
+                  "$type": "ByHasAttackTarget"
+                }
+              ],
+              "bulletID": 70291103,
+              "born": {
+                "$type": "ConfigBornByAttachPoint",
+                "direction": {
+                  "$type": "ConfigDirectionByDefault"
+                },
+                "useRotation": true,
+                "attachPointName": "ShootPoint1"
+              },
+              "lifeByOwnerIsAlive": true
+            },
+            {
+              "$type": "TriggerBullet",
+              "predicates": [
+                {
+                  "$type": "ByHasAttackTarget"
+                }
+              ],
+              "bulletID": 70291103,
+              "born": {
+                "$type": "ConfigBornByAttachPoint",
+                "direction": {
+                  "$type": "ConfigDirectionByDefault",
+                  "angleOffset": {
+                    "y": -15
+                  }
+                },
+                "useRotation": true,
+                "attachPointName": "ShootPoint1"
+              },
+              "lifeByOwnerIsAlive": true
+            },
+            {
+              "$type": "TriggerBullet",
+              "predicates": [
+                {
+                  "$type": "ByHasAttackTarget"
+                }
+              ],
+              "bulletID": 70291103,
+              "born": {
+                "$type": "ConfigBornByAttachPoint",
+                "direction": {
+                  "$type": "ConfigDirectionByDefault",
+                  "angleOffset": {
+                    "y": -30
+                  }
+                },
+                "useRotation": true,
+                "attachPointName": "ShootPoint1"
+              },
+              "lifeByOwnerIsAlive": true
+            },
+            {
+              "$type": "TriggerBullet",
+              "predicates": [
+                {
+                  "$type": "ByHasAttackTarget"
+                }
+              ],
+              "bulletID": 70291103,
+              "born": {
+                "$type": "ConfigBornByAttachPoint",
+                "direction": {
+                  "$type": "ConfigDirectionByDefault",
+                  "angleOffset": {
+                    "y": -45
+                  }
+                },
+                "useRotation": true,
+                "attachPointName": "ShootPoint1"
+              },
+              "lifeByOwnerIsAlive": true
+            }
+          ]
+        }
+      },
+      "onAdded": [
+        {
+          "$type": "ApplyModifier",
+          "modifierName": "Blur_Effect"
+        },
+        {
+          "$type": "AddGlobalValue",
+          "value": 0,
+          "key": "NeedEmit",
+          "useLimitRange": true,
+          "maxValue": 0,
+          "minValue": 0
+        },
+        {
+          "$type": "AddGlobalValue",
+          "value": 0,
+          "key": "AlreadyEmit",
+          "useLimitRange": true,
+          "maxValue": 0,
+          "minValue": 0
+        }
+      ],
+      "onKill": [
+        {
+          "$type": "FireEffect",
+          "effectPattern": "Eff_SceneObj_AbyssEmitter_01_Disappear",
+          "born": {
+            "$type": "ConfigBornByAttachPoint",
+            "useRotation": true,
+            "attachPointName": "RootNode"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "Default": {
+      "$type": "ConfigAbility",
+      "abilityName": "SceneObj_Area_Common_Property_Ani_Prop_AbyssEmitter_BulletHell_01_Damage",
+      "onAbilityStart": [
+        {
+          "$type": "TriggerAttackEvent",
+          "doOffStage": true,
+          "attackEvent": {
+            "attackPattern": {
+              "$type": "ConfigAttackSphere",
+              "triggerType": "TriggerNoRepeat",
+              "radius": 5
+            },
+            "attackInfo": {
+              "attackTag": "SorushHit",
+              "attenuationTag": "",
+              "attenuationGroup": "default"
+            }
+          },
+          "targetType": "Enemy"
+        },
+        {
+          "$type": "KillSelf"
+        }
+      ]
+    }
+  },
+  {
+    "Default": {
+      "$type": "ConfigAbility",
+      "abilityName": "SceneObj_Area_Common_Property_Ani_Prop_AbyssEmitter_BulletHell_01_Material",
+      "modifiers": {
+        "EffectMaterial": {
+          "modifierName": "",
+          "elementDurability": 100,
+          "onAdded": [
+            {
+              "$type": "AttachEffect",
+              "effectPattern": "Eff_SceneObj_AbyssEmitter_BulletHell_01",
+              "born": {
+                "$type": "ConfigBornByAttachPoint",
+                "useRotation": true,
+                "attachPointName": "RootNode"
+              }
+            }
+          ]
+        }
+      },
+      "onAdded": [
+        {
+          "$type": "ApplyModifier",
+          "modifierName": "EffectMaterial"
+        }
+      ]
+    }
+  },
+  {
+    "Default": {
+      "$type": "ConfigAbility",
+      "abilityName": "SceneObj_Area_Common_Property_Prop_SorushTrialOperator_01",
+      "abilityMixins": [
+        {
+          "$type": "AttachToGadgetStateMixin",
+          "gadgetState": 202,
+          "modifierName": "ReMove"
+        }
+      ],
+      "modifiers": {
+        "AddEffect": {
+          "modifierName": "",
+          "elementDurability": 100,
+          "onAdded": [
+            {
+              "$type": "AttachEffect",
+              "effectPattern": "Eff_SceneObj_Challengestarter_03",
+              "born": {
+                "$type": "ConfigBornByAttachPoint",
+                "useRotation": true,
+                "attachPointName": "EffectPoint"
+              }
+            }
+          ]
+        },
+        "ReMove": {
+          "modifierName": "",
+          "duration": 2,
+          "elementDurability": 100,
+          "onRemoved": [
+            {
+              "$type": "RemoveModifier",
+              "modifierName": "AddEffect"
+            }
+          ]
+        }
+      },
+      "onAdded": [
+        {
+          "$type": "AttachModifier",
+          "modifierName": "AddEffect"
+        }
+      ]
+    }
+  },
+  {
+    "Default": {
+      "$type": "ConfigAbility",
+      "abilityName": "SceneObj_Area_Common_Property_Prop_SorushTrialOperator_02",
+      "abilityMixins": [
+        {
+          "$type": "AttachToGadgetStateMixin",
+          "gadgetState": 202,
+          "modifierName": "ReMove"
+        }
+      ],
+      "modifiers": {
+        "AddEffect": {
+          "modifierName": "",
+          "elementDurability": 100,
+          "onAdded": [
+            {
+              "$type": "AttachEffect",
+              "effectPattern": "Eff_SceneObj_Challengestarter_02",
+              "born": {
+                "$type": "ConfigBornByAttachPoint",
+                "useRotation": true,
+                "attachPointName": "EffectPoint"
+              }
+            }
+          ]
+        },
+        "ReMove": {
+          "modifierName": "",
+          "duration": 2,
+          "elementDurability": 100,
+          "onRemoved": [
+            {
+              "$type": "RemoveModifier",
+              "modifierName": "AddEffect"
+            }
+          ]
+        }
+      },
+      "onAdded": [
+        {
+          "$type": "AttachModifier",
+          "modifierName": "AddEffect"
+        }
+      ]
+    }
+  },
+  {
+    "Default": {
+      "$type": "ConfigAbility",
+      "abilityName": "Activity_SorushTrialRace_SorushBeHit_TeamAbility",
+      "abilityMixins": [
+        {
+          "$type": "AttachModifierToSelfGlobalValueMixin",
+          "globalValueKey": "Sorush_Active",
+          "defaultGlobalValueOnCreate": 0,
+          "valueSteps": [
+            -0.5,
+            0.5
+          ],
+          "modifierNameSteps": [
+            "UNIQUE_SorushBeHit_TeamHandle"
+          ]
+        }
+      ],
+      "modifiers": {
+        "Blank": {
+          "modifierName": "",
+          "elementDurability": 100
+        },
+        "UNIQUE_SorushBeHit_TeamHandle": {
+          "stacking": "Unique",
+          "modifierName": "",
+          "isUnique": true,
+          "elementDurability": 100,
+          "thinkInterval": 1,
+          "onThinkInterval": [
+            {
+              "$type": "ApplyModifier",
+              "target": "Vehicle",
+              "doOffStage": true,
+              "modifierName": "UNIQUE_SorushBeHit_DetectDamage"
+            }
+          ]
+        },
+        "UNIQUE_SorushBeHit_DetectDamage": {
+          "stacking": "Unique",
+          "modifierName": "",
+          "isUnique": true,
+          "elementDurability": 100,
+          "state": "LockHP",
+          "onBeingHit": [
+            {
+              "$type": "FireEffect",
+              "effectPattern": "Eff_SceneObj_AbyssEmitter_01_BulletHit"
+            },
+            {
+              "$type": "ApplyModifier",
+              "predicates": [
+                {
+                  "$type": "ByAttackTags",
+                  "attackTags": [
+                    "SorushHit"
+                  ]
+                }
+              ],
+              "modifierName": "UNIQUE_SorushBeHit_DamageProgress"
+            }
+          ]
+        },
+        "UNIQUE_SorushBeHit_DamageProgress": {
+          "stacking": "Unique",
+          "modifierName": "",
+          "isUnique": true,
+          "duration": 1,
+          "elementDurability": 100,
+          "onAdded": [
+            {
+              "$type": "ServerLuaCall",
+              "luaCallType": "CurGalleryControlGroup",
+              "funcName": "SLC_Activity_SorushTrialRace_SorushBeHit",
+              "MPPMFEDKGHC": 0,
+              "BOKNHLDBKKK": 0,
+              "CHOIIMHDNHK": 0
+            }
+          ]
+        }
+      },
+      "onAdded": [
+        {
+          "$type": "SetGlobalValue",
+          "value": 0,
+          "key": "Sorush_Active",
+          "maxValue": 0,
+          "minValue": 0
+        }
+      ],
+      "onRemoved": [
+        {
+          "$type": "RemoveUniqueModifier",
+          "target": "Vehicle",
+          "modifierName": "UNIQUE_SorushBeHit_DetectDamage"
+        }
+      ],
+      "isDynamicAbility": true
+    }
+  },
+  {
+    "Default": {
+      "$type": "ConfigAbility",
+      "abilityName": "Activity_SorushTrialPhotoMatch_SorushPhotoActive_TeamAbility",
+      "onAdded": [
+        {
+          "$type": "SetGlobalValue",
+          "target": "Team",
+          "value": 1,
+          "key": "_ACTIVITY_SORUSHTRIAL_PHOTOMATCH_ACTIVE_",
+          "maxValue": 0,
+          "minValue": 0
+        }
+      ],
+      "isDynamicAbility": true
+    }
+  },
+  {
+    "Default": {
+      "$type": "ConfigAbility",
+      "abilityName": "Activity_SorushTrialPhotoMatch_SorushPhotoDeActive_TeamAbility",
+      "onRemoved": [
+        {
+          "$type": "SetGlobalValue",
+          "target": "Team",
+          "value": 0,
+          "key": "_ACTIVITY_SORUSHTRIAL_PHOTOMATCH_ACTIVE_",
+          "maxValue": 0,
+          "minValue": 0
+        }
+      ],
+      "isDynamicAbility": true
+    }
+  },
+  {
+    "Default": {
+      "$type": "ConfigAbility",
+      "abilityName": "SceneObj_Area_Common_Property_Ani_Prop_SorushTrailPhotoMatchPoint_01",
+      "abilityMixins": [
+        {
+          "$type": "AttachToGadgetStateMixin",
+          "modifierName": "Hide"
+        },
+        {
+          "$type": "AttachToGadgetStateMixin",
+          "gadgetState": 201,
+          "modifierName": "Active"
+        }
+      ],
+      "modifiers": {
+        "Active": {
+          "modifierName": "",
+          "elementDurability": 100,
+          "onAdded": [
+            {
+              "$type": "AttachEffect",
+              "effectPattern": "Eff_Time_LimitPosition_01"
+            }
+          ],
+          "onRemoved": [
+            {
+              "$type": "FireEffect",
+              "effectPattern": "Eff_LimitPosition_Disappear"
+            }
+          ]
+        },
+        "Hide": {
+          "modifierName": "",
+          "elementDurability": 100
+        }
+      }
+    }
+  },
+  {
+    "Default": {
+      "$type": "ConfigAbility",
+      "abilityName": "Activity_SorushTrial_BanItem_TeamAbility",
+      "abilityMixins": [
+        {
+          "$type": "CurLocalAvatarMixinV2",
+          "modifierName": "Activity_SorushTrial_BanItem"
+        }
+      ],
+      "modifiers": {
+        "Activity_SorushTrial_BanItem": {
+          "modifierName": "",
+          "elementDurability": 100,
+          "modifierMixins": [
+            {
+              "$type": "HideActionSlotMixin",
+              "HKCMDKIHHEC": "SlotQuickUse"
+            }
+          ]
+        }
+      },
+      "isDynamicAbility": true
+    }
+  },
+  {
+    "Default": {
+      "$type": "ConfigAbility",
+      "abilityName": "SceneObj_Gear_Platform_SorushTrailGlideDirtyBalloon_01",
+      "modifiers": {
+        "DirtyBalloon": {
+          "modifierName": "",
+          "duration": 0.2,
+          "elementDurability": 100,
+          "onAdded": [
+            {
+              "$type": "ServerLuaCall",
+              "luaCallType": "CurGalleryControlGroup",
+              "funcName": "SLC_Activity_SorushTrialRace_SorushBeHit",
+              "MPPMFEDKGHC": 0,
+              "BOKNHLDBKKK": 0,
+              "CHOIIMHDNHK": 0
+            }
+          ],
+          "onRemoved": [
+            {
+              "$type": "ApplyModifier",
+              "modifierName": "DirtyBalloon_Eff"
+            }
+          ]
+        },
+        "DirtyBalloon_Eff": {
+          "modifierName": "",
+          "duration": 1.5,
+          "elementDurability": 100,
+          "modifierMixins": [
+            {
+              "$type": "TriggerPostProcessEffectMixin",
+              "postEffectAssetName": "PostEffect_Scene_Mud",
+              "duration": 1.5
+            }
+          ],
+          "onAdded": [
+            {
+              "$type": "DungeonFogEffects",
+              "muteRemoteAction": true,
+              "enable": true,
+              "cameraFogEffectName": "Eff_SceneObj_GlideChampBalloon_03_02",
+              "playerFogEffectName": ""
+            }
+          ],
+          "onRemoved": [
+            {
+              "$type": "DungeonFogEffects",
+              "cameraFogEffectName": "",
+              "playerFogEffectName": ""
+            }
+          ]
+        }
+      },
+      "onFieldEnter": [
+        {
+          "$type": "ApplyModifier",
+          "target": "Target",
+          "modifierName": "DirtyBalloon"
+        },
+        {
+          "$type": "KillSelf"
+        }
+      ]
+    }
+  },
+  {
+    "Default": {
+      "$type": "ConfigAbility",
+      "abilityName": "Activity_SorushTrial_ClearLocalGadgets_TeamAbility",
+      "onAdded": [
+        {
+          "$type": "ClearLocalGadgets"
+        }
+      ],
+      "isDynamicAbility": true
+    }
+  }
+]
