@@ -1,0 +1,2181 @@
+[
+  {
+    "Default": {
+      "$type": "ConfigAbility",
+      "abilityName": "Animal_Boar_AIStateInitial",
+      "abilityMixins": [
+        {
+          "$type": "DoActionByAnimatorStateIDMixin",
+          "stateIDs": [
+            "Standby"
+          ],
+          "enterActions": [
+            {
+              "$type": "ReTriggerAISkillInitialCD",
+              "skillIDs": [
+                101,
+                102
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "Default": {
+      "$type": "ConfigAbility",
+      "abilityName": "Animal_Boar_Small_AIStateInitial",
+      "abilityMixins": [
+        {
+          "$type": "DoActionByPoseIDMixin",
+          "poseIDs": [
+            1
+          ],
+          "enterActions": [
+            {
+              "$type": "ReTriggerAISkillInitialCD",
+              "skillIDs": [
+                101,
+                102,
+                201
+              ]
+            }
+          ]
+        },
+        {
+          "$type": "DoActionByPoseIDMixin",
+          "poseIDs": [
+            2
+          ],
+          "enterActions": [
+            {
+              "$type": "ReTriggerAISkillInitialCD",
+              "skillIDs": [
+                202
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "Default": {
+      "$type": "ConfigAbility",
+      "abilityName": "Animal_Boar_SetPose",
+      "abilityMixins": [
+        {
+          "$type": "AttachToPoseIDMixin",
+          "poseIDs": [
+            101
+          ],
+          "modifierName": "SetFleePoseTimer"
+        }
+      ],
+      "modifiers": {
+        "SetFleePoseTimer": {
+          "modifierName": "",
+          "elementDurability": 100,
+          "thinkInterval": 6,
+          "onThinkInterval": [
+            {
+              "$type": "SetPoseInt",
+              "intID": "FleeState",
+              "value": 1
+            }
+          ]
+        }
+      },
+      "onAbilityStart": [
+        {
+          "$type": "SetPoseInt",
+          "intID": "FleeState"
+        },
+        {
+          "$type": "Predicated",
+          "target": "SelfAttackTarget",
+          "targetPredicates": [
+            {
+              "$type": "ByTargetPositionToSelfPosition",
+              "logic": "LesserOrEqual",
+              "value": 9
+            }
+          ],
+          "successActions": [
+            {
+              "$type": "SetPoseInt",
+              "intID": "FleeState",
+              "value": 2
+            }
+          ],
+          "failActions": [
+            {
+              "$type": "SetPoseInt",
+              "intID": "FleeState",
+              "value": 1
+            }
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "Default": {
+      "$type": "ConfigAbility",
+      "abilityName": "Animal_Boar_RushAtk",
+      "abilityMixins": [
+        {
+          "$type": "AttachToStateIDMixin",
+          "stateIDs": [
+            "RushAtk"
+          ],
+          "modifierName": "Animal_Boar_RushAtk_DamageCount"
+        },
+        {
+          "$type": "SteerAttackMixin",
+          "steerStateIDs": [
+            "RushAtk"
+          ],
+          "endNormalizedTime": 3,
+          "angularSpeed": 35,
+          "attackTrigger": "",
+          "attackDistance": 1.5
+        },
+        {
+          "$type": "DoActionByStateIDMixin",
+          "stateIDs": [
+            "RushAtk"
+          ],
+          "exitActions": [
+            {
+              "$type": "SetPoseInt",
+              "intID": "FleeState",
+              "value": 1
+            }
+          ]
+        },
+        {
+          "$type": "AttackHittingSceneMixin",
+          "onHittingScene": [
+            {
+              "$type": "SetAnimatorTrigger",
+              "triggerID": "CrashTrigger"
+            }
+          ]
+        }
+      ],
+      "modifiers": {
+        "Animal_Boar_RushAtk_DamageCount": {
+          "modifierName": "",
+          "elementDurability": 100,
+          "onAttackLanded": [
+            {
+              "$type": "Predicated",
+              "target": "Target",
+              "targetPredicates": [
+                {
+                  "$type": "ByEntityTypes",
+                  "entityTypes": [
+                    "Avatar"
+                  ]
+                }
+              ],
+              "successActions": [
+                {
+                  "$type": "DamageByAttackValue",
+                  "target": "Target",
+                  "predicates": [
+                    {
+                      "$type": "ByTargetGlobalValue",
+                      "key": "_BOAR_RUSH_HIT",
+                      "value": 0,
+                      "compareType": "NoneOrEqual"
+                    }
+                  ],
+                  "born": {
+                    "$type": "ConfigBornByHitPoint"
+                  },
+                  "attackInfo": {
+                    "attackTag": "",
+                    "attenuationTag": "",
+                    "attenuationGroup": "default",
+                    "attackProperty": {
+                      "damagePercentage": 1,
+                      "damagePercentageRatio": 0,
+                      "elementDurability": 100,
+                      "strikeType": "Blunt",
+                      "attackType": "Melee"
+                    },
+                    "hitPattern": {
+                      "onHitEffectName": "",
+                      "hitImpulseType": "LV0"
+                    }
+                  }
+                },
+                {
+                  "$type": "ApplyModifier",
+                  "target": "Target",
+                  "modifierName": "UNIQUE_Animal_Boar_RushAtk_Num"
+                }
+              ]
+            }
+          ]
+        },
+        "UNIQUE_Animal_Boar_RushAtk_Num": {
+          "stacking": "RefreshUniqueDurability",
+          "modifierName": "",
+          "isUnique": true,
+          "duration": 1.5,
+          "elementDurability": 100,
+          "onAdded": [
+            {
+              "$type": "SetGlobalValue",
+              "value": 1,
+              "key": "_BOAR_RUSH_HIT",
+              "maxValue": 0,
+              "minValue": 0
+            }
+          ],
+          "onRemoved": [
+            {
+              "$type": "SetGlobalValue",
+              "value": 0,
+              "key": "_BOAR_RUSH_HIT",
+              "maxValue": 0,
+              "minValue": 0
+            }
+          ]
+        }
+      },
+      "onAbilityStart": [
+        {
+          "$type": "TriggerAttackEvent",
+          "attackEvent": {
+            "attackPattern": {
+              "$type": "ConfigAttackBox",
+              "triggerType": "TriggerNoRepeat",
+              "born": {
+                "$type": "ConfigBornBySelf",
+                "offset": {
+                  "y": 0.5
+                }
+              },
+              "size": {
+                "x": 1.5,
+                "y": 1.5,
+                "z": 2
+              }
+            },
+            "attackInfo": {
+              "attackTag": "",
+              "attenuationTag": "",
+              "attenuationGroup": "default",
+              "attackProperty": {
+                "damagePercentage": 0,
+                "damagePercentageRatio": 0,
+                "elementDurability": 100,
+                "enBreak": 1000
+              },
+              "hitPattern": {
+                "onHitEffectName": "default",
+                "hitImpulseType": "LV4",
+                "canBeDefenceHalt": true
+              }
+            }
+          },
+          "targetType": "Enemy"
+        }
+      ]
+    }
+  },
+  {
+    "Default": {
+      "$type": "ConfigAbility",
+      "abilityName": "Boar_RushAtk_Attack",
+      "onAbilityStart": [
+        {
+          "$type": "TriggerAttackEvent",
+          "attackEvent": {
+            "attackPattern": {
+              "$type": "ConfigAttackSphere",
+              "triggerType": "TriggerNoRepeat",
+              "born": {
+                "$type": "ConfigBornByCollisionPoint"
+              },
+              "radius": 0.75
+            },
+            "attackInfo": {
+              "attackTag": "",
+              "attenuationTag": "",
+              "attenuationGroup": "default",
+              "attackProperty": {
+                "damagePercentage": 1,
+                "damagePercentageRatio": 0,
+                "elementDurability": 100,
+                "strikeType": "Blunt",
+                "enBreak": 1000,
+                "attackType": "Melee"
+              },
+              "hitPattern": {
+                "onHitEffectName": "default",
+                "hitImpulseType": "LV4",
+                "canBeDefenceHalt": true
+              }
+            }
+          },
+          "targetType": "Enemy"
+        }
+      ]
+    }
+  },
+  {
+    "Default": {
+      "$type": "ConfigAbility",
+      "abilityName": "Animal_Boar_Disappear",
+      "abilityMixins": [
+        {
+          "$type": "DoActionByPoseIDMixin",
+          "poseIDs": [
+            202,
+            2
+          ],
+          "enterActions": [
+            {
+              "$type": "SetRandomOverrideMapValue",
+              "valueRangeMax": 7.5,
+              "valueRangeMin": 5,
+              "overrideMapKey": "RandomTimer"
+            }
+          ]
+        },
+        {
+          "$type": "AttachToPoseIDMixin",
+          "poseIDs": [
+            202,
+            2
+          ],
+          "modifierName": "Flee"
+        }
+      ],
+      "abilitySpecials": {
+        "RandomTimer": 5
+      },
+      "modifiers": {
+        "Flee": {
+          "modifierName": "",
+          "duration": "RandomTimer",
+          "elementDurability": 100,
+          "onRemoved": [
+            {
+              "$type": "ApplyModifier",
+              "modifierName": "DisappearTimer"
+            }
+          ]
+        },
+        "DisappearTimer": {
+          "modifierName": "",
+          "duration": 2,
+          "elementDurability": 100,
+          "onAdded": [
+            {
+              "$type": "StartDither",
+              "duration": 3
+            }
+          ],
+          "onRemoved": [
+            {
+              "$type": "SetAnimatorBool",
+              "boolID": "Disappear",
+              "value": true
+            },
+            {
+              "$type": "KillSelf",
+              "banDrop": true,
+              "banExp": true,
+              "killSelfType": "Disappear"
+            }
+          ]
+        }
+      }
+    }
+  },
+  {
+    "Default": {
+      "$type": "ConfigAbility",
+      "abilityName": "Animal_Boar_Small_Disappear",
+      "abilityMixins": [
+        {
+          "$type": "DoActionByPoseIDMixin",
+          "poseIDs": [
+            202
+          ],
+          "enterActions": [
+            {
+              "$type": "SetRandomOverrideMapValue",
+              "valueRangeMax": 7.5,
+              "valueRangeMin": 5,
+              "overrideMapKey": "RandomTimer"
+            }
+          ]
+        },
+        {
+          "$type": "AttachToPoseIDMixin",
+          "poseIDs": [
+            202
+          ],
+          "modifierName": "Flee"
+        }
+      ],
+      "abilitySpecials": {
+        "RandomTimer": 5
+      },
+      "modifiers": {
+        "Flee": {
+          "modifierName": "",
+          "duration": "RandomTimer",
+          "elementDurability": 100,
+          "onRemoved": [
+            {
+              "$type": "ApplyModifier",
+              "modifierName": "DisappearTimer"
+            }
+          ]
+        },
+        "DisappearTimer": {
+          "modifierName": "",
+          "duration": 2,
+          "elementDurability": 100,
+          "onAdded": [
+            {
+              "$type": "StartDither",
+              "duration": 3
+            }
+          ],
+          "onRemoved": [
+            {
+              "$type": "SetAnimatorBool",
+              "boolID": "Disappear",
+              "value": true
+            },
+            {
+              "$type": "KillSelf",
+              "banDrop": true,
+              "banExp": true,
+              "killSelfType": "Disappear"
+            }
+          ]
+        }
+      }
+    }
+  },
+  {
+    "Default": {
+      "$type": "ConfigAbility",
+      "abilityName": "Animal_Boar_Flee",
+      "abilityMixins": [
+        {
+          "$type": "AttachToPoseIDMixin",
+          "poseIDs": [
+            202,
+            2
+          ],
+          "modifierName": "Animal_Boar_04_Flee"
+        }
+      ],
+      "modifiers": {
+        "Animal_Boar_04_Flee": {
+          "modifierName": "",
+          "elementDurability": 100,
+          "onAdded": [
+            {
+              "$type": "SetPoseInt",
+              "intID": "FleeState",
+              "value": 1
+            }
+          ]
+        }
+      }
+    }
+  },
+  {
+    "Default": {
+      "$type": "ConfigAbility",
+      "abilityName": "Animal_Boar_Small_ToRun",
+      "onAbilityStart": [
+        {
+          "$type": "SetPoseBool",
+          "boolID": "RunState",
+          "value": true
+        }
+      ]
+    }
+  },
+  {
+    "Default": {
+      "$type": "ConfigAbility",
+      "abilityName": "Animal_Boar_Small_ToWander",
+      "onAbilityStart": [
+        {
+          "$type": "SetPoseBool",
+          "boolID": "RunState"
+        }
+      ]
+    }
+  },
+  {
+    "Default": {
+      "$type": "ConfigAbility",
+      "abilityName": "Animal_Boar_03_Steer",
+      "abilityMixins": [
+        {
+          "$type": "SteerAttackMixin",
+          "steerStateIDs": [
+            "RushAtk_BS"
+          ],
+          "endNormalizedTime": 0.2,
+          "angularSpeed": 720,
+          "attackTrigger": ""
+        },
+        {
+          "$type": "SteerAttackMixin",
+          "steerStateIDs": [
+            "RushAtk_BS"
+          ],
+          "startNormalizedTime": 0.8,
+          "angularSpeed": 720,
+          "attackTrigger": ""
+        },
+        {
+          "$type": "SteerAttackMixin",
+          "steerStateIDs": [
+            "MeleeAttackTurn"
+          ],
+          "angularSpeed": 300,
+          "attackTrigger": ""
+        },
+        {
+          "$type": "SteerAttackMixin",
+          "steerStateIDs": [
+            "Summon"
+          ],
+          "endNormalizedTime": 0.09,
+          "angularSpeed": 300,
+          "attackTrigger": ""
+        }
+      ]
+    }
+  },
+  {
+    "Default": {
+      "$type": "ConfigAbility",
+      "abilityName": "Animal_Boar_03_RushTimeBeSafe",
+      "abilityMixins": [
+        {
+          "$type": "AttachModifierToSelfGlobalValueMixin",
+          "globalValueKey": "_ANIMAL_BOAR_03_RUSHSTATE",
+          "defaultGlobalValueOnCreate": 0,
+          "valueSteps": [
+            -1,
+            0.5,
+            1.5
+          ],
+          "modifierNameSteps": [
+            "NotInRush",
+            "InRushState"
+          ]
+        }
+      ],
+      "modifiers": {
+        "Animal_Boar_03_RushSafeTimer": {
+          "modifierName": "",
+          "duration": 3.5,
+          "elementDurability": 100,
+          "onRemoved": [
+            {
+              "$type": "SetAnimatorTrigger",
+              "triggerID": "ReachTarget"
+            },
+            {
+              "$type": "AddGlobalValue",
+              "value": -2,
+              "key": "_ANIMAL_BOAR_03_RUSHSTATE",
+              "useLimitRange": true,
+              "maxValue": 1,
+              "minValue": 0
+            }
+          ]
+        },
+        "NotInRush": {
+          "modifierName": "",
+          "elementDurability": 100
+        },
+        "InRushState": {
+          "modifierName": "",
+          "elementDurability": 100,
+          "onAdded": [
+            {
+              "$type": "ApplyModifier",
+              "modifierName": "Animal_Boar_03_RushSafeTimer"
+            }
+          ]
+        }
+      },
+      "onAdded": [
+        {
+          "$type": "AddGlobalValue",
+          "value": -2,
+          "key": "_ANIMAL_BOAR_03_RUSHSTATE",
+          "useLimitRange": true,
+          "maxValue": 1,
+          "minValue": 0
+        }
+      ],
+      "onAbilityStart": [
+        {
+          "$type": "AddGlobalValue",
+          "value": 1,
+          "key": "_ANIMAL_BOAR_03_RUSHSTATE",
+          "useLimitRange": true,
+          "maxValue": 1,
+          "minValue": 0
+        }
+      ]
+    }
+  },
+  {
+    "Default": {
+      "$type": "ConfigAbility",
+      "abilityName": "Animal_Boar_03_RushTimer",
+      "abilityMixins": [
+        {
+          "$type": "AttachToNormalizedTimeMixin",
+          "stateID": "Crash_Loop",
+          "modifierName": "Animal_Boar_03_StunEffect"
+        },
+        {
+          "$type": "AttachToNormalizedTimeMixin",
+          "stateID": "Crash_BS",
+          "modifierName": "Animal_Boar_03_StunEffect"
+        },
+        {
+          "$type": "AttachToNormalizedTimeMixin",
+          "stateID": "RushAtk1",
+          "modifierName": "Animal_Boar_03_RushTimesNumPlus"
+        },
+        {
+          "$type": "AttachToNormalizedTimeMixin",
+          "stateID": "Crash_BS",
+          "modifierName": "Animal_Boar_03_ResetRushTimese"
+        },
+        {
+          "$type": "AttachToNormalizedTimeMixin",
+          "stateID": "Standby",
+          "modifierName": "Animal_Boar_03_ResetRushTimese"
+        }
+      ],
+      "abilitySpecials": {
+        "RushTimesPlus": 0,
+        "RushDistance": 0
+      },
+      "modifiers": {
+        "Animal_Boar_03_StunEffect": {
+          "modifierName": "",
+          "elementDurability": 100,
+          "onAdded": [
+            {
+              "$type": "AttachEffect",
+              "effectPattern": "Eff_Monster_Mimik_Ice_Down_02"
+            }
+          ]
+        },
+        "Animal_Boar_03_RushTimer": {
+          "modifierName": "",
+          "duration": 0.7,
+          "elementDurability": 100,
+          "onAdded": [
+            {
+              "$type": "Predicated",
+              "target": "SelfAttackTarget",
+              "targetPredicates": [
+                {
+                  "$type": "ByTargetPositionToSelfPosition",
+                  "logic": "LesserOrEqual",
+                  "value": 10
+                }
+              ],
+              "successActions": [
+                {
+                  "$type": "FixedMonsterRushMove",
+                  "toPos": {
+                    "$type": "ConfigBornBySelf",
+                    "offset": {
+                      "z": 15
+                    }
+                  },
+                  "timeRange": 0.7,
+                  "maxRange": 15,
+                  "animatorStateIDs": [
+                    "RushAtk1_BS",
+                    "RushAtk2_BS",
+                    "RushAtk3_BS",
+                    "RushAtk1",
+                    "RushAtk2",
+                    "RushAtk3"
+                  ],
+                  "overrideMoveCollider": ""
+                }
+              ],
+              "failActions": [
+                {
+                  "$type": "SetGlobalValueByTargetDistance",
+                  "target": "SelfAttackTarget",
+                  "key": "_ANIMAL_BOAR_03_RUSHDISTANCE"
+                },
+                {
+                  "$type": "SetGlobalValueToOverrideMap",
+                  "globalValueKey": "_ANIMAL_BOAR_03_RUSHDISTANCE",
+                  "overrideMapKey": "RushDistance"
+                },
+                {
+                  "$type": "FixedMonsterRushMove",
+                  "toPos": {
+                    "$type": "ConfigBornBySelf",
+                    "offset": {
+                      "z": [
+                        "RushDistance",
+                        4,
+                        "Add"
+                      ]
+                    }
+                  },
+                  "timeRange": 0.7,
+                  "animatorStateIDs": [
+                    "RushAtk1_BS",
+                    "RushAtk2_BS",
+                    "RushAtk3_BS",
+                    "RushAtk1",
+                    "RushAtk2",
+                    "RushAtk3"
+                  ],
+                  "overrideMoveCollider": ""
+                }
+              ]
+            },
+            {
+              "$type": "AttachEffect",
+              "effectPattern": "Eff_Animal_Boar_03_RushAtkDust"
+            }
+          ],
+          "onRemoved": [
+            {
+              "$type": "SetAnimatorTrigger",
+              "triggerID": "ReachTarget"
+            }
+          ]
+        },
+        "Animal_Boar_03_RushTimesNumPlus": {
+          "modifierName": "",
+          "elementDurability": 100,
+          "onAdded": [
+            {
+              "$type": "SetGlobalValue",
+              "value": 0,
+              "key": "_BOAR_03_RUSHTIMESPlUS",
+              "useLimitRange": true,
+              "randomInRange": true,
+              "maxValue": 2,
+              "minValue": 1
+            },
+            {
+              "$type": "SetGlobalValueToOverrideMap",
+              "globalValueKey": "_BOAR_03_RUSHTIMESPlUS",
+              "overrideMapKey": "RushTimesPlus"
+            },
+            {
+              "$type": "AddGlobalValue",
+              "value": "RushTimesPlus",
+              "key": "_BOAR_03_RUSHTIMES",
+              "useLimitRange": true,
+              "maxValue": 4,
+              "minValue": 0
+            },
+            {
+              "$type": "SetAnimatorBool",
+              "predicates": [
+                {
+                  "$type": "ByTargetGlobalValue",
+                  "key": "_BOAR_03_RUSHTIMES",
+                  "value": 4
+                }
+              ],
+              "boolID": "RushOver",
+              "value": true
+            }
+          ]
+        },
+        "Animal_Boar_03_ResetRushTimese": {
+          "modifierName": "",
+          "elementDurability": 100,
+          "onAdded": [
+            {
+              "$type": "AddGlobalValue",
+              "value": -5,
+              "key": "_BOAR_03_RUSHTIMES",
+              "useLimitRange": true,
+              "maxValue": 4,
+              "minValue": 0
+            },
+            {
+              "$type": "SetAnimatorBool",
+              "boolID": "RushOver"
+            }
+          ]
+        }
+      },
+      "onAdded": [
+        {
+          "$type": "AddGlobalValue",
+          "value": 0,
+          "key": "_BOAR_03_RUSHTIMESPlUS",
+          "useLimitRange": true,
+          "maxValue": 2,
+          "minValue": 0
+        },
+        {
+          "$type": "AddGlobalValue",
+          "value": 0,
+          "key": "_BOAR_03_RUSHTIMES",
+          "useLimitRange": true,
+          "maxValue": 4,
+          "minValue": 0
+        },
+        {
+          "$type": "AddGlobalValue",
+          "value": -2,
+          "key": "_MONSTER_ANIMAL_BOAR_03_RUSHHITSCENE",
+          "useLimitRange": true,
+          "maxValue": 1,
+          "minValue": 0
+        }
+      ],
+      "onAbilityStart": [
+        {
+          "$type": "ApplyModifier",
+          "modifierName": "Animal_Boar_03_RushTimer"
+        }
+      ]
+    }
+  },
+  {
+    "Default": {
+      "$type": "ConfigAbility",
+      "abilityName": "Animal_Boar_03_RushAtkBulletDamage",
+      "onAbilityStart": [
+        {
+          "$type": "DamageByAttackValue",
+          "target": "Target",
+          "attackInfo": {
+            "attackTag": "",
+            "attenuationTag": "",
+            "attenuationGroup": "default",
+            "attackProperty": {
+              "damagePercentage": 1,
+              "damagePercentageRatio": 0,
+              "elementDurability": 100,
+              "strikeType": "Blunt",
+              "enBreak": 1000
+            },
+            "hitPattern": {
+              "onHitEffectName": "default",
+              "hitImpulseType": "LV5",
+              "retreatType": "ByTangent"
+            }
+          }
+        }
+      ]
+    }
+  },
+  {
+    "Default": {
+      "$type": "ConfigAbility",
+      "abilityName": "Animal_Boar_03_RushAttackDamage",
+      "abilityMixins": [
+        {
+          "$type": "AttachToStateIDMixin",
+          "stateIDs": [
+            "RushAtk_Loop"
+          ],
+          "modifierName": "Animal_Boar_03_RushAttackDamage"
+        }
+      ],
+      "modifiers": {
+        "Animal_Boar_03_RushAttackDamage": {
+          "modifierName": "",
+          "elementDurability": 100,
+          "onAdded": [
+            {
+              "$type": "TriggerBullet",
+              "bulletID": 42802005,
+              "born": {
+                "$type": "ConfigBornBySelf"
+              },
+              "lifeByOwnerIsAlive": true,
+              "trackTarget": "Self"
+            }
+          ],
+          "onRemoved": [
+            {
+              "$type": "KillGadget",
+              "gadgetInfo": {
+                "sortType": "Reversed",
+                "configID": 42802005
+              }
+            }
+          ]
+        }
+      }
+    }
+  },
+  {
+    "Default": {
+      "$type": "ConfigAbility",
+      "abilityName": "Animal_Boar_03_DestroyGadget",
+      "abilityMixins": [
+        {
+          "$type": "AttachToStateIDMixin",
+          "stateIDs": [
+            "RushAtk_Loop"
+          ],
+          "modifierName": "Animal_Boar_03_DestroyGadget"
+        },
+        {
+          "$type": "AttachModifierToSelfGlobalValueMixin",
+          "globalValueKey": "_ANIMAL_BOAR_03_CRASH_TIMES",
+          "defaultGlobalValueOnCreate": 0,
+          "valueSteps": [
+            -1,
+            2.5,
+            11
+          ],
+          "modifierNameSteps": [
+            "Angry_Empty",
+            "Animal_Boar_03_Angry"
+          ]
+        },
+        {
+          "$type": "AttachToStateIDMixin",
+          "stateIDs": [
+            "Crash"
+          ],
+          "modifierName": "Animal_Boar_03_Crash"
+        },
+        {
+          "$type": "AttachModifierToSelfGlobalValueMixin",
+          "globalValueKey": "_MONSTER_ANIMAL_BOAR_03_RUSHHITSCENE",
+          "defaultGlobalValueOnCreate": 0,
+          "valueSteps": [
+            -0.5,
+            0.5,
+            1.5
+          ],
+          "modifierNameSteps": [
+            "NotRushHitScene",
+            "RushHitScene"
+          ]
+        },
+        {
+          "$type": "AttachToStateIDMixin",
+          "stateIDs": [
+            "RushAtk_BS",
+            "RushAtk_AS"
+          ],
+          "modifierName": "Animal_Boar_03_ResetRushValue"
+        },
+        {
+          "$type": "AttachToStateIDMixin",
+          "stateIDs": [
+            "AngryState"
+          ],
+          "modifierName": "Animal_Boar_03_ForceAngry"
+        },
+        {
+          "$type": "AttachToPoseIDMixin",
+          "poseIDs": [
+            1,
+            2
+          ],
+          "modifierName": "AnimaL_Boar_03_ExitBattle"
+        }
+      ],
+      "modifiers": {
+        "Angry_Empty": {
+          "modifierName": "",
+          "elementDurability": 100,
+          "onAdded": [
+            {
+              "$type": "SetPoseBool",
+              "boolID": "Angry"
+            },
+            {
+              "$type": "SetAnimatorBool",
+              "boolID": "Angry"
+            }
+          ]
+        },
+        "Animal_Boar_03_Angry": {
+          "modifierName": "",
+          "duration": 60,
+          "elementDurability": 100,
+          "properties": {
+            "Actor_AttackRatio": 0.3
+          },
+          "onAdded": [
+            {
+              "$type": "SetPoseBool",
+              "boolID": "Angry",
+              "value": true
+            },
+            {
+              "$type": "SetAnimatorBool",
+              "boolID": "Angry",
+              "value": true
+            },
+            {
+              "$type": "SetAnimatorTrigger",
+              "triggerID": "AngryTrigger"
+            },
+            {
+              "$type": "FireEffect",
+              "effectPattern": "Eff_Animal_Boar_03_Angry",
+              "born": {
+                "$type": "ConfigBornBySelf"
+              }
+            },
+            {
+              "$type": "AttachEffect",
+              "effectPattern": "Eff_Animal_Boar_03_Angry_NoseAir"
+            },
+            {
+              "$type": "SetGlobalValue",
+              "value": 1,
+              "key": "_WATCHER_82072_",
+              "maxValue": 0,
+              "minValue": 0
+            },
+            {
+              "$type": "AttachEffect",
+              "effectPattern": "Eff_Animal_Boar_03_Angry_EyeTrail"
+            }
+          ],
+          "onRemoved": [
+            {
+              "$type": "SetPoseBool",
+              "boolID": "Angry"
+            },
+            {
+              "$type": "SetAnimatorBool",
+              "boolID": "Angry"
+            },
+            {
+              "$type": "AddGlobalValue",
+              "value": -10,
+              "key": "_ANIMAL_BOAR_03_CRASH_TIMES",
+              "useLimitRange": true,
+              "maxValue": 10,
+              "minValue": 0
+            }
+          ]
+        },
+        "Animal_Boar_03_DestroyGadget": {
+          "modifierName": "",
+          "elementDurability": 100,
+          "modifierMixins": [
+            {
+              "$type": "AttackHittingSceneMixin",
+              "onHittingScene": [
+                {
+                  "$type": "AddGlobalValue",
+                  "value": 1,
+                  "key": "_MONSTER_ANIMAL_BOAR_03_RUSHHITSCENE",
+                  "useLimitRange": true,
+                  "maxValue": 1,
+                  "minValue": 0
+                },
+                {
+                  "$type": "Predicated",
+                  "targetPredicates": [
+                    {
+                      "$type": "ByTargetGlobalValue",
+                      "key": "_ANIMAL_BOAR_03_CRASH_TIMES",
+                      "value": 2,
+                      "compareType": "LessAndEqual"
+                    }
+                  ],
+                  "successActions": [
+                    {
+                      "$type": "SetAnimatorTrigger",
+                      "triggerID": "CrashTrigger"
+                    }
+                  ]
+                }
+              ],
+              "animEventIDs": [
+                "RushAtk_HitScene"
+              ]
+            }
+          ]
+        },
+        "Animal_Boar_03_Crash": {
+          "modifierName": "",
+          "elementDurability": 100,
+          "onAdded": [
+            {
+              "$type": "AddGlobalValue",
+              "predicates": [
+                {
+                  "$type": "ByAnimatorBool",
+                  "parameter": "Angry"
+                }
+              ],
+              "value": 1,
+              "key": "_ANIMAL_BOAR_03_CRASH_TIMES",
+              "useLimitRange": true,
+              "maxValue": 10,
+              "minValue": 0
+            },
+            {
+              "$type": "FireEffect",
+              "effectPattern": "Eff_Animal_Boar_03_RushStun_Explode",
+              "born": {
+                "$type": "ConfigBornBySelf",
+                "offset": {
+                  "y": 1,
+                  "z": 1
+                }
+              }
+            }
+          ]
+        },
+        "NotRushHitScene": {
+          "modifierName": "",
+          "elementDurability": 100
+        },
+        "RushHitScene": {
+          "modifierName": "",
+          "elementDurability": 100,
+          "onAdded": [
+            {
+              "$type": "TriggerAttackEvent",
+              "attackEvent": {
+                "attackPattern": {
+                  "$type": "ConfigAttackBox",
+                  "triggerType": "TriggerNoRepeat",
+                  "checkHitLayerType": "OnlyHitScene",
+                  "born": {
+                    "$type": "ConfigBornBySelf",
+                    "offset": {
+                      "z": 5
+                    }
+                  },
+                  "size": {
+                    "x": 4,
+                    "y": 4,
+                    "z": 7
+                  }
+                },
+                "attackInfo": {
+                  "attackTag": "",
+                  "attenuationTag": "",
+                  "attenuationGroup": "default",
+                  "attackProperty": {
+                    "damagePercentage": 0,
+                    "damagePercentageRatio": 0,
+                    "elementDurability": 100,
+                    "strikeType": "Blunt",
+                    "enBreak": 5000
+                  },
+                  "hitPattern": {
+                    "onHitEffectName": "default",
+                    "hitImpulseType": "LV4"
+                  }
+                }
+              },
+              "targetType": "All"
+            }
+          ]
+        },
+        "Animal_Boar_03_ResetRushValue": {
+          "modifierName": "",
+          "elementDurability": 100,
+          "onAdded": [
+            {
+              "$type": "AddGlobalValue",
+              "value": -2,
+              "key": "_MONSTER_ANIMAL_BOAR_03_RUSHHITSCENE",
+              "useLimitRange": true,
+              "maxValue": 1,
+              "minValue": 0
+            }
+          ]
+        },
+        "Animal_Boar_03_ForceAngry": {
+          "modifierName": "",
+          "elementDurability": 100,
+          "onAdded": [
+            {
+              "$type": "AddGlobalValue",
+              "value": 10,
+              "key": "_ANIMAL_BOAR_03_CRASH_TIMES",
+              "useLimitRange": true,
+              "maxValue": 10,
+              "minValue": 0
+            }
+          ]
+        },
+        "AnimaL_Boar_03_ExitBattle": {
+          "modifierName": "",
+          "elementDurability": 100,
+          "onAdded": [
+            {
+              "$type": "SetAnimatorBool",
+              "boolID": "Angry"
+            },
+            {
+              "$type": "AddGlobalValue",
+              "value": -10,
+              "key": "_ANIMAL_BOAR_03_CRASH_TIMES",
+              "useLimitRange": true,
+              "maxValue": 10,
+              "minValue": 0
+            },
+            {
+              "$type": "SetGlobalValue",
+              "value": 0,
+              "key": "_WATCHER_82072_",
+              "maxValue": 0,
+              "minValue": 0
+            }
+          ]
+        }
+      },
+      "onKill": [
+        {
+          "$type": "DoWatcherSystemAction",
+          "predicates": [
+            {
+              "$type": "ByTargetGlobalValue",
+              "target": "Self",
+              "key": "_WATCHER_82072_",
+              "value": 1
+            }
+          ],
+          "watcherId": 81043,
+          "inThreatListOnly": true
+        }
+      ]
+    }
+  },
+  {
+    "Default": {
+      "$type": "ConfigAbility",
+      "abilityName": "Animal_Boar_03_ThrowSnowBigBall",
+      "onAbilityStart": [
+        {
+          "$type": "TriggerBullet",
+          "bulletID": 42802002,
+          "born": {
+            "$type": "ConfigBornByTarget",
+            "offset": {
+              "y": 0.2,
+              "z": 2.3
+            }
+          }
+        }
+      ]
+    }
+  },
+  {
+    "Default": {
+      "$type": "ConfigAbility",
+      "abilityName": "Animal_Boar_03_SummonBrotherThrow",
+      "modifiers": {
+        "Animal_Boar_03_SummonBrotherThrow": {
+          "modifierName": "",
+          "duration": 1.58,
+          "elementDurability": 100,
+          "onRemoved": [
+            {
+              "$type": "TriggerBullet",
+              "bulletID": 42802003,
+              "born": {
+                "$type": "ConfigBornByTarget",
+                "offset": {
+                  "x": -2.8,
+                  "y": 0.1,
+                  "z": 2.2
+                },
+                "onGround": true
+              }
+            },
+            {
+              "$type": "TriggerBullet",
+              "bulletID": 42802003,
+              "born": {
+                "$type": "ConfigBornByTarget",
+                "offset": {
+                  "x": 2.8,
+                  "y": 0.1,
+                  "z": 2.2
+                },
+                "onGround": true
+              }
+            },
+            {
+              "$type": "TriggerBullet",
+              "bulletID": 42802003,
+              "born": {
+                "$type": "ConfigBornByTarget",
+                "offset": {
+                  "x": -5,
+                  "y": 0.1,
+                  "z": 6
+                },
+                "onGround": true
+              }
+            },
+            {
+              "$type": "TriggerBullet",
+              "bulletID": 42802003,
+              "born": {
+                "$type": "ConfigBornByTarget",
+                "offset": {
+                  "x": 5,
+                  "y": 0.1,
+                  "z": 6
+                },
+                "onGround": true
+              }
+            }
+          ]
+        },
+        "Animal_Boar_03_SummonBrotherEffect": {
+          "modifierName": "",
+          "duration": 0.1,
+          "elementDurability": 100,
+          "onAdded": [
+            {
+              "$type": "FireEffect",
+              "effectPattern": "Eff_Animal_Boar_03_SummonBrotherBS",
+              "born": {
+                "$type": "ConfigBornByTarget",
+                "offset": {
+                  "x": -2.8,
+                  "y": 0.1,
+                  "z": 2.2
+                },
+                "onGround": true
+              }
+            },
+            {
+              "$type": "FireEffect",
+              "effectPattern": "Eff_Animal_Boar_03_SummonBrotherBS",
+              "born": {
+                "$type": "ConfigBornByTarget",
+                "offset": {
+                  "x": 2.8,
+                  "y": 0.1,
+                  "z": 2.2
+                },
+                "onGround": true
+              }
+            },
+            {
+              "$type": "FireEffect",
+              "effectPattern": "Eff_Animal_Boar_03_SummonBrotherBS",
+              "born": {
+                "$type": "ConfigBornByTarget",
+                "offset": {
+                  "x": -5,
+                  "y": 0.1,
+                  "z": 6
+                },
+                "onGround": true
+              }
+            },
+            {
+              "$type": "FireEffect",
+              "effectPattern": "Eff_Animal_Boar_03_SummonBrotherBS",
+              "born": {
+                "$type": "ConfigBornByTarget",
+                "offset": {
+                  "x": 5,
+                  "y": 0.1,
+                  "z": 6
+                },
+                "onGround": true
+              }
+            }
+          ],
+          "onRemoved": [
+            {
+              "$type": "FireEffect",
+              "effectPattern": "Eff_Animal_Boar_03_SummonBrother",
+              "born": {
+                "$type": "ConfigBornByTarget",
+                "offset": {
+                  "x": -2.8,
+                  "y": 0.1,
+                  "z": 2.2
+                },
+                "onGround": true
+              }
+            },
+            {
+              "$type": "FireEffect",
+              "effectPattern": "Eff_Animal_Boar_03_SummonBrother",
+              "born": {
+                "$type": "ConfigBornByTarget",
+                "offset": {
+                  "x": 2.8,
+                  "y": 0.1,
+                  "z": 2.2
+                },
+                "onGround": true
+              }
+            },
+            {
+              "$type": "FireEffect",
+              "effectPattern": "Eff_Animal_Boar_03_SummonBrother",
+              "born": {
+                "$type": "ConfigBornByTarget",
+                "offset": {
+                  "x": -5,
+                  "y": 0.1,
+                  "z": 6
+                },
+                "onGround": true
+              }
+            },
+            {
+              "$type": "FireEffect",
+              "effectPattern": "Eff_Animal_Boar_03_SummonBrother",
+              "born": {
+                "$type": "ConfigBornByTarget",
+                "offset": {
+                  "x": 5,
+                  "y": 0.1,
+                  "z": 6
+                },
+                "onGround": true
+              }
+            },
+            {
+              "$type": "ApplyModifier",
+              "modifierName": "Animal_Boar_03_SummonEffectDisappear"
+            }
+          ]
+        },
+        "Animal_Boar_03_SummonEffectDisappear": {
+          "modifierName": "",
+          "duration": 2.6,
+          "elementDurability": 100,
+          "onRemoved": [
+            {
+              "$type": "FireEffect",
+              "effectPattern": "Eff_Animal_Boar_03_SummonBrotherAS",
+              "born": {
+                "$type": "ConfigBornByTarget",
+                "offset": {
+                  "x": -2.8,
+                  "y": 0.1,
+                  "z": 2.2
+                },
+                "onGround": true
+              }
+            },
+            {
+              "$type": "FireEffect",
+              "effectPattern": "Eff_Animal_Boar_03_SummonBrotherAS",
+              "born": {
+                "$type": "ConfigBornByTarget",
+                "offset": {
+                  "x": 2.8,
+                  "y": 0.1,
+                  "z": 2.2
+                },
+                "onGround": true
+              }
+            },
+            {
+              "$type": "FireEffect",
+              "effectPattern": "Eff_Animal_Boar_03_SummonBrotherAS",
+              "born": {
+                "$type": "ConfigBornByTarget",
+                "offset": {
+                  "x": -5,
+                  "y": 0.1,
+                  "z": 6
+                },
+                "onGround": true
+              }
+            },
+            {
+              "$type": "FireEffect",
+              "effectPattern": "Eff_Animal_Boar_03_SummonBrotherAS",
+              "born": {
+                "$type": "ConfigBornByTarget",
+                "offset": {
+                  "x": 5,
+                  "y": 0.1,
+                  "z": 6
+                },
+                "onGround": true
+              }
+            }
+          ]
+        }
+      },
+      "onAbilityStart": [
+        {
+          "$type": "ApplyModifier",
+          "modifierName": "Animal_Boar_03_SummonBrotherThrow"
+        },
+        {
+          "$type": "ApplyModifier",
+          "modifierName": "Animal_Boar_03_SummonBrotherEffect"
+        }
+      ]
+    }
+  },
+  {
+    "Default": {
+      "$type": "ConfigAbility",
+      "abilityName": "Animal_Boar_03_BigSnowBallExplode",
+      "modifiers": {
+        "Animal_Boar_03_ThrowBigSnowBall_Trail": {
+          "modifierName": "",
+          "elementDurability": 100,
+          "onAdded": [
+            {
+              "$type": "AttachEffect",
+              "effectPattern": "Eff_Animal_Boar_03_BigSnowBall"
+            },
+            {
+              "$type": "AttachEffect",
+              "effectPattern": "Eff_Animal_Boar_03_BigSnowBall_Trail"
+            }
+          ]
+        },
+        "Animal_Boar_03_ThrowBigSnowBall_OpenColliderDelay": {
+          "modifierName": "",
+          "duration": 0.2,
+          "elementDurability": 100,
+          "onRemoved": [
+            {
+              "$type": "EnableBulletCollisionPluginTrigger",
+              "setEnable": true
+            }
+          ]
+        },
+        "Animal_Boar_03_SnowBigBallCameraEffect": {
+          "modifierName": "",
+          "duration": 5,
+          "elementDurability": 100,
+          "onAdded": [
+            {
+              "$type": "DungeonFogEffects",
+              "muteRemoteAction": true,
+              "enable": true,
+              "cameraFogEffectName": "Eff_Animal_Boar_03_ThrowSnowBall_ScreenEffect",
+              "playerFogEffectName": ""
+            }
+          ],
+          "onRemoved": [
+            {
+              "$type": "DungeonFogEffects",
+              "cameraFogEffectName": "",
+              "playerFogEffectName": ""
+            }
+          ]
+        },
+        "Animal_Boar_03_BigSnowBallCheckAttack": {
+          "modifierName": "",
+          "duration": 5,
+          "elementDurability": 100,
+          "onAttackLanded": [
+            {
+              "$type": "Predicated",
+              "target": "Target",
+              "targetPredicates": [
+                {
+                  "$type": "ByAttackTags",
+                  "attackTags": [
+                    "SnowBallAttack"
+                  ]
+                },
+                {
+                  "$type": "ByEntityTypes",
+                  "entityTypes": [
+                    "Avatar"
+                  ]
+                }
+              ],
+              "successActions": [
+                {
+                  "$type": "ApplyModifier",
+                  "target": "Target",
+                  "modifierName": "Animal_Boar_03_SnowBigBallCameraEffect"
+                }
+              ]
+            }
+          ]
+        }
+      },
+      "onAdded": [
+        {
+          "$type": "AttachModifier",
+          "modifierName": "Animal_Boar_03_ThrowBigSnowBall_Trail"
+        },
+        {
+          "$type": "AttachModifier",
+          "modifierName": "Animal_Boar_03_ThrowBigSnowBall_OpenColliderDelay"
+        },
+        {
+          "$type": "ApplyModifier",
+          "modifierName": "Animal_Boar_03_BigSnowBallCheckAttack"
+        }
+      ],
+      "onAbilityStart": [
+        {
+          "$type": "RemoveModifier",
+          "modifierName": "Animal_Boar_03_ThrowBigSnowBall_Trail"
+        },
+        {
+          "$type": "TriggerAttackEvent",
+          "attackEvent": {
+            "attackPattern": {
+              "$type": "ConfigAttackSphere",
+              "triggerType": "TriggerNoRepeat",
+              "born": {
+                "$type": "ConfigBornByCollisionPoint"
+              },
+              "radius": 2
+            },
+            "attackInfo": {
+              "attackTag": "SnowBallAttack",
+              "attenuationTag": "SnowBall_Damage",
+              "attenuationGroup": "Skirmisher_Fat_SprayGun_Ice",
+              "attackProperty": {
+                "damagePercentage": 1,
+                "damagePercentageRatio": 0,
+                "elementType": "Ice",
+                "elementDurability": 50,
+                "strikeType": "Blunt",
+                "enBreak": 50
+              },
+              "hitPattern": {
+                "onHitEffectName": "default",
+                "hitImpulseType": "LV4",
+                "retreatType": "ByHitDirection",
+                "hitHaltTimeScale": 0.05
+              }
+            }
+          },
+          "targetType": "Enemy"
+        },
+        {
+          "$type": "FireEffect",
+          "effectPattern": "Eff_Animal_Boar_03_BigSnowBall_Explode",
+          "born": {
+            "$type": "ConfigBornByCollisionPoint",
+            "alongGround": true
+          }
+        }
+      ]
+    }
+  },
+  {
+    "Default": {
+      "$type": "ConfigAbility",
+      "abilityName": "Animal_Boar_03_SmallSnowBallExplode",
+      "modifiers": {
+        "Animal_Boar_03_ThrowSmallSnowBall_Trail": {
+          "modifierName": "",
+          "elementDurability": 100,
+          "onAdded": [
+            {
+              "$type": "AttachEffect",
+              "effectPattern": "Eff_Animal_Boar_03_SmallSnowBall"
+            },
+            {
+              "$type": "AttachEffect",
+              "effectPattern": "Eff_Animal_Boar_03_SmallSnowBall_Trail"
+            }
+          ]
+        },
+        "Animal_Boar_03_ThrowSmallSnowBall_OpenColliderDelay": {
+          "modifierName": "",
+          "duration": 0.2,
+          "elementDurability": 100,
+          "onRemoved": [
+            {
+              "$type": "EnableBulletCollisionPluginTrigger",
+              "setEnable": true
+            }
+          ]
+        }
+      },
+      "onAdded": [
+        {
+          "$type": "AttachModifier",
+          "modifierName": "Animal_Boar_03_ThrowSmallSnowBall_Trail"
+        },
+        {
+          "$type": "AttachModifier",
+          "modifierName": "Animal_Boar_03_ThrowSmallSnowBall_OpenColliderDelay"
+        }
+      ],
+      "onAbilityStart": [
+        {
+          "$type": "RemoveModifier",
+          "modifierName": "Animal_Boar_03_ThrowSmallSnowBall_Trail"
+        },
+        {
+          "$type": "TriggerAttackEvent",
+          "attackEvent": {
+            "attackPattern": {
+              "$type": "ConfigAttackSphere",
+              "triggerType": "TriggerNoRepeat",
+              "born": {
+                "$type": "ConfigBornByCollisionPoint"
+              },
+              "radius": 1
+            },
+            "attackInfo": {
+              "attackTag": "SnowBallAttack",
+              "attenuationTag": "SnowBall_Damage",
+              "attenuationGroup": "Skirmisher_Fat_SprayGun_Ice",
+              "attackProperty": {
+                "damagePercentage": 1,
+                "damagePercentageRatio": 0,
+                "elementType": "Ice",
+                "elementDurability": 50,
+                "strikeType": "Blunt",
+                "enBreak": 50
+              },
+              "hitPattern": {
+                "onHitEffectName": "default",
+                "hitImpulseType": "LV4",
+                "retreatType": "ByHitDirection",
+                "hitHaltTimeScale": 0.05
+              }
+            }
+          },
+          "targetType": "Enemy"
+        },
+        {
+          "$type": "FireEffect",
+          "effectPattern": "Eff_Animal_Boar_03_SmallSnowBall_Explode",
+          "born": {
+            "$type": "ConfigBornByCollisionPoint",
+            "alongGround": true
+          }
+        }
+      ]
+    }
+  },
+  {
+    "Default": {
+      "$type": "ConfigAbility",
+      "abilityName": "Animal_Boar_03_CreateSnowDrop",
+      "modifiers": {
+        "Animal_Boar_03_CreateSnowDrop": {
+          "modifierName": "",
+          "duration": 5,
+          "elementDurability": 100,
+          "thinkInterval": 1,
+          "onThinkInterval": [
+            {
+              "$type": "CreateGadget",
+              "target": "SelfAttackTarget",
+              "born": {
+                "$type": "ConfigBornByPredicatePoint",
+                "onGround": true,
+                "timeForPredictive": 0.5
+              },
+              "gadgetID": 42802004,
+              "campID": 4001
+            },
+            {
+              "$type": "CreateGadget",
+              "born": {
+                "$type": "ConfigBornBySelf",
+                "bornRandom": {
+                  "$type": "BornRandomFromCenter",
+                  "minRandomRange": 5,
+                  "maxRandomRange": 15
+                },
+                "onGround": true
+              },
+              "gadgetID": 42802004,
+              "campID": 4001
+            },
+            {
+              "$type": "CreateGadget",
+              "born": {
+                "$type": "ConfigBornBySelf",
+                "bornRandom": {
+                  "$type": "BornRandomFromCenter",
+                  "minRandomRange": 5,
+                  "maxRandomRange": 15
+                },
+                "onGround": true
+              },
+              "gadgetID": 42802004,
+              "campID": 4001
+            },
+            {
+              "$type": "CreateGadget",
+              "born": {
+                "$type": "ConfigBornBySelf",
+                "bornRandom": {
+                  "$type": "BornRandomFromCenter",
+                  "minRandomRange": 5,
+                  "maxRandomRange": 15
+                },
+                "onGround": true
+              },
+              "gadgetID": 42802004,
+              "campID": 4001
+            }
+          ]
+        }
+      },
+      "onAbilityStart": [
+        {
+          "$type": "ApplyModifier",
+          "modifierName": "Animal_Boar_03_CreateSnowDrop"
+        }
+      ]
+    }
+  },
+  {
+    "Default": {
+      "$type": "ConfigAbility",
+      "abilityName": "Animal_Boar_03_SnowDropAttack",
+      "modifiers": {
+        "Animal_Boar_03_SnowDropAttackDelay": {
+          "modifierName": "",
+          "duration": 2,
+          "elementDurability": 100,
+          "onAdded": [
+            {
+              "$type": "FireEffect",
+              "effectPattern": "Eff_Animal_Boar_03_ShowDrop_Warning"
+            },
+            {
+              "$type": "ApplyModifier",
+              "modifierName": "Animal_Boar_03_SnowDropEffect"
+            }
+          ],
+          "onRemoved": [
+            {
+              "$type": "TriggerAttackEvent",
+              "attackEvent": {
+                "attackPattern": {
+                  "$type": "ConfigAttackCircle",
+                  "triggerType": "TriggerNoRepeat",
+                  "born": {
+                    "$type": "ConfigBornBySelf"
+                  },
+                  "height": 3,
+                  "radius": 3
+                },
+                "attackInfo": {
+                  "attackTag": "",
+                  "attenuationTag": "",
+                  "attenuationGroup": "default",
+                  "attackProperty": {
+                    "damagePercentage": 1,
+                    "damagePercentageRatio": 0,
+                    "elementType": "Ice",
+                    "elementDurability": 50,
+                    "strikeType": "Blunt",
+                    "enBreak": 101
+                  },
+                  "hitPattern": {
+                    "onHitEffectName": "default",
+                    "hitImpulseType": "LV3"
+                  }
+                }
+              },
+              "targetType": "Enemy"
+            }
+          ]
+        },
+        "Animal_Boar_03_SnowDropEffect": {
+          "modifierName": "",
+          "duration": 1.5,
+          "elementDurability": 100,
+          "onRemoved": [
+            {
+              "$type": "FireEffect",
+              "effectPattern": "Eff_Animal_Boar_03_ShowDrop"
+            }
+          ]
+        }
+      },
+      "onAdded": [
+        {
+          "$type": "ApplyModifier",
+          "modifierName": "Animal_Boar_03_SnowDropAttackDelay"
+        }
+      ]
+    }
+  },
+  {
+    "Default": {
+      "$type": "ConfigAbility",
+      "abilityName": "Animal_Boar_04_Frozen",
+      "modifiers": {
+        "UNIQUE_Animal_Boar_04_FrozenModifier": {
+          "modifierName": "",
+          "isUnique": true,
+          "elementType": "Ice",
+          "elementDurability": 25,
+          "modifierMixins": [
+            {
+              "$type": "ModifyElementDecrateMixin",
+              "group": "Animal_Boar_03_OnlyFireUseful"
+            }
+          ],
+          "state": "ElementFreeze",
+          "onRemoved": [
+            {
+              "$type": "ApplyModifier",
+              "modifierName": "Animal_Boar_04_RemoveFrozenDelay"
+            },
+            {
+              "$type": "SendEffectTrigger",
+              "parameter": "Melt",
+              "effectPattern": "Eff_Animal_Boar_04_Frozen"
+            }
+          ]
+        },
+        "Animal_Boar_04_Invincible": {
+          "modifierName": "",
+          "elementDurability": 100,
+          "properties": {
+            "Entity_MassRatio": 100,
+            "Entity_WeightRatio": 100,
+            "Actor_EndureDelta": 0
+          },
+          "state": "LockHP",
+          "onAdded": [
+            {
+              "$type": "AttachEffect",
+              "effectPattern": "Eff_Animal_Boar_04_Frozen",
+              "born": {
+                "$type": "ConfigBornBySelf"
+              }
+            },
+            {
+              "$type": "EnableHitBoxByName",
+              "hitBoxNames": [
+                "HitBox"
+              ]
+            },
+            {
+              "$type": "EnableHitBoxByName",
+              "hitBoxNames": [
+                "HitBoxFrozen"
+              ],
+              "setEnable": true
+            }
+          ],
+          "onRemoved": [
+            {
+              "$type": "SetPoseBool",
+              "boolID": "Frozen"
+            },
+            {
+              "$type": "EnableHitBoxByName",
+              "hitBoxNames": [
+                "HitBox"
+              ],
+              "setEnable": true
+            },
+            {
+              "$type": "EnableHitBoxByName",
+              "hitBoxNames": [
+                "HitBoxFrozen"
+              ]
+            }
+          ]
+        },
+        "Animal_Boar_04_RemoveFrozenDelay": {
+          "modifierName": "",
+          "duration": 2,
+          "elementDurability": 100,
+          "onRemoved": [
+            {
+              "$type": "RemoveModifier",
+              "modifierName": "Animal_Boar_04_Invincible"
+            }
+          ]
+        }
+      },
+      "onAdded": [
+        {
+          "$type": "SetPoseBool",
+          "boolID": "Frozen",
+          "value": true
+        },
+        {
+          "$type": "AttachModifier",
+          "modifierName": "UNIQUE_Animal_Boar_04_FrozenModifier"
+        },
+        {
+          "$type": "AttachModifier",
+          "modifierName": "Animal_Boar_04_Invincible"
+        }
+      ]
+    }
+  },
+  {
+    "Default": {
+      "$type": "ConfigAbility",
+      "abilityName": "Animal_Boar_03_JumpAttack",
+      "onAbilityStart": [
+        {
+          "$type": "ActCameraShake",
+          "cameraShake": {
+            "shakeRange": 6,
+            "shakeTime": 0.2,
+            "shakeDistance": 40
+          },
+          "born": {
+            "$type": "ConfigBornBySelf"
+          }
+        },
+        {
+          "$type": "TriggerAttackEvent",
+          "attackEvent": {
+            "attackPattern": {
+              "$type": "ConfigAttackCircle",
+              "triggerType": "TriggerNoRepeat",
+              "born": {
+                "$type": "ConfigBornBySelf"
+              },
+              "height": 4,
+              "radius": 3
+            },
+            "attackInfo": {
+              "attackTag": "",
+              "attenuationTag": "",
+              "attenuationGroup": "default",
+              "attackProperty": {
+                "damagePercentage": 1,
+                "damagePercentageRatio": 0,
+                "elementDurability": 100,
+                "strikeType": "Blunt",
+                "enBreak": 101,
+                "attackType": "Melee"
+              },
+              "hitPattern": {
+                "onHitEffectName": "default",
+                "hitImpulseType": "LV5",
+                "retreatType": "ByHitDirection",
+                "canBeDefenceHalt": true
+              }
+            }
+          },
+          "targetType": "Enemy"
+        }
+      ]
+    }
+  },
+  {
+    "Default": {
+      "$type": "ConfigAbility",
+      "abilityName": "Animal_Boar_04_SpecialRushAtk",
+      "abilityMixins": [
+        {
+          "$type": "SteerAttackMixin",
+          "steerStateIDs": [
+            "SpecialRushAtk"
+          ],
+          "endNormalizedTime": 3,
+          "angularSpeed": 36,
+          "attackTrigger": "",
+          "attackDistance": 1.5
+        },
+        {
+          "$type": "DoActionByAnimatorStateIDMixin",
+          "stateIDs": [
+            "SpecialRushAtk"
+          ],
+          "enterActions": [
+            {
+              "$type": "TriggerBullet",
+              "bulletID": 42802005,
+              "born": {
+                "$type": "ConfigBornByTarget"
+              },
+              "trackTarget": "Self"
+            },
+            {
+              "$type": "TurnDirection",
+              "turnMode": "OnlyTarget"
+            }
+          ],
+          "exitActions": [
+            {
+              "$type": "KillGadget",
+              "gadgetInfo": {
+                "sortType": "Reversed",
+                "configID": 42802005
+              }
+            }
+          ]
+        },
+        {
+          "$type": "AttackHittingSceneMixin",
+          "onHittingScene": [
+            {
+              "$type": "SetAnimatorTrigger",
+              "triggerID": "CrashTrigger"
+            }
+          ]
+        }
+      ],
+      "modifiers": {
+        "Animal_Boar_04_SpecialRushAtk_SetPose": {
+          "modifierName": "",
+          "elementDurability": 100,
+          "onAdded": [
+            {
+              "$type": "SetPoseBool",
+              "boolID": "FrozenSpecial",
+              "value": true
+            }
+          ]
+        }
+      },
+      "onAdded": [
+        {
+          "$type": "ApplyModifier",
+          "predicates": [
+            {
+              "$type": "ByTargetGlobalValue",
+              "key": "_MONSTERAFFIX_ANIMAL_BOAR_FROZEN_SPECIAL",
+              "value": 1
+            }
+          ],
+          "modifierName": "Animal_Boar_04_SpecialRushAtk_SetPose"
+        }
+      ]
+    }
+  }
+]

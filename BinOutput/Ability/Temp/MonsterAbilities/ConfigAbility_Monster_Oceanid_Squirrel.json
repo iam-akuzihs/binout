@@ -102,7 +102,8 @@
                 "onHitEffectName": "default",
                 "hitImpulseType": "LV2",
                 "retreatType": "ByHitDirection"
-              }
+              },
+              "canBeModifiedBy": "OriginOwner"
             }
           },
           "targetType": "Enemy"
@@ -288,7 +289,8 @@
         }
       ],
       "abilitySpecials": {
-        "HealHP": 0.0375
+        "HealHP": 0.0375,
+        "HealHPHigh": 0.15
       },
       "modifiers": {
         "UNIQUE_Oceanid_Water_HealHp": {
@@ -298,40 +300,121 @@
           "thinkInterval": 1.5,
           "onBeingHit": [
             {
-              "$type": "ApplyModifier",
-              "predicates": [
+              "$type": "Predicated",
+              "targetPredicates": [
                 {
-                  "$type": "ByAny",
-                  "predicates": [
-                    {
-                      "$type": "ByHitElement",
-                      "element": "Fire"
-                    },
-                    {
-                      "$type": "ByTargetGlobalValue",
-                      "key": "_OCEANID_ANIMAL_SP",
-                      "value": 1
-                    }
-                  ]
+                  "$type": "ByTargetGlobalValue",
+                  "key": "SGV_MONSTERAFFIX_OCEANID_02_ANIMALHEAL_UP",
+                  "value": 1
                 }
               ],
-              "modifierName": "HealHP_Pause"
+              "successActions": [
+                {
+                  "$type": "ApplyModifier",
+                  "predicates": [
+                    {
+                      "$type": "ByAny",
+                      "predicates": [
+                        {
+                          "$type": "ByHitElement",
+                          "element": "Fire"
+                        },
+                        {
+                          "$type": "ByTargetGlobalValue",
+                          "key": "_OCEANID_ANIMAL_SP",
+                          "value": 1
+                        }
+                      ]
+                    }
+                  ],
+                  "modifierName": "HealHP_Pause_AffixUp"
+                }
+              ],
+              "failActions": [
+                {
+                  "$type": "ApplyModifier",
+                  "predicates": [
+                    {
+                      "$type": "ByAny",
+                      "predicates": [
+                        {
+                          "$type": "ByHitElement",
+                          "element": "Fire"
+                        },
+                        {
+                          "$type": "ByTargetGlobalValue",
+                          "key": "_OCEANID_ANIMAL_SP",
+                          "value": 1
+                        }
+                      ]
+                    }
+                  ],
+                  "modifierName": "HealHP_Pause"
+                }
+              ]
             }
           ],
           "onThinkInterval": [
             {
-              "$type": "HealHP",
-              "amountByCasterMaxHPRatio": "HealHP"
-            },
-            {
-              "$type": "FireEffect",
-              "effectPattern": "Eff_Monster_Oceanid_Squirrel_Heal"
+              "$type": "Predicated",
+              "targetPredicates": [
+                {
+                  "$type": "ByTargetGlobalValue",
+                  "key": "SGV_MONSTERAFFIX_OCEANID_02_ANIMALHEAL_UP",
+                  "value": 1
+                }
+              ],
+              "successActions": [
+                {
+                  "$type": "HealHP",
+                  "amountByCasterMaxHPRatio": "HealHPHigh"
+                },
+                {
+                  "$type": "FireEffect",
+                  "effectPattern": "Eff_Monster_Oceanid_Squirrel_Heal"
+                }
+              ],
+              "failActions": [
+                {
+                  "$type": "HealHP",
+                  "amountByCasterMaxHPRatio": "HealHP"
+                },
+                {
+                  "$type": "FireEffect",
+                  "effectPattern": "Eff_Monster_Oceanid_Squirrel_Heal"
+                }
+              ]
             }
           ]
         },
         "HealHP_Pause": {
           "modifierName": "",
           "duration": 3,
+          "elementDurability": 100,
+          "onAdded": [
+            {
+              "$type": "AddGlobalValue",
+              "value": 0,
+              "key": "_HEALHP_STATE_",
+              "useLimitRange": true,
+              "maxValue": 0,
+              "minValue": 0
+            }
+          ],
+          "onRemoved": [
+            {
+              "$type": "AddGlobalValue",
+              "value": 1,
+              "key": "_HEALHP_STATE_",
+              "useLimitRange": true,
+              "maxValue": 1,
+              "minValue": 1
+            }
+          ]
+        },
+        "HealHP_Pause_AffixUp": {
+          "modifierName": "",
+          "duration": 1.5,
           "elementDurability": 100,
           "onAdded": [
             {
@@ -405,6 +488,16 @@
                 {
                   "$type": "ByTargetGlobalValue",
                   "key": "_MONSTERAFFIX_OCEANID_ANIMAL_SPMASK",
+                  "value": 1
+                }
+              ]
+            },
+            {
+              "$type": "ByNot",
+              "predicates": [
+                {
+                  "$type": "ByTargetGlobalValue",
+                  "key": "_MONSTERAFFIX_OCEANID_ANIMAL_FOOTEFFECT_OFF",
                   "value": 1
                 }
               ]

@@ -7,7 +7,8 @@
         {
           "$type": "AttachToPoseIDMixin",
           "poseIDs": [
-            212
+            212,
+            222
           ],
           "modifierName": "ElectricState"
         }
@@ -16,7 +17,7 @@
         "ElectricAxeState": {
           "modifierName": "",
           "elementType": "Electric",
-          "elementDurability": 100,
+          "elementDurability": 75,
           "overrideWeaponElement": true,
           "onAdded": [
             {
@@ -30,10 +31,6 @@
               "target": "Owner",
               "boolID": "ElectricAxeTag",
               "value": true
-            },
-            {
-              "$type": "FireEffect",
-              "effectPattern": "Eff_Monster_Brute_Electric_Axe_OnElectric"
             },
             {
               "$type": "AttachEffect",
@@ -81,7 +78,8 @@
                 "Monster_Brute_Axe_Attack03",
                 "Monster_Brute_Axe_Attack04",
                 "Monster_Brute_Axe_Whirl_Loop",
-                "Monster_Brute_Axe_Whirl_AS"
+                "Monster_Brute_Axe_Whirl_AS",
+                "Monster_Brute_Axe_JumpAttack"
               ],
               "newPatterns": [
                 "Monster_Brute_Electric_Axe_Attack01",
@@ -89,13 +87,26 @@
                 "Monster_Brute_Electric_Axe_Attack03",
                 "Monster_Brute_Electric_Axe_Attack04",
                 "Monster_Brute_Electric_Axe_Whirl_Loop",
-                "Monster_Brute_Electric_Axe_Whirl_AS"
+                "Monster_Brute_Electric_Axe_Whirl_AS",
+                "Monster_Brute_Electric_Axe_JumpAttack"
               ]
             }
           ],
           "properties": {
             "Actor_EndureDelta": 0.8
-          }
+          },
+          "onAdded": [
+            {
+              "$type": "SetAISkillGCD",
+              "value": 1
+            }
+          ],
+          "onRemoved": [
+            {
+              "$type": "SetAISkillGCD",
+              "value": 5
+            }
+          ]
         }
       },
       "onAbilityStart": [
@@ -108,8 +119,56 @@
             ]
           },
           "modifierName": "ElectricAxeState"
+        },
+        {
+          "$type": "FireEffect",
+          "otherTargets": {
+            "$type": "SelectTargetsByEquipParts",
+            "equipPartNames": [
+              "equip01"
+            ]
+          },
+          "effectPattern": "Eff_Monster_Brute_Electric_Axe_OnElectric",
+          "born": {
+            "$type": "ConfigBornByAttachPoint",
+            "attachPointName": "Blade"
+          }
         }
       ]
+    }
+  },
+  {
+    "Default": {
+      "$type": "ConfigAbility",
+      "abilityName": "Monster_Brute_Electric_Axe_WeatherState",
+      "abilityMixins": [
+        {
+          "$type": "AttachModifierByNeuronMixin",
+          "CEEFNOMJECM": [
+            "WEATHER_STORM"
+          ],
+          "modifierName": "Weather_Storm"
+        }
+      ],
+      "modifiers": {
+        "Weather_Storm": {
+          "modifierName": "",
+          "elementDurability": 100,
+          "onAdded": [
+            {
+              "$type": "SetPoseBool",
+              "boolID": "WeatherStorm",
+              "value": true
+            }
+          ],
+          "onRemoved": [
+            {
+              "$type": "SetPoseBool",
+              "boolID": "WeatherStorm"
+            }
+          ]
+        }
+      }
     }
   },
   {
@@ -176,6 +235,28 @@
         {
           "$type": "SteerAttackMixin",
           "steerStateIDs": [
+            "CrashAttack"
+          ],
+          "startNormalizedTime": 0.1,
+          "endNormalizedTime": 0.23,
+          "angularSpeed": 180,
+          "attackTrigger": "",
+          "attackDistance": 3
+        },
+        {
+          "$type": "SteerAttackMixin",
+          "steerStateIDs": [
+            "CrashAttack"
+          ],
+          "startNormalizedTime": 0.33,
+          "endNormalizedTime": 0.42,
+          "angularSpeed": 120,
+          "attackTrigger": "",
+          "attackDistance": 3
+        },
+        {
+          "$type": "SteerAttackMixin",
+          "steerStateIDs": [
             "PickUp01",
             "PickUp02"
           ],
@@ -232,26 +313,6 @@
             "Whirl_Loop"
           ],
           "modifierName": "WhirlLoop"
-        },
-        {
-          "$type": "AttackHittingSceneMixin",
-          "onHittingScene": [
-            {
-              "$type": "SetAnimatorTrigger",
-              "triggerID": "CrashTrigger"
-            },
-            {
-              "$type": "ActCameraShake",
-              "cameraShake": {
-                "shakeRange": 0.16,
-                "shakeTime": 0.09,
-                "shakeDistance": 25
-              }
-            }
-          ],
-          "animEventIDs": [
-            "Whirl_HitScene"
-          ]
         }
       ],
       "modifiers": {
@@ -458,28 +519,101 @@
   {
     "Default": {
       "$type": "ConfigAbility",
-      "abilityName": "Monster_Brute_Electric_Axe_PickUpAndThrow",
+      "abilityName": "Monster_Brute_Electric_Axe_PickUp01",
       "abilityMixins": [
-        {
-          "$type": "AttachToPoseIDMixin",
-          "poseIDs": [
-            212
-          ],
-          "modifierName": "ResetSlimeType"
-        },
         {
           "$type": "AttachToStateIDMixin",
           "stateIDs": [
             "PickUp01",
             "PickUp02",
-            "Throw",
-            "CastAndThrow"
+            "CastAndThrow",
+            "Throw"
           ],
           "modifierName": "HoldSlime"
         }
       ],
       "modifiers": {
-        "PickUp_Shake_Manager": {
+        "PickUp01_Manager": {
+          "modifierName": "",
+          "duration": 0.96,
+          "elementDurability": 100,
+          "onAdded": [
+            {
+              "$type": "ActCameraShake",
+              "cameraShake": {
+                "shakeType": "CustomVector",
+                "shakeRange": 0.04,
+                "shakeTime": 0.09,
+                "shakeDir": {
+                  "y": -1
+                }
+              }
+            }
+          ],
+          "onRemoved": [
+            {
+              "$type": "ActCameraShake",
+              "cameraShake": {
+                "shakeType": "CustomVector",
+                "shakeRange": 0.04,
+                "shakeTime": 0.09,
+                "shakeDir": {
+                  "y": 1
+                }
+              }
+            },
+            {
+              "$type": "TriggerAbility",
+              "abilityName": "Monster_Brute_Electric_Axe_ElectricSlimeInHand"
+            }
+          ]
+        },
+        "HoldSlime": {
+          "modifierName": "",
+          "elementDurability": 100,
+          "onRemoved": [
+            {
+              "$type": "RemoveUniqueModifier",
+              "modifierName": "UNIQUE_Brute_Axe_ElectricSlimeInHand"
+            },
+            {
+              "$type": "RemoveUniqueModifier",
+              "modifierName": "UNIQUE_Brute_Axe_ElectricSlimeInHand_Positive"
+            },
+            {
+              "$type": "SetGlobalValue",
+              "value": 0,
+              "key": "_SLIMETYPE_",
+              "maxValue": 0,
+              "minValue": 0
+            }
+          ]
+        }
+      },
+      "onAbilityStart": [
+        {
+          "$type": "ApplyModifier",
+          "modifierName": "PickUp01_Manager"
+        }
+      ]
+    }
+  },
+  {
+    "Default": {
+      "$type": "ConfigAbility",
+      "abilityName": "Monster_Brute_Electric_Axe_PickUp02",
+      "abilityMixins": [
+        {
+          "$type": "AttachToPoseIDMixin",
+          "poseIDs": [
+            212,
+            222
+          ],
+          "modifierName": "ResetSlimeType"
+        }
+      ],
+      "modifiers": {
+        "PickUp02_Manager": {
           "modifierName": "",
           "duration": 0.96,
           "elementDurability": 100,
@@ -497,14 +631,6 @@
             },
             {
               "$type": "Randomed",
-              "predicates": [
-                {
-                  "$type": "ByAnimatorFloat",
-                  "logic": "GreaterOrEqual",
-                  "value": 212,
-                  "parameter": "PoseID"
-                }
-              ],
               "chance": 0.5,
               "successActions": [
                 {
@@ -530,19 +656,7 @@
               }
             },
             {
-              "$type": "ApplyModifier",
-              "modifierName": "UNIQUE_Brute_Axe_ElectricSlimeInHand"
-            }
-          ]
-        },
-        "UNIQUE_Brute_Axe_ElectricSlimeInHand": {
-          "stacking": "Unique",
-          "modifierName": "",
-          "isUnique": true,
-          "elementDurability": 100,
-          "onAdded": [
-            {
-              "$type": "AttachEffect",
+              "$type": "TriggerAbility",
               "predicates": [
                 {
                   "$type": "ByTargetGlobalValue",
@@ -550,10 +664,10 @@
                   "value": 0
                 }
               ],
-              "effectPattern": "Eff_Monster_Brute_Electric_SlimeThrow_ElectricSlime"
+              "abilityName": "Monster_Brute_Electric_Axe_ElectricSlimeInHand"
             },
             {
-              "$type": "AttachEffect",
+              "$type": "TriggerAbility",
               "predicates": [
                 {
                   "$type": "ByTargetGlobalValue",
@@ -561,17 +675,7 @@
                   "value": 1
                 }
               ],
-              "effectPattern": "Eff_Monster_Brute_Electric_SlimeThrow_ElectricSlime_Positive"
-            }
-          ]
-        },
-        "HoldSlime": {
-          "modifierName": "",
-          "elementDurability": 100,
-          "onRemoved": [
-            {
-              "$type": "RemoveUniqueModifier",
-              "modifierName": "UNIQUE_Brute_Axe_ElectricSlimeInHand"
+              "abilityName": "Monster_Brute_Electric_Axe_ElectricSlimeInHand_Positive"
             }
           ]
         },
@@ -601,7 +705,59 @@
       "onAbilityStart": [
         {
           "$type": "ApplyModifier",
-          "modifierName": "PickUp_Shake_Manager"
+          "modifierName": "PickUp02_Manager"
+        }
+      ]
+    }
+  },
+  {
+    "Default": {
+      "$type": "ConfigAbility",
+      "abilityName": "Monster_Brute_Electric_Axe_ElectricSlimeInHand",
+      "modifiers": {
+        "UNIQUE_Brute_Axe_ElectricSlimeInHand": {
+          "stacking": "Unique",
+          "modifierName": "",
+          "isUnique": true,
+          "elementDurability": 100,
+          "onAdded": [
+            {
+              "$type": "AttachEffect",
+              "effectPattern": "Eff_Monster_Brute_Electric_SlimeThrow_ElectricSlime"
+            }
+          ]
+        }
+      },
+      "onAbilityStart": [
+        {
+          "$type": "ApplyModifier",
+          "modifierName": "UNIQUE_Brute_Axe_ElectricSlimeInHand"
+        }
+      ]
+    }
+  },
+  {
+    "Default": {
+      "$type": "ConfigAbility",
+      "abilityName": "Monster_Brute_Electric_Axe_ElectricSlimeInHand_Positive",
+      "modifiers": {
+        "UNIQUE_Brute_Axe_ElectricSlimeInHand_Positive": {
+          "stacking": "Unique",
+          "modifierName": "",
+          "isUnique": true,
+          "elementDurability": 100,
+          "onAdded": [
+            {
+              "$type": "AttachEffect",
+              "effectPattern": "Eff_Monster_Brute_Electric_SlimeThrow_ElectricSlime_Positive"
+            }
+          ]
+        }
+      },
+      "onAbilityStart": [
+        {
+          "$type": "ApplyModifier",
+          "modifierName": "UNIQUE_Brute_Axe_ElectricSlimeInHand_Positive"
         }
       ]
     }
@@ -614,6 +770,10 @@
         {
           "$type": "RemoveUniqueModifier",
           "modifierName": "UNIQUE_Brute_Axe_ElectricSlimeInHand"
+        },
+        {
+          "$type": "RemoveUniqueModifier",
+          "modifierName": "UNIQUE_Brute_Axe_ElectricSlimeInHand_Positive"
         },
         {
           "$type": "TriggerBullet",
@@ -724,22 +884,25 @@
                 "damagePercentage": 0.75,
                 "damagePercentageRatio": 0,
                 "elementType": "Electric",
-                "elementDurability": 50,
+                "elementDurability": 25,
                 "strikeType": "Blunt",
                 "enBreak": 50
               },
               "hitPattern": {
                 "onHitEffectName": "default",
-                "hitImpulseType": "LV4",
+                "hitImpulseType": "LV5",
                 "hitHaltTimeScale": 0.05
               },
               "cameraShake": {
                 "shakeRange": 0.06,
                 "shakeTime": 0.3,
                 "extension": {
+                  "baseCycle": 0.08,
+                  "cycleDamping": 0.04,
                   "rangeAttenuation": 0.9
                 }
-              }
+              },
+              "canBeModifiedBy": "OriginOwner"
             }
           },
           "targetType": "Enemy"
@@ -798,12 +961,12 @@
               "attenuationTag": "",
               "attenuationGroup": "default",
               "attackProperty": {
-                "damagePercentage": 1.5,
+                "damagePercentage": 1.25,
                 "damagePercentageRatio": 0,
                 "elementType": "Electric",
                 "elementDurability": 50,
                 "strikeType": "Blunt",
-                "enBreak": 200
+                "enBreak": 100
               },
               "hitPattern": {
                 "onHitEffectName": "default",
@@ -816,9 +979,12 @@
                 "shakeTime": 0.3,
                 "shakeDistance": 25,
                 "extension": {
+                  "baseCycle": 0.08,
+                  "cycleDamping": 0.04,
                   "rangeAttenuation": 0.9
                 }
-              }
+              },
+              "canBeModifiedBy": "OriginOwner"
             }
           },
           "targetType": "Enemy"
@@ -865,20 +1031,12 @@
           "$type": "TriggerAttackEvent",
           "attackEvent": {
             "attackPattern": {
-              "$type": "ConfigAttackBox",
+              "$type": "ConfigAttackSphere",
               "triggerType": "TriggerNoRepeat",
               "born": {
-                "$type": "ConfigBornBySelf",
-                "offset": {
-                  "x": -0.6,
-                  "z": -4.5
-                }
+                "$type": "ConfigBornByCollisionPoint"
               },
-              "size": {
-                "x": 1.2,
-                "y": 1,
-                "z": 9
-              }
+              "radius": 2.5
             },
             "attackInfo": {
               "attackTag": "",
@@ -888,9 +1046,9 @@
                 "damagePercentage": 1.5,
                 "damagePercentageRatio": 0,
                 "elementType": "Electric",
-                "elementDurability": 50,
+                "elementDurability": 75,
                 "strikeType": "Blunt",
-                "enBreak": 200
+                "enBreak": 100
               },
               "hitPattern": {
                 "onHitEffectName": "default",
@@ -903,105 +1061,12 @@
                 "shakeTime": 0.3,
                 "shakeDistance": 25,
                 "extension": {
+                  "baseCycle": 0.08,
+                  "cycleDamping": 0.04,
                   "rangeAttenuation": 0.9
                 }
-              }
-            }
-          },
-          "targetType": "Enemy"
-        },
-        {
-          "$type": "TriggerAttackEvent",
-          "attackEvent": {
-            "attackPattern": {
-              "$type": "ConfigAttackBox",
-              "triggerType": "TriggerNoRepeat",
-              "born": {
-                "$type": "ConfigBornBySelf",
-                "offset": {
-                  "x": -0.6
-                }
               },
-              "size": {
-                "x": 4.5,
-                "y": 1,
-                "z": 1.2
-              }
-            },
-            "attackInfo": {
-              "attackTag": "",
-              "attenuationTag": "",
-              "attenuationGroup": "default",
-              "attackProperty": {
-                "damagePercentage": 1.5,
-                "damagePercentageRatio": 0,
-                "elementType": "Electric",
-                "elementDurability": 50,
-                "strikeType": "Blunt",
-                "enBreak": 200
-              },
-              "hitPattern": {
-                "onHitEffectName": "default",
-                "hitImpulseType": "LV5",
-                "hitHaltTimeScale": 0.05
-              },
-              "forceCameraShake": true,
-              "cameraShake": {
-                "shakeRange": 0.2,
-                "shakeTime": 0.3,
-                "shakeDistance": 25,
-                "extension": {
-                  "rangeAttenuation": 0.9
-                }
-              }
-            }
-          },
-          "targetType": "Enemy"
-        },
-        {
-          "$type": "TriggerAttackEvent",
-          "attackEvent": {
-            "attackPattern": {
-              "$type": "ConfigAttackBox",
-              "triggerType": "TriggerNoRepeat",
-              "born": {
-                "$type": "ConfigBornBySelf",
-                "offset": {
-                  "x": 0.6
-                }
-              },
-              "size": {
-                "x": 4.5,
-                "y": 1,
-                "z": 1.2
-              }
-            },
-            "attackInfo": {
-              "attackTag": "",
-              "attenuationTag": "",
-              "attenuationGroup": "default",
-              "attackProperty": {
-                "damagePercentage": 1.5,
-                "damagePercentageRatio": 0,
-                "elementType": "Electric",
-                "elementDurability": 50,
-                "strikeType": "Blunt",
-                "enBreak": 200
-              },
-              "hitPattern": {
-                "onHitEffectName": "default",
-                "hitImpulseType": "LV5",
-                "hitHaltTimeScale": 0.05
-              },
-              "forceCameraShake": true,
-              "cameraShake": {
-                "shakeRange": 0.2,
-                "shakeTime": 0.3,
-                "shakeDistance": 25,
-                "extension": {
-                  "rangeAttenuation": 0.9
-                }
-              }
+              "canBeModifiedBy": "OriginOwner"
             }
           },
           "targetType": "Enemy"
@@ -1010,9 +1075,9 @@
           "$type": "FireEffect",
           "effectPattern": "Eff_Monster_Brute_Electric_SlimeThrow_Explode_Positive",
           "born": {
-            "$type": "ConfigBornByCollisionPoint"
-          },
-          "scale": 0.6
+            "$type": "ConfigBornByCollisionPoint",
+            "alongGround": true
+          }
         }
       ]
     }
@@ -1046,9 +1111,12 @@
         {
           "$type": "AttachToStateIDMixin",
           "stateIDs": [
-            "LightningRod_AS"
+            "LightningRod_BS",
+            "LightningRod_Loop_01",
+            "LightningRod_Loop_02",
+            "LightningRod_Loop_03"
           ],
-          "modifierName": "Eff_LightningRod_AS_Delay"
+          "modifierName": "Brute_Electric_Axe_LightningRod"
         }
       ],
       "modifiers": {
@@ -1062,7 +1130,7 @@
             },
             {
               "$type": "ApplyModifier",
-              "modifierName": "LightningRod_Damage"
+              "modifierName": "LightningRod01_Damage"
             }
           ]
         },
@@ -1076,7 +1144,7 @@
             },
             {
               "$type": "ApplyModifier",
-              "modifierName": "LightningRod_Damage"
+              "modifierName": "LightningRod02_Damage"
             }
           ]
         },
@@ -1090,13 +1158,13 @@
             },
             {
               "$type": "ApplyModifier",
-              "modifierName": "LightningRod_Damage"
+              "modifierName": "LightningRod03_Damage"
             }
           ]
         },
-        "LightningRod_Damage": {
+        "LightningRod01_Damage": {
           "modifierName": "",
-          "duration": 0.2,
+          "duration": 0.1,
           "elementDurability": 100,
           "onRemoved": [
             {
@@ -1105,35 +1173,81 @@
             }
           ]
         },
-        "Eff_LightningRod_AS_Delay": {
+        "LightningRod02_Damage": {
+          "modifierName": "",
+          "duration": 0.1,
+          "elementDurability": 100,
+          "onRemoved": [
+            {
+              "$type": "TriggerAbility",
+              "abilityName": "Monster_Brute_Electric_Axe_LightningRod_Damage"
+            }
+          ]
+        },
+        "LightningRod03_Damage": {
+          "modifierName": "",
+          "duration": 0.1,
+          "elementDurability": 100,
+          "onRemoved": [
+            {
+              "$type": "TriggerAbility",
+              "abilityName": "Monster_Brute_Electric_Axe_LightningRod_Damage"
+            }
+          ]
+        },
+        "Brute_Electric_Axe_LightningRod": {
           "modifierName": "",
           "elementDurability": 100,
           "onAdded": [
             {
-              "$type": "ApplyModifier",
-              "modifierName": "Eff_LightningRod_AS"
+              "$type": "SetGlobalValue",
+              "target": "CurTeamAvatars",
+              "value": 1,
+              "key": "_WATCHER_82108_",
+              "maxValue": 0,
+              "minValue": 0
             }
-          ]
-        },
-        "Eff_LightningRod_AS": {
-          "modifierName": "",
-          "duration": 0.74,
-          "elementDurability": 100,
+          ],
           "onRemoved": [
             {
-              "$type": "FireEffect",
-              "effectPattern": "Eff_Monster_Brute_Electric_Axe_LightningRod_Dust",
-              "born": {
-                "$type": "ConfigBornBySelf",
-                "onGround": true
-              }
-            },
+              "$type": "SetGlobalValue",
+              "target": "CurTeamAvatars",
+              "value": 0,
+              "key": "_WATCHER_82108_",
+              "maxValue": 0,
+              "minValue": 0
+            }
+          ],
+          "onAttackLanded": [
             {
-              "$type": "FireEffect",
-              "effectPattern": "Eff_Monster_Brute_Electric_Axe_LightningRod_Smoke",
-              "born": {
-                "$type": "ConfigBornBySelf"
-              }
+              "$type": "Predicated",
+              "target": "Target",
+              "targetPredicates": [
+                {
+                  "$type": "ByAttackTags",
+                  "attackTags": [
+                    "Brute_Electric_Axe_LightningRod"
+                  ]
+                },
+                {
+                  "$type": "ByEntityTypes",
+                  "entityTypes": [
+                    "Avatar"
+                  ]
+                },
+                {
+                  "$type": "ByTargetGlobalValue",
+                  "key": "_WATCHER_82108_",
+                  "value": 1
+                }
+              ],
+              "successActions": [
+                {
+                  "$type": "DoWatcherSystemAction",
+                  "watcherId": 82108,
+                  "authorityOnly": true
+                }
+              ]
             }
           ]
         }
@@ -1154,10 +1268,10 @@
               "born": {
                 "$type": "ConfigBornBySelf"
               },
-              "radius": 3.5
+              "radius": 4
             },
             "attackInfo": {
-              "attackTag": "",
+              "attackTag": "Brute_Electric_Axe_LightningRod",
               "attenuationTag": "",
               "attenuationGroup": "default",
               "attackProperty": {
@@ -1166,19 +1280,484 @@
                 "elementType": "Electric",
                 "elementDurability": 100,
                 "strikeType": "Blunt",
-                "enBreak": 50,
+                "enBreak": 100,
                 "attackType": "Range"
               },
               "hitPattern": {
                 "onHitEffectName": "default",
-                "hitImpulseType": "LV3"
+                "hitImpulseType": "LV5"
               }
             }
-          }
+          },
+          "targetType": "Enemy"
         },
         {
           "$type": "FireEffect",
           "effectPattern": "Eff_Monster_Brute_Electric_Axe_LightningRod_Damage"
+        }
+      ]
+    }
+  },
+  {
+    "Default": {
+      "$type": "ConfigAbility",
+      "abilityName": "Monster_Brute_Electric_Axe_JumpAttack_Alert",
+      "abilityMixins": [
+        {
+          "$type": "AttachToNormalizedTimeMixin",
+          "stateID": "JumpAttack",
+          "modifierName": "JumpAttack_Collider",
+          "normalizeStart": 0.22,
+          "normalizeEnd": 0.38
+        },
+        {
+          "$type": "SteerAttackMixin",
+          "steerStateIDs": [
+            "JumpAttack"
+          ],
+          "startNormalizedTime": 0.08,
+          "endNormalizedTime": 0.13,
+          "angularSpeed": 360,
+          "attackTrigger": "",
+          "attackDistance": 2
+        }
+      ],
+      "modifiers": {
+        "JumpAttack_Collider": {
+          "modifierName": "",
+          "elementDurability": 100,
+          "onAdded": [
+            {
+              "$type": "EnablePushColliderName",
+              "pushColliderNames": [
+                "PushCollider"
+              ]
+            }
+          ],
+          "onRemoved": [
+            {
+              "$type": "EnablePushColliderName",
+              "pushColliderNames": [
+                "PushCollider"
+              ],
+              "setEnable": true
+            }
+          ]
+        }
+      },
+      "onAdded": [
+        {
+          "$type": "SetAnimatorBool",
+          "predicates": [
+            {
+              "$type": "ByTargetGlobalValue",
+              "key": "_ELITEAFFIX_ATTACK_ENHANCE",
+              "value": 1
+            }
+          ],
+          "boolID": "EliteTag",
+          "value": true
+        },
+        {
+          "$type": "SetAnimatorBool",
+          "predicates": [
+            {
+              "$type": "ByTargetGlobalValue",
+              "key": "_ELITEAFFIX_ATTACK_ENHANCE",
+              "value": 0,
+              "compareType": "NoneOrEqual"
+            }
+          ],
+          "boolID": "EliteTag"
+        }
+      ],
+      "onAbilityStart": [
+        {
+          "$type": "FireEffect",
+          "effectPattern": "Eff_Monster_Brute_None_Axe_JumpAttack_Alert",
+          "born": {
+            "$type": "ConfigBornByRushToPoint",
+            "offset": {
+              "z": 3.25
+            }
+          }
+        },
+        {
+          "$type": "ActCameraShake",
+          "cameraShake": {
+            "shakeType": "CustomVector",
+            "shakeRange": 0.06,
+            "shakeTime": 0.15,
+            "shakeDir": {
+              "y": 1
+            }
+          }
+        }
+      ]
+    }
+  },
+  {
+    "Default": {
+      "$type": "ConfigAbility",
+      "abilityName": "Monster_Brute_Electric_Axe_JumpAttack_Lightning",
+      "modifiers": {
+        "JumpAttack_CreateLightningArea": {
+          "modifierName": "",
+          "duration": 0.2,
+          "elementDurability": 100,
+          "onAdded": [
+            {
+              "$type": "CreateGadget",
+              "born": {
+                "$type": "ConfigBornBySelf",
+                "offset": {
+                  "x": 6,
+                  "z": 6
+                },
+                "onGround": true,
+                "onGroundIgnoreWater": true
+              },
+              "gadgetID": 42102027,
+              "campID": 4001
+            },
+            {
+              "$type": "CreateGadget",
+              "born": {
+                "$type": "ConfigBornBySelf",
+                "offset": {
+                  "x": 6,
+                  "z": -6
+                },
+                "onGround": true,
+                "onGroundIgnoreWater": true
+              },
+              "gadgetID": 42102027,
+              "campID": 4001
+            },
+            {
+              "$type": "CreateGadget",
+              "born": {
+                "$type": "ConfigBornBySelf",
+                "offset": {
+                  "x": -6,
+                  "z": 6
+                },
+                "onGround": true,
+                "onGroundIgnoreWater": true
+              },
+              "gadgetID": 42102027,
+              "campID": 4001
+            },
+            {
+              "$type": "CreateGadget",
+              "born": {
+                "$type": "ConfigBornBySelf",
+                "offset": {
+                  "x": -6,
+                  "z": -6
+                },
+                "onGround": true,
+                "onGroundIgnoreWater": true
+              },
+              "gadgetID": 42102027,
+              "campID": 4001
+            }
+          ]
+        }
+      },
+      "onAbilityStart": [
+        {
+          "$type": "ApplyModifier",
+          "predicates": [
+            {
+              "$type": "ByAny",
+              "predicates": [
+                {
+                  "$type": "ByAnimatorFloat",
+                  "logic": "Equal",
+                  "value": 212,
+                  "parameter": "PoseID"
+                },
+                {
+                  "$type": "ByAnimatorFloat",
+                  "logic": "Equal",
+                  "value": 222,
+                  "parameter": "PoseID"
+                }
+              ]
+            }
+          ],
+          "modifierName": "JumpAttack_CreateLightningArea"
+        }
+      ]
+    }
+  },
+  {
+    "Default": {
+      "$type": "ConfigAbility",
+      "abilityName": "Brute_Electric_Axe_LightningArea",
+      "modifiers": {
+        "LightningArea_Actions": {
+          "modifierName": "",
+          "duration": 1,
+          "elementDurability": 100,
+          "onAdded": [
+            {
+              "$type": "FireEffect",
+              "effectPattern": "Eff_Monster_Brute_Electric_None_JumpAttack_LightningAlert",
+              "born": {
+                "$type": "ConfigBornBySelf",
+                "onGround": true,
+                "alongGround": true
+              }
+            }
+          ],
+          "onRemoved": [
+            {
+              "$type": "TriggerAttackEvent",
+              "attackEvent": {
+                "attackPattern": {
+                  "$type": "ConfigAttackCircle",
+                  "triggerType": "TriggerNoRepeat",
+                  "ignoreMassive": true,
+                  "born": {
+                    "$type": "ConfigBornBySelf"
+                  },
+                  "height": 6,
+                  "radius": 1.75
+                },
+                "attackInfo": {
+                  "attackTag": "",
+                  "attenuationTag": "",
+                  "attenuationGroup": "default",
+                  "attackProperty": {
+                    "damagePercentage": 1,
+                    "damagePercentageRatio": 0,
+                    "elementType": "Electric",
+                    "elementDurability": 25,
+                    "strikeType": "Blunt",
+                    "enBreak": 1
+                  },
+                  "hitPattern": {
+                    "onHitEffectName": "default",
+                    "hitImpulseType": "LV3",
+                    "hitHaltTimeScale": 0.01
+                  },
+                  "canBeModifiedBy": "OriginOwner"
+                }
+              },
+              "targetType": "Enemy"
+            },
+            {
+              "$type": "FireEffect",
+              "effectPattern": "Eff_Monster_Brute_Electric_None_JumpAttack_Lightning",
+              "born": {
+                "$type": "ConfigBornBySelf"
+              }
+            }
+          ]
+        }
+      },
+      "onAdded": [
+        {
+          "$type": "ApplyModifier",
+          "modifierName": "LightningArea_Actions"
+        }
+      ]
+    }
+  },
+  {
+    "Default": {
+      "$type": "ConfigAbility",
+      "abilityName": "Monster_Brute_Electric_Axe_CrashAttack_Lightning",
+      "modifiers": {
+        "CrashAttack_CreateLightningArea": {
+          "modifierName": "",
+          "duration": 0.2,
+          "elementDurability": 100,
+          "onAdded": [
+            {
+              "$type": "CreateGadget",
+              "born": {
+                "$type": "ConfigBornBySelf",
+                "offset": {
+                  "z": 8.5
+                },
+                "onGround": true,
+                "onGroundIgnoreWater": true
+              },
+              "gadgetID": 42102027,
+              "campID": 4001
+            },
+            {
+              "$type": "CreateGadget",
+              "born": {
+                "$type": "ConfigBornBySelf",
+                "offset": {
+                  "x": 6,
+                  "z": -3
+                },
+                "onGround": true,
+                "onGroundIgnoreWater": true
+              },
+              "gadgetID": 42102027,
+              "campID": 4001
+            },
+            {
+              "$type": "CreateGadget",
+              "born": {
+                "$type": "ConfigBornBySelf",
+                "offset": {
+                  "x": -6.5,
+                  "z": -3.5
+                },
+                "onGround": true,
+                "onGroundIgnoreWater": true
+              },
+              "gadgetID": 42102027,
+              "campID": 4001
+            }
+          ]
+        }
+      },
+      "onAbilityStart": [
+        {
+          "$type": "ApplyModifier",
+          "predicates": [
+            {
+              "$type": "ByAny",
+              "predicates": [
+                {
+                  "$type": "ByAnimatorFloat",
+                  "logic": "Equal",
+                  "value": 212,
+                  "parameter": "PoseID"
+                },
+                {
+                  "$type": "ByAnimatorFloat",
+                  "logic": "Equal",
+                  "value": 222,
+                  "parameter": "PoseID"
+                }
+              ]
+            },
+            {
+              "$type": "ByTargetGlobalValue",
+              "key": "_ELITEAFFIX_ATTACK_ENHANCE",
+              "value": 1
+            }
+          ],
+          "modifierName": "CrashAttack_CreateLightningArea"
+        }
+      ]
+    }
+  },
+  {
+    "Default": {
+      "$type": "ConfigAbility",
+      "abilityName": "Monster_Brute_Electric_Axe_Attack02_Lightning",
+      "modifiers": {
+        "Attack02_CreateLightningArea_01": {
+          "modifierName": "",
+          "duration": 0.5,
+          "elementDurability": 100,
+          "onAdded": [
+            {
+              "$type": "CreateGadget",
+              "born": {
+                "$type": "ConfigBornBySelf",
+                "offset": {
+                  "z": 5.5
+                },
+                "onGround": true,
+                "onGroundIgnoreWater": true
+              },
+              "gadgetID": 42102027,
+              "campID": 4001
+            }
+          ],
+          "onRemoved": [
+            {
+              "$type": "ApplyModifier",
+              "modifierName": "Attack02_CreateLightningArea_02"
+            }
+          ]
+        },
+        "Attack02_CreateLightningArea_02": {
+          "modifierName": "",
+          "duration": 0.5,
+          "elementDurability": 100,
+          "onAdded": [
+            {
+              "$type": "CreateGadget",
+              "born": {
+                "$type": "ConfigBornBySelf",
+                "offset": {
+                  "z": 9
+                },
+                "onGround": true,
+                "onGroundIgnoreWater": true
+              },
+              "gadgetID": 42102027,
+              "campID": 4001
+            }
+          ],
+          "onRemoved": [
+            {
+              "$type": "ApplyModifier",
+              "modifierName": "Attack02_CreateLightningArea_03"
+            }
+          ]
+        },
+        "Attack02_CreateLightningArea_03": {
+          "modifierName": "",
+          "duration": 0.5,
+          "elementDurability": 100,
+          "onAdded": [
+            {
+              "$type": "CreateGadget",
+              "born": {
+                "$type": "ConfigBornBySelf",
+                "offset": {
+                  "z": 14.5
+                },
+                "onGround": true,
+                "onGroundIgnoreWater": true
+              },
+              "gadgetID": 42102027,
+              "campID": 4001
+            }
+          ]
+        }
+      },
+      "onAbilityStart": [
+        {
+          "$type": "ApplyModifier",
+          "predicates": [
+            {
+              "$type": "ByAny",
+              "predicates": [
+                {
+                  "$type": "ByAnimatorFloat",
+                  "logic": "Equal",
+                  "value": 212,
+                  "parameter": "PoseID"
+                },
+                {
+                  "$type": "ByAnimatorFloat",
+                  "logic": "Equal",
+                  "value": 222,
+                  "parameter": "PoseID"
+                }
+              ]
+            },
+            {
+              "$type": "ByTargetGlobalValue",
+              "key": "_ELITEAFFIX_ATTACK_ENHANCE",
+              "value": 1
+            }
+          ],
+          "modifierName": "Attack02_CreateLightningArea_01"
         }
       ]
     }

@@ -214,6 +214,16 @@
           "elementType": "Water",
           "elementDurability": 100,
           "isElementDurabilityMutable": false
+        },
+        "Monster_Oceanid_Wigeon_CommonEffect": {
+          "modifierName": "",
+          "elementDurability": 100,
+          "onAdded": [
+            {
+              "$type": "AttachEffect",
+              "effectPattern": "Eff_Monster_Oceanid_Wigeon_CommonEffectLoop"
+            }
+          ]
         }
       },
       "onAdded": [
@@ -229,8 +239,20 @@
           ]
         },
         {
-          "$type": "AttachEffect",
-          "effectPattern": "Eff_Monster_Oceanid_Wigeon_CommonEffectLoop"
+          "$type": "ApplyModifier",
+          "predicates": [
+            {
+              "$type": "ByNot",
+              "predicates": [
+                {
+                  "$type": "ByTargetGlobalValue",
+                  "key": "_MONSTERAFFIX_OCEANID_ANIMAL_FOOTEFFECT_OFF",
+                  "value": 1
+                }
+              ]
+            }
+          ],
+          "modifierName": "Monster_Oceanid_Wigeon_CommonEffect"
         }
       ]
     }
@@ -296,6 +318,218 @@
         {
           "$type": "SetPoseBool",
           "boolID": "Free"
+        }
+      ]
+    }
+  },
+  {
+    "Default": {
+      "$type": "ConfigAbility",
+      "abilityName": "Monster_Oceanid_Wigeon_HealHp_Challenge",
+      "abilityMixins": [
+        {
+          "$type": "AttachModifierToSelfGlobalValueMixin",
+          "globalValueKey": "_HEALHP_STATE_",
+          "defaultGlobalValueOnCreate": 1,
+          "valueSteps": [
+            -0.5,
+            0.5,
+            1.5
+          ],
+          "modifierNameSteps": [
+            "Empty",
+            "UNIQUE_Wigeon_Water_HealHp"
+          ]
+        }
+      ],
+      "abilitySpecials": {
+        "HealHPHigh": 0.15
+      },
+      "modifiers": {
+        "UNIQUE_Wigeon_Water_HealHp": {
+          "modifierName": "",
+          "isUnique": true,
+          "elementDurability": 100,
+          "thinkInterval": 1.5,
+          "onBeingHit": [
+            {
+              "$type": "Predicated",
+              "targetPredicates": [
+                {
+                  "$type": "ByTargetGlobalValue",
+                  "key": "SGV_MONSTERAFFIX_OCEANID_02_ANIMALHEAL_UP",
+                  "value": 1
+                }
+              ],
+              "successActions": [
+                {
+                  "$type": "ApplyModifier",
+                  "modifierName": "HealHP_Pause_AffixUp"
+                }
+              ],
+              "failActions": [
+                {
+                  "$type": "ApplyModifier",
+                  "modifierName": "HealHP_Pause"
+                }
+              ]
+            }
+          ],
+          "onThinkInterval": [
+            {
+              "$type": "Predicated",
+              "targetPredicates": [
+                {
+                  "$type": "ByTargetGlobalValue",
+                  "key": "SGV_MONSTERAFFIX_OCEANID_02_ANIMALHEAL_UP",
+                  "value": 1
+                }
+              ],
+              "successActions": [
+                {
+                  "$type": "HealHP",
+                  "amountByCasterMaxHPRatio": "HealHPHigh"
+                },
+                {
+                  "$type": "FireEffect",
+                  "effectPattern": "Eff_Monster_Oceanid_Boar_Heal"
+                }
+              ]
+            }
+          ]
+        },
+        "HealHP_Pause": {
+          "modifierName": "",
+          "duration": 3,
+          "elementDurability": 100,
+          "onAdded": [
+            {
+              "$type": "AddGlobalValue",
+              "value": 0,
+              "key": "_HEALHP_STATE_",
+              "useLimitRange": true,
+              "maxValue": 0,
+              "minValue": 0
+            }
+          ],
+          "onRemoved": [
+            {
+              "$type": "AddGlobalValue",
+              "value": 1,
+              "key": "_HEALHP_STATE_",
+              "useLimitRange": true,
+              "maxValue": 1,
+              "minValue": 1
+            }
+          ]
+        },
+        "HealHP_Pause_AffixUp": {
+          "modifierName": "",
+          "duration": 1.5,
+          "elementDurability": 100,
+          "onAdded": [
+            {
+              "$type": "AddGlobalValue",
+              "value": 0,
+              "key": "_HEALHP_STATE_",
+              "useLimitRange": true,
+              "maxValue": 0,
+              "minValue": 0
+            }
+          ],
+          "onRemoved": [
+            {
+              "$type": "AddGlobalValue",
+              "value": 1,
+              "key": "_HEALHP_STATE_",
+              "useLimitRange": true,
+              "maxValue": 1,
+              "minValue": 1
+            }
+          ]
+        },
+        "Empty": {
+          "modifierName": "",
+          "elementDurability": 100
+        }
+      }
+    }
+  },
+  {
+    "Default": {
+      "$type": "ConfigAbility",
+      "abilityName": "Monster_Oceanid_Affix_DeathExplode",
+      "modifiers": {
+        "UNIQUE_Oceanid_Affix_DeathExplode": {
+          "modifierName": "",
+          "isUnique": true,
+          "elementDurability": 100,
+          "modifierMixins": [
+            {
+              "$type": "ServerCreateGadgetOnKillMixin",
+              "gadgetIDList": [
+                42005025
+              ],
+              "campID": 4001,
+              "campTargetType": "Enemy"
+            }
+          ]
+        },
+        "Oceanid_Affix_DeathExplode_DelayCheck": {
+          "modifierName": "",
+          "duration": 2,
+          "elementDurability": 100,
+          "thinkInterval": 0.2,
+          "onThinkInterval": [
+            {
+              "$type": "ApplyModifier",
+              "predicates": [
+                {
+                  "$type": "ByAny",
+                  "predicates": [
+                    {
+                      "$type": "ByTargetGlobalValue",
+                      "key": "SGV_MONSTERAFFIX_OCEANID_02_ANIMAL_DEATHEXPLODE",
+                      "value": 1
+                    },
+                    {
+                      "$type": "ByTargetGlobalValue",
+                      "key": "_MONSTERAFFIX_OCEANID_02_ANIMAL_DEATHEXPLODE",
+                      "value": 1
+                    }
+                  ]
+                }
+              ],
+              "modifierName": "UNIQUE_Oceanid_Affix_DeathExplode"
+            }
+          ]
+        }
+      },
+      "onAdded": [
+        {
+          "$type": "ApplyModifier",
+          "predicates": [
+            {
+              "$type": "ByAny",
+              "predicates": [
+                {
+                  "$type": "ByTargetGlobalValue",
+                  "key": "SGV_MONSTERAFFIX_OCEANID_02_ANIMAL_DEATHEXPLODE",
+                  "value": 1
+                },
+                {
+                  "$type": "ByTargetGlobalValue",
+                  "key": "_MONSTERAFFIX_OCEANID_02_ANIMAL_DEATHEXPLODE",
+                  "value": 1
+                }
+              ]
+            }
+          ],
+          "modifierName": "UNIQUE_Oceanid_Affix_DeathExplode"
+        },
+        {
+          "$type": "ApplyModifier",
+          "modifierName": "Oceanid_Affix_DeathExplode_DelayCheck"
         }
       ]
     }

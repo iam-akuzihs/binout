@@ -8,6 +8,10 @@
           "$type": "SetAnimatorTrigger",
           "triggerID": "ToShaderState2",
           "MPTriggerOnRemote": true
+        },
+        {
+          "$type": "ResetAnimatorTrigger",
+          "triggerID": "ToShaderState1"
         }
       ]
     }
@@ -21,6 +25,10 @@
           "$type": "SetAnimatorTrigger",
           "triggerID": "ToShaderState1",
           "MPTriggerOnRemote": true
+        },
+        {
+          "$type": "ResetAnimatorTrigger",
+          "triggerID": "ToShaderState2"
         }
       ]
     }
@@ -319,6 +327,13 @@
             "RushAway_AS"
           ],
           "modifierName": "CoreStandbyEffect"
+        },
+        {
+          "$type": "AttachToStateIDMixin",
+          "stateIDs": [
+            "StandbyFree"
+          ],
+          "modifierName": "CoreStandbyFreeEffectTrigger"
         }
       ],
       "modifiers": {
@@ -392,6 +407,17 @@
             {
               "$type": "AttachEffect",
               "effectPattern": "Eff_Monster_Effigy_Wind_CoreStandby"
+            }
+          ]
+        },
+        "CoreStandbyFreeEffectTrigger": {
+          "modifierName": "",
+          "elementDurability": 100,
+          "onAdded": [
+            {
+              "$type": "SendEffectTrigger",
+              "parameter": "StandbyFree",
+              "effectPattern": "Eff_Monster_Effigy_Wind_EnergyCore"
             }
           ]
         },
@@ -1793,6 +1819,19 @@
                   "compareType": "NoneOrEqual"
                 }
               ]
+            },
+            {
+              "$type": "KillServerGadget",
+              "gadgetInfo": {
+                "configID": 42004104
+              }
+            },
+            {
+              "$type": "SetGlobalValue",
+              "value": 0,
+              "key": "_ElementBallCount",
+              "maxValue": 0,
+              "minValue": 0
             }
           ],
           "onRemoved": [
@@ -1811,6 +1850,19 @@
                   "compareType": "NoneOrEqual"
                 }
               ]
+            },
+            {
+              "$type": "KillServerGadget",
+              "gadgetInfo": {
+                "configID": 42004104
+              }
+            },
+            {
+              "$type": "SetGlobalValue",
+              "value": 0,
+              "key": "_ElementBallCount",
+              "maxValue": 0,
+              "minValue": 0
             }
           ]
         }
@@ -2924,7 +2976,8 @@
               "cameraShake": {
                 "shakeRange": 0.06,
                 "shakeTime": 0.09
-              }
+              },
+              "canBeModifiedBy": "OriginOwner"
             }
           },
           "targetType": "Enemy"
@@ -2950,6 +3003,15 @@
     "Default": {
       "$type": "ConfigAbility",
       "abilityName": "Monster_Effigy_Wind_VortexWindZone",
+      "abilityMixins": [
+        {
+          "$type": "AttachToStateIDMixin",
+          "stateIDs": [
+            "Vortex"
+          ],
+          "modifierName": "VortexWindZone_Handler"
+        }
+      ],
       "modifiers": {
         "VortexWindZone": {
           "modifierName": "",
@@ -3011,6 +3073,16 @@
                 }
               },
               "targetType": "Enemy"
+            }
+          ]
+        },
+        "VortexWindZone_Handler": {
+          "modifierName": "",
+          "elementDurability": 100,
+          "onRemoved": [
+            {
+              "$type": "RemoveModifier",
+              "modifierName": "VortexWindZone"
             }
           ]
         }
@@ -3316,7 +3388,8 @@
                 "shakeRange": 2,
                 "shakeTime": 0.3,
                 "shakeDistance": 30
-              }
+              },
+              "canBeModifiedBy": "OriginOwner"
             }
           },
           "targetType": "Enemy"
@@ -3636,7 +3709,9 @@
           "born": {
             "$type": "ConfigBornBySelf"
           },
-          "gadgetID": 42004006
+          "sightGroupWithOwner": true,
+          "gadgetID": 42004006,
+          "byServer": true
         },
         {
           "$type": "SetGlobalPos",
@@ -3816,6 +3891,23 @@
     "Default": {
       "$type": "ConfigAbility",
       "abilityName": "Effigy_EnergyAbsorbPos_AvatarDetected",
+      "modifiers": {
+        "EnergyAbsorbPos_AvatarDetected_ValueChange": {
+          "modifierName": "",
+          "duration": 0.2,
+          "elementDurability": 100,
+          "onAdded": [
+            {
+              "$type": "AddGlobalValue",
+              "value": 1,
+              "key": "_AVATARDETECTED",
+              "useLimitRange": true,
+              "maxValue": 1,
+              "minValue": 1
+            }
+          ]
+        }
+      },
       "onAbilityStart": [
         {
           "$type": "Predicated",
@@ -3829,13 +3921,9 @@
           ],
           "successActions": [
             {
-              "$type": "AddGlobalValue",
+              "$type": "ApplyModifier",
               "target": "Owner",
-              "value": 1,
-              "key": "_AVATARDETECTED",
-              "useLimitRange": true,
-              "maxValue": 1,
-              "minValue": 1
+              "modifierName": "EnergyAbsorbPos_AvatarDetected_ValueChange"
             }
           ]
         }
@@ -4985,7 +5073,8 @@
                     "onHitEffectName": "default",
                     "hitImpulseType": "LV4",
                     "hitHaltTimeScale": 0.05
-                  }
+                  },
+                  "canBeModifiedBy": "OriginOwner"
                 }
               },
               "targetType": "Enemy"
@@ -5096,7 +5185,8 @@
                     "onHitEffectName": "default",
                     "hitImpulseType": "LV4",
                     "hitHaltTimeScale": 0.05
-                  }
+                  },
+                  "canBeModifiedBy": "OriginOwner"
                 }
               },
               "targetType": "Enemy"
@@ -5199,7 +5289,8 @@
                     "onHitEffectName": "default",
                     "hitImpulseType": "LV4",
                     "hitHaltTimeScale": 0.05
-                  }
+                  },
+                  "canBeModifiedBy": "OriginOwner"
                 }
               },
               "targetType": "Enemy"
@@ -5302,7 +5393,8 @@
                     "onHitEffectName": "default",
                     "hitImpulseType": "LV4",
                     "hitHaltTimeScale": 0.05
-                  }
+                  },
+                  "canBeModifiedBy": "OriginOwner"
                 }
               },
               "targetType": "Enemy"
@@ -5405,7 +5497,8 @@
                     "onHitEffectName": "default",
                     "hitImpulseType": "LV4",
                     "hitHaltTimeScale": 0.05
-                  }
+                  },
+                  "canBeModifiedBy": "OriginOwner"
                 }
               },
               "targetType": "Enemy"
@@ -6990,8 +7083,7 @@
           "born": {
             "$type": "ConfigBornByTarget"
           },
-          "trackTarget": "OriginOwner",
-          "sightGroupWithOwner": true
+          "trackTarget": "OriginOwner"
         },
         {
           "$type": "TriggerBullet",
@@ -7017,8 +7109,7 @@
           "born": {
             "$type": "ConfigBornByTarget"
           },
-          "trackTarget": "OriginOwner",
-          "sightGroupWithOwner": true
+          "trackTarget": "OriginOwner"
         },
         {
           "$type": "TriggerBullet",
@@ -7044,8 +7135,7 @@
           "born": {
             "$type": "ConfigBornByTarget"
           },
-          "trackTarget": "OriginOwner",
-          "sightGroupWithOwner": true
+          "trackTarget": "OriginOwner"
         },
         {
           "$type": "TriggerBullet",
@@ -7071,8 +7161,7 @@
           "born": {
             "$type": "ConfigBornByTarget"
           },
-          "trackTarget": "OriginOwner",
-          "sightGroupWithOwner": true
+          "trackTarget": "OriginOwner"
         },
         {
           "$type": "TriggerBullet",
@@ -7098,8 +7187,7 @@
           "born": {
             "$type": "ConfigBornByTarget"
           },
-          "trackTarget": "OriginOwner",
-          "sightGroupWithOwner": true
+          "trackTarget": "OriginOwner"
         },
         {
           "$type": "KillSelf",
@@ -7156,6 +7244,21 @@
               "effectPattern": "Eff_Monster_Effigy_Wind_ElemBallWind"
             }
           ]
+        },
+        "Elementball_SetValue": {
+          "modifierName": "",
+          "duration": 0.2,
+          "elementDurability": 100,
+          "onAdded": [
+            {
+              "$type": "AddGlobalValue",
+              "value": 1,
+              "key": "_EnergyAbsorbCount",
+              "useLimitRange": true,
+              "maxValue": 3,
+              "minValue": 0
+            }
+          ]
         }
       },
       "onAdded": [
@@ -7190,13 +7293,9 @@
               "modifierName": "Effect"
             },
             {
-              "$type": "AddGlobalValue",
+              "$type": "ApplyModifier",
               "target": "Target",
-              "value": 1,
-              "key": "_EnergyAbsorbCount",
-              "useLimitRange": true,
-              "maxValue": 3,
-              "minValue": 0
+              "modifierName": "Elementball_SetValue"
             },
             {
               "$type": "KillSelf",
@@ -9348,7 +9447,8 @@
                 "hitImpulseY": 1350
               },
               "retreatType": "ByHitDirection"
-            }
+            },
+            "canBeModifiedBy": "OriginOwner"
           }
         }
       ]
@@ -10058,7 +10158,8 @@
               "hitPattern": {
                 "onHitEffectName": "default",
                 "hitImpulseType": "LV5"
-              }
+              },
+              "canBeModifiedBy": "OriginOwner"
             }
           },
           "targetType": "Enemy"
@@ -10141,7 +10242,8 @@
                 "onHitEffectName": "none",
                 "hitImpulseType": "LV4",
                 "hitHaltTimeScale": 0.01
-              }
+              },
+              "canBeModifiedBy": "OriginOwner"
             }
           },
           "targetType": "Enemy"
@@ -10243,7 +10345,8 @@
                   "hitImpulseY": 300
                 },
                 "hitHaltTimeScale": 0.01
-              }
+              },
+              "canBeModifiedBy": "OriginOwner"
             }
           },
           "targetType": "Enemy"
@@ -10558,7 +10661,8 @@
                 "onHitEffectName": "default",
                 "hitImpulseType": "LV3",
                 "hitHaltTimeScale": 0.01
-              }
+              },
+              "canBeModifiedBy": "OriginOwner"
             }
           },
           "targetType": "Enemy"

@@ -69,7 +69,8 @@
               "$type": "AttachToStateIDMixin",
               "stateIDs": [
                 "Jump",
-                "Fly"
+                "Fly",
+                "Fall"
               ],
               "modifierName": "Seeker_Execution_SwitchSkill_State_Fly"
             },
@@ -80,7 +81,11 @@
               ],
               "stateList": [
                 "Climb",
-                "Swim"
+                "Swim",
+                "LiquidStrike_BS",
+                "LiquidStrike_BS1",
+                "LiquidStrike_Move",
+                "LiquidStrike_MoveStandby"
               ]
             }
           ],
@@ -88,6 +93,7 @@
             {
               "$type": "ChangePlayMode",
               "doOffStage": true,
+              "canBeHandledOnRecover": true,
               "muteRemoteAction": true,
               "toPlayMode": "HideAndSeek"
             }
@@ -235,8 +241,11 @@
             },
             {
               "$type": "ServerLuaCall",
-              "luaCallType": "CurChallengeGroup",
-              "funcName": "HideAndSeek_Skill_CatchPrey"
+              "luaCallType": "AbilityGroupSourceGroup",
+              "funcName": "HideAndSeek_Skill_CatchPrey",
+              "param1": 0,
+              "param2": 0,
+              "param3": 0
             }
           ],
           "failActions": [
@@ -355,7 +364,7 @@
         },
         "FireDirection_Avatar": {
           "modifierName": "",
-          "duration": 5,
+          "duration": 2,
           "elementDurability": 100,
           "onAdded": [
             {
@@ -369,6 +378,37 @@
                 "tag": "HideSeek_GuideGadget"
               },
               "successActions": [
+                {
+                  "$type": "DebugLog",
+                  "content": "FireDirection:SSSSSSSSS!!!!!!!!!!!"
+                },
+                {
+                  "$type": "SetGlobalDir",
+                  "target": "Other",
+                  "key": "_ActivityAbility_HideSeek_Seeker_Guide_Dir",
+                  "born": {
+                    "$type": "ConfigBornBySelf",
+                    "onGround": true,
+                    "direction": {
+                      "$type": "ConfigDirectionByLookAtEntity"
+                    }
+                  },
+                  "setTarget": false
+                },
+                {
+                  "$type": "FireEffect",
+                  "target": "Caster",
+                  "effectPattern": "Eff_Activity_HideSeek_Guide_Target",
+                  "born": {
+                    "$type": "ConfigBornBySelf",
+                    "direction": {
+                      "$type": "ConfigDirectionByGlobalValue",
+                      "directionKey": "_ActivityAbility_HideSeek_Seeker_Guide_Dir"
+                    }
+                  }
+                }
+              ],
+              "failActions": [
                 {
                   "$type": "DebugLog",
                   "content": "FireDirection:SSSSSSSSS!!!!!!!!!!!"
@@ -449,6 +489,16 @@
               "content": "SCL:HideAndSeek_Skill_Guide!!!!!!!!!!!"
             },
             {
+              "$type": "SetGlobalValue",
+              "target": "Team",
+              "doOffStage": true,
+              "value": 0,
+              "key": "FireDirection",
+              "useLimitRange": true,
+              "maxValue": 1,
+              "minValue": 0
+            },
+            {
               "$type": "AvatarSkillStart",
               "doOffStage": true,
               "skillID": 20110,
@@ -461,8 +511,11 @@
             },
             {
               "$type": "ServerLuaCall",
-              "luaCallType": "CurChallengeGroup",
-              "funcName": "HideAndSeek_Skill_Guide"
+              "luaCallType": "AbilityGroupSourceGroup",
+              "funcName": "HideAndSeek_Skill_Guide",
+              "param1": 0,
+              "param2": 0,
+              "param3": 0
             }
           ],
           "failActions": [
@@ -646,12 +699,16 @@
             },
             {
               "$type": "ServerLuaCall",
-              "luaCallType": "CurChallengeGroup",
-              "funcName": "HideAndSeek_Skill_Detect_F"
+              "luaCallType": "AbilityGroupSourceGroup",
+              "funcName": "HideAndSeek_Skill_Detect_F",
+              "param1": 0,
+              "param2": 0,
+              "param3": 0
             },
             {
               "$type": "FireEffect",
-              "effectPattern": "Eff_Activity_HideSeek_Detect_BS"
+              "effectPattern": "Eff_Activity_HideSeek_Detect_BS",
+              "scale": 1.5
             }
           ],
           "failActions": [
@@ -817,8 +874,11 @@
             },
             {
               "$type": "ServerLuaCall",
-              "luaCallType": "CurChallengeGroup",
-              "funcName": "HideAndSeek_Skill_UltraMark"
+              "luaCallType": "AbilityGroupSourceGroup",
+              "funcName": "HideAndSeek_Skill_UltraMark",
+              "param1": 0,
+              "param2": 0,
+              "param3": 0
             }
           ],
           "failActions": [
@@ -950,8 +1010,11 @@
             },
             {
               "$type": "ServerLuaCall",
-              "luaCallType": "CurChallengeGroup",
-              "funcName": "HideAndSeek_Out_GlobalSight"
+              "luaCallType": "AbilityGroupSourceGroup",
+              "funcName": "HideAndSeek_Out_GlobalSight",
+              "param1": 0,
+              "param2": 0,
+              "param3": 0
             }
           ]
         }
@@ -1009,8 +1072,11 @@
             },
             {
               "$type": "ServerLuaCall",
-              "luaCallType": "CurChallengeGroup",
-              "funcName": "HideAndSeek_Skill_GlobalSight"
+              "luaCallType": "AbilityGroupSourceGroup",
+              "funcName": "HideAndSeek_Skill_GlobalSight",
+              "param1": 0,
+              "param2": 0,
+              "param3": 0
             }
           ],
           "failActions": [
@@ -1122,13 +1188,30 @@
           "modifierName": "",
           "duration": 45,
           "elementDurability": 100,
+          "onAdded": [
+            {
+              "$type": "ApplyModifier",
+              "target": "Caster",
+              "doOffStage": true,
+              "modifierName": "SuperPrisonState_Avatar_Freeze"
+            }
+          ],
           "onRemoved": [
             {
               "$type": "ServerLuaCall",
-              "luaCallType": "CurChallengeGroup",
-              "funcName": "HideAndSeek_Out_SuperPrison"
+              "luaCallType": "AbilityGroupSourceGroup",
+              "funcName": "HideAndSeek_Out_SuperPrison",
+              "param1": 0,
+              "param2": 0,
+              "param3": 0
             }
           ]
+        },
+        "SuperPrisonState_Avatar_Freeze": {
+          "modifierName": "",
+          "duration": 10,
+          "elementDurability": 100,
+          "state": "ElementFreeze"
         }
       },
       "onAdded": [
@@ -1176,8 +1259,11 @@
             },
             {
               "$type": "ServerLuaCall",
-              "luaCallType": "CurChallengeGroup",
-              "funcName": "HideAndSeek_Skill_SuperPrison"
+              "luaCallType": "AbilityGroupSourceGroup",
+              "funcName": "HideAndSeek_Skill_SuperPrison",
+              "param1": 0,
+              "param2": 0,
+              "param3": 0
             }
           ],
           "failActions": [
@@ -1313,6 +1399,7 @@
             {
               "$type": "ChangePlayMode",
               "doOffStage": true,
+              "canBeHandledOnRecover": true,
               "muteRemoteAction": true,
               "toPlayMode": "HideAndSeek"
             }
@@ -1364,7 +1451,8 @@
                 "Swim",
                 "Fly"
               ],
-              "modifierName": "HideAndSeek_PlayerState_Transfer_Quit_Swim"
+              "modifierName": "HideAndSeek_PlayerState_Transfer_Quit_Swim",
+              "isCheckOnAttach": true
             }
           ]
         },
@@ -1426,8 +1514,11 @@
           "onAdded": [
             {
               "$type": "ServerLuaCall",
-              "luaCallType": "CurChallengeGroup",
-              "funcName": "HideAndSeek_Skill_Transfer_Quit"
+              "luaCallType": "AbilityGroupSourceGroup",
+              "funcName": "HideAndSeek_Skill_Transfer_Quit",
+              "param1": 0,
+              "param2": 0,
+              "param3": 0
             }
           ]
         }
@@ -1479,6 +1570,16 @@
                   "$type": "ByTargetGlobalValue",
                   "key": "Is_In_GlobalSight",
                   "value": 0
+                },
+                {
+                  "$type": "ByNot",
+                  "predicates": [
+                    {
+                      "$type": "ByTargetGlobalValue",
+                      "key": "HideAndSeek_PlayerState_Play",
+                      "value": 2
+                    }
+                  ]
                 }
               ],
               "successActions": [
@@ -1505,15 +1606,11 @@
                 },
                 {
                   "$type": "ServerLuaCall",
-                  "luaCallType": "SpecificGroup",
-                  "CallParamList": [
-                    133004002,
-                    133004004,
-                    133004005,
-                    133004009,
-                    133004471
-                  ],
-                  "funcName": "HideAndSeek_Skill_Transfer"
+                  "luaCallType": "AbilityGroupSourceGroup",
+                  "funcName": "HideAndSeek_Skill_Transfer",
+                  "param1": 0,
+                  "param2": 0,
+                  "param3": 0
                 },
                 {
                   "$type": "DebugLog",
@@ -1524,27 +1621,8 @@
           ],
           "onBeginCharged": [
             {
-              "$type": "AvatarSkillStart",
-              "skillID": 20200,
-              "cdRatio": 1,
-              "costStaminaRatio": 1
-            },
-            {
-              "$type": "ServerLuaCall",
-              "luaCallType": "SpecificGroup",
-              "CallParamList": [
-                133004002,
-                133004004,
-                133004005,
-                133004009,
-                133004471
-              ],
-              "funcName": "HideAndSeek_Skill_Transfer_Quit"
-            },
-            {
-              "$type": "FireEffect",
-              "muteRemoteAction": true,
-              "effectPattern": "Eff_Activity_HideSeek_Disguise_Quit"
+              "$type": "ApplyModifier",
+              "modifierName": "UNIQUE_HideAndSeek_Skill_Transfer_Quit_Modifier"
             },
             {
               "$type": "DebugLog",
@@ -1558,15 +1636,11 @@
             },
             {
               "$type": "ServerLuaCall",
-              "luaCallType": "SpecificGroup",
-              "CallParamList": [
-                133004002,
-                133004004,
-                133004005,
-                133004009,
-                133004471
-              ],
-              "funcName": "HideAndSeek_Skill_Transfer_Quit"
+              "luaCallType": "AbilityGroupSourceGroup",
+              "funcName": "HideAndSeek_Skill_Transfer_Quit",
+              "param1": 0,
+              "param2": 0,
+              "param3": 0
             }
           ]
         }
@@ -1581,14 +1655,14 @@
               "$type": "ServerUpdateGlobalValueMixin",
               "key": "HideAndSeek_PlayerState_Transfer",
               "useLimitRange": true,
-              "maxValue": 10,
+              "maxValue": 23,
               "minValue": 0
             },
             {
               "$type": "ServerUpdateGlobalValueMixin",
               "key": "HideAndSeek_PlayerState_TransferCache",
               "useLimitRange": true,
-              "maxValue": 10,
+              "maxValue": 23,
               "minValue": 0
             },
             {
@@ -1607,7 +1681,20 @@
                 7.5,
                 8.5,
                 9.5,
-                10.5
+                10.5,
+                11.5,
+                12.5,
+                13.5,
+                14.5,
+                15.5,
+                16.5,
+                17.5,
+                18.5,
+                19.5,
+                20.5,
+                21.5,
+                22.5,
+                23.5
               ],
               "modifierNameSteps": [
                 "Blank_Team",
@@ -1620,39 +1707,20 @@
                 "HideType_D_Style_1_Team_7",
                 "HideType_D_Style_2_Team_8",
                 "HideType_E_Style_1_Team_9",
-                "HideType_E_Style_2_Team_10"
-              ]
-            },
-            {
-              "$type": "AttachModifierToSelfGlobalValueMixin",
-              "globalValueKey": "HideAndSeek_PlayerState_TransferCache",
-              "defaultGlobalValueOnCreate": 0,
-              "valueSteps": [
-                -0.5,
-                0.5,
-                1.5,
-                2.5,
-                3.5,
-                4.5,
-                5.5,
-                6.5,
-                7.5,
-                8.5,
-                9.5,
-                10.5
-              ],
-              "modifierNameSteps": [
-                "Blank_Team",
-                "HideType_A_Style_1_Team_1",
-                "HideType_A_Style_2_Team_2",
-                "HideType_A_Style_3_Team_3",
-                "HideType_B_Style_1_Team_4",
-                "HideType_B_Style_2_Team_5",
-                "HideType_C_Style_1_Team_6",
-                "HideType_D_Style_1_Team_7",
-                "HideType_D_Style_2_Team_8",
-                "HideType_E_Style_1_Team_9",
-                "HideType_E_Style_2_Team_10"
+                "HideType_E_Style_2_Team_10",
+                "HideType_Team_1",
+                "HideType_Team_2",
+                "HideType_Team_3",
+                "HideType_Team_4",
+                "HideType_Team_5",
+                "HideType_Team_6",
+                "HideType_Team_7",
+                "HideType_Team_8",
+                "HideType_Team_9",
+                "HideType_Team_10",
+                "HideType_Team_11",
+                "HideType_Team_12",
+                "HideType_Team_13"
               ]
             }
           ]
@@ -1673,6 +1741,7 @@
           "onAdded": [
             {
               "$type": "CreateGadget",
+              "canBeHandledOnRecover": true,
               "born": {
                 "$type": "ConfigBornBySelf",
                 "onGround": true
@@ -1703,6 +1772,7 @@
           "onAdded": [
             {
               "$type": "CreateGadget",
+              "canBeHandledOnRecover": true,
               "born": {
                 "$type": "ConfigBornBySelf",
                 "onGround": true
@@ -1733,6 +1803,7 @@
           "onAdded": [
             {
               "$type": "CreateGadget",
+              "canBeHandledOnRecover": true,
               "born": {
                 "$type": "ConfigBornBySelf",
                 "onGround": true
@@ -1763,6 +1834,7 @@
           "onAdded": [
             {
               "$type": "CreateGadget",
+              "canBeHandledOnRecover": true,
               "born": {
                 "$type": "ConfigBornBySelf",
                 "onGround": true
@@ -1798,6 +1870,7 @@
           "onAdded": [
             {
               "$type": "CreateGadget",
+              "canBeHandledOnRecover": true,
               "born": {
                 "$type": "ConfigBornBySelf",
                 "onGround": true
@@ -1858,6 +1931,7 @@
           "onAdded": [
             {
               "$type": "CreateGadget",
+              "canBeHandledOnRecover": true,
               "born": {
                 "$type": "ConfigBornBySelf",
                 "onGround": true
@@ -1888,6 +1962,7 @@
           "onAdded": [
             {
               "$type": "CreateGadget",
+              "canBeHandledOnRecover": true,
               "born": {
                 "$type": "ConfigBornBySelf",
                 "onGround": true
@@ -1918,6 +1993,7 @@
           "onAdded": [
             {
               "$type": "CreateGadget",
+              "canBeHandledOnRecover": true,
               "born": {
                 "$type": "ConfigBornBySelf",
                 "onGround": true
@@ -1966,6 +2042,409 @@
             }
           ]
         },
+        "HideType_Team_1": {
+          "modifierName": "",
+          "elementDurability": 100,
+          "modifierMixins": [
+            {
+              "$type": "CurLocalAvatarMixin",
+              "modifierName": "HideType_A_Style_1_Avatar"
+            }
+          ],
+          "onAdded": [
+            {
+              "$type": "CreateGadget",
+              "canBeHandledOnRecover": true,
+              "born": {
+                "$type": "ConfigBornBySelf",
+                "onGround": true
+              },
+              "gadgetID": 44000400,
+              "campID": 1001,
+              "campTargetType": "Enemy"
+            }
+          ],
+          "onRemoved": [
+            {
+              "$type": "KillGadget",
+              "gadgetInfo": {
+                "configID": 44000400
+              }
+            }
+          ]
+        },
+        "HideType_Team_2": {
+          "modifierName": "",
+          "elementDurability": 100,
+          "modifierMixins": [
+            {
+              "$type": "CurLocalAvatarMixin",
+              "modifierName": "HideType_A_Style_1_Avatar"
+            }
+          ],
+          "onAdded": [
+            {
+              "$type": "CreateGadget",
+              "canBeHandledOnRecover": true,
+              "born": {
+                "$type": "ConfigBornBySelf",
+                "onGround": true
+              },
+              "gadgetID": 44000401,
+              "campID": 1001,
+              "campTargetType": "Enemy"
+            }
+          ],
+          "onRemoved": [
+            {
+              "$type": "KillGadget",
+              "gadgetInfo": {
+                "configID": 44000401
+              }
+            }
+          ]
+        },
+        "HideType_Team_3": {
+          "modifierName": "",
+          "elementDurability": 100,
+          "modifierMixins": [
+            {
+              "$type": "CurLocalAvatarMixin",
+              "modifierName": "HideType_A_Style_1_Avatar"
+            }
+          ],
+          "onAdded": [
+            {
+              "$type": "CreateGadget",
+              "canBeHandledOnRecover": true,
+              "born": {
+                "$type": "ConfigBornBySelf",
+                "onGround": true
+              },
+              "gadgetID": 44000402,
+              "campID": 1001,
+              "campTargetType": "Enemy"
+            }
+          ],
+          "onRemoved": [
+            {
+              "$type": "KillGadget",
+              "gadgetInfo": {
+                "configID": 44000402
+              }
+            }
+          ]
+        },
+        "HideType_Team_4": {
+          "modifierName": "",
+          "elementDurability": 100,
+          "modifierMixins": [
+            {
+              "$type": "CurLocalAvatarMixin",
+              "modifierName": "HideType_A_Style_1_Avatar"
+            }
+          ],
+          "onAdded": [
+            {
+              "$type": "CreateGadget",
+              "canBeHandledOnRecover": true,
+              "born": {
+                "$type": "ConfigBornBySelf",
+                "onGround": true
+              },
+              "gadgetID": 44000403,
+              "campID": 1001,
+              "campTargetType": "Enemy"
+            }
+          ],
+          "onRemoved": [
+            {
+              "$type": "KillGadget",
+              "gadgetInfo": {
+                "configID": 44000403
+              }
+            },
+            {
+              "$type": "DebugLog",
+              "doOffStage": true,
+              "content": "退出变身时执行了吗11111"
+            }
+          ]
+        },
+        "HideType_Team_5": {
+          "modifierName": "",
+          "elementDurability": 100,
+          "modifierMixins": [
+            {
+              "$type": "CurLocalAvatarMixin",
+              "modifierName": "HideType_A_Style_1_Avatar"
+            }
+          ],
+          "onAdded": [
+            {
+              "$type": "CreateGadget",
+              "canBeHandledOnRecover": true,
+              "born": {
+                "$type": "ConfigBornBySelf",
+                "onGround": true
+              },
+              "gadgetID": 44000404,
+              "campID": 1001,
+              "campTargetType": "Enemy"
+            }
+          ],
+          "onRemoved": [
+            {
+              "$type": "KillGadget",
+              "gadgetInfo": {
+                "configID": 44000404
+              }
+            }
+          ]
+        },
+        "HideType_Team_6": {
+          "modifierName": "",
+          "elementDurability": 100,
+          "modifierMixins": [
+            {
+              "$type": "CurLocalAvatarMixin",
+              "modifierName": "HideType_A_Style_1_Avatar"
+            }
+          ],
+          "onAdded": [
+            {
+              "$type": "CreateGadget",
+              "born": {
+                "$type": "ConfigBornBySelf",
+                "onGround": true
+              },
+              "gadgetID": 44000405,
+              "campID": 1001,
+              "campTargetType": "Enemy"
+            }
+          ],
+          "onRemoved": [
+            {
+              "$type": "KillGadget",
+              "gadgetInfo": {
+                "configID": 44000405
+              }
+            }
+          ]
+        },
+        "HideType_Team_7": {
+          "modifierName": "",
+          "elementDurability": 100,
+          "modifierMixins": [
+            {
+              "$type": "CurLocalAvatarMixin",
+              "modifierName": "HideType_A_Style_1_Avatar"
+            }
+          ],
+          "onAdded": [
+            {
+              "$type": "CreateGadget",
+              "canBeHandledOnRecover": true,
+              "born": {
+                "$type": "ConfigBornBySelf",
+                "onGround": true
+              },
+              "gadgetID": 44000406,
+              "campID": 1001,
+              "campTargetType": "Enemy"
+            }
+          ],
+          "onRemoved": [
+            {
+              "$type": "KillGadget",
+              "gadgetInfo": {
+                "configID": 44000406
+              }
+            }
+          ]
+        },
+        "HideType_Team_8": {
+          "modifierName": "",
+          "elementDurability": 100,
+          "modifierMixins": [
+            {
+              "$type": "CurLocalAvatarMixin",
+              "modifierName": "HideType_A_Style_1_Avatar"
+            }
+          ],
+          "onAdded": [
+            {
+              "$type": "CreateGadget",
+              "canBeHandledOnRecover": true,
+              "born": {
+                "$type": "ConfigBornBySelf",
+                "onGround": true
+              },
+              "gadgetID": 44000407,
+              "campID": 1001,
+              "campTargetType": "Enemy"
+            }
+          ],
+          "onRemoved": [
+            {
+              "$type": "KillGadget",
+              "gadgetInfo": {
+                "configID": 44000407
+              }
+            }
+          ]
+        },
+        "HideType_Team_9": {
+          "modifierName": "",
+          "elementDurability": 100,
+          "modifierMixins": [
+            {
+              "$type": "CurLocalAvatarMixin",
+              "modifierName": "HideType_A_Style_1_Avatar"
+            }
+          ],
+          "onAdded": [
+            {
+              "$type": "CreateGadget",
+              "canBeHandledOnRecover": true,
+              "born": {
+                "$type": "ConfigBornBySelf",
+                "onGround": true
+              },
+              "gadgetID": 44000408,
+              "campID": 1001,
+              "campTargetType": "Enemy"
+            }
+          ],
+          "onRemoved": [
+            {
+              "$type": "KillGadget",
+              "gadgetInfo": {
+                "configID": 44000408
+              }
+            }
+          ]
+        },
+        "HideType_Team_10": {
+          "modifierName": "",
+          "elementDurability": 100,
+          "modifierMixins": [
+            {
+              "$type": "CurLocalAvatarMixin",
+              "modifierName": "HideType_A_Style_1_Avatar"
+            }
+          ],
+          "onAdded": [
+            {
+              "$type": "CreateGadget",
+              "born": {
+                "$type": "ConfigBornBySelf",
+                "onGround": true
+              },
+              "gadgetID": 44000409,
+              "campID": 1001,
+              "campTargetType": "Enemy"
+            }
+          ],
+          "onRemoved": [
+            {
+              "$type": "KillGadget",
+              "gadgetInfo": {
+                "configID": 44000409
+              }
+            }
+          ]
+        },
+        "HideType_Team_11": {
+          "modifierName": "",
+          "elementDurability": 100,
+          "modifierMixins": [
+            {
+              "$type": "CurLocalAvatarMixin",
+              "modifierName": "HideType_A_Style_1_Avatar"
+            }
+          ],
+          "onAdded": [
+            {
+              "$type": "CreateGadget",
+              "born": {
+                "$type": "ConfigBornBySelf",
+                "onGround": true
+              },
+              "gadgetID": 44000410,
+              "campID": 1001,
+              "campTargetType": "Enemy"
+            }
+          ],
+          "onRemoved": [
+            {
+              "$type": "KillGadget",
+              "gadgetInfo": {
+                "configID": 44000410
+              }
+            }
+          ]
+        },
+        "HideType_Team_12": {
+          "modifierName": "",
+          "elementDurability": 100,
+          "modifierMixins": [
+            {
+              "$type": "CurLocalAvatarMixin",
+              "modifierName": "HideType_A_Style_1_Avatar"
+            }
+          ],
+          "onAdded": [
+            {
+              "$type": "CreateGadget",
+              "born": {
+                "$type": "ConfigBornBySelf",
+                "onGround": true
+              },
+              "gadgetID": 44000411,
+              "campID": 1001,
+              "campTargetType": "Enemy"
+            }
+          ],
+          "onRemoved": [
+            {
+              "$type": "KillGadget",
+              "gadgetInfo": {
+                "configID": 44000411
+              }
+            }
+          ]
+        },
+        "HideType_Team_13": {
+          "modifierName": "",
+          "elementDurability": 100,
+          "modifierMixins": [
+            {
+              "$type": "CurLocalAvatarMixin",
+              "modifierName": "HideType_A_Style_1_Avatar"
+            }
+          ],
+          "onAdded": [
+            {
+              "$type": "CreateGadget",
+              "born": {
+                "$type": "ConfigBornBySelf",
+                "onGround": true
+              },
+              "gadgetID": 44000412,
+              "campID": 1001,
+              "campTargetType": "Enemy"
+            }
+          ],
+          "onRemoved": [
+            {
+              "$type": "KillGadget",
+              "gadgetInfo": {
+                "configID": 44000412
+              }
+            }
+          ]
+        },
         "HideType_A_Style_1_Avatar": {
           "modifierName": "",
           "elementDurability": 100,
@@ -2002,6 +2481,21 @@
               "doOffStage": true,
               "content": "退出变身时执行了吗"
             }
+          ],
+          "onReconnect": [
+            {
+              "$type": "RemoveModifier",
+              "predicates": [
+                {
+                  "$type": "ByTargetGlobalValue",
+                  "target": "Team",
+                  "key": "HideAndSeek_PlayerState_Transfer",
+                  "value": 0,
+                  "compareType": "NoneOrEqual"
+                }
+              ],
+              "modifierName": "HideType_A_Style_1_Avatar"
+            }
           ]
         },
         "UNIQUE_Hider_MoveSpeedDown": {
@@ -2021,7 +2515,44 @@
           "modifierMixins": [
             {
               "$type": "EntityInVisibleMixin",
-              "reason": "Gallary"
+              "reason": "Gallary",
+              "MJHKBLEFCHC": true
+            }
+          ]
+        },
+        "UNIQUE_HideAndSeek_Skill_Transfer_Quit_Modifier": {
+          "modifierName": "",
+          "isUnique": true,
+          "duration": 0.1,
+          "elementDurability": 100,
+          "onAdded": [
+            {
+              "$type": "AvatarSkillStart",
+              "skillID": 20500,
+              "cdRatio": 1,
+              "costStaminaRatio": 1
+            },
+            {
+              "$type": "ServerLuaCall",
+              "luaCallType": "AbilityGroupSourceGroup",
+              "funcName": "HideAndSeek_Skill_Transfer_Quit",
+              "param1": 0,
+              "param2": 0,
+              "param3": 0
+            },
+            {
+              "$type": "DebugLog",
+              "content": "退出变身调用1111"
+            }
+          ],
+          "onRemoved": [
+            {
+              "$type": "FireEffect",
+              "muteRemoteAction": true,
+              "effectPattern": "Eff_Activity_HideSeek_Disguise_Quit",
+              "born": {
+                "$type": "ConfigBornByTarget"
+              }
             }
           ]
         }
@@ -2055,6 +2586,74 @@
         }
       ],
       "isDynamicAbility": true
+    }
+  },
+  {
+    "Default": {
+      "$type": "ConfigAbility",
+      "abilityName": "ActivityAbility_HideSeek_kong",
+      "modifiers": {
+        "KillSelf_CountDown": {
+          "stacking": "Multiple",
+          "modifierName": "",
+          "duration": 260,
+          "elementDurability": 100,
+          "modifierMixins": [
+            {
+              "$type": "AttachModifierToGlobalValueMixin",
+              "globalValueTarget": "Team",
+              "globalValueKey": "SGV_HideAndSeek_PlayerState_Transfer",
+              "valueSteps": [
+                -0.5,
+                0.5
+              ],
+              "modifierNameSteps": [
+                "mod_KillSelf"
+              ]
+            }
+          ],
+          "onRemoved": [
+            {
+              "$type": "DebugLog",
+              "content": "KillSelf_CountDown > onRemoved"
+            },
+            {
+              "$type": "KillSelf"
+            }
+          ]
+        },
+        "mod_KillSelf": {
+          "modifierName": "",
+          "elementDurability": 100,
+          "onAdded": [
+            {
+              "$type": "DebugLog",
+              "content": "mod_KillSelf > onAdded"
+            },
+            {
+              "$type": "KillSelf"
+            }
+          ]
+        }
+      },
+      "onAdded": [
+        {
+          "$type": "KillSelf",
+          "predicates": [
+            {
+              "$type": "ByTargetGlobalValue",
+              "target": "Team",
+              "key": "SGV_HideAndSeek_PlayerState_Transfer",
+              "value": 0,
+              "compareType": "NoneOrEqual"
+            }
+          ]
+        },
+        {
+          "$type": "AttachModifier",
+          "modifierName": "KillSelf_CountDown"
+        }
+      ]
     }
   },
   {
@@ -2108,6 +2707,15 @@
           "$type": "AttachModifier",
           "doOffStage": true,
           "modifierName": "UNIQUE_ActivityAbility_HideSeek_Hider_Invisibility_SwitchSkill"
+        },
+        {
+          "$type": "SetGlobalValue",
+          "doOffStage": true,
+          "value": 0,
+          "key": "_ActivityAbility_HideSeek_Hider_Disguise_SwitchSkill_State",
+          "useLimitRange": true,
+          "maxValue": 100,
+          "minValue": 0
         }
       ],
       "isDynamicAbility": true
@@ -2119,38 +2727,42 @@
       "abilityName": "ActivityAbility_HideSeek_Hider_Invisibility",
       "onAbilityStart": [
         {
-          "$type": "AvatarSkillStart",
-          "skillID": 20210,
-          "cdRatio": 1,
-          "costStaminaRatio": 1
-        },
-        {
-          "$type": "DebugLog",
-          "content": "SCL:HideAndSeek_Skill_SelfInvisible!!!!!!!!!!!"
-        },
-        {
-          "$type": "ServerLuaCall",
-          "luaCallType": "SpecificGroup",
-          "CallParamList": [
-            133004002,
-            133004004,
-            133004005,
-            133004009,
-            133004471
+          "$type": "Predicated",
+          "target": "Caster",
+          "targetPredicates": [
+            {
+              "$type": "ByNot",
+              "predicates": [
+                {
+                  "$type": "ByTargetGlobalValue",
+                  "key": "HideAndSeek_PlayerState_Play",
+                  "value": 2
+                }
+              ]
+            }
           ],
-          "funcName": "HideAndSeek_Skill_Transfer_Quit"
-        },
-        {
-          "$type": "ServerLuaCall",
-          "luaCallType": "SpecificGroup",
-          "CallParamList": [
-            133004002,
-            133004004,
-            133004005,
-            133004009,
-            133004471
-          ],
-          "funcName": "HideAndSeek_Skill_SelfInvisible"
+          "successActions": [
+            {
+              "$type": "DebugLog",
+              "content": "SCL:HideAndSeek_Skill_SelfInvisible!!!!!!!!!!!"
+            },
+            {
+              "$type": "ServerLuaCall",
+              "luaCallType": "AbilityGroupSourceGroup",
+              "funcName": "HideAndSeek_Skill_Transfer_Quit",
+              "param1": 0,
+              "param2": 0,
+              "param3": 0
+            },
+            {
+              "$type": "ServerLuaCall",
+              "luaCallType": "AbilityGroupSourceGroup",
+              "funcName": "HideAndSeek_Skill_SelfInvisible",
+              "param1": 0,
+              "param2": 0,
+              "param3": 0
+            }
+          ]
         }
       ],
       "isDynamicAbility": true
@@ -2216,6 +2828,27 @@
     "Default": {
       "$type": "ConfigAbility",
       "abilityName": "ActivityAbility_HideSeek_Hider_Bait",
+      "modifiers": {
+        "UNIQUE_Eff_Activity_HideSeek_Bait_Disappear": {
+          "modifierName": "",
+          "isUnique": true,
+          "duration": 1,
+          "elementDurability": 100,
+          "onAdded": [
+            {
+              "$type": "FireEffect",
+              "muteRemoteAction": true,
+              "effectPattern": "Eff_Activity_HideSeek_Bait_Disappear",
+              "born": {
+                "$type": "ConfigBornBySelf",
+                "offset": {
+                  "z": 1
+                }
+              }
+            }
+          ]
+        }
+      },
       "onAdded": [
         {
           "$type": "SetGlobalValue",
@@ -2226,7 +2859,9 @@
           "useLimitRange": true,
           "maxValue": 100,
           "minValue": 0
-        },
+        }
+      ],
+      "onAbilityStart": [
         {
           "$type": "SetGlobalValue",
           "target": "Team",
@@ -2235,14 +2870,12 @@
           "key": "HideAndSeek_Is_Bait",
           "maxValue": 0,
           "minValue": 0
-        }
-      ],
-      "onAbilityStart": [
+        },
         {
           "$type": "Predicated",
           "otherTargets": {
             "$type": "SelectTargetsByShape",
-            "shapeName": "CircleR2H4",
+            "shapeName": "CircleR3H5",
             "campTargetType": "All",
             "sizeRatio": 1
           },
@@ -2271,17 +2904,6 @@
               "maxValue": 0,
               "minValue": 0
             }
-          ],
-          "failActions": [
-            {
-              "$type": "SetGlobalValue",
-              "target": "Team",
-              "doOffStage": true,
-              "value": 0,
-              "key": "HideAndSeek_Is_Bait",
-              "maxValue": 0,
-              "minValue": 0
-            }
           ]
         },
         {
@@ -2297,35 +2919,62 @@
           "successActions": [
             {
               "$type": "DebugLog",
-              "content": "不可以放技能，啥也不做"
+              "content": "不可以放技能啥也不做"
+            },
+            {
+              "$type": "ApplyModifier",
+              "modifierName": "UNIQUE_Eff_Activity_HideSeek_Bait_Disappear"
             }
           ],
           "failActions": [
             {
-              "$type": "DebugLog",
-              "content": "可以放技能"
-            },
-            {
-              "$type": "AvatarSkillStart",
-              "skillID": 20211,
-              "cdRatio": 1,
-              "costStaminaRatio": 1
-            },
-            {
-              "$type": "DebugLog",
-              "content": "SCL:HideAndSeek_Skill_PlaceBait!!!!!!!!!!!"
-            },
-            {
-              "$type": "ServerLuaCall",
-              "luaCallType": "SpecificGroup",
-              "CallParamList": [
-                133004002,
-                133004004,
-                133004005,
-                133004009,
-                133004471
+              "$type": "Predicated",
+              "target": "Caster",
+              "targetPredicates": [
+                {
+                  "$type": "ByNot",
+                  "predicates": [
+                    {
+                      "$type": "ByTargetGlobalValue",
+                      "key": "HideAndSeek_PlayerState_Play",
+                      "value": 2
+                    }
+                  ]
+                }
               ],
-              "funcName": "HideAndSeek_Skill_PlaceBait"
+              "successActions": [
+                {
+                  "$type": "DebugLog",
+                  "content": "可以放技能"
+                },
+                {
+                  "$type": "AvatarSkillStart",
+                  "skillID": 20211,
+                  "cdRatio": 1,
+                  "costStaminaRatio": 1
+                },
+                {
+                  "$type": "DebugLog",
+                  "content": "SCL:HideAndSeek_Skill_PlaceBait!!!!!!!!!!!"
+                },
+                {
+                  "$type": "ServerLuaCall",
+                  "luaCallType": "AbilityGroupSourceGroup",
+                  "funcName": "HideAndSeek_Skill_PlaceBait",
+                  "param1": 0,
+                  "param2": 0,
+                  "param3": 0
+                },
+                {
+                  "$type": "SetGlobalValue",
+                  "target": "Team",
+                  "doOffStage": true,
+                  "value": 0,
+                  "key": "HideAndSeek_Is_Bait",
+                  "maxValue": 0,
+                  "minValue": 0
+                }
+              ]
             }
           ]
         }
@@ -2359,7 +3008,20 @@
                 7.5,
                 8.5,
                 9.5,
-                10.5
+                10.5,
+                11.5,
+                12.5,
+                13.5,
+                14.5,
+                15.5,
+                16.5,
+                17.5,
+                18.5,
+                19.5,
+                20.5,
+                21.5,
+                22.5,
+                23.5
               ],
               "modifierNameSteps": [
                 "Blank_Team",
@@ -2372,7 +3034,20 @@
                 "HideType_D_Style_1_Team_7",
                 "HideType_D_Style_2_Team_8",
                 "HideType_E_Style_1_Team_9",
-                "HideType_E_Style_2_Team_10"
+                "HideType_E_Style_2_Team_10",
+                "HideType_Team_1",
+                "HideType_Team_2",
+                "HideType_Team_3",
+                "HideType_Team_4",
+                "HideType_Team_5",
+                "HideType_Team_6",
+                "HideType_Team_7",
+                "HideType_Team_8",
+                "HideType_Team_9",
+                "HideType_Team_10",
+                "HideType_Team_11",
+                "HideType_Team_12",
+                "HideType_Team_13"
               ]
             }
           ]
@@ -2391,20 +3066,21 @@
               "born": {
                 "$type": "ConfigBornBySelf"
               },
-              "gadgetID": 44000250,
+              "gadgetID": 44000260,
               "campID": 1001,
-              "campTargetType": "Enemy"
+              "campTargetType": "Enemy",
+              "byServer": true
             },
             {
-              "$type": "FireEffect",
-              "effectPattern": "Eff_Activity_HideSeek_Bait"
+              "$type": "ApplyModifier",
+              "modifierName": "UNIQUE_HideSeek_Bait_BornEffect"
             }
           ],
           "onRemoved": [
             {
               "$type": "KillGadget",
               "gadgetInfo": {
-                "configID": 44000250
+                "configID": 44000260
               }
             }
           ]
@@ -2419,20 +3095,21 @@
               "born": {
                 "$type": "ConfigBornBySelf"
               },
-              "gadgetID": 44000251,
+              "gadgetID": 44000261,
               "campID": 1001,
-              "campTargetType": "Enemy"
+              "campTargetType": "Enemy",
+              "byServer": true
             },
             {
-              "$type": "FireEffect",
-              "effectPattern": "Eff_Activity_HideSeek_Bait"
+              "$type": "ApplyModifier",
+              "modifierName": "UNIQUE_HideSeek_Bait_BornEffect"
             }
           ],
           "onRemoved": [
             {
               "$type": "KillGadget",
               "gadgetInfo": {
-                "configID": 44000251
+                "configID": 44000261
               }
             }
           ]
@@ -2447,20 +3124,21 @@
               "born": {
                 "$type": "ConfigBornBySelf"
               },
-              "gadgetID": 44000252,
+              "gadgetID": 44000262,
               "campID": 1001,
-              "campTargetType": "Enemy"
+              "campTargetType": "Enemy",
+              "byServer": true
             },
             {
-              "$type": "FireEffect",
-              "effectPattern": "Eff_Activity_HideSeek_Bait"
+              "$type": "ApplyModifier",
+              "modifierName": "UNIQUE_HideSeek_Bait_BornEffect"
             }
           ],
           "onRemoved": [
             {
               "$type": "KillGadget",
               "gadgetInfo": {
-                "configID": 44000252
+                "configID": 44000262
               }
             }
           ]
@@ -2475,20 +3153,21 @@
               "born": {
                 "$type": "ConfigBornBySelf"
               },
-              "gadgetID": 44000253,
+              "gadgetID": 44000263,
               "campID": 1001,
-              "campTargetType": "Enemy"
+              "campTargetType": "Enemy",
+              "byServer": true
             },
             {
-              "$type": "FireEffect",
-              "effectPattern": "Eff_Activity_HideSeek_Bait"
+              "$type": "ApplyModifier",
+              "modifierName": "UNIQUE_HideSeek_Bait_BornEffect"
             }
           ],
           "onRemoved": [
             {
               "$type": "KillGadget",
               "gadgetInfo": {
-                "configID": 44000253
+                "configID": 44000263
               }
             }
           ]
@@ -2503,20 +3182,21 @@
               "born": {
                 "$type": "ConfigBornBySelf"
               },
-              "gadgetID": 44000254,
+              "gadgetID": 44000264,
               "campID": 1001,
-              "campTargetType": "Enemy"
+              "campTargetType": "Enemy",
+              "byServer": true
             },
             {
-              "$type": "FireEffect",
-              "effectPattern": "Eff_Activity_HideSeek_Bait"
+              "$type": "ApplyModifier",
+              "modifierName": "UNIQUE_HideSeek_Bait_BornEffect"
             }
           ],
           "onRemoved": [
             {
               "$type": "KillGadget",
               "gadgetInfo": {
-                "configID": 44000254
+                "configID": 44000264
               }
             }
           ]
@@ -2531,20 +3211,21 @@
               "born": {
                 "$type": "ConfigBornBySelf"
               },
-              "gadgetID": 44000255,
+              "gadgetID": 44000265,
               "campID": 1001,
-              "campTargetType": "Enemy"
+              "campTargetType": "Enemy",
+              "byServer": true
             },
             {
-              "$type": "FireEffect",
-              "effectPattern": "Eff_Activity_HideSeek_Bait"
+              "$type": "ApplyModifier",
+              "modifierName": "UNIQUE_HideSeek_Bait_BornEffect"
             }
           ],
           "onRemoved": [
             {
               "$type": "KillGadget",
               "gadgetInfo": {
-                "configID": 44000255
+                "configID": 44000265
               }
             }
           ]
@@ -2559,20 +3240,21 @@
               "born": {
                 "$type": "ConfigBornBySelf"
               },
-              "gadgetID": 44000256,
+              "gadgetID": 44000266,
               "campID": 1001,
-              "campTargetType": "Enemy"
+              "campTargetType": "Enemy",
+              "byServer": true
             },
             {
-              "$type": "FireEffect",
-              "effectPattern": "Eff_Activity_HideSeek_Bait"
+              "$type": "ApplyModifier",
+              "modifierName": "UNIQUE_HideSeek_Bait_BornEffect"
             }
           ],
           "onRemoved": [
             {
               "$type": "KillGadget",
               "gadgetInfo": {
-                "configID": 44000256
+                "configID": 44000266
               }
             }
           ]
@@ -2587,20 +3269,21 @@
               "born": {
                 "$type": "ConfigBornBySelf"
               },
-              "gadgetID": 44000257,
+              "gadgetID": 44000267,
               "campID": 1001,
-              "campTargetType": "Enemy"
+              "campTargetType": "Enemy",
+              "byServer": true
             },
             {
-              "$type": "FireEffect",
-              "effectPattern": "Eff_Activity_HideSeek_Bait"
+              "$type": "ApplyModifier",
+              "modifierName": "UNIQUE_HideSeek_Bait_BornEffect"
             }
           ],
           "onRemoved": [
             {
               "$type": "KillGadget",
               "gadgetInfo": {
-                "configID": 44000257
+                "configID": 44000267
               }
             }
           ]
@@ -2615,16 +3298,21 @@
               "born": {
                 "$type": "ConfigBornBySelf"
               },
-              "gadgetID": 44000258,
+              "gadgetID": 44000268,
               "campID": 1001,
-              "campTargetType": "Enemy"
+              "campTargetType": "Enemy",
+              "byServer": true
+            },
+            {
+              "$type": "ApplyModifier",
+              "modifierName": "UNIQUE_HideSeek_Bait_BornEffect"
             }
           ],
           "onRemoved": [
             {
               "$type": "KillGadget",
               "gadgetInfo": {
-                "configID": 44000258
+                "configID": 44000268
               }
             }
           ]
@@ -2639,17 +3327,411 @@
               "born": {
                 "$type": "ConfigBornBySelf"
               },
-              "gadgetID": 44000259,
+              "gadgetID": 44000269,
               "campID": 1001,
-              "campTargetType": "Enemy"
+              "campTargetType": "Enemy",
+              "byServer": true
+            },
+            {
+              "$type": "ApplyModifier",
+              "modifierName": "UNIQUE_HideSeek_Bait_BornEffect"
             }
           ],
           "onRemoved": [
             {
               "$type": "KillGadget",
               "gadgetInfo": {
-                "configID": 44000259
+                "configID": 44000269
               }
+            }
+          ]
+        },
+        "HideType_Team_1": {
+          "modifierName": "",
+          "elementDurability": 100,
+          "onAdded": [
+            {
+              "$type": "CreateGadget",
+              "lifeByOwnerIsAlive": true,
+              "born": {
+                "$type": "ConfigBornBySelf"
+              },
+              "gadgetID": 44000413,
+              "campID": 1001,
+              "campTargetType": "Enemy",
+              "byServer": true
+            },
+            {
+              "$type": "ApplyModifier",
+              "modifierName": "UNIQUE_HideSeek_Bait_BornEffect"
+            }
+          ],
+          "onRemoved": [
+            {
+              "$type": "KillGadget",
+              "gadgetInfo": {
+                "configID": 44000413
+              }
+            }
+          ]
+        },
+        "HideType_Team_2": {
+          "modifierName": "",
+          "elementDurability": 100,
+          "onAdded": [
+            {
+              "$type": "CreateGadget",
+              "lifeByOwnerIsAlive": true,
+              "born": {
+                "$type": "ConfigBornBySelf"
+              },
+              "gadgetID": 44000414,
+              "campID": 1001,
+              "campTargetType": "Enemy",
+              "byServer": true
+            },
+            {
+              "$type": "ApplyModifier",
+              "modifierName": "UNIQUE_HideSeek_Bait_BornEffect"
+            }
+          ],
+          "onRemoved": [
+            {
+              "$type": "KillGadget",
+              "gadgetInfo": {
+                "configID": 44000414
+              }
+            }
+          ]
+        },
+        "HideType_Team_3": {
+          "modifierName": "",
+          "elementDurability": 100,
+          "onAdded": [
+            {
+              "$type": "CreateGadget",
+              "lifeByOwnerIsAlive": true,
+              "born": {
+                "$type": "ConfigBornBySelf"
+              },
+              "gadgetID": 44000415,
+              "campID": 1001,
+              "campTargetType": "Enemy",
+              "byServer": true
+            },
+            {
+              "$type": "ApplyModifier",
+              "modifierName": "UNIQUE_HideSeek_Bait_BornEffect"
+            }
+          ],
+          "onRemoved": [
+            {
+              "$type": "KillGadget",
+              "gadgetInfo": {
+                "configID": 44000415
+              }
+            }
+          ]
+        },
+        "HideType_Team_4": {
+          "modifierName": "",
+          "elementDurability": 100,
+          "onAdded": [
+            {
+              "$type": "CreateGadget",
+              "lifeByOwnerIsAlive": true,
+              "born": {
+                "$type": "ConfigBornBySelf"
+              },
+              "gadgetID": 44000416,
+              "campID": 1001,
+              "campTargetType": "Enemy",
+              "byServer": true
+            },
+            {
+              "$type": "ApplyModifier",
+              "modifierName": "UNIQUE_HideSeek_Bait_BornEffect"
+            }
+          ],
+          "onRemoved": [
+            {
+              "$type": "KillGadget",
+              "gadgetInfo": {
+                "configID": 44000416
+              }
+            }
+          ]
+        },
+        "HideType_Team_5": {
+          "modifierName": "",
+          "elementDurability": 100,
+          "onAdded": [
+            {
+              "$type": "CreateGadget",
+              "lifeByOwnerIsAlive": true,
+              "born": {
+                "$type": "ConfigBornBySelf"
+              },
+              "gadgetID": 44000417,
+              "campID": 1001,
+              "campTargetType": "Enemy",
+              "byServer": true
+            },
+            {
+              "$type": "ApplyModifier",
+              "modifierName": "UNIQUE_HideSeek_Bait_BornEffect"
+            }
+          ],
+          "onRemoved": [
+            {
+              "$type": "KillGadget",
+              "gadgetInfo": {
+                "configID": 44000417
+              }
+            }
+          ]
+        },
+        "HideType_Team_6": {
+          "modifierName": "",
+          "elementDurability": 100,
+          "onAdded": [
+            {
+              "$type": "CreateGadget",
+              "lifeByOwnerIsAlive": true,
+              "born": {
+                "$type": "ConfigBornBySelf"
+              },
+              "gadgetID": 44000418,
+              "campID": 1001,
+              "campTargetType": "Enemy",
+              "byServer": true
+            },
+            {
+              "$type": "ApplyModifier",
+              "modifierName": "UNIQUE_HideSeek_Bait_BornEffect"
+            }
+          ],
+          "onRemoved": [
+            {
+              "$type": "KillGadget",
+              "gadgetInfo": {
+                "configID": 44000418
+              }
+            }
+          ]
+        },
+        "HideType_Team_7": {
+          "modifierName": "",
+          "elementDurability": 100,
+          "onAdded": [
+            {
+              "$type": "CreateGadget",
+              "lifeByOwnerIsAlive": true,
+              "born": {
+                "$type": "ConfigBornBySelf"
+              },
+              "gadgetID": 44000419,
+              "campID": 1001,
+              "campTargetType": "Enemy",
+              "byServer": true
+            },
+            {
+              "$type": "ApplyModifier",
+              "modifierName": "UNIQUE_HideSeek_Bait_BornEffect"
+            }
+          ],
+          "onRemoved": [
+            {
+              "$type": "KillGadget",
+              "gadgetInfo": {
+                "configID": 44000419
+              }
+            }
+          ]
+        },
+        "HideType_Team_8": {
+          "modifierName": "",
+          "elementDurability": 100,
+          "onAdded": [
+            {
+              "$type": "CreateGadget",
+              "lifeByOwnerIsAlive": true,
+              "born": {
+                "$type": "ConfigBornBySelf"
+              },
+              "gadgetID": 44000420,
+              "campID": 1001,
+              "campTargetType": "Enemy",
+              "byServer": true
+            },
+            {
+              "$type": "ApplyModifier",
+              "modifierName": "UNIQUE_HideSeek_Bait_BornEffect"
+            }
+          ],
+          "onRemoved": [
+            {
+              "$type": "KillGadget",
+              "gadgetInfo": {
+                "configID": 44000420
+              }
+            }
+          ]
+        },
+        "HideType_Team_9": {
+          "modifierName": "",
+          "elementDurability": 100,
+          "onAdded": [
+            {
+              "$type": "CreateGadget",
+              "lifeByOwnerIsAlive": true,
+              "born": {
+                "$type": "ConfigBornBySelf"
+              },
+              "gadgetID": 44000421,
+              "campID": 1001,
+              "campTargetType": "Enemy",
+              "byServer": true
+            },
+            {
+              "$type": "ApplyModifier",
+              "modifierName": "UNIQUE_HideSeek_Bait_BornEffect"
+            }
+          ],
+          "onRemoved": [
+            {
+              "$type": "KillGadget",
+              "gadgetInfo": {
+                "configID": 44000421
+              }
+            }
+          ]
+        },
+        "HideType_Team_10": {
+          "modifierName": "",
+          "elementDurability": 100,
+          "onAdded": [
+            {
+              "$type": "CreateGadget",
+              "lifeByOwnerIsAlive": true,
+              "born": {
+                "$type": "ConfigBornBySelf"
+              },
+              "gadgetID": 44000422,
+              "campID": 1001,
+              "campTargetType": "Enemy",
+              "byServer": true
+            },
+            {
+              "$type": "ApplyModifier",
+              "modifierName": "UNIQUE_HideSeek_Bait_BornEffect"
+            }
+          ],
+          "onRemoved": [
+            {
+              "$type": "KillGadget",
+              "gadgetInfo": {
+                "configID": 44000422
+              }
+            }
+          ]
+        },
+        "HideType_Team_11": {
+          "modifierName": "",
+          "elementDurability": 100,
+          "onAdded": [
+            {
+              "$type": "CreateGadget",
+              "lifeByOwnerIsAlive": true,
+              "born": {
+                "$type": "ConfigBornBySelf"
+              },
+              "gadgetID": 44000423,
+              "campID": 1001,
+              "campTargetType": "Enemy",
+              "byServer": true
+            },
+            {
+              "$type": "ApplyModifier",
+              "modifierName": "UNIQUE_HideSeek_Bait_BornEffect"
+            }
+          ],
+          "onRemoved": [
+            {
+              "$type": "KillGadget",
+              "gadgetInfo": {
+                "configID": 44000423
+              }
+            }
+          ]
+        },
+        "HideType_Team_12": {
+          "modifierName": "",
+          "elementDurability": 100,
+          "onAdded": [
+            {
+              "$type": "CreateGadget",
+              "lifeByOwnerIsAlive": true,
+              "born": {
+                "$type": "ConfigBornBySelf"
+              },
+              "gadgetID": 44000424,
+              "campID": 1001,
+              "campTargetType": "Enemy",
+              "byServer": true
+            },
+            {
+              "$type": "ApplyModifier",
+              "modifierName": "UNIQUE_HideSeek_Bait_BornEffect"
+            }
+          ],
+          "onRemoved": [
+            {
+              "$type": "KillGadget",
+              "gadgetInfo": {
+                "configID": 44000424
+              }
+            }
+          ]
+        },
+        "HideType_Team_13": {
+          "modifierName": "",
+          "elementDurability": 100,
+          "onAdded": [
+            {
+              "$type": "CreateGadget",
+              "lifeByOwnerIsAlive": true,
+              "born": {
+                "$type": "ConfigBornBySelf"
+              },
+              "gadgetID": 44000425,
+              "campID": 1001,
+              "campTargetType": "Enemy",
+              "byServer": true
+            },
+            {
+              "$type": "ApplyModifier",
+              "modifierName": "UNIQUE_HideSeek_Bait_BornEffect"
+            }
+          ],
+          "onRemoved": [
+            {
+              "$type": "KillGadget",
+              "gadgetInfo": {
+                "configID": 44000425
+              }
+            }
+          ]
+        },
+        "UNIQUE_HideSeek_Bait_BornEffect": {
+          "modifierName": "",
+          "isUnique": true,
+          "duration": 0.1,
+          "elementDurability": 100,
+          "onAdded": [
+            {
+              "$type": "FireEffect",
+              "effectPattern": "Eff_Activity_HideSeek_Bait"
             }
           ]
         },
@@ -2663,23 +3745,33 @@
               "$type": "DungeonFogEffects",
               "muteRemoteAction": true,
               "enable": true,
-              "cameraFogEffectName": "Eff_Monster_Thoarder_MuddyBullet_ScreenEffect",
+              "cameraFogEffectName": "Eff_Activity_HideSeek_Bait_MuddyBullet",
               "playerFogEffectName": ""
             },
             {
               "$type": "ServerLuaCall",
-              "luaCallType": "CurChallengeGroup",
-              "funcName": "HideAndSeek_Skill_Blind"
+              "luaCallType": "AbilityGroupSourceGroup",
+              "funcName": "HideAndSeek_Skill_Blind",
+              "param1": 0,
+              "param2": 0,
+              "param3": 0
             },
             {
               "$type": "DebugLog",
               "content": "##slc:诱饵命中了猎手"
+            },
+            {
+              "$type": "AttachEffect",
+              "effectPattern": "Eff_Activity_HideSeek_Bait_Hider",
+              "born": {
+                "$type": "ConfigBornByTarget"
+              }
             }
           ],
           "onRemoved": [
             {
               "$type": "DungeonFogEffects",
-              "cameraFogEffectName": "Eff_Monster_Thoarder_MuddyBullet_ScreenEffect",
+              "cameraFogEffectName": "Eff_Activity_HideSeek_Bait_MuddyBullet",
               "playerFogEffectName": ""
             }
           ]
@@ -2704,27 +3796,8 @@
           "content": "杀死诱饵时候的处理"
         },
         {
-          "$type": "ApplyModifier",
-          "otherTargets": {
-            "$type": "SelectTargetsByShape",
-            "shapeName": "CircleR10H10",
-            "campTargetType": "All",
-            "sizeRatio": 1
-          },
-          "predicates": [
-            {
-              "$type": "ByEntityTypes",
-              "entityTypes": [
-                "Avatar"
-              ]
-            },
-            {
-              "$type": "ByTargetGlobalValue",
-              "key": "HideAndSeek_PlayerState_Play",
-              "value": 0
-            }
-          ],
-          "modifierName": "UNIQUE_HideSeek_Seeker_Execution_Bait"
+          "$type": "FireEffect",
+          "effectPattern": "Eff_Activity_HideSeek_Bait_Disappear"
         }
       ],
       "isDynamicAbility": true
@@ -2828,56 +3901,37 @@
           ],
           "successActions": [
             {
-              "$type": "Predicated",
+              "$type": "AvatarSkillStart",
+              "skillID": 20220,
+              "cdRatio": 1,
+              "costStaminaRatio": 1
+            },
+            {
+              "$type": "ApplyModifier",
+              "modifierName": "Avatar_HideAndSeek_Hider_Speedup"
+            },
+            {
+              "$type": "AddGlobalValue",
               "target": "Team",
-              "targetPredicates": [
-                {
-                  "$type": "ByTargetGlobalValue",
-                  "key": "AVATAR_SEEKANDHIDE_ENERGY",
-                  "value": 50,
-                  "compareType": "MoreThanAndEqual"
-                }
-              ],
-              "successActions": [
-                {
-                  "$type": "AvatarSkillStart",
-                  "skillID": 20220,
-                  "cdRatio": 1,
-                  "costStaminaRatio": 1
-                },
-                {
-                  "$type": "ApplyModifier",
-                  "modifierName": "Avatar_HideAndSeek_Hider_Speedup"
-                },
-                {
-                  "$type": "AddGlobalValue",
-                  "target": "Team",
-                  "value": -50,
-                  "key": "AVATAR_SEEKANDHIDE_ENERGY",
-                  "useLimitRange": true,
-                  "maxValue": 50,
-                  "minValue": 0
-                },
-                {
-                  "$type": "ServerLuaCall",
-                  "luaCallType": "CurChallengeGroup",
-                  "funcName": "HideAndSeek_Skill_Sprint"
-                },
-                {
-                  "$type": "DebugLog",
-                  "content": "释放技能成功"
-                }
-              ]
+              "value": -50,
+              "key": "AVATAR_SEEKANDHIDE_ENERGY",
+              "useLimitRange": true,
+              "maxValue": 50,
+              "minValue": 0
+            },
+            {
+              "$type": "ServerLuaCall",
+              "luaCallType": "AbilityGroupSourceGroup",
+              "funcName": "HideAndSeek_Skill_Sprint",
+              "param1": 0,
+              "param2": 0,
+              "param3": 0
             },
             {
               "$type": "DebugLog",
-              "content": "判断阵营成功"
+              "content": "释放技能成功"
             }
           ]
-        },
-        {
-          "$type": "DebugLog",
-          "content": "按钮响应"
         }
       ],
       "isDynamicAbility": true
@@ -2889,32 +3943,22 @@
       "abilityName": "Activity_HideSeek_test_shenrui",
       "onAdded": [
         {
-          "$type": "SetGlobalValue",
-          "doOffStage": true,
-          "value": 1,
-          "key": "HideAndSeek_PlayerState_Play",
-          "maxValue": 0,
-          "minValue": 0
-        },
-        {
-          "$type": "CreateGadget",
+          "$type": "FireEffect",
+          "muteRemoteAction": true,
+          "effectPattern": "Eff_Activity_HideSeek_Disguise_Quit",
           "born": {
-            "$type": "ConfigBornBySelf"
-          },
-          "gadgetID": 44000105,
-          "campID": 1001,
-          "campTargetType": "Alliance"
+            "$type": "ConfigBornByTarget"
+          }
         }
       ],
       "onAbilityStart": [
         {
-          "$type": "CreateGadget",
+          "$type": "FireEffect",
+          "muteRemoteAction": true,
+          "effectPattern": "Eff_Activity_HideSeek_Disguise_Quit",
           "born": {
-            "$type": "ConfigBornBySelf"
-          },
-          "gadgetID": 44000105,
-          "campID": 1001,
-          "campTargetType": "Alliance"
+            "$type": "ConfigBornByTarget"
+          }
         }
       ]
     }
@@ -2925,22 +3969,51 @@
       "abilityName": "Activity_HideSeek_test_shenrui2",
       "onAdded": [
         {
+          "$type": "AddGlobalValue",
+          "target": "Team",
+          "value": 1,
+          "key": "HideAndSeek_PlayerState_Play",
+          "useLimitRange": true,
+          "maxValue": 1,
+          "minValue": 0
+        },
+        {
+          "$type": "CreateGadget",
+          "born": {
+            "$type": "ConfigBornBySelf"
+          },
+          "gadgetID": 44000260,
+          "campID": 1001,
+          "campTargetType": "Alliance"
+        },
+        {
+          "$type": "CreateGadget",
+          "born": {
+            "$type": "ConfigBornBySelf"
+          },
+          "gadgetID": 44000107,
+          "campID": 1001,
+          "campTargetType": "Alliance"
+        },
+        {
           "$type": "SetGlobalValue",
           "target": "Team",
+          "doOffStage": true,
           "value": 0,
-          "key": "HideAndSeek_PlayerState_Transfer",
+          "key": "HideAndSeek_Is_Bait",
           "maxValue": 0,
           "minValue": 0
         }
       ],
       "onAbilityStart": [
         {
-          "$type": "SetGlobalValue",
-          "target": "Team",
-          "value": 0,
-          "key": "HideAndSeek_PlayerState_Transfer",
-          "maxValue": 0,
-          "minValue": 0
+          "$type": "CreateGadget",
+          "born": {
+            "$type": "ConfigBornBySelf"
+          },
+          "gadgetID": 44000107,
+          "campID": 1001,
+          "campTargetType": "Alliance"
         }
       ]
     }
@@ -2961,12 +4034,8 @@
       ],
       "onAbilityStart": [
         {
-          "$type": "AddGlobalValue",
-          "target": "Team",
-          "value": 1,
-          "key": "HideAndSeek_PlayerState_Transfer",
-          "maxValue": 0,
-          "minValue": 0
+          "$type": "FireEffect",
+          "effectPattern": "Eff_EnergyDisk_ElementalBurst_Wave_R40"
         }
       ]
     }
@@ -3040,7 +4109,10 @@
               "target": "Team",
               "luaCallType": "CurChallengeGroup",
               "isTarget": true,
-              "funcName": "HideAndSeek_Skill_Get_Energy"
+              "funcName": "HideAndSeek_Skill_Get_Energy",
+              "param1": 0,
+              "param2": 0,
+              "param3": 0
             }
           ]
         },
@@ -3065,25 +4137,77 @@
       },
       "onAdded": [
         {
-          "$type": "FireEffect",
-          "effectPattern": "Eff_SceneObj_SeekerBattery_01_Born"
+          "$type": "AddGlobalValue",
+          "value": 1,
+          "key": "Is_First_FireEffect",
+          "useLimitRange": true,
+          "maxValue": 2,
+          "minValue": 1
         },
         {
-          "$type": "ApplyModifier",
-          "modifierName": "HideSeek_Property_Prop_SeekerBattery"
+          "$type": "SetGlobalValue",
+          "value": 0,
+          "key": "_Ability_Property_Prop_IsUse",
+          "maxValue": 0,
+          "minValue": 0
+        },
+        {
+          "$type": "Predicated",
+          "targetPredicates": [
+            {
+              "$type": "ByTargetGlobalValue",
+              "key": "Is_First_FireEffect",
+              "value": 1
+            }
+          ],
+          "successActions": [
+            {
+              "$type": "FireEffect",
+              "effectPattern": "Eff_SceneObj_SeekerBattery_01_Born"
+            },
+            {
+              "$type": "ApplyModifier",
+              "modifierName": "HideSeek_Property_Prop_SeekerBattery"
+            },
+            {
+              "$type": "DebugLog",
+              "content": "有能量球被创建了"
+            },
+            {
+              "$type": "SetGlobalValue",
+              "value": 2,
+              "key": "Is_First_FireEffect",
+              "maxValue": 0,
+              "minValue": 0
+            }
+          ]
         }
       ],
       "onKill": [
         {
           "$type": "FireEffect",
-          "effectPattern": "Eff_SceneObj_SeekerBattery_01_Destroy"
+          "effectPattern": "Eff_SceneObj_SeekerBattery_01_Destroy",
+          "born": {
+            "$type": "ConfigBornBySelf",
+            "offset": {
+              "y": 1
+            }
+          }
         },
         {
           "$type": "DebugLog",
           "content": "能量球被移除时调用了吗111111"
+        },
+        {
+          "$type": "RemoveUniqueModifier",
+          "modifierName": "UNIQUE_HideSeek_Property_Prop_SeekerBatteryEffect"
         }
       ],
       "onFieldEnter": [
+        {
+          "$type": "DebugLog",
+          "content": "onFieldEnter"
+        },
         {
           "$type": "Predicated",
           "target": "Target",
@@ -3096,9 +4220,16 @@
             },
             {
               "$type": "ByTargetGlobalValue",
-              "key": "HideAndSeek_PlayerState_Play",
+              "target": "TargetTeam",
+              "key": "SGV_HideAndSeek_PlayerState_Play",
               "value": 1,
               "compareType": "LessAndEqual"
+            },
+            {
+              "$type": "ByTargetGlobalValue",
+              "target": "Self",
+              "key": "_Ability_Property_Prop_IsUse",
+              "value": 0
             }
           ],
           "successActions": [
@@ -3119,6 +4250,13 @@
             {
               "$type": "DebugLog",
               "content": "这里走到了"
+            },
+            {
+              "$type": "SetGlobalValue",
+              "value": 1,
+              "key": "_Ability_Property_Prop_IsUse",
+              "maxValue": 0,
+              "minValue": 0
             }
           ]
         }
@@ -3137,8 +4275,15 @@
               "$type": "ServerLuaCall",
               "target": "Caster",
               "doOffStage": true,
-              "luaCallType": "CurChallengeGroup",
-              "funcName": "HideAndSeek_Skill_Init"
+              "luaCallType": "AbilityGroupSourceGroup",
+              "funcName": "HideAndSeek_Skill_Init",
+              "param1": 0,
+              "param2": 0,
+              "param3": 0
+            },
+            {
+              "$type": "DebugLog",
+              "content": "SLC:onStageReady!!!!!!!!!!!"
             }
           ]
         }
@@ -3540,6 +4685,7 @@
       "modifiers": {
         "UNIQUE_ActivityAbility_HideSeek_StateHandle_RampageHandle_Team": {
           "modifierName": "",
+          "isUnique": true,
           "elementDurability": 100,
           "modifierMixins": [
             {
@@ -3585,7 +4731,7 @@
           "isUnique": true,
           "elementDurability": 100,
           "properties": {
-            "Animator_MoveSpeedRatio": 0.3
+            "Animator_MoveSpeedRatio": 0.1
           },
           "state": "SpeedUp",
           "isLimitedProperties": true
@@ -3606,6 +4752,38 @@
     "Default": {
       "$type": "ConfigAbility",
       "abilityName": "ActivityAbility_HideSeek_StateHandle_PlayerState",
+      "abilityMixins": [
+        {
+          "$type": "StageReadyMixin",
+          "onStageReady": [
+            {
+              "$type": "CopyGlobalValue",
+              "srcTarget": "Team",
+              "dstTarget": "Self",
+              "srcKey": "HideAndSeek_PlayerState_Play",
+              "dstKey": "HideAndSeek_PlayerState_Play"
+            },
+            {
+              "$type": "ApplyModifier",
+              "predicates": [
+                {
+                  "$type": "ByTargetGlobalValue",
+                  "target": "Team",
+                  "key": "HideAndSeek_PlayerState_Dead",
+                  "value": 1
+                },
+                {
+                  "$type": "ByTargetGlobalValue",
+                  "target": "Team",
+                  "key": "HideAndSeek_PlayerState_Play",
+                  "value": 2
+                }
+              ],
+              "modifierName": "PlayerState_Dead_Avatar"
+            }
+          ]
+        }
+      ],
       "modifiers": {
         "UNIQUE_ActivityAbility_HideSeek_StateHandle_PlayerState_Team": {
           "modifierName": "",
@@ -3710,8 +4888,11 @@
               "$type": "ServerLuaCall",
               "target": "Caster",
               "doOffStage": true,
-              "luaCallType": "CurChallengeGroup",
-              "funcName": "HideAndSeek_Skill_Init"
+              "luaCallType": "AbilityGroupSourceGroup",
+              "funcName": "HideAndSeek_Skill_Init",
+              "param1": 0,
+              "param2": 0,
+              "param3": 0
             },
             {
               "$type": "DebugLog",
@@ -3731,6 +4912,10 @@
               "dstKey": "HideAndSeek_PlayerState_Play"
             }
           ]
+        },
+        "PlayerState_Dead_Blank_Avatar": {
+          "modifierName": "",
+          "elementDurability": 100
         },
         "PlayerState_Avatar_Ghost": {
           "modifierName": "",
@@ -3773,12 +4958,26 @@
               "useLimitRange": true,
               "maxValue": 1,
               "minValue": 0
+            },
+            {
+              "$type": "ChangePlayMode",
+              "doOffStage": true,
+              "canBeHandledOnRecover": true,
+              "muteRemoteAction": true,
+              "toPlayMode": "HideAndSeek_Ghost"
+            }
+          ],
+          "onRemoved": [
+            {
+              "$type": "ChangePlayMode",
+              "doOffStage": true,
+              "muteRemoteAction": true
             }
           ]
         },
         "PlayerState_Avatar_GhostDeadTimer_01": {
           "modifierName": "",
-          "duration": 3,
+          "duration": 2.65,
           "elementDurability": 100,
           "onAdded": [
             {
@@ -3816,6 +5015,7 @@
         "PlayerState_Dead_Avatar": {
           "modifierName": "",
           "elementDurability": 100,
+          "thinkInterval": 2,
           "modifierMixins": [
             {
               "$type": "EntityInVisibleMixin",
@@ -3829,7 +5029,8 @@
                   ]
                 }
               ],
-              "reason": "Gallary"
+              "reason": "Gallary",
+              "MJHKBLEFCHC": true
             },
             {
               "$type": "EntityDitherMixin",
@@ -3871,24 +5072,19 @@
               "key": "_ActivityAbility_HideSeek_Hider_Disguise_SwitchSkill_State",
               "maxValue": 0,
               "minValue": 0
-            },
-            {
-              "$type": "ChangePlayMode",
-              "doOffStage": true,
-              "muteRemoteAction": true,
-              "toPlayMode": "HideAndSeek_Ghost"
             }
           ],
           "onRemoved": [
             {
-              "$type": "ChangePlayMode",
-              "doOffStage": true,
-              "muteRemoteAction": true
-            },
-            {
               "$type": "TriggerSetPassThrough",
               "doOffStage": true,
               "canBeHandledOnRecover": true
+            }
+          ],
+          "onThinkInterval": [
+            {
+              "$type": "HealHP",
+              "amountByTargetMaxHPRatio": 1
             }
           ]
         },
@@ -3999,8 +5195,11 @@
               "$type": "ServerLuaCall",
               "target": "Caster",
               "doOffStage": true,
-              "luaCallType": "CurChallengeGroup",
-              "funcName": "HideAndSeek_Out_UltraMark"
+              "luaCallType": "AbilityGroupSourceGroup",
+              "funcName": "HideAndSeek_Out_UltraMark",
+              "param1": 0,
+              "param2": 0,
+              "param3": 0
             }
           ]
         },
@@ -4137,8 +5336,11 @@
               "$type": "ServerLuaCall",
               "target": "Caster",
               "doOffStage": true,
-              "luaCallType": "CurChallengeGroup",
-              "funcName": "HideAndSeek_Out_GlobalSight"
+              "luaCallType": "AbilityGroupSourceGroup",
+              "funcName": "HideAndSeek_Out_GlobalSight",
+              "param1": 0,
+              "param2": 0,
+              "param3": 0
             }
           ]
         },
@@ -4149,13 +5351,6 @@
         "GlobalSightState_True_Avatar": {
           "modifierName": "",
           "elementDurability": 100,
-          "modifierMixins": [
-            {
-              "$type": "SwitchSkillIDMixin",
-              "priority": "Playmode",
-              "skillID": 20201
-            }
-          ],
           "onAdded": [
             {
               "$type": "SetGlobalValue",
@@ -4255,19 +5450,21 @@
           "modifierName": "",
           "duration": "Value_SuperPrison_TargetDuration",
           "elementDurability": 100,
-          "modifierMixins": [
-            {
-              "$type": "CurLocalAvatarMixin",
-              "modifierName": "SuperPrison_True_Avatar"
-            }
-          ],
+          "thinkInterval": 2,
           "onAdded": [
+            {
+              "$type": "ApplyModifier",
+              "target": "Caster",
+              "doOffStage": true,
+              "modifierName": "SuperPrisonState_Avatar_Freeze"
+            },
             {
               "$type": "CreateGadget",
               "target": "Caster",
-              "doOffStage": true,
               "born": {
-                "$type": "ConfigBornBySelf"
+                "$type": "ConfigBornByAttachPoint",
+                "attachPointName": "RootNode",
+                "attachPointTargetType": "Self"
               },
               "gadgetID": 44000108,
               "campID": 1001,
@@ -4277,8 +5474,11 @@
           "onRemoved": [
             {
               "$type": "ServerLuaCall",
-              "luaCallType": "CurChallengeGroup",
-              "funcName": "HideAndSeek_Out_SuperPrison"
+              "luaCallType": "AbilityGroupSourceGroup",
+              "funcName": "HideAndSeek_Out_SuperPrison",
+              "param1": 0,
+              "param2": 0,
+              "param3": 0
             },
             {
               "$type": "KillGadget",
@@ -4297,7 +5497,51 @@
               "maxValue": 0,
               "minValue": 0
             }
+          ],
+          "onThinkInterval": [
+            {
+              "$type": "Predicated",
+              "otherTargets": {
+                "$type": "SelectTargetsByChildren",
+                "configID": 44000108
+              },
+              "targetPredicates": [
+                {
+                  "$type": "ByTargetPositionToSelfPosition",
+                  "compareType": "XYZ",
+                  "value": 2
+                }
+              ],
+              "successActions": [
+                {
+                  "$type": "KillGadget",
+                  "target": "CurTeamAvatars",
+                  "doOffStage": true,
+                  "gadgetInfo": {
+                    "configID": 44000108
+                  }
+                },
+                {
+                  "$type": "CreateGadget",
+                  "target": "Caster",
+                  "born": {
+                    "$type": "ConfigBornByAttachPoint",
+                    "attachPointName": "RootNode",
+                    "attachPointTargetType": "Self"
+                  },
+                  "gadgetID": 44000108,
+                  "campID": 1001,
+                  "campTargetType": "Enemy"
+                }
+              ]
+            }
           ]
+        },
+        "SuperPrisonState_Avatar_Freeze": {
+          "modifierName": "",
+          "duration": 0.5,
+          "elementDurability": 100,
+          "state": "ElementFreeze"
         }
       },
       "onAdded": [
@@ -4315,6 +5559,20 @@
     "Default": {
       "$type": "ConfigAbility",
       "abilityName": "ActivityAbility_HideSeek_Seeker_Guide_TargetGadget",
+      "modifiers": {
+        "Timer": {
+          "modifierName": "",
+          "duration": 5,
+          "elementDurability": 100,
+          "onRemoved": [
+            {
+              "$type": "KillSelf",
+              "banDrop": true,
+              "banExp": true
+            }
+          ]
+        }
+      },
       "onAdded": [
         {
           "$type": "SetGlobalValue",
@@ -4331,12 +5589,19 @@
         },
         {
           "$type": "ServerLuaCall",
-          "luaCallType": "CurChallengeGroup",
-          "funcName": "FireDirection"
+          "luaCallType": "FromGroup",
+          "funcName": "FireDirection",
+          "param1": 0,
+          "param2": 0,
+          "param3": 0
         },
         {
           "$type": "DebugLog",
           "content": "SCL:FireDirection!!!!!!!!!!!"
+        },
+        {
+          "$type": "ApplyModifier",
+          "modifierName": "Timer"
         }
       ]
     }
@@ -4414,12 +5679,128 @@
   {
     "Default": {
       "$type": "ConfigAbility",
+      "abilityName": "ActivityAbility_HideSeek_StateHandle_Is_Detected",
+      "modifiers": {
+        "UNIQUE_ActivityAbility_HideSeek_StateHandle_Is_Detected_Team": {
+          "modifierName": "",
+          "isUnique": true,
+          "elementDurability": 100,
+          "modifierMixins": [
+            {
+              "$type": "ServerUpdateGlobalValueMixin",
+              "key": "HideAndSeek_PlayerState_Is_Detected",
+              "useLimitRange": true,
+              "maxValue": 1,
+              "minValue": 0
+            },
+            {
+              "$type": "AttachModifierToSelfGlobalValueMixin",
+              "globalValueKey": "HideAndSeek_PlayerState_Is_Detected",
+              "defaultGlobalValueOnCreate": 0,
+              "valueSteps": [
+                -0.5,
+                0.5,
+                1.5
+              ],
+              "modifierNameSteps": [
+                "Is_Detected_Blank_Team",
+                "Is_Detected_Team"
+              ]
+            }
+          ]
+        },
+        "Is_Detected_Blank_Team": {
+          "modifierName": "",
+          "elementDurability": 100
+        },
+        "Is_Detected_Team": {
+          "modifierName": "",
+          "elementDurability": 100,
+          "modifierMixins": [
+            {
+              "$type": "CurLocalAvatarMixin",
+              "modifierName": "Is_Detected_Avatar"
+            }
+          ]
+        },
+        "Is_Detected_Avatar": {
+          "modifierName": "",
+          "duration": 5,
+          "elementDurability": 100,
+          "modifierMixins": [
+            {
+              "$type": "EntityDisplacementMixin",
+              "actionList": [
+                {
+                  "$type": "ApplyModifier",
+                  "target": "Team",
+                  "modifierName": "EffectModifier"
+                },
+                {
+                  "$type": "RemoveModifier",
+                  "modifierName": "Is_Detected_Avatar"
+                }
+              ]
+            }
+          ],
+          "onRemoved": [
+            {
+              "$type": "ServerLuaCall",
+              "luaCallType": "AbilityGroupSourceGroup",
+              "funcName": "HideAndSeek_Skill_Is_Detected_Quit",
+              "param1": 0,
+              "param2": 0,
+              "param3": 0
+            }
+          ]
+        },
+        "EffectModifier": {
+          "stacking": "Multiple",
+          "modifierName": "",
+          "duration": 5,
+          "elementDurability": 100,
+          "onAdded": [
+            {
+              "$type": "AttachEffect",
+              "effectPattern": "Eff_Quest_SiteInteract_01"
+            }
+          ]
+        }
+      },
+      "onAdded": [
+        {
+          "$type": "AttachModifier",
+          "target": "Team",
+          "doOffStage": true,
+          "modifierName": "UNIQUE_ActivityAbility_HideSeek_StateHandle_Is_Detected_Team"
+        }
+      ],
+      "isDynamicAbility": true
+    }
+  },
+  {
+    "Default": {
+      "$type": "ConfigAbility",
       "abilityName": "ActivityAbility_HideSeek_HideGadgetSkill_Bait",
+      "isDynamicAbility": true
+    }
+  },
+  {
+    "Default": {
+      "$type": "ConfigAbility",
+      "abilityName": "ActivityAbility_HideSeek_Bait_Target",
       "onAdded": [
         {
           "$type": "SetGlobalValue",
           "value": 1,
           "key": "_Is_HideSeek_Bait",
+          "maxValue": 0,
+          "minValue": 0
+        },
+        {
+          "$type": "SetGlobalValue",
+          "value": 1,
+          "key": "HideAndSeek_Seeker_Bait_Gadget",
           "maxValue": 0,
           "minValue": 0
         }
@@ -4434,7 +5815,10 @@
       "onAdded": [
         {
           "$type": "AttachEffect",
-          "effectPattern": "Eff_Activity_HideSeek_SuperPrison_Target"
+          "effectPattern": "Eff_Activity_HideSeek_SuperPrison_Target",
+          "born": {
+            "$type": "ConfigBornBySelf"
+          }
         }
       ],
       "onKill": [
@@ -4474,12 +5858,142 @@
       },
       "onAdded": [
         {
+          "$type": "DebugLog",
+          "content": "ActivityAbility_HideSeek_HideGadgetSkill_ExecutionTarget > onAdded"
+        },
+        {
           "$type": "AttachModifier",
           "modifierName": "Effect"
         },
         {
           "$type": "AttachEffect",
           "effectPattern": "Eff_Activity_HideSeek_Execution_Target"
+        }
+      ],
+      "onRemoved": [
+        {
+          "$type": "DebugLog",
+          "content": "ActivityAbility_HideSeek_HideGadgetSkill_ExecutionTarget > onRemoved"
+        }
+      ],
+      "onKill": [
+        {
+          "$type": "DebugLog",
+          "content": "ActivityAbility_HideSeek_HideGadgetSkill_ExecutionTarget > onKill"
+        }
+      ],
+      "isDynamicAbility": true
+    }
+  },
+  {
+    "Default": {
+      "$type": "ConfigAbility",
+      "abilityName": "ActivityAbility_HideSeek_Hunter_CantSee",
+      "modifiers": {
+        "UNIQUE_ActivityAbility_HideSeek_Hunter_CantSee": {
+          "modifierName": "",
+          "isUnique": true,
+          "elementDurability": 100,
+          "modifierMixins": [
+            {
+              "$type": "ServerUpdateGlobalValueMixin",
+              "key": "HideAndSeek_Get_Blind",
+              "useLimitRange": true,
+              "maxValue": 1,
+              "minValue": 0
+            },
+            {
+              "$type": "AttachModifierToSelfGlobalValueMixin",
+              "globalValueKey": "HideAndSeek_Get_Blind",
+              "defaultGlobalValueOnCreate": 0,
+              "valueSteps": [
+                -0.5,
+                0.5,
+                1.5
+              ],
+              "modifierNameSteps": [
+                "UNIQUE_HideSeek_Hunter_CantSee_Blank",
+                "UNIQUE_ActivityAbility_HideSeek_Hunter_CantSee_Team"
+              ]
+            }
+          ]
+        },
+        "UNIQUE_ActivityAbility_HideSeek_Hunter_CantSee_Team": {
+          "modifierName": "",
+          "isUnique": true,
+          "elementDurability": 100,
+          "modifierMixins": [
+            {
+              "$type": "CurLocalAvatarMixin",
+              "modifierName": "UNIQUE_ActivityAbility_HideSeek_Hunter_CantSee_Avatar"
+            }
+          ]
+        },
+        "UNIQUE_ActivityAbility_HideSeek_Hunter_CantSee_Avatar": {
+          "modifierName": "",
+          "isUnique": true,
+          "duration": 3,
+          "elementDurability": 100,
+          "onAdded": [
+            {
+              "$type": "DungeonFogEffects",
+              "muteRemoteAction": true,
+              "enable": true,
+              "cameraFogEffectName": "Eff_Activity_HideSeek_Bait_MuddyBullet",
+              "playerFogEffectName": ""
+            },
+            {
+              "$type": "DebugLog",
+              "content": "##诱饵命中了猎手"
+            },
+            {
+              "$type": "AttachEffect",
+              "effectPattern": "Eff_Activity_HideSeek_Bait_Hider",
+              "born": {
+                "$type": "ConfigBornByTarget"
+              }
+            }
+          ],
+          "onRemoved": [
+            {
+              "$type": "DungeonFogEffects",
+              "cameraFogEffectName": "Eff_Activity_HideSeek_Bait_MuddyBullet",
+              "playerFogEffectName": ""
+            },
+            {
+              "$type": "SetGlobalValue",
+              "target": "Team",
+              "doOffStage": true,
+              "value": 0,
+              "key": "HideAndSeek_Get_Blind",
+              "useLimitRange": true,
+              "maxValue": 1,
+              "minValue": 0
+            }
+          ]
+        },
+        "UNIQUE_HideSeek_Hunter_CantSee_Blank": {
+          "modifierName": "",
+          "isUnique": true,
+          "elementDurability": 100
+        }
+      },
+      "onAdded": [
+        {
+          "$type": "SetGlobalValue",
+          "target": "Team",
+          "doOffStage": true,
+          "value": 0,
+          "key": "HideAndSeek_Get_Blind",
+          "useLimitRange": true,
+          "maxValue": 1,
+          "minValue": 0
+        },
+        {
+          "$type": "AttachModifier",
+          "target": "Team",
+          "doOffStage": true,
+          "modifierName": "UNIQUE_ActivityAbility_HideSeek_Hunter_CantSee"
         }
       ],
       "isDynamicAbility": true
@@ -4635,7 +6149,8 @@
                   ]
                 }
               ],
-              "reason": "Gallary"
+              "reason": "Gallary",
+              "MJHKBLEFCHC": true
             },
             {
               "$type": "EntityDitherMixin",
@@ -4650,6 +6165,12 @@
             }
           ],
           "onAdded": [
+            {
+              "$type": "AvatarSkillStart",
+              "skillID": 20210,
+              "cdRatio": 1,
+              "costStaminaRatio": 1
+            },
             {
               "$type": "AttachEffect",
               "muteRemoteAction": true,

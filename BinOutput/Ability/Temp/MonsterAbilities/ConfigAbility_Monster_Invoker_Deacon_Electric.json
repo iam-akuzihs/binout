@@ -176,23 +176,67 @@
         "Invoker_Deacon_Electric_ReturnToBorn": {
           "modifierName": "",
           "elementDurability": 100,
+          "modifierMixins": [
+            {
+              "$type": "AttachActionToModifierMixin",
+              "onAdded": [
+                {
+                  "$type": "TriggerSetVisible"
+                },
+                {
+                  "$type": "HideUIBillBoard",
+                  "hide": true
+                },
+                {
+                  "$type": "EnableHitBoxByName",
+                  "hitBoxNames": [
+                    "HitBox",
+                    "HeadBox"
+                  ]
+                },
+                {
+                  "$type": "EnablePushColliderName",
+                  "pushColliderNames": [
+                    "PushCollider"
+                  ]
+                }
+              ],
+              "onRemoved": [
+                {
+                  "$type": "TriggerSetVisible",
+                  "visible": true
+                },
+                {
+                  "$type": "HideUIBillBoard"
+                },
+                {
+                  "$type": "EnableHitBoxByName",
+                  "hitBoxNames": [
+                    "HitBox",
+                    "HeadBox"
+                  ],
+                  "setEnable": true
+                },
+                {
+                  "$type": "EnablePushColliderName",
+                  "pushColliderNames": [
+                    "PushCollider"
+                  ],
+                  "setEnable": true
+                }
+              ]
+            }
+          ],
           "onAdded": [
             {
               "$type": "FireEffect",
               "effectPattern": "Eff_Monster_Invoker_BornHigh"
-            },
-            {
-              "$type": "TriggerSetVisible"
             }
           ],
           "onRemoved": [
             {
               "$type": "FireEffect",
               "effectPattern": "Eff_Monster_Invoker_BornHigh"
-            },
-            {
-              "$type": "TriggerSetVisible",
-              "visible": true
             }
           ]
         }
@@ -488,7 +532,8 @@
                   "hitPattern": {
                     "onHitEffectName": "default",
                     "hitImpulseType": "LV4"
-                  }
+                  },
+                  "canBeModifiedBy": "OriginOwner"
                 }
               },
               "targetType": "Enemy"
@@ -540,7 +585,8 @@
                   "hitPattern": {
                     "onHitEffectName": "default",
                     "hitImpulseType": "LV4"
-                  }
+                  },
+                  "canBeModifiedBy": "OriginOwner"
                 }
               },
               "targetType": "Enemy"
@@ -910,7 +956,8 @@
               "hitPattern": {
                 "onHitEffectName": "none",
                 "hitImpulseType": "LV4"
-              }
+              },
+              "canBeModifiedBy": "OriginOwner"
             }
           },
           "targetType": "Enemy"
@@ -950,7 +997,8 @@
               "hitPattern": {
                 "onHitEffectName": "none",
                 "hitImpulseType": "LV4"
-              }
+              },
+              "canBeModifiedBy": "OriginOwner"
             }
           },
           "targetType": "Enemy"
@@ -1007,7 +1055,8 @@
               "hitPattern": {
                 "onHitEffectName": "none",
                 "hitImpulseType": "LV4"
-              }
+              },
+              "canBeModifiedBy": "OriginOwner"
             }
           },
           "targetType": "Enemy"
@@ -1056,7 +1105,8 @@
               "hitPattern": {
                 "onHitEffectName": "none",
                 "hitImpulseType": "LV4"
-              }
+              },
+              "canBeModifiedBy": "OriginOwner"
             }
           },
           "targetType": "Enemy"
@@ -1148,7 +1198,7 @@
           "isUnique": true,
           "elementDurability": 100,
           "properties": {
-            "Actor_HpThresholdRatio": 0
+            "Actor_HpThresholdRatio": 0.15
           },
           "state": "Limbo",
           "onAdded": [
@@ -1225,11 +1275,34 @@
         "Invoker_Deacon_Electric_Transform": {
           "modifierName": "",
           "elementDurability": 100,
+          "thinkInterval": 5,
           "onAdded": [
             {
               "$type": "SetAnimatorTrigger",
               "triggerID": "TransformTrigger",
               "MPTriggerOnRemote": true
+            },
+            {
+              "$type": "AttachModifier",
+              "modifierName": "Invoker_Deacon_Electric_Transform_LockHP"
+            },
+            {
+              "$type": "AttachModifier",
+              "modifierName": "Invoker_Deacon_Electric_Transform_NoHeal"
+            }
+          ],
+          "onThinkInterval": [
+            {
+              "$type": "ApplyModifier",
+              "predicates": [
+                {
+                  "$type": "ByTargetGlobalValue",
+                  "key": "_MONSTER_INVOKER_DEACON_ELECTRIC_ELEMENTSTATE",
+                  "value": 0,
+                  "compareType": "NoneOrEqual"
+                }
+              ],
+              "modifierName": "UNIQUE_Invoker_Deacon_Electric_ElementShield"
             }
           ],
           "onReconnect": [
@@ -1238,6 +1311,16 @@
               "modifierName": "UNIQUE_Invoker_Deacon_Electric_ElementShield"
             }
           ]
+        },
+        "Invoker_Deacon_Electric_Transform_LockHP": {
+          "modifierName": "",
+          "elementDurability": 100,
+          "state": "LockHP"
+        },
+        "Invoker_Deacon_Electric_Transform_NoHeal": {
+          "modifierName": "",
+          "elementDurability": 100,
+          "state": "NoHeal"
         },
         "UNIQUE_Invoker_Deacon_Electric_ElementShield": {
           "stacking": "Unique",
@@ -1298,6 +1381,13 @@
           "onAdded": [
             {
               "$type": "SetGlobalValue",
+              "value": 1,
+              "key": "_MONSTER_INVOKER_DEACON_ELECTRIC_ELEMENTSTATE",
+              "maxValue": 0,
+              "minValue": 0
+            },
+            {
+              "$type": "SetGlobalValue",
               "value": 0,
               "key": "_MONSTER_INVOKER_DEACON_ELECTRIC_DISAPPEAR",
               "maxValue": 0,
@@ -1309,6 +1399,20 @@
             }
           ],
           "onRemoved": [
+            {
+              "$type": "KillSelf",
+              "otherTargets": {
+                "$type": "SelectTargetsByChildren",
+                "configID": 42203003
+              }
+            },
+            {
+              "$type": "SetGlobalValue",
+              "value": 0,
+              "key": "_MONSTER_INVOKER_DEACON_ELECTRIC_ELEMENTSTATE",
+              "maxValue": 0,
+              "minValue": 0
+            },
             {
               "$type": "SetPoseBool",
               "boolID": "ElementState"

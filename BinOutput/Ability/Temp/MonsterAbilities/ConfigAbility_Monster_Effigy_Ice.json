@@ -28,26 +28,10 @@
             1,
             101,
             201,
-            301
-          ],
-          "modifierName": "UNIQUE_EnergyCubeEffect"
-        },
-        {
-          "$type": "AttachToPoseIDMixin",
-          "poseIDs": [
-            101,
-            201
-          ],
-          "modifierName": "EnergyCoreStandby"
-        },
-        {
-          "$type": "AttachToPoseIDMixin",
-          "poseIDs": [
-            1,
             301,
             902
           ],
-          "modifierName": "EnergyCoreStandbyFree"
+          "modifierName": "UNIQUE_EnergyCubeEffect"
         }
       ],
       "modifiers": {
@@ -59,6 +43,13 @@
             {
               "$type": "AttachEffect",
               "effectPattern": "Eff_Monster_Effigy_Ice_CoreStandby"
+            },
+            {
+              "$type": "SetGlobalValue",
+              "value": 0,
+              "key": "_EFFIGY_ISRETURNINGTOBURN_",
+              "maxValue": 0,
+              "minValue": 0
             }
           ]
         },
@@ -66,6 +57,16 @@
           "modifierName": "",
           "isUnique": true,
           "elementDurability": 100,
+          "modifierMixins": [
+            {
+              "$type": "AttachToPoseIDMixin",
+              "poseIDs": [
+                101,
+                201
+              ],
+              "modifierName": "EnergyCoreStandby"
+            }
+          ],
           "onAdded": [
             {
               "$type": "AttachEffect",
@@ -131,25 +132,6 @@
               "effectPattern": "Eff_Monster_Effigy_Ice_EnergyCore"
             }
           ]
-        },
-        "EnergyCoreStandbyFree": {
-          "modifierName": "",
-          "elementDurability": 100,
-          "onAdded": [
-            {
-              "$type": "SendEffectTrigger",
-              "canBeHandledOnRecover": true,
-              "parameter": "StandbyFree",
-              "effectPattern": "Eff_Monster_Effigy_Ice_EnergyCore"
-            }
-          ],
-          "onRemoved": [
-            {
-              "$type": "SendEffectTrigger",
-              "parameter": "Standby",
-              "effectPattern": "Eff_Monster_Effigy_Ice_EnergyCore"
-            }
-          ]
         }
       }
     }
@@ -180,7 +162,31 @@
             "Standby_BS",
             "Standby_AS",
             "StandbyFree",
-            "Warning"
+            "Warning",
+            "Revive_Blink",
+            "Revive_AS",
+            "Revive_Stunning_AS02",
+            "RushAway_BS",
+            "RushAway_AS",
+            "Return",
+            "NeedleWheelCharge_BS",
+            "NeedleWheelCharge_Aiming1",
+            "NeedleWheelCharge_Aiming2",
+            "NeedleWheelCharge_Aiming3",
+            "NeedleWheelCharge_Loop1",
+            "NeedleWheelCharge_Loop2",
+            "NeedleWheelCharge_Loop3",
+            "NeedleWheelCharge_AS01",
+            "NeedleWheelCharge_AS02",
+            "NeedleSpinningShoot_BS",
+            "NeedleSpinningShoot_Loop",
+            "NeedleSpinningShoot_AS",
+            "SpikeStrike_BS01",
+            "SpikeStrike_BS02",
+            "SpikeStrike_BS03",
+            "ReturnToBorn",
+            "ReturnToBorn_Blink",
+            "ReturnToBorn_AS"
           ],
           "modifierName": "SetShieldOnModifier"
         },
@@ -191,7 +197,9 @@
             "NeedleSpinningShoot_CoreExpose",
             "SpikeStrike_CoreExpose1",
             "SpikeStrike_CoreExpose2",
-            "Stunning_Standby"
+            "Revive_Stunning_BS",
+            "Stunning_Standby",
+            "Revive_Stunning_AS01"
           ],
           "modifierName": "SetShieldOffModifier"
         },
@@ -278,6 +286,15 @@
           "onBeingHit": [
             {
               "$type": "FireEffect",
+              "predicates": [
+                {
+                  "$type": "ByTargetGlobalValue",
+                  "target": "Self",
+                  "key": "_EFFIGY_ICE_ISREVIVING_",
+                  "value": 0,
+                  "compareType": "NoneOrEqual"
+                }
+              ],
               "effectPattern": "Eff_Monster_Effigy_Ice_BeHit_Shield",
               "born": {
                 "$type": "ConfigBornByHitPoint",
@@ -418,7 +435,7 @@
         },
         {
           "$type": "AttachAbilityStateResistance",
-          "resistanceListID": 12001
+          "resistanceListID": 12003
         },
         {
           "$type": "EnableHitBoxByName",
@@ -534,7 +551,7 @@
           ],
           "modifierNameSteps": [
             "Empty",
-            "Effigy_Ice_RevivingStateShield"
+            "UNIQUE_Effigy_Ice_RevivingStateShield"
           ]
         },
         {
@@ -584,7 +601,6 @@
         "RevivingStateModifier": {
           "modifierName": "",
           "elementDurability": 100,
-          "state": "LockHP",
           "onAdded": [
             {
               "$type": "EnablePartControl",
@@ -729,8 +745,10 @@
             }
           ]
         },
-        "Effigy_Ice_RevivingStateShield": {
+        "UNIQUE_Effigy_Ice_RevivingStateShield": {
+          "stacking": "Unique",
           "modifierName": "",
+          "isUnique": true,
           "elementType": "Frozen",
           "elementDurability": 2200,
           "thinkInterval": 3,
@@ -739,19 +757,49 @@
               "$type": "ShieldBarMixin",
               "onShieldBroken": [
                 {
-                  "$type": "ActCameraShake",
-                  "target": "Target",
-                  "cameraShake": {
-                    "shakeType": "CustomVector",
-                    "shakeRange": 1,
-                    "shakeTime": 2,
-                    "shakeDistance": 35,
-                    "shakeDir": {
-                      "y": 2
+                  "$type": "TriggerAttackEvent",
+                  "attackEvent": {
+                    "attackPattern": {
+                      "$type": "ConfigAttackBox",
+                      "triggerType": "TriggerNoRepeat",
+                      "ignoreMassive": true,
+                      "born": {
+                        "$type": "ConfigBornBySelf"
+                      },
+                      "size": {
+                        "x": 0.1,
+                        "y": 0.1,
+                        "z": 0.1
+                      }
                     },
-                    "extension": {
-                      "baseOnCamera": true,
-                      "rangeAttenuation": 0
+                    "attackInfo": {
+                      "attackTag": "",
+                      "attenuationTag": "",
+                      "attenuationGroup": "default",
+                      "attackProperty": {
+                        "damagePercentage": 0,
+                        "damagePercentageRatio": 0,
+                        "elementDurability": 100
+                      },
+                      "hitPattern": {
+                        "onHitEffectName": "none",
+                        "hitImpulseType": "LV0",
+                        "hitHaltTimeScale": 0.05
+                      },
+                      "forceCameraShake": true,
+                      "cameraShake": {
+                        "shakeType": "CustomVector",
+                        "shakeRange": 1,
+                        "shakeTime": 2,
+                        "shakeDistance": 35,
+                        "shakeDir": {
+                          "y": 2
+                        },
+                        "extension": {
+                          "baseOnCamera": true,
+                          "rangeAttenuation": 0
+                        }
+                      }
                     }
                   }
                 },
@@ -794,6 +842,13 @@
                   "effectPattern": "Eff_Monster_Effigy_Ice_Revive_RecoverHP"
                 }
               ]
+            },
+            {
+              "$type": "EnableHitBoxByName",
+              "hitBoxNames": [
+                "RevivingStateHitBox"
+              ],
+              "setEnable": true
             }
           ],
           "onRemoved": [
@@ -802,6 +857,12 @@
               "gadgetInfo": {
                 "configID": 42004410
               }
+            },
+            {
+              "$type": "EnableHitBoxByName",
+              "hitBoxNames": [
+                "RevivingStateHitBox"
+              ]
             }
           ],
           "onBeingHit": [
@@ -933,6 +994,17 @@
             {
               "$type": "AttachEffect",
               "effectPattern": "Eff_Monster_Effigy_Ice_Revive_AS"
+            },
+            {
+              "$type": "HealHP",
+              "predicates": [
+                {
+                  "$type": "ByTargetHPRatio",
+                  "logic": "LesserOrEqual",
+                  "HPRatio": 0.05
+                }
+              ],
+              "amountByTargetMaxHPRatio": "Effigy_Ice_ReviveMaxHPRatio"
             }
           ]
         },
@@ -1197,7 +1269,8 @@
           "$type": "AttachToAnimatorStateIDMixin",
           "stateIDs": [
             "ReturnToBorn_Blink",
-            "Revive_Blink"
+            "Revive_Blink",
+            "Return"
           ],
           "modifierName": "Blink_State"
         }
@@ -1210,6 +1283,13 @@
             {
               "$type": "RemoveUniqueModifier",
               "modifierName": "UNIQUE_Effigy_Ice_Blink_Actions"
+            },
+            {
+              "$type": "SetGlobalValue",
+              "value": 0,
+              "key": "_EFFIGY_ISRETURNINGTOBURN_",
+              "maxValue": 0,
+              "minValue": 0
             }
           ]
         },
@@ -1297,6 +1377,15 @@
             },
             {
               "$type": "SendEffectTrigger",
+              "predicates": [
+                {
+                  "$type": "ByTargetGlobalValue",
+                  "target": "Self",
+                  "key": "_EFFIGY_ISRETURNINGTOBURN_",
+                  "value": 0,
+                  "compareType": "NoneOrEqual"
+                }
+              ],
               "parameter": "Standby",
               "effectPattern": "Eff_Monster_Effigy_Ice_EnergyCore"
             }
@@ -1320,6 +1409,7 @@
           "born": {
             "$type": "ConfigBornBySelf"
           },
+          "sightGroupWithOwner": true,
           "gadgetID": 42004006,
           "byServer": true
         },
@@ -1369,6 +1459,34 @@
   {
     "Default": {
       "$type": "ConfigAbility",
+      "abilityName": "Monster_Effigy_Ice_FindBlinkPointRandom",
+      "onAbilityStart": [
+        {
+          "$type": "Predicated",
+          "otherTargets": {
+            "$type": "SelectTargetsByChildren",
+            "configID": 42004006
+          },
+          "successActions": [
+            {
+              "$type": "DebugLog",
+              "doOffStage": true,
+              "content": "!!!!!!!!!!!Monster_Effigy_Ice_FindBlinkPoint SUCCESS!!!!!!!!!!"
+            },
+            {
+              "$type": "TryFindBlinkPoint",
+              "target": "Target",
+              "forwardAngle": 360,
+              "maxRange": 6
+            }
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "Default": {
+      "$type": "ConfigAbility",
       "abilityName": "Monster_Effigy_Ice_Blink",
       "onAbilityStart": [
         {
@@ -1397,7 +1515,17 @@
         {
           "$type": "AttachToPoseIDMixin",
           "poseIDs": [
+            1,
             902
+          ],
+          "modifierName": "ReturnToBorn_Start"
+        },
+        {
+          "$type": "AttachToAnimatorStateIDMixin",
+          "stateIDs": [
+            "ReturnToBorn",
+            "ReturnToBorn_Blink",
+            "ReturnToBorn_AS"
           ],
           "modifierName": "ReturnToBorn_Start"
         }
@@ -1449,6 +1577,19 @@
             {
               "$type": "TriggerAbility",
               "abilityName": "Monster_Effigy_Ice_ResetRevivingState"
+            },
+            {
+              "$type": "SetGlobalValue",
+              "value": 1,
+              "key": "_EFFIGY_ISRETURNINGTOBURN_",
+              "maxValue": 0,
+              "minValue": 0
+            },
+            {
+              "$type": "EnableHitBoxByName",
+              "hitBoxNames": [
+                "RevivingStateHitBox"
+              ]
             }
           ]
         }
@@ -1544,6 +1685,10 @@
         }
       ],
       "modifiers": {
+        "Empty": {
+          "modifierName": "",
+          "elementDurability": 100
+        },
         "UNIQUE_Effigy_CombatMoveCD_CountDown": {
           "modifierName": "",
           "isUnique": true,
@@ -2437,7 +2582,8 @@
               "cameraShake": {
                 "shakeRange": 0.06,
                 "shakeTime": 0.09
-              }
+              },
+              "canBeModifiedBy": "OriginOwner"
             }
           },
           "targetType": "Enemy"
@@ -2507,7 +2653,8 @@
               "cameraShake": {
                 "shakeRange": 0.06,
                 "shakeTime": 0.09
-              }
+              },
+              "canBeModifiedBy": "OriginOwner"
             }
           },
           "targetType": "Enemy"
@@ -2529,7 +2676,8 @@
             "NeedleWheelCharge_Aiming3",
             "NeedleWheelCharge_Loop1",
             "NeedleWheelCharge_Loop2",
-            "NeedleWheelCharge_Loop3"
+            "NeedleWheelCharge_Loop3",
+            "NeedleWheelCharge_AS01"
           ],
           "modifierName": "UNIQUE_NeedleWheelChargeEffect"
         },
@@ -2541,7 +2689,8 @@
             "NeedleWheelCharge_Aiming3",
             "NeedleWheelCharge_Loop1",
             "NeedleWheelCharge_Loop2",
-            "NeedleWheelCharge_Loop3"
+            "NeedleWheelCharge_Loop3",
+            "NeedleWheelCharge_AS01"
           ],
           "modifierName": "UNIQUE_NeedleWheelChargeAttackEvent"
         }
@@ -2845,7 +2994,8 @@
                     "onHitEffectName": "",
                     "hitImpulseType": "LV1",
                     "hitHaltTimeScale": 0.05
-                  }
+                  },
+                  "canBeModifiedBy": "OriginOwner"
                 }
               },
               "targetType": "Enemy"
@@ -2926,7 +3076,6 @@
                     "onGroundRaycastUpDist": 0.2,
                     "timeForPredictive": 0.5
                   },
-                  "sightGroupWithOwner": true,
                   "gadgetID": 42004407,
                   "campID": 4001
                 }
@@ -2959,7 +3108,6 @@
                     "onGroundRaycastUpDist": 0.2,
                     "timeForPredictive": 0.5
                   },
-                  "sightGroupWithOwner": true,
                   "gadgetID": 42004407,
                   "campID": 4001
                 }
@@ -2989,7 +3137,6 @@
                     "onGround": true,
                     "onGroundRaycastUpDist": 0.2
                   },
-                  "sightGroupWithOwner": true,
                   "gadgetID": 42004407,
                   "campID": 4001
                 }
@@ -3014,7 +3161,6 @@
                     "onGround": true,
                     "onGroundRaycastUpDist": 0.2
                   },
-                  "sightGroupWithOwner": true,
                   "gadgetID": 42004407,
                   "campID": 4001
                 }
@@ -3094,7 +3240,8 @@
                     "onHitEffectName": "default",
                     "hitImpulseType": "LV4",
                     "hitHaltTimeScale": 0.05
-                  }
+                  },
+                  "canBeModifiedBy": "OriginOwner"
                 }
               },
               "targetType": "Enemy"
@@ -3415,7 +3562,8 @@
               "cameraShake": {
                 "shakeRange": 0.06,
                 "shakeTime": 0.09
-              }
+              },
+              "canBeModifiedBy": "OriginOwner"
             }
           },
           "targetType": "Enemy"
@@ -3467,143 +3615,400 @@
                   "attackTags": [
                     "ExtraAttack"
                   ]
-                },
-                {
-                  "$type": "BySelfForwardAndTargetPosition",
-                  "logic": "Lesser",
-                  "value": 75
                 }
               ],
               "successActions": [
                 {
-                  "$type": "ActCameraShake",
-                  "cameraShake": {
-                    "shakeType": "CustomVector",
-                    "shakeRange": 1,
-                    "shakeTime": 0.2,
-                    "shakeDistance": 10,
-                    "shakeDir": {
-                      "z": 2
-                    },
-                    "extension": {
-                      "baseOnCamera": true
-                    }
-                  }
-                },
-                {
-                  "$type": "TriggerBullet",
-                  "bulletID": 42004411,
-                  "born": {
-                    "$type": "ConfigBornBySelf",
-                    "offset": {
-                      "y": 0.25
-                    },
-                    "direction": {
-                      "$type": "ConfigDirectionByAttackTarget"
-                    }
-                  }
-                },
-                {
-                  "$type": "SetGlobalValue",
-                  "value": 1,
-                  "key": "_EFFIGY_ICE_BULLETONGROUND_KICKED_",
-                  "maxValue": 0,
-                  "minValue": 0
-                },
-                {
-                  "$type": "SetGlobalValue",
-                  "value": 1,
-                  "key": "_EFFIGY_ICE_BULLETONGROUND_KICKER_",
-                  "maxValue": 0,
-                  "minValue": 0
-                },
-                {
-                  "$type": "ApplyModifier",
+                  "$type": "Predicated",
                   "target": "Target",
-                  "modifierName": "Effigy_Ice_Revive_IceBarrage_BulletKickerModifier"
-                },
-                {
-                  "$type": "KillSelf"
-                }
-              ]
-            },
-            {
-              "$type": "Predicated",
-              "target": "Target",
-              "targetPredicates": [
-                {
-                  "$type": "ByTargetGlobalValue",
-                  "target": "Self",
-                  "key": "_EFFIGY_ICE_BULLETONGROUND_KICKED_",
-                  "value": 0
-                },
-                {
-                  "$type": "ByAttackTags",
-                  "attackTags": [
-                    "ExtraAttack"
+                  "targetPredicates": [
+                    {
+                      "$type": "ByHasFeatureTag",
+                      "target": "TargetOriginOwner",
+                      "featureTagIDs": [
+                        1055
+                      ]
+                    }
+                  ],
+                  "successActions": [
+                    {
+                      "$type": "Predicated",
+                      "target": "Target",
+                      "targetPredicates": [
+                        {
+                          "$type": "BySelfForwardAndTargetPosition",
+                          "target": "TargetOriginOwner",
+                          "logic": "Lesser",
+                          "value": 45
+                        }
+                      ],
+                      "successActions": [
+                        {
+                          "$type": "TriggerAttackEvent",
+                          "attackEvent": {
+                            "attackPattern": {
+                              "$type": "ConfigAttackBox",
+                              "triggerType": "TriggerNoRepeat",
+                              "ignoreMassive": true,
+                              "born": {
+                                "$type": "ConfigBornBySelf"
+                              },
+                              "size": {
+                                "x": 0.1,
+                                "y": 0.1,
+                                "z": 0.1
+                              }
+                            },
+                            "attackInfo": {
+                              "attackTag": "",
+                              "attenuationTag": "",
+                              "attenuationGroup": "default",
+                              "attackProperty": {
+                                "damagePercentage": 0,
+                                "damagePercentageRatio": 0,
+                                "elementDurability": 100
+                              },
+                              "hitPattern": {
+                                "onHitEffectName": "none",
+                                "hitImpulseType": "LV0",
+                                "hitHaltTimeScale": 0.05
+                              },
+                              "forceCameraShake": true,
+                              "cameraShake": {
+                                "shakeType": "CustomVector",
+                                "shakeRange": 1,
+                                "shakeTime": 0.2,
+                                "shakeDistance": 10,
+                                "shakeDir": {
+                                  "z": 2
+                                },
+                                "extension": {
+                                  "baseOnCamera": true
+                                }
+                              }
+                            }
+                          }
+                        },
+                        {
+                          "$type": "TriggerBullet",
+                          "bulletID": 42004411,
+                          "born": {
+                            "$type": "ConfigBornBySelf",
+                            "offset": {
+                              "y": 0.25
+                            },
+                            "direction": {
+                              "$type": "ConfigDirectionByAttackTarget"
+                            }
+                          }
+                        },
+                        {
+                          "$type": "SetGlobalValue",
+                          "value": 1,
+                          "key": "_EFFIGY_ICE_BULLETONGROUND_KICKED_",
+                          "maxValue": 0,
+                          "minValue": 0
+                        },
+                        {
+                          "$type": "SetGlobalValue",
+                          "value": 1,
+                          "key": "_EFFIGY_ICE_BULLETONGROUND_KICKER_",
+                          "maxValue": 0,
+                          "minValue": 0
+                        },
+                        {
+                          "$type": "ApplyModifier",
+                          "target": "Target",
+                          "modifierName": "Effigy_Ice_Revive_IceBarrage_BulletKickerModifier"
+                        },
+                        {
+                          "$type": "KillSelf"
+                        }
+                      ],
+                      "failActions": [
+                        {
+                          "$type": "TriggerAttackEvent",
+                          "attackEvent": {
+                            "attackPattern": {
+                              "$type": "ConfigAttackBox",
+                              "triggerType": "TriggerNoRepeat",
+                              "ignoreMassive": true,
+                              "born": {
+                                "$type": "ConfigBornBySelf"
+                              },
+                              "size": {
+                                "x": 0.1,
+                                "y": 0.1,
+                                "z": 0.1
+                              }
+                            },
+                            "attackInfo": {
+                              "attackTag": "",
+                              "attenuationTag": "",
+                              "attenuationGroup": "default",
+                              "attackProperty": {
+                                "damagePercentage": 0,
+                                "damagePercentageRatio": 0,
+                                "elementDurability": 100
+                              },
+                              "hitPattern": {
+                                "onHitEffectName": "none",
+                                "hitImpulseType": "LV0",
+                                "hitHaltTimeScale": 0.05
+                              },
+                              "forceCameraShake": true,
+                              "cameraShake": {
+                                "shakeType": "CustomVector",
+                                "shakeRange": 1,
+                                "shakeTime": 0.2,
+                                "shakeDistance": 10,
+                                "shakeDir": {
+                                  "z": 2
+                                },
+                                "extension": {
+                                  "baseOnCamera": true
+                                }
+                              }
+                            }
+                          }
+                        },
+                        {
+                          "$type": "SetGlobalDir",
+                          "target": "Target",
+                          "key": "_ABILITY_Effigy_Ice_Revive_IceBarrage_BulletOnGround_KickDir",
+                          "born": {
+                            "$type": "ConfigBornByTarget"
+                          },
+                          "setTarget": false
+                        },
+                        {
+                          "$type": "TriggerBullet",
+                          "bulletID": 42004411,
+                          "born": {
+                            "$type": "ConfigBornBySelf",
+                            "offset": {
+                              "y": 0.25
+                            },
+                            "direction": {
+                              "$type": "ConfigDirectionByGlobalValue",
+                              "directionKey": "_ABILITY_Effigy_Ice_Revive_IceBarrage_BulletOnGround_KickDir"
+                            }
+                          }
+                        },
+                        {
+                          "$type": "SetGlobalValue",
+                          "value": 1,
+                          "key": "_EFFIGY_ICE_BULLETONGROUND_KICKED_",
+                          "maxValue": 0,
+                          "minValue": 0
+                        },
+                        {
+                          "$type": "SetGlobalValue",
+                          "value": 1,
+                          "key": "_EFFIGY_ICE_BULLETONGROUND_KICKER_",
+                          "maxValue": 0,
+                          "minValue": 0
+                        },
+                        {
+                          "$type": "ApplyModifier",
+                          "target": "Target",
+                          "modifierName": "Effigy_Ice_Revive_IceBarrage_BulletKickerModifier"
+                        },
+                        {
+                          "$type": "KillSelf"
+                        }
+                      ]
+                    }
+                  ],
+                  "failActions": [
+                    {
+                      "$type": "Predicated",
+                      "target": "Target",
+                      "targetPredicates": [
+                        {
+                          "$type": "BySelfForwardAndTargetPosition",
+                          "logic": "Lesser",
+                          "value": 75
+                        }
+                      ],
+                      "successActions": [
+                        {
+                          "$type": "TriggerAttackEvent",
+                          "attackEvent": {
+                            "attackPattern": {
+                              "$type": "ConfigAttackBox",
+                              "triggerType": "TriggerNoRepeat",
+                              "ignoreMassive": true,
+                              "born": {
+                                "$type": "ConfigBornBySelf"
+                              },
+                              "size": {
+                                "x": 0.1,
+                                "y": 0.1,
+                                "z": 0.1
+                              }
+                            },
+                            "attackInfo": {
+                              "attackTag": "",
+                              "attenuationTag": "",
+                              "attenuationGroup": "default",
+                              "attackProperty": {
+                                "damagePercentage": 0,
+                                "damagePercentageRatio": 0,
+                                "elementDurability": 100
+                              },
+                              "hitPattern": {
+                                "onHitEffectName": "none",
+                                "hitImpulseType": "LV0",
+                                "hitHaltTimeScale": 0.05
+                              },
+                              "forceCameraShake": true,
+                              "cameraShake": {
+                                "shakeType": "CustomVector",
+                                "shakeRange": 1,
+                                "shakeTime": 0.2,
+                                "shakeDistance": 10,
+                                "shakeDir": {
+                                  "z": 2
+                                },
+                                "extension": {
+                                  "baseOnCamera": true
+                                }
+                              }
+                            }
+                          }
+                        },
+                        {
+                          "$type": "TriggerBullet",
+                          "bulletID": 42004411,
+                          "born": {
+                            "$type": "ConfigBornBySelf",
+                            "offset": {
+                              "y": 0.25
+                            },
+                            "direction": {
+                              "$type": "ConfigDirectionByAttackTarget"
+                            }
+                          }
+                        },
+                        {
+                          "$type": "SetGlobalValue",
+                          "value": 1,
+                          "key": "_EFFIGY_ICE_BULLETONGROUND_KICKED_",
+                          "maxValue": 0,
+                          "minValue": 0
+                        },
+                        {
+                          "$type": "SetGlobalValue",
+                          "value": 1,
+                          "key": "_EFFIGY_ICE_BULLETONGROUND_KICKER_",
+                          "maxValue": 0,
+                          "minValue": 0
+                        },
+                        {
+                          "$type": "ApplyModifier",
+                          "target": "Target",
+                          "modifierName": "Effigy_Ice_Revive_IceBarrage_BulletKickerModifier"
+                        },
+                        {
+                          "$type": "KillSelf"
+                        }
+                      ],
+                      "failActions": [
+                        {
+                          "$type": "TriggerAttackEvent",
+                          "attackEvent": {
+                            "attackPattern": {
+                              "$type": "ConfigAttackBox",
+                              "triggerType": "TriggerNoRepeat",
+                              "ignoreMassive": true,
+                              "born": {
+                                "$type": "ConfigBornBySelf"
+                              },
+                              "size": {
+                                "x": 0.1,
+                                "y": 0.1,
+                                "z": 0.1
+                              }
+                            },
+                            "attackInfo": {
+                              "attackTag": "",
+                              "attenuationTag": "",
+                              "attenuationGroup": "default",
+                              "attackProperty": {
+                                "damagePercentage": 0,
+                                "damagePercentageRatio": 0,
+                                "elementDurability": 100
+                              },
+                              "hitPattern": {
+                                "onHitEffectName": "none",
+                                "hitImpulseType": "LV0",
+                                "hitHaltTimeScale": 0.05
+                              },
+                              "forceCameraShake": true,
+                              "cameraShake": {
+                                "shakeType": "CustomVector",
+                                "shakeRange": 1,
+                                "shakeTime": 0.2,
+                                "shakeDistance": 10,
+                                "shakeDir": {
+                                  "z": 2
+                                },
+                                "extension": {
+                                  "baseOnCamera": true
+                                }
+                              }
+                            }
+                          }
+                        },
+                        {
+                          "$type": "SetGlobalDir",
+                          "target": "Target",
+                          "key": "_ABILITY_Effigy_Ice_Revive_IceBarrage_BulletOnGround_KickDir",
+                          "born": {
+                            "$type": "ConfigBornByTarget"
+                          },
+                          "setTarget": false
+                        },
+                        {
+                          "$type": "TriggerBullet",
+                          "bulletID": 42004411,
+                          "born": {
+                            "$type": "ConfigBornBySelf",
+                            "offset": {
+                              "y": 0.25
+                            },
+                            "direction": {
+                              "$type": "ConfigDirectionByGlobalValue",
+                              "directionKey": "_ABILITY_Effigy_Ice_Revive_IceBarrage_BulletOnGround_KickDir"
+                            }
+                          }
+                        },
+                        {
+                          "$type": "SetGlobalValue",
+                          "value": 1,
+                          "key": "_EFFIGY_ICE_BULLETONGROUND_KICKED_",
+                          "maxValue": 0,
+                          "minValue": 0
+                        },
+                        {
+                          "$type": "SetGlobalValue",
+                          "value": 1,
+                          "key": "_EFFIGY_ICE_BULLETONGROUND_KICKER_",
+                          "maxValue": 0,
+                          "minValue": 0
+                        },
+                        {
+                          "$type": "ApplyModifier",
+                          "target": "Target",
+                          "modifierName": "Effigy_Ice_Revive_IceBarrage_BulletKickerModifier"
+                        },
+                        {
+                          "$type": "KillSelf"
+                        }
+                      ]
+                    }
                   ]
-                }
-              ],
-              "successActions": [
-                {
-                  "$type": "ActCameraShake",
-                  "cameraShake": {
-                    "shakeType": "CustomVector",
-                    "shakeRange": 1,
-                    "shakeTime": 0.2,
-                    "shakeDistance": 10,
-                    "shakeDir": {
-                      "z": 2
-                    },
-                    "extension": {
-                      "baseOnCamera": true
-                    }
-                  }
-                },
-                {
-                  "$type": "SetGlobalDir",
-                  "target": "Target",
-                  "key": "_ABILITY_Effigy_Ice_Revive_IceBarrage_BulletOnGround_KickDir",
-                  "born": {
-                    "$type": "ConfigBornByTarget"
-                  },
-                  "setTarget": false
-                },
-                {
-                  "$type": "TriggerBullet",
-                  "bulletID": 42004411,
-                  "born": {
-                    "$type": "ConfigBornBySelf",
-                    "offset": {
-                      "y": 0.25
-                    },
-                    "direction": {
-                      "$type": "ConfigDirectionByGlobalValue",
-                      "directionKey": "_ABILITY_Effigy_Ice_Revive_IceBarrage_BulletOnGround_KickDir"
-                    }
-                  }
-                },
-                {
-                  "$type": "SetGlobalValue",
-                  "value": 1,
-                  "key": "_EFFIGY_ICE_BULLETONGROUND_KICKED_",
-                  "maxValue": 0,
-                  "minValue": 0
-                },
-                {
-                  "$type": "SetGlobalValue",
-                  "value": 1,
-                  "key": "_EFFIGY_ICE_BULLETONGROUND_KICKER_",
-                  "maxValue": 0,
-                  "minValue": 0
-                },
-                {
-                  "$type": "ApplyModifier",
-                  "target": "Target",
-                  "modifierName": "Effigy_Ice_Revive_IceBarrage_BulletKickerModifier"
-                },
-                {
-                  "$type": "KillSelf"
                 }
               ]
             }
@@ -3709,19 +4114,49 @@
               ],
               "successActions": [
                 {
-                  "$type": "ActCameraShake",
-                  "target": "Target",
-                  "cameraShake": {
-                    "shakeType": "CustomVector",
-                    "shakeRange": 0.5,
-                    "shakeTime": 1,
-                    "shakeDistance": 35,
-                    "shakeDir": {
-                      "y": 2
+                  "$type": "TriggerAttackEvent",
+                  "attackEvent": {
+                    "attackPattern": {
+                      "$type": "ConfigAttackBox",
+                      "triggerType": "TriggerNoRepeat",
+                      "ignoreMassive": true,
+                      "born": {
+                        "$type": "ConfigBornBySelf"
+                      },
+                      "size": {
+                        "x": 0.1,
+                        "y": 0.1,
+                        "z": 0.1
+                      }
                     },
-                    "extension": {
-                      "baseOnCamera": true,
-                      "rangeAttenuation": 0
+                    "attackInfo": {
+                      "attackTag": "",
+                      "attenuationTag": "",
+                      "attenuationGroup": "default",
+                      "attackProperty": {
+                        "damagePercentage": 0,
+                        "damagePercentageRatio": 0,
+                        "elementDurability": 100
+                      },
+                      "hitPattern": {
+                        "onHitEffectName": "none",
+                        "hitImpulseType": "LV0",
+                        "hitHaltTimeScale": 0.05
+                      },
+                      "forceCameraShake": true,
+                      "cameraShake": {
+                        "shakeType": "CustomVector",
+                        "shakeRange": 0.5,
+                        "shakeTime": 1,
+                        "shakeDistance": 35,
+                        "shakeDir": {
+                          "y": 2
+                        },
+                        "extension": {
+                          "baseOnCamera": true,
+                          "rangeAttenuation": 0
+                        }
+                      }
                     }
                   }
                 },
@@ -3729,7 +4164,7 @@
                   "$type": "AddElementDurability",
                   "target": "Target",
                   "value": -1000,
-                  "modifierName": "Effigy_Ice_RevivingStateShield",
+                  "modifierName": "UNIQUE_Effigy_Ice_RevivingStateShield",
                   "elementType": "Frozen",
                   "useLimitRange": true,
                   "maxValue": 9000,
@@ -3768,20 +4203,11 @@
           "targetPredicates": [
             {
               "$type": "ByTargetGlobalValue",
-              "key": "_EFFIGY_ICE_BULLETONGROUND_KICKER_",
-              "value": 0,
-              "compareType": "NoneOrEqual"
+              "key": "_EFFIGY_ICE_ISREVIVING_",
+              "value": 1
             }
           ],
           "successActions": [
-            {
-              "$type": "FireEffect",
-              "effectPattern": "Eff_Monster_Effigy_Ice_Revive_IceBarrage_BulletKicked_Hit",
-              "born": {
-                "$type": "ConfigBornBySelf",
-                "onGround": true
-              }
-            },
             {
               "$type": "TriggerAttackEvent",
               "attackEvent": {
@@ -3798,31 +4224,31 @@
                   "attenuationTag": "",
                   "attenuationGroup": "default",
                   "attackProperty": {
-                    "damagePercentage": 1,
+                    "damagePercentage": 0,
                     "damagePercentageRatio": 0,
                     "elementType": "Ice",
                     "elementDurability": 50,
                     "strikeType": "Blunt",
-                    "enBreak": 200
+                    "enBreak": 0
                   },
                   "hitPattern": {
                     "onHitEffectName": "none",
-                    "hitImpulseType": "LV4",
+                    "hitImpulseType": "LV0",
                     "hitHaltTimeScale": 0.01
-                  },
-                  "cameraShake": {
-                    "shakeRange": 0.25,
-                    "shakeTime": 0.09,
-                    "shakeDistance": 30
                   }
                 }
               },
               "targetType": "All"
-            },
-            {
-              "$type": "KillSelf"
             }
           ]
+        },
+        {
+          "$type": "FireEffect",
+          "effectPattern": "Eff_Monster_Effigy_Ice_Revive_IceBarrage_BulletKicked_Hit",
+          "born": {
+            "$type": "ConfigBornBySelf",
+            "onGround": true
+          }
         }
       ]
     }
@@ -4382,7 +4808,8 @@
               "cameraShake": {
                 "shakeRange": 0.06,
                 "shakeTime": 0.09
-              }
+              },
+              "canBeModifiedBy": "OriginOwner"
             }
           },
           "targetType": "Enemy"
@@ -4893,7 +5320,8 @@
                     "hitImpulseType": "LV7",
                     "retreatType": "ByHitDirection",
                     "hitHaltTimeScale": 0.01
-                  }
+                  },
+                  "canBeModifiedBy": "OriginOwner"
                 }
               },
               "targetType": "Enemy"

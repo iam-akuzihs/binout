@@ -93,10 +93,6 @@
           "elementDurability": 100,
           "onAdded": [
             {
-              "$type": "DebugLog",
-              "content": "进入技能效果逻辑！"
-            },
-            {
               "$type": "TriggerAttackEvent",
               "attackEvent": {
                 "attackPattern": {
@@ -197,10 +193,6 @@
               "key": "_ABILITY_FlyTime_BuffLevel",
               "maxValue": 0,
               "minValue": 0
-            },
-            {
-              "$type": "DebugLog",
-              "content": "下落攻击后清除【轻羽】效果"
             }
           ]
         },
@@ -371,30 +363,41 @@
     "Default": {
       "$type": "ConfigAbility",
       "abilityName": "ActivityAbility_EnergyDisk_Blue_FallingAttack_AddWind",
-      "abilityMixins": [
-        {
-          "$type": "AttachModifierToSelfGlobalValueMixin",
-          "globalValueTarget": "MPLevel",
-          "globalValueKey": "_Ability_EnergyDisk_AddWind_CD",
-          "defaultGlobalValueOnCreate": 0,
-          "valueSteps": [
-            -1.5,
-            -0.5,
-            0.5
-          ],
-          "modifierNameSteps": [
-            "UNIQUE_EnergyDisk_AddWind_Cd",
-            "UNIQUE_EnergyDisk_AddWind_Handler"
-          ]
-        }
-      ],
       "abilitySpecials": {
         "CDTime": 8
       },
       "modifiers": {
+        "UNIQUE_EnergyDisk_Blue_FallingAttack_AddWind_Total": {
+          "stacking": "Unique",
+          "modifierName": "",
+          "isUnique": true,
+          "elementDurability": 100,
+          "modifierMixins": [
+            {
+              "$type": "AttachModifierToSelfGlobalValueMixin",
+              "globalValueTarget": "MPLevel",
+              "globalValueKey": "_Ability_EnergyDisk_AddWind_CD",
+              "defaultGlobalValueOnCreate": 0,
+              "valueSteps": [
+                -1.5,
+                -0.5,
+                0.5
+              ],
+              "modifierNameSteps": [
+                "UNIQUE_EnergyDisk_AddWind_Cd",
+                "Blank"
+              ]
+            }
+          ]
+        },
+        "Blank": {
+          "modifierName": "",
+          "elementDurability": 100
+        },
         "UNIQUE_EnergyDisk_AddWind_Handler": {
           "stacking": "Unique",
           "modifierName": "",
+          "isUnique": true,
           "elementDurability": 100,
           "modifierMixins": [
             {
@@ -425,32 +428,44 @@
               ],
               "successActions": [
                 {
-                  "$type": "SetGlobalValue",
+                  "$type": "Predicated",
                   "target": "MPLevel",
-                  "value": -1,
-                  "key": "_Ability_EnergyDisk_AddWind_CD",
-                  "maxValue": 0,
-                  "minValue": 0
+                  "targetPredicates": [
+                    {
+                      "$type": "ByTargetGlobalValue",
+                      "key": "_Ability_EnergyDisk_AddWind_CD",
+                      "value": 0
+                    }
+                  ],
+                  "successActions": [
+                    {
+                      "$type": "ApplyModifier",
+                      "modifierName": "UNIQUE_EnergyDisk_AddWind_SKillEffect"
+                    },
+                    {
+                      "$type": "ApplyModifier",
+                      "target": "MPLevel",
+                      "modifierName": "UNIQUE_EnergyDisk_AddWind_CD_Change_MPLEVEL"
+                    }
+                  ]
                 }
               ]
             }
           ]
         },
-        "UNIQUE_EnergyDisk_FallingAttack_Delay": {
+        "UNIQUE_EnergyDisk_AddWind_CD_Change_MPLEVEL": {
           "modifierName": "",
           "isUnique": true,
-          "duration": 0.5,
+          "duration": 0.1,
           "elementDurability": 100,
           "onAdded": [
             {
-              "$type": "DebugLog",
-              "content": "发生什么事了"
-            }
-          ],
-          "onRemoved": [
-            {
-              "$type": "ApplyModifier",
-              "modifierName": "UNIQUE_EnergyDisk_AddWind_SKillEffect"
+              "$type": "SetGlobalValue",
+              "target": "MPLevel",
+              "value": -1,
+              "key": "_Ability_EnergyDisk_AddWind_CD",
+              "maxValue": 0,
+              "minValue": 0
             }
           ]
         },
@@ -499,19 +514,9 @@
         "UNIQUE_EnergyDisk_AddWind_Cd": {
           "modifierName": "",
           "isUnique": true,
-          "duration": "CDTime",
           "elementDurability": 100,
-          "onAdded": [
-            {
-              "$type": "ApplyModifier",
-              "modifierName": "UNIQUE_EnergyDisk_FallingAttack_Delay"
-            },
-            {
-              "$type": "DebugLog",
-              "content": "这里走到了吗"
-            }
-          ],
-          "onRemoved": [
+          "thinkInterval": "CDTime",
+          "onThinkInterval": [
             {
               "$type": "SetGlobalValue",
               "target": "MPLevel",
@@ -524,6 +529,17 @@
         }
       },
       "onAdded": [
+        {
+          "$type": "AttachModifier",
+          "target": "MPLevel",
+          "modifierName": "UNIQUE_EnergyDisk_Blue_FallingAttack_AddWind_Total"
+        },
+        {
+          "$type": "ApplyModifier",
+          "modifierName": "UNIQUE_EnergyDisk_AddWind_Handler"
+        }
+      ],
+      "onRemoved": [
         {
           "$type": "SetGlobalValue",
           "target": "MPLevel",
@@ -651,105 +667,54 @@
     "Default": {
       "$type": "ConfigAbility",
       "abilityName": "ActivityAbility_EnergyDisk_Purple_Onkill_ThumpDamageAdd",
-      "abilityMixins": [
-        {
-          "$type": "DoActionByKillingMixin",
-          "attackTags": [
-            "ExtraAttack"
-          ],
-          "detectWindow": 0.6,
-          "onKill": [
-            {
-              "$type": "Predicated",
-              "target": "Other",
-              "targetPredicates": [
-                {
-                  "$type": "ByEntityTypes",
-                  "entityTypes": [
-                    "Monster"
-                  ]
-                }
-              ],
-              "successActions": [
-                {
-                  "$type": "Predicated",
-                  "target": "MPLevel",
-                  "targetPredicates": [
-                    {
-                      "$type": "ByTargetGlobalValue",
-                      "key": "_Ability_EnergyDisk_Onkill_ThumpDamageAdd_CD",
-                      "value": 0
-                    }
-                  ],
-                  "successActions": [
-                    {
-                      "$type": "DebugLog",
-                      "content": "重击击杀触发了"
-                    },
-                    {
-                      "$type": "ApplyModifier",
-                      "target": "AllPlayerAvatars",
-                      "modifierName": "UNIQUE_EnergyDisk_Onkill_ThumpDamageAdd_BuffEffect"
-                    },
-                    {
-                      "$type": "ApplyModifier",
-                      "modifierName": "UNIQUE_EnergyDisk_Onkill_ThumpDamageAdd_CDtime"
-                    }
-                  ]
-                }
-              ]
-            }
-          ]
-        }
-      ],
       "abilitySpecials": {
         "Bufftime": 60,
         "Damage": 0.35
       },
       "modifiers": {
-        "UNIQUE_EnergyDisk_Onkill_ThumpDamageAdd_BuffEffect": {
-          "stacking": "Multiple",
-          "stackingOption": {
-            "abilitySpecialName": "",
-            "maxModifierNumForMultipleType": 5
-          },
+        "UNIQUE_EnergyDisk_Purple_Onkill_ThumpDamageAdd_Total": {
+          "stacking": "Unique",
           "modifierName": "",
           "isUnique": true,
-          "duration": "Bufftime",
           "elementDurability": 100,
           "modifierMixins": [
             {
-              "$type": "ModifyDamageMixin",
-              "attackTags": [
-                "ExtraAttack"
+              "$type": "AttachModifierToSelfGlobalValueMixin",
+              "globalValueTarget": "MPLevel",
+              "globalValueKey": "_Ability_EnergyDisk_Onkill_ThumpDamageAdd_CD",
+              "defaultGlobalValueOnCreate": 0,
+              "valueSteps": [
+                -1.5,
+                -0.5,
+                0.5
               ],
-              "damagePercentageRatio": "Damage"
+              "modifierNameSteps": [
+                "UNIQUE_EnergyDisk_Onkill_ThumpDamageAdd_Cd",
+                "Blank"
+              ]
             }
           ],
-          "onAdded": [
-            {
-              "$type": "FireEffect",
-              "effectPattern": "Eff_EnergyDisk_ExtraAtkKill_Common"
-            }
-          ],
-          "isLimitedProperties": true
-        },
-        "UNIQUE_EnergyDisk_Onkill_ThumpDamageAdd_CDtime": {
-          "modifierName": "",
-          "isUnique": true,
-          "duration": 0.3,
-          "elementDurability": 100,
           "onAdded": [
             {
               "$type": "SetGlobalValue",
               "target": "MPLevel",
-              "value": -1,
-              "key": "_Ability_EnergyDisk_Onkill_ThumpDamageAdd_CD",
+              "value": 0,
+              "key": "_ABILITY_EnergyDisk_Purple_ExtraAtkKillBuffLevel",
               "maxValue": 0,
               "minValue": 0
             }
-          ],
-          "onRemoved": [
+          ]
+        },
+        "Blank": {
+          "modifierName": "",
+          "elementDurability": 100
+        },
+        "UNIQUE_EnergyDisk_Onkill_ThumpDamageAdd_Cd": {
+          "modifierName": "",
+          "isUnique": true,
+          "elementDurability": 100,
+          "thinkInterval": 0.3,
+          "onThinkInterval": [
             {
               "$type": "SetGlobalValue",
               "target": "MPLevel",
@@ -759,16 +724,336 @@
               "minValue": 0
             }
           ]
+        },
+        "UNIQUE_EnergyDisk_ExtraAtkKillOnkill_CD_Change_MPLEVEL": {
+          "modifierName": "",
+          "isUnique": true,
+          "duration": "Bufftime",
+          "elementDurability": 100,
+          "onRemoved": [
+            {
+              "$type": "SetGlobalValue",
+              "target": "MPLevel",
+              "value": 0,
+              "key": "_ABILITY_EnergyDisk_Purple_ExtraAtkKillBuffLevel",
+              "maxValue": 0,
+              "minValue": 0
+            }
+          ]
+        },
+        "UNIQUE_EnergyDisk_Onkill_ThumpDamageAdd_Mixin": {
+          "modifierName": "",
+          "isUnique": true,
+          "elementDurability": 100,
+          "modifierMixins": [
+            {
+              "$type": "DoActionByKillingMixin",
+              "attackTags": [
+                "ExtraAttack"
+              ],
+              "detectWindow": 0.6,
+              "onKill": [
+                {
+                  "$type": "Predicated",
+                  "target": "Other",
+                  "targetPredicates": [
+                    {
+                      "$type": "ByEntityTypes",
+                      "entityTypes": [
+                        "Monster"
+                      ]
+                    }
+                  ],
+                  "successActions": [
+                    {
+                      "$type": "Predicated",
+                      "target": "MPLevel",
+                      "targetPredicates": [
+                        {
+                          "$type": "ByTargetGlobalValue",
+                          "key": "_Ability_EnergyDisk_Onkill_ThumpDamageAdd_CD",
+                          "value": 0
+                        }
+                      ],
+                      "successActions": [
+                        {
+                          "$type": "AttachModifier",
+                          "target": "MPLevel",
+                          "modifierName": "UNIQUE_EnergyDisk_Onkill_ThumpDamageAdd_CD_Change_MPLEVEL"
+                        },
+                        {
+                          "$type": "AttachModifier",
+                          "target": "MPLevel",
+                          "modifierName": "UNIQUE_EnergyDisk_Onkill_ThumpDamageAdd_Layer_Reset_MPLEVEL"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "$type": "AttachModifierToSelfGlobalValueMixin",
+              "globalValueTarget": "MPLevel",
+              "globalValueKey": "_ABILITY_EnergyDisk_Purple_ExtraAtkKillBuffLevel",
+              "defaultGlobalValueOnCreate": 0,
+              "valueSteps": [
+                -0.5,
+                0.5,
+                1.5,
+                2.5,
+                3.5,
+                4.5,
+                100
+              ],
+              "modifierNameSteps": [
+                "UNIQUE_EnergyDisk_Purple_ExtraAtkKillBuff0",
+                "UNIQUE_EnergyDisk_Purple_ExtraAtkKillBuff1",
+                "UNIQUE_EnergyDisk_Purple_ExtraAtkKillBuff2",
+                "UNIQUE_EnergyDisk_Purple_ExtraAtkKillBuff3",
+                "UNIQUE_EnergyDisk_Purple_ExtraAtkKillBuff4",
+                "UNIQUE_EnergyDisk_Purple_ExtraAtkKillBuff5"
+              ]
+            }
+          ]
+        },
+        "UNIQUE_EnergyDisk_Onkill_ThumpDamageAdd_CD_Change_MPLEVEL": {
+          "modifierName": "",
+          "isUnique": true,
+          "duration": 0.1,
+          "elementDurability": 100,
+          "onAdded": [
+            {
+              "$type": "SetGlobalValue",
+              "target": "MPLevel",
+              "value": -1,
+              "key": "_Ability_EnergyDisk_Onkill_ThumpDamageAdd_CD",
+              "maxValue": 0,
+              "minValue": 0
+            },
+            {
+              "$type": "AddGlobalValue",
+              "target": "MPLevel",
+              "value": 1,
+              "key": "_ABILITY_EnergyDisk_Purple_ExtraAtkKillBuffLevel",
+              "maxValue": 0,
+              "minValue": 0
+            }
+          ]
+        },
+        "UNIQUE_EnergyDisk_Onkill_ThumpDamageAdd_Layer_Reset_MPLEVEL": {
+          "modifierName": "",
+          "isUnique": true,
+          "duration": 0.1,
+          "elementDurability": 100,
+          "onAdded": [
+            {
+              "$type": "RemoveUniqueModifier",
+              "target": "MPLevel",
+              "modifierName": "UNIQUE_EnergyDisk_Onkill_ThumpDamageAdd_Layer_Reset_MPLEVEL_Time"
+            },
+            {
+              "$type": "ApplyModifier",
+              "target": "MPLevel",
+              "modifierName": "UNIQUE_EnergyDisk_Onkill_ThumpDamageAdd_Layer_Reset_MPLEVEL_Time"
+            }
+          ]
+        },
+        "UNIQUE_EnergyDisk_Onkill_ThumpDamageAdd_Layer_Reset_MPLEVEL_Time": {
+          "modifierName": "",
+          "isUnique": true,
+          "duration": "Bufftime",
+          "elementDurability": 100,
+          "thinkInterval": "Bufftime",
+          "onThinkInterval": [
+            {
+              "$type": "SetGlobalValue",
+              "target": "MPLevel",
+              "value": 0,
+              "key": "_ABILITY_EnergyDisk_Purple_ExtraAtkKillBuffLevel",
+              "maxValue": 0,
+              "minValue": 0
+            }
+          ]
+        },
+        "UNIQUE_EnergyDisk_Purple_ExtraAtkKillBuff0": {
+          "modifierName": "",
+          "isUnique": true,
+          "elementDurability": 100
+        },
+        "UNIQUE_EnergyDisk_Purple_ExtraAtkKillBuff1": {
+          "modifierName": "",
+          "isUnique": true,
+          "elementDurability": 100,
+          "modifierMixins": [
+            {
+              "$type": "ModifyDamageMixin",
+              "attackTags": [
+                "ExtraAttack"
+              ],
+              "damagePercentageRatio": [
+                "Damage",
+                1,
+                "Mul"
+              ]
+            }
+          ],
+          "onAdded": [
+            {
+              "$type": "FireEffect",
+              "effectPattern": "Eff_EnergyDisk_ExtraAtkKill01",
+              "born": {
+                "$type": "ConfigBornBySelf"
+              }
+            },
+            {
+              "$type": "FireEffect",
+              "effectPattern": "Eff_EnergyDisk_ExtraAtkKill_Common",
+              "born": {
+                "$type": "ConfigBornBySelf"
+              }
+            }
+          ]
+        },
+        "UNIQUE_EnergyDisk_Purple_ExtraAtkKillBuff2": {
+          "modifierName": "",
+          "isUnique": true,
+          "elementDurability": 100,
+          "modifierMixins": [
+            {
+              "$type": "ModifyDamageMixin",
+              "attackTags": [
+                "ExtraAttack"
+              ],
+              "damagePercentageRatio": [
+                "Damage",
+                2,
+                "Mul"
+              ]
+            }
+          ],
+          "onAdded": [
+            {
+              "$type": "FireEffect",
+              "effectPattern": "Eff_EnergyDisk_ExtraAtkKill02",
+              "born": {
+                "$type": "ConfigBornBySelf"
+              }
+            },
+            {
+              "$type": "FireEffect",
+              "effectPattern": "Eff_EnergyDisk_ExtraAtkKill_Common",
+              "born": {
+                "$type": "ConfigBornBySelf"
+              }
+            }
+          ]
+        },
+        "UNIQUE_EnergyDisk_Purple_ExtraAtkKillBuff3": {
+          "modifierName": "",
+          "isUnique": true,
+          "elementDurability": 100,
+          "modifierMixins": [
+            {
+              "$type": "ModifyDamageMixin",
+              "attackTags": [
+                "ExtraAttack"
+              ],
+              "damagePercentageRatio": [
+                "Damage",
+                3,
+                "Mul"
+              ]
+            }
+          ],
+          "onAdded": [
+            {
+              "$type": "FireEffect",
+              "effectPattern": "Eff_EnergyDisk_ExtraAtkKill03",
+              "born": {
+                "$type": "ConfigBornBySelf"
+              }
+            }
+          ]
+        },
+        "UNIQUE_EnergyDisk_Purple_ExtraAtkKillBuff4": {
+          "modifierName": "",
+          "isUnique": true,
+          "elementDurability": 100,
+          "modifierMixins": [
+            {
+              "$type": "ModifyDamageMixin",
+              "attackTags": [
+                "ExtraAttack"
+              ],
+              "damagePercentageRatio": [
+                "Damage",
+                4,
+                "Mul"
+              ]
+            }
+          ],
+          "onAdded": [
+            {
+              "$type": "FireEffect",
+              "effectPattern": "Eff_EnergyDisk_ExtraAtkKill04",
+              "born": {
+                "$type": "ConfigBornBySelf"
+              }
+            },
+            {
+              "$type": "FireEffect",
+              "effectPattern": "Eff_EnergyDisk_ExtraAtkKill_Common",
+              "born": {
+                "$type": "ConfigBornBySelf"
+              }
+            }
+          ]
+        },
+        "UNIQUE_EnergyDisk_Purple_ExtraAtkKillBuff5": {
+          "modifierName": "",
+          "isUnique": true,
+          "elementDurability": 100,
+          "modifierMixins": [
+            {
+              "$type": "ModifyDamageMixin",
+              "attackTags": [
+                "ExtraAttack"
+              ],
+              "damagePercentageRatio": [
+                "Damage",
+                5,
+                "Mul"
+              ]
+            }
+          ],
+          "onAdded": [
+            {
+              "$type": "FireEffect",
+              "effectPattern": "Eff_EnergyDisk_ExtraAtkKill05",
+              "born": {
+                "$type": "ConfigBornBySelf"
+              }
+            },
+            {
+              "$type": "FireEffect",
+              "effectPattern": "Eff_EnergyDisk_ExtraAtkKill_Common",
+              "born": {
+                "$type": "ConfigBornBySelf"
+              }
+            }
+          ]
         }
       },
       "onAdded": [
         {
-          "$type": "SetGlobalValue",
+          "$type": "ApplyModifier",
           "target": "MPLevel",
-          "value": 0,
-          "key": "_Ability_EnergyDisk_Onkill_ThumpDamageAdd_CD",
-          "maxValue": 0,
-          "minValue": 0
+          "modifierName": "UNIQUE_EnergyDisk_Purple_Onkill_ThumpDamageAdd_Total"
+        },
+        {
+          "$type": "ApplyModifier",
+          "modifierName": "UNIQUE_EnergyDisk_Onkill_ThumpDamageAdd_Mixin"
         }
       ],
       "isDynamicAbility": true
@@ -867,44 +1152,130 @@
     "Default": {
       "$type": "ConfigAbility",
       "abilityName": "ActivityAbility_EnergyDisk_Blue_ExtraAtkKill_Attract",
-      "abilityMixins": [
-        {
-          "$type": "DoActionByKillingMixin",
-          "attackTags": [
-            "ExtraAttack"
-          ],
-          "detectWindow": 0.6,
-          "onKill": [
-            {
-              "$type": "Predicated",
-              "target": "Other",
-              "targetPredicates": [
-                {
-                  "$type": "ByEntityTypes",
-                  "entityTypes": [
-                    "Monster"
-                  ]
-                }
-              ],
-              "successActions": [
-                {
-                  "$type": "ApplyModifier",
-                  "modifierName": "UNIQUE_EnergyDisk_Blue_ExtraAtkKill_Attract_CreateGadget"
-                }
-              ]
-            }
-          ]
-        }
-      ],
       "abilitySpecials": {
         "CDTime": 2
       },
       "modifiers": {
+        "UNIQUE_EnergyDisk_Blue_ExtraAtkKill_Attract_Total": {
+          "stacking": "Unique",
+          "modifierName": "",
+          "isUnique": true,
+          "elementDurability": 100,
+          "modifierMixins": [
+            {
+              "$type": "AttachModifierToSelfGlobalValueMixin",
+              "globalValueTarget": "MPLevel",
+              "globalValueKey": "_Ability_EnergyDisk_ExtraAtkKill_Attract_CD",
+              "defaultGlobalValueOnCreate": 0,
+              "valueSteps": [
+                -1.5,
+                -0.5,
+                0.5
+              ],
+              "modifierNameSteps": [
+                "UNIQUE_EnergyDisk_ExtraAtkKill_Attract_Cd",
+                "Blank"
+              ]
+            }
+          ]
+        },
+        "Blank": {
+          "modifierName": "",
+          "elementDurability": 100
+        },
+        "UNIQUE_EnergyDisk_ExtraAtkKill_Attract_Cd": {
+          "modifierName": "",
+          "isUnique": true,
+          "elementDurability": 100,
+          "thinkInterval": "CDTime",
+          "onThinkInterval": [
+            {
+              "$type": "SetGlobalValue",
+              "target": "MPLevel",
+              "value": 0,
+              "key": "_Ability_EnergyDisk_ExtraAtkKill_Attract_CD",
+              "maxValue": 0,
+              "minValue": 0
+            }
+          ]
+        },
+        "UNIQUE_EnergyDisk_ExtraAtkKill_Attract_Handler": {
+          "modifierName": "",
+          "isUnique": true,
+          "elementDurability": 100,
+          "modifierMixins": [
+            {
+              "$type": "DoActionByKillingMixin",
+              "attackTags": [
+                "ExtraAttack"
+              ],
+              "detectWindow": 0.6,
+              "onKill": [
+                {
+                  "$type": "Predicated",
+                  "target": "Other",
+                  "targetPredicates": [
+                    {
+                      "$type": "ByEntityTypes",
+                      "entityTypes": [
+                        "Monster"
+                      ]
+                    }
+                  ],
+                  "successActions": [
+                    {
+                      "$type": "DebugLog",
+                      "content": "重击击杀触发"
+                    },
+                    {
+                      "$type": "Predicated",
+                      "target": "MPLevel",
+                      "targetPredicates": [
+                        {
+                          "$type": "ByTargetGlobalValue",
+                          "key": "_Ability_EnergyDisk_ExtraAtkKill_Attract_CD",
+                          "value": 0
+                        }
+                      ],
+                      "successActions": [
+                        {
+                          "$type": "ApplyModifier",
+                          "modifierName": "UNIQUE_EnergyDisk_Blue_ExtraAtkKill_Attract_CreateGadget"
+                        },
+                        {
+                          "$type": "ApplyModifier",
+                          "target": "MPLevel",
+                          "modifierName": "UNIQUE_EnergyDisk_ExtraAtkKill_Attract_CD_Change_MPLEVEL"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        "UNIQUE_EnergyDisk_ExtraAtkKill_Attract_CD_Change_MPLEVEL": {
+          "modifierName": "",
+          "isUnique": true,
+          "duration": 0.1,
+          "elementDurability": 100,
+          "onAdded": [
+            {
+              "$type": "SetGlobalValue",
+              "target": "MPLevel",
+              "value": -1,
+              "key": "_Ability_EnergyDisk_ExtraAtkKill_Attract_CD",
+              "maxValue": 0,
+              "minValue": 0
+            }
+          ]
+        },
         "UNIQUE_EnergyDisk_Blue_ExtraAtkKill_Attract_CreateGadget": {
           "stacking": "Unique",
           "modifierName": "",
           "isUnique": true,
-          "duration": "CDTime",
+          "duration": 0.3,
           "elementDurability": 100,
           "onAdded": [
             {
@@ -923,6 +1294,17 @@
           ]
         }
       },
+      "onAdded": [
+        {
+          "$type": "AttachModifier",
+          "target": "MPLevel",
+          "modifierName": "UNIQUE_EnergyDisk_Blue_ExtraAtkKill_Attract_Total"
+        },
+        {
+          "$type": "ApplyModifier",
+          "modifierName": "UNIQUE_EnergyDisk_ExtraAtkKill_Attract_Handler"
+        }
+      ],
       "isDynamicAbility": true
     }
   },
@@ -1087,22 +1469,39 @@
             {
               "$type": "AttachToStateIDMixin",
               "stateIDs": [
-                "ExtraAttack_BS",
-                "ExtraAttack_Charge",
                 "ExtraAttack",
-                "ExtraAttack_AS",
                 "ExtraAttack1",
                 "ExtraAttack2",
-                "ExtraAttack3"
+                "ExtraAttack3",
+                "Attack01",
+                "Attack02",
+                "Attack03",
+                "Attack04",
+                "Attack05",
+                "Attack06",
+                "ExtraAttack_BS",
+                "ExtraAttack_Charge",
+                "Gandalfr_Attack01",
+                "Gandalfr_Attack02",
+                "Gandalfr_Attack03",
+                "Gandalfr_Attack04",
+                "Gandalfr_Attack05",
+                "Gandalfr_Attack06",
+                "Gandalfr_ExtraAttack",
+                "Katana_Attack01",
+                "Katana_Attack02",
+                "Katana_Attack03",
+                "Katana_Attack04",
+                "Katana_Attack05",
+                "Katana_Attack06",
+                "Katana_ExtraAttack"
               ],
               "modifierName": "Stamina_ExtraAttack_EnergyDisk_Sub"
             }
-          ],
-          "isLimitedProperties": true
+          ]
         },
         "Stamina_ExtraAttack_EnergyDisk_Sub": {
           "modifierName": "",
-          "duration": 0.3,
           "elementDurability": 100,
           "properties": {
             "Actor_CostStaminaRatio": "Rate"
@@ -1589,59 +1988,6 @@
     "Default": {
       "$type": "ConfigAbility",
       "abilityName": "ActivityAbility_EnergyDisk_Purple_ElementBurst_Count3Wave",
-      "abilityMixins": [
-        {
-          "$type": "OnAvatarUseSkillMixin",
-          "onTriggerUltimateSkill": [
-            {
-              "$type": "ApplyModifier",
-              "modifierName": "UNIQUE_EnergyDisk_ElementBurst_Trigger"
-            },
-            {
-              "$type": "Predicated",
-              "target": "MPLevel",
-              "targetPredicates": [
-                {
-                  "$type": "ByTargetGlobalValue",
-                  "key": "_ABILITY_ElementBurst_Layer",
-                  "value": 4
-                }
-              ],
-              "successActions": [
-                {
-                  "$type": "ApplyModifier",
-                  "modifierName": "UNIQUE_ElementBurst_Count3Wave_3_Extra"
-                }
-              ]
-            },
-            {
-              "$type": "ApplyModifier",
-              "modifierName": "UNIQUE_EnergyDisk_ElementBurst_Count3Wave_Timer"
-            }
-          ]
-        },
-        {
-          "$type": "AttachModifierToSelfGlobalValueMixin",
-          "globalValueTarget": "MPLevel",
-          "globalValueKey": "_ABILITY_ElementBurst_Layer",
-          "defaultGlobalValueOnCreate": 0,
-          "valueSteps": [
-            -0.5,
-            0.5,
-            1.5,
-            2.5,
-            3.5,
-            4.5
-          ],
-          "modifierNameSteps": [
-            "UNIQUE_ElementBurst_Count3Wave_0",
-            "UNIQUE_UNIQUE_ElementBurst_Count3Wave_1_Effect",
-            "UNIQUE_UNIQUE_ElementBurst_Count3Wave_2_Effect",
-            "UNIQUE_UNIQUE_ElementBurst_Count3Wave_3_Effect",
-            "UNIQUE_UNIQUE_ElementBurst_Count3Wave_3_Effect"
-          ]
-        }
-      ],
       "abilitySpecials": {
         "Bufftime": 20,
         "Delta": 100,
@@ -1649,30 +1995,74 @@
         "LevelEntity_Count3Wave_SystemValue": 1
       },
       "modifiers": {
+        "UNIQUE_Purple_ElementBurst_Count3Wave_Handler": {
+          "modifierName": "",
+          "isUnique": true,
+          "elementDurability": 100,
+          "modifierMixins": [
+            {
+              "$type": "OnAvatarUseSkillMixin",
+              "onTriggerUltimateSkill": [
+                {
+                  "$type": "ApplyModifier",
+                  "target": "MPLevel",
+                  "modifierName": "UNIQUE_EnergyDisk_ElementBurst_AddLayer"
+                },
+                {
+                  "$type": "ApplyModifier",
+                  "target": "MPLevel",
+                  "modifierName": "UNIQUE_EnergyDisk_ElementBurst_Layer_Reset_MPLEVEL"
+                },
+                {
+                  "$type": "Predicated",
+                  "target": "MPLevel",
+                  "targetPredicates": [
+                    {
+                      "$type": "ByTargetGlobalValue",
+                      "key": "_ABILITY_ElementBurst_Layer",
+                      "value": 4,
+                      "compareType": "MoreThanAndEqual"
+                    }
+                  ],
+                  "successActions": [
+                    {
+                      "$type": "ApplyModifier",
+                      "modifierName": "UNIQUE_ElementBurst_Count3Wave_3_Extra_Effect"
+                    }
+                  ]
+                }
+              ],
+              "clearSkillIdDelay": 0.2
+            },
+            {
+              "$type": "AttachModifierToSelfGlobalValueMixin",
+              "globalValueTarget": "MPLevel",
+              "globalValueKey": "_ABILITY_ElementBurst_Layer",
+              "defaultGlobalValueOnCreate": 0,
+              "valueSteps": [
+                -0.5,
+                0.5,
+                1.5,
+                2.5,
+                100
+              ],
+              "modifierNameSteps": [
+                "UNIQUE_ElementBurst_Count3Wave_0",
+                "UNIQUE_UNIQUE_ElementBurst_Count3Wave_1_Effect",
+                "UNIQUE_UNIQUE_ElementBurst_Count3Wave_2_Effect",
+                "UNIQUE_UNIQUE_ElementBurst_Count3Wave_3_Effect"
+              ]
+            }
+          ]
+        },
         "UNIQUE_ElementBurst_Count3Wave_0": {
-          "stacking": "Unique",
           "modifierName": "",
           "isUnique": true,
           "elementDurability": 100
         },
-        "UNIQUE_ElementBurst_Count3Wave_1": {
-          "stacking": "Unique",
-          "modifierName": "",
-          "isUnique": true,
-          "duration": 20,
-          "elementDurability": 100,
-          "onAdded": [
-            {
-              "$type": "AttachModifier",
-              "target": "AllPlayerAvatars",
-              "modifierName": "UNIQUE_UNIQUE_ElementBurst_Count3Wave_1_Effect"
-            }
-          ]
-        },
         "UNIQUE_UNIQUE_ElementBurst_Count3Wave_1_Effect": {
           "modifierName": "",
           "isUnique": true,
-          "duration": "Bufftime",
           "elementDurability": 100,
           "properties": {
             "Actor_ElemMasteryDelta": [
@@ -1681,43 +2071,11 @@
               "Mul"
             ]
           },
-          "onAdded": [
-            {
-              "$type": "AttachEffect",
-              "target": "MPLevel",
-              "effectPattern": "Eff_EnergyDisk_ElementalBurst_Buff01"
-            }
-          ],
-          "onRemoved": [
-            {
-              "$type": "FireEffect",
-              "effectPattern": "Eff_EnergyDisk_ElementalBurst_Buff_Disappear"
-            }
-          ],
           "isLimitedProperties": true
-        },
-        "UNIQUE_ElementBurst_Count3Wave_2": {
-          "stacking": "Unique",
-          "modifierName": "",
-          "isUnique": true,
-          "elementDurability": 100,
-          "onAdded": [
-            {
-              "$type": "RemoveUniqueModifier",
-              "target": "AllPlayerAvatars",
-              "modifierName": "UNIQUE_UNIQUE_ElementBurst_Count3Wave_1_Effect"
-            },
-            {
-              "$type": "ApplyModifier",
-              "target": "AllPlayerAvatars",
-              "modifierName": "UNIQUE_UNIQUE_ElementBurst_Count3Wave_2_Effect"
-            }
-          ]
         },
         "UNIQUE_UNIQUE_ElementBurst_Count3Wave_2_Effect": {
           "modifierName": "",
           "isUnique": true,
-          "duration": "Bufftime",
           "elementDurability": 100,
           "properties": {
             "Actor_ElemMasteryDelta": [
@@ -1726,43 +2084,11 @@
               "Mul"
             ]
           },
-          "onAdded": [
-            {
-              "$type": "AttachEffect",
-              "target": "MPLevel",
-              "effectPattern": "Eff_EnergyDisk_ElementalBurst_Buff02"
-            }
-          ],
-          "onRemoved": [
-            {
-              "$type": "FireEffect",
-              "effectPattern": "Eff_EnergyDisk_ElementalBurst_Buff_Disappear"
-            }
-          ],
           "isLimitedProperties": true
-        },
-        "UNIQUE_ElementBurst_Count3Wave_3": {
-          "stacking": "Unique",
-          "modifierName": "",
-          "isUnique": true,
-          "elementDurability": 100,
-          "onAdded": [
-            {
-              "$type": "RemoveUniqueModifier",
-              "target": "AllPlayerAvatars",
-              "modifierName": "UNIQUE_UNIQUE_ElementBurst_Count3Wave_2_Effect"
-            },
-            {
-              "$type": "AttachModifier",
-              "target": "AllPlayerAvatars",
-              "modifierName": "UNIQUE_UNIQUE_ElementBurst_Count3Wave_3_Effect"
-            }
-          ]
         },
         "UNIQUE_UNIQUE_ElementBurst_Count3Wave_3_Effect": {
           "modifierName": "",
           "isUnique": true,
-          "duration": "Bufftime",
           "elementDurability": 100,
           "properties": {
             "Actor_ElemMasteryDelta": [
@@ -1771,50 +2097,14 @@
               "Mul"
             ]
           },
-          "onAdded": [
-            {
-              "$type": "AttachEffect",
-              "target": "MPLevel",
-              "effectPattern": "Eff_EnergyDisk_ElementalBurst_Buff03"
-            }
-          ],
-          "onRemoved": [
-            {
-              "$type": "FireEffect",
-              "effectPattern": "Eff_EnergyDisk_ElementalBurst_Buff_Disappear"
-            }
-          ],
           "isLimitedProperties": true
-        },
-        "UNIQUE_ElementBurst_Count3Wave_3_Extra": {
-          "modifierName": "",
-          "isUnique": true,
-          "duration": 0.1,
-          "elementDurability": 100,
-          "onAdded": [
-            {
-              "$type": "ApplyModifier",
-              "modifierName": "UNIQUE_ElementBurst_Count3Wave_3_Extra_Effect"
-            }
-          ],
-          "onRemoved": [
-            {
-              "$type": "AddGlobalValue",
-              "target": "MPLevel",
-              "value": -1,
-              "key": "_ABILITY_ElementBurst_BurstTrigger",
-              "useLimitRange": true,
-              "maxValue": 0,
-              "minValue": 0
-            }
-          ]
         },
         "UNIQUE_ElementBurst_Count3Wave_3_Extra_Effect": {
           "modifierName": "",
           "isUnique": true,
-          "duration": 2,
+          "duration": 0.3,
           "elementDurability": 100,
-          "onRemoved": [
+          "onAdded": [
             {
               "$type": "DebugLog",
               "content": "进入冲击波技能效果逻辑！"
@@ -1859,19 +2149,10 @@
                 }
               },
               "targetType": "Enemy"
-            },
-            {
-              "$type": "AddGlobalValue",
-              "target": "MPLevel",
-              "value": 1,
-              "key": "_ABILITY_ElementBurst_BurstTrigger",
-              "useLimitRange": true,
-              "maxValue": 1,
-              "minValue": 1
             }
           ]
         },
-        "UNIQUE_EnergyDisk_ElementBurst_Trigger": {
+        "UNIQUE_EnergyDisk_ElementBurst_AddLayer": {
           "stacking": "Unique",
           "modifierName": "",
           "isUnique": true,
@@ -1879,70 +2160,59 @@
           "elementDurability": 100,
           "onAdded": [
             {
-              "$type": "Predicated",
+              "$type": "AddGlobalValue",
               "target": "MPLevel",
-              "targetPredicates": [
-                {
-                  "$type": "ByTargetGlobalValue",
-                  "key": "_ABILITY_ElementBurst_Layer",
-                  "value": 4,
-                  "compareType": "LessAndEqual"
-                }
-              ],
-              "successActions": [
-                {
-                  "$type": "AddGlobalValue",
-                  "target": "MPLevel",
-                  "value": 1,
-                  "key": "_ABILITY_ElementBurst_Layer",
-                  "useLimitRange": true,
-                  "maxValue": 4,
-                  "minValue": 0
-                }
-              ]
+              "value": 1,
+              "key": "_ABILITY_ElementBurst_Layer",
+              "maxValue": 0,
+              "minValue": 0
             }
           ]
         },
-        "UNIQUE_EnergyDisk_ElementBurst_Count3Wave_Timer": {
+        "UNIQUE_EnergyDisk_ElementBurst_Layer_Reset_MPLEVEL": {
           "modifierName": "",
           "isUnique": true,
-          "duration": "Bufftime",
+          "duration": 0.1,
           "elementDurability": 100,
-          "onRemoved": [
+          "onAdded": [
             {
-              "$type": "Predicated",
+              "$type": "DebugLog",
+              "content": "刷新时间"
+            },
+            {
+              "$type": "RemoveUniqueModifier",
               "target": "MPLevel",
-              "targetPredicates": [
-                {
-                  "$type": "ByTargetGlobalValue",
-                  "key": "_ABILITY_ElementBurst_Layer",
-                  "value": 4,
-                  "compareType": "LessAndEqual"
-                }
-              ],
-              "successActions": [
-                {
-                  "$type": "SetGlobalValue",
-                  "target": "MPLevel",
-                  "value": 0,
-                  "key": "_ABILITY_ElementBurst_Layer",
-                  "maxValue": 0,
-                  "minValue": 0
-                }
-              ]
+              "modifierName": "UNIQUE_EnergyDisk_ElementBurst_Layer_Reset_MPLEVEL_Time"
+            },
+            {
+              "$type": "ApplyModifier",
+              "target": "MPLevel",
+              "modifierName": "UNIQUE_EnergyDisk_ElementBurst_Layer_Reset_MPLEVEL_Time"
+            }
+          ]
+        },
+        "UNIQUE_EnergyDisk_ElementBurst_Layer_Reset_MPLEVEL_Time": {
+          "modifierName": "",
+          "isUnique": true,
+          "elementDurability": 100,
+          "thinkInterval": "Bufftime",
+          "onThinkInterval": [
+            {
+              "$type": "SetGlobalValue",
+              "target": "MPLevel",
+              "value": 0,
+              "key": "_ABILITY_ElementBurst_Layer",
+              "maxValue": 0,
+              "minValue": 0
+            },
+            {
+              "$type": "DebugLog",
+              "content": "重置为0"
             }
           ]
         }
       },
       "onAdded": [
-        {
-          "$type": "SetGlobalValue",
-          "target": "MPLevel",
-          "value": -1,
-          "key": "_ABILITY_ElementBurst_BurstTrigger",
-          "maxValue": 0,
-          "minValue": 0
-        },
         {
           "$type": "SetGlobalValue",
           "target": "MPLevel",
@@ -1955,6 +2225,10 @@
           "$type": "SetSystemValueToOverrideMap",
           "key": "LevelEntity_Count3Wave_SystemValue",
           "type": "ElementLevelCo"
+        },
+        {
+          "$type": "ApplyModifier",
+          "modifierName": "UNIQUE_Purple_ElementBurst_Count3Wave_Handler"
         }
       ],
       "isDynamicAbility": true
@@ -1965,7 +2239,6 @@
       "$type": "ConfigAbility",
       "abilityName": "ActivityAbility_EnergyDisk_Blue_NormalAtk_Energy",
       "abilitySpecials": {
-        "EfficiencyDelta": -0.25,
         "chance": 0.5,
         "Energy": 5
       },
@@ -1974,9 +2247,6 @@
           "modifierName": "",
           "isUnique": true,
           "elementDurability": 100,
-          "properties": {
-            "Actor_ChargeEfficiencyDelta": -0.25
-          },
           "onAttackLanded": [
             {
               "$type": "Predicated",
@@ -2019,7 +2289,7 @@
           "stacking": "Unique",
           "modifierName": "",
           "isUnique": true,
-          "duration": 3,
+          "duration": 4,
           "elementDurability": 100,
           "onAdded": [
             {
@@ -2058,7 +2328,8 @@
               "$type": "AttachModifier",
               "modifierName": "UNIQUE_EnergyDisk_Blue_OnAtkGenerateBall"
             }
-          ]
+          ],
+          "clearSkillIdDelay": 0.2
         }
       ],
       "abilitySpecials": {
@@ -2190,8 +2461,59 @@
         "CDTime": 2
       },
       "modifiers": {
+        "UNIQUE_EnergyDisk_Purple_ElementBurstTriggerWave_Total": {
+          "stacking": "Unique",
+          "modifierName": "",
+          "isUnique": true,
+          "elementDurability": 100,
+          "modifierMixins": [
+            {
+              "$type": "AttachModifierToSelfGlobalValueMixin",
+              "globalValueTarget": "MPLevel",
+              "globalValueKey": "_Ability_EnergyDisk_ElementBurstTriggerWave_CD",
+              "defaultGlobalValueOnCreate": 0,
+              "valueSteps": [
+                -1.5,
+                -0.5,
+                0.5
+              ],
+              "modifierNameSteps": [
+                "UNIQUE_EnergyDisk_ElementBurstTriggerWave_Cd",
+                "Blank"
+              ]
+            }
+          ]
+        },
+        "Blank": {
+          "modifierName": "",
+          "elementDurability": 100
+        },
+        "UNIQUE_EnergyDisk_Purple_ElementBurstTriggerWave_Trigger": {
+          "stacking": "Unique",
+          "modifierName": "",
+          "isUnique": true,
+          "elementDurability": 100,
+          "modifierMixins": [
+            {
+              "$type": "AttachModifierToSelfGlobalValueMixin",
+              "globalValueTarget": "MPLevel",
+              "globalValueKey": "_Ability_EnergyDisk_ElementBurstTriggerWave_Trigger",
+              "defaultGlobalValueOnCreate": 0,
+              "valueSteps": [
+                -0.5,
+                0.5,
+                1.5
+              ],
+              "modifierNameSteps": [
+                "Blank",
+                "UNIQUE_EnergyDisk_ElementBurstTriggerWave_Effect"
+              ]
+            }
+          ]
+        },
         "UNIQUE_EnergyDisk_ElementBurstTriggerWave_FireEffect": {
           "modifierName": "",
+          "isUnique": true,
           "elementDurability": 100,
           "thinkInterval": 0.5,
           "onThinkInterval": [
@@ -2243,26 +2565,87 @@
               "$type": "OnAvatarUseSkillMixin",
               "onTriggerUltimateSkill": [
                 {
-                  "$type": "ApplyModifier",
-                  "modifierName": "UNIQUE_EnergyDisk_ElementBurstTriggerWave_Effect_Delay"
+                  "$type": "Predicated",
+                  "target": "MPLevel",
+                  "targetPredicates": [
+                    {
+                      "$type": "ByTargetGlobalValue",
+                      "key": "_Ability_EnergyDisk_ElementBurstTriggerWave_CD",
+                      "value": 0
+                    }
+                  ],
+                  "successActions": [
+                    {
+                      "$type": "DebugLog",
+                      "content": "执行元素爆发效果"
+                    },
+                    {
+                      "$type": "ApplyModifier",
+                      "target": "MPLevel",
+                      "modifierName": "UNIQUE_EnergyDisk_ElementBurstTriggerWave_CD_Change_MPLEVEL"
+                    },
+                    {
+                      "$type": "ApplyModifier",
+                      "target": "MPLevel",
+                      "modifierName": "UNIQUE_EnergyDisk_ElementBurstTriggerWave_Trigger_MPLEVEL"
+                    },
+                    {
+                      "$type": "ApplyModifier",
+                      "target": "MPLevel",
+                      "modifierName": "UNIQUE_EnergyDisk_ElementBurstTriggerWave_Trigger_Reset"
+                    }
+                  ]
                 }
-              ]
+              ],
+              "clearSkillIdDelay": 0.2
             }
           ]
         },
-        "UNIQUE_EnergyDisk_ElementBurstTriggerWave_Effect_Delay": {
+        "UNIQUE_EnergyDisk_ElementBurstTriggerWave_CD_Change_MPLEVEL": {
           "modifierName": "",
           "isUnique": true,
-          "duration": "CDTime",
+          "duration": 0.1,
           "elementDurability": 100,
           "onAdded": [
             {
-              "$type": "DebugLog",
-              "content": "监控释放了充能技"
-            },
+              "$type": "SetGlobalValue",
+              "target": "MPLevel",
+              "value": -1,
+              "key": "_Ability_EnergyDisk_ElementBurstTriggerWave_CD",
+              "maxValue": 0,
+              "minValue": 0
+            }
+          ]
+        },
+        "UNIQUE_EnergyDisk_ElementBurstTriggerWave_Trigger_Reset": {
+          "modifierName": "",
+          "isUnique": true,
+          "duration": 0.1,
+          "elementDurability": 100,
+          "onAdded": [
             {
-              "$type": "ApplyModifier",
-              "modifierName": "UNIQUE_EnergyDisk_ElementBurstTriggerWave_Effect"
+              "$type": "SetGlobalValue",
+              "target": "MPLevel",
+              "value": 0,
+              "key": "_Ability_EnergyDisk_ElementBurstTriggerWave_Trigger",
+              "maxValue": 0,
+              "minValue": 0
+            }
+          ]
+        },
+        "UNIQUE_EnergyDisk_ElementBurstTriggerWave_Trigger_MPLEVEL": {
+          "modifierName": "",
+          "isUnique": true,
+          "duration": 0.1,
+          "elementDurability": 100,
+          "onAdded": [
+            {
+              "$type": "SetGlobalValue",
+              "target": "MPLevel",
+              "value": 1,
+              "key": "_Ability_EnergyDisk_ElementBurstTriggerWave_Trigger",
+              "maxValue": 0,
+              "minValue": 0
             }
           ]
         },
@@ -2271,7 +2654,7 @@
           "isUnique": true,
           "duration": 0.2,
           "elementDurability": 100,
-          "onRemoved": [
+          "onAdded": [
             {
               "$type": "DebugLog",
               "content": "进入技能效果逻辑！"
@@ -2312,6 +2695,22 @@
               "effectPattern": "Eff_EnergyDisk_ElementalBurst_Wave_R40"
             }
           ]
+        },
+        "UNIQUE_EnergyDisk_ElementBurstTriggerWave_Cd": {
+          "modifierName": "",
+          "isUnique": true,
+          "elementDurability": 100,
+          "thinkInterval": "CDTime",
+          "onThinkInterval": [
+            {
+              "$type": "SetGlobalValue",
+              "target": "MPLevel",
+              "value": 0,
+              "key": "_Ability_EnergyDisk_ElementBurstTriggerWave_CD",
+              "maxValue": 0,
+              "minValue": 0
+            }
+          ]
         }
       },
       "onAdded": [
@@ -2322,6 +2721,15 @@
         {
           "$type": "AttachModifier",
           "modifierName": "UNIQUE_EnergyDisk_ElementBurstTriggerWave_FireEffect"
+        },
+        {
+          "$type": "ApplyModifier",
+          "target": "MPLevel",
+          "modifierName": "UNIQUE_EnergyDisk_Purple_ElementBurstTriggerWave_Total"
+        },
+        {
+          "$type": "ApplyModifier",
+          "modifierName": "UNIQUE_EnergyDisk_Purple_ElementBurstTriggerWave_Trigger"
         }
       ],
       "isDynamicAbility": true
@@ -2367,7 +2775,8 @@
                   "$type": "ApplyModifier",
                   "modifierName": "UNIQUE_EnergyDisk_Blue_GenerateBall"
                 }
-              ]
+              ],
+              "clearSkillIdDelay": 0.2
             }
           ]
         },
@@ -2428,28 +2837,38 @@
     "Default": {
       "$type": "ConfigAbility",
       "abilityName": "ActivityAbility_EnergyDisk_Purple_ShockTriggerThunder",
-      "abilityMixins": [
-        {
-          "$type": "AttachModifierToSelfGlobalValueMixin",
-          "globalValueTarget": "MPLevel",
-          "globalValueKey": "_Ability_EnergyDisk_ShockTriggerThunder_CD",
-          "defaultGlobalValueOnCreate": 0,
-          "valueSteps": [
-            -1.5,
-            -0.5,
-            0.5
-          ],
-          "modifierNameSteps": [
-            "UNIQUE_EnergyDisk_Purple_ShockTriggerThunder_Cd",
-            "UNIQUE_EnergyDisk_Purple_ShockTriggerThunder"
-          ]
-        }
-      ],
       "abilitySpecials": {
         "ChanceProb": 0.5,
         "CDTime": 5
       },
       "modifiers": {
+        "UNIQUE_EnergyDisk_ShockTriggerThunder_CD_Total": {
+          "stacking": "Unique",
+          "modifierName": "",
+          "isUnique": true,
+          "elementDurability": 100,
+          "modifierMixins": [
+            {
+              "$type": "AttachModifierToSelfGlobalValueMixin",
+              "globalValueTarget": "MPLevel",
+              "globalValueKey": "_Ability_EnergyDisk_ShockTriggerThunder_CD",
+              "defaultGlobalValueOnCreate": 0,
+              "valueSteps": [
+                -1.5,
+                -0.5,
+                0.5
+              ],
+              "modifierNameSteps": [
+                "UNIQUE_EnergyDisk_Purple_ShockTriggerThunder_Cd",
+                "Blank"
+              ]
+            }
+          ]
+        },
+        "Blank": {
+          "modifierName": "",
+          "elementDurability": 100
+        },
         "UNIQUE_EnergyDisk_Purple_ShockTriggerThunder": {
           "modifierName": "",
           "isUnique": true,
@@ -2465,9 +2884,13 @@
               ],
               "actions": [
                 {
+                  "$type": "DebugLog",
+                  "content": "触发了感电"
+                },
+                {
                   "$type": "Randomed",
                   "target": "Target",
-                  "chance": "ChanceProb",
+                  "chance": 0.5,
                   "successActions": [
                     {
                       "$type": "DebugLog",
@@ -2494,13 +2917,9 @@
                       "campTargetType": "Enemy"
                     },
                     {
-                      "$type": "AddGlobalValue",
+                      "$type": "ApplyModifier",
                       "target": "MPLevel",
-                      "value": -1,
-                      "key": "_Ability_EnergyDisk_ShockTriggerThunder_CD",
-                      "useLimitRange": true,
-                      "maxValue": -1,
-                      "minValue": -1
+                      "modifierName": "UNIQUE_EnergyDisk_ShockTriggerThunder_CD_Change_MPLEVEL"
                     }
                   ]
                 }
@@ -2508,18 +2927,33 @@
             }
           ]
         },
+        "UNIQUE_EnergyDisk_ShockTriggerThunder_CD_Change_MPLEVEL": {
+          "modifierName": "",
+          "isUnique": true,
+          "duration": 0.1,
+          "elementDurability": 100,
+          "onAdded": [
+            {
+              "$type": "SetGlobalValue",
+              "target": "MPLevel",
+              "value": -1,
+              "key": "_Ability_EnergyDisk_ShockTriggerThunder_CD",
+              "maxValue": 0,
+              "minValue": 0
+            }
+          ]
+        },
         "UNIQUE_EnergyDisk_Purple_ShockTriggerThunder_Cd": {
           "modifierName": "",
           "isUnique": true,
-          "duration": "CDTime",
           "elementDurability": 100,
-          "onRemoved": [
+          "thinkInterval": "CDTime",
+          "onThinkInterval": [
             {
-              "$type": "AddGlobalValue",
+              "$type": "SetGlobalValue",
               "target": "MPLevel",
-              "value": 1,
+              "value": 0,
               "key": "_Ability_EnergyDisk_ShockTriggerThunder_CD",
-              "useLimitRange": true,
               "maxValue": 0,
               "minValue": 0
             }
@@ -2534,6 +2968,15 @@
           "key": "_Ability_EnergyDisk_ShockTriggerThunder_CD",
           "maxValue": 0,
           "minValue": 0
+        },
+        {
+          "$type": "ApplyModifier",
+          "target": "MPLevel",
+          "modifierName": "UNIQUE_EnergyDisk_ShockTriggerThunder_CD_Total"
+        },
+        {
+          "$type": "ApplyModifier",
+          "modifierName": "UNIQUE_EnergyDisk_Purple_ShockTriggerThunder"
         }
       ],
       "isDynamicAbility": true
@@ -2649,6 +3092,10 @@
         {
           "$type": "ApplyModifier",
           "modifierName": "ShockTriggerThunder_Appear"
+        },
+        {
+          "$type": "DebugLog",
+          "content": "落雷gadget被创建了"
         }
       ]
     }
@@ -2661,9 +3108,37 @@
         "CDTime": 6
       },
       "modifiers": {
+        "UNIQUE_EnergyDisk_Blue_FallingAttack_AddWater_Total": {
+          "stacking": "Unique",
+          "modifierName": "",
+          "isUnique": true,
+          "elementDurability": 100,
+          "modifierMixins": [
+            {
+              "$type": "AttachModifierToSelfGlobalValueMixin",
+              "globalValueTarget": "MPLevel",
+              "globalValueKey": "_Ability_EnergyDisk_AddWater_CD",
+              "defaultGlobalValueOnCreate": 0,
+              "valueSteps": [
+                -1.5,
+                -0.5,
+                0.5
+              ],
+              "modifierNameSteps": [
+                "UNIQUE_EnergyDisk_AddWater_Cd",
+                "Blank"
+              ]
+            }
+          ]
+        },
+        "Blank": {
+          "modifierName": "",
+          "elementDurability": 100
+        },
         "UNIQUE_EnergyDisk_AddWater_Handler": {
           "stacking": "Unique",
           "modifierName": "",
+          "isUnique": true,
           "elementDurability": 100,
           "onAttackLanded": [
             {
@@ -2685,27 +3160,64 @@
               ],
               "successActions": [
                 {
-                  "$type": "ApplyModifier",
-                  "modifierName": "UNIQUE_EnergyDisk_AddWater_CD_Change"
-                },
-                {
-                  "$type": "DebugLog",
-                  "content": "元素爆发命中后触发了"
+                  "$type": "Predicated",
+                  "target": "MPLevel",
+                  "targetPredicates": [
+                    {
+                      "$type": "ByTargetGlobalValue",
+                      "key": "_Ability_EnergyDisk_AddWater_CD",
+                      "value": 0
+                    }
+                  ],
+                  "successActions": [
+                    {
+                      "$type": "ApplyModifier",
+                      "modifierName": "UNIQUE_EnergyDisk_AddWater_SKillEffect"
+                    },
+                    {
+                      "$type": "DebugLog",
+                      "content": "元素爆发命中后触发了"
+                    },
+                    {
+                      "$type": "ApplyModifier",
+                      "target": "MPLevel",
+                      "modifierName": "UNIQUE_EnergyDisk_AddWater_CD_Change_MPLEVEL"
+                    }
+                  ]
                 }
               ]
             }
           ]
         },
-        "UNIQUE_EnergyDisk_AddWater_CD_Change": {
-          "stacking": "Unique",
+        "UNIQUE_EnergyDisk_AddWater_CD_Change_MPLEVEL": {
           "modifierName": "",
           "isUnique": true,
-          "duration": "CDTime",
+          "duration": 0.1,
           "elementDurability": 100,
           "onAdded": [
             {
-              "$type": "ApplyModifier",
-              "modifierName": "UNIQUE_EnergyDisk_AddWater_SKillEffect"
+              "$type": "SetGlobalValue",
+              "target": "MPLevel",
+              "value": -1,
+              "key": "_Ability_EnergyDisk_AddWater_CD",
+              "maxValue": 0,
+              "minValue": 0
+            }
+          ]
+        },
+        "UNIQUE_EnergyDisk_AddWater_Cd": {
+          "modifierName": "",
+          "isUnique": true,
+          "elementDurability": 100,
+          "thinkInterval": "CDTime",
+          "onThinkInterval": [
+            {
+              "$type": "SetGlobalValue",
+              "target": "MPLevel",
+              "value": 0,
+              "key": "_Ability_EnergyDisk_AddWater_CD",
+              "maxValue": 0,
+              "minValue": 0
             }
           ]
         },
@@ -2716,15 +3228,11 @@
           "elementDurability": 100,
           "onAdded": [
             {
-              "$type": "DebugLog",
-              "content": "进入技能效果逻辑！"
-            },
-            {
               "$type": "CreateGadget",
               "born": {
                 "$type": "ConfigBornByTarget",
                 "offset": {
-                  "z": -1
+                  "z": 1
                 },
                 "bornRandom": {
                   "$type": "BornRandomFromCenter",
@@ -2732,7 +3240,7 @@
                   "maxRandomRange": 0.5
                 }
               },
-              "gadgetID": 70220010,
+              "gadgetID": 44000307,
               "campID": 5001
             }
           ]
@@ -2742,9 +3250,81 @@
         {
           "$type": "AttachModifier",
           "modifierName": "UNIQUE_EnergyDisk_AddWater_Handler"
+        },
+        {
+          "$type": "ApplyModifier",
+          "target": "MPLevel",
+          "modifierName": "UNIQUE_EnergyDisk_Blue_FallingAttack_AddWater_Total"
         }
       ],
       "isDynamicAbility": true
+    }
+  },
+  {
+    "Default": {
+      "$type": "ConfigAbility",
+      "abilityName": "EnergyDisk_SkillObj_WaterAmber",
+      "modifiers": {
+        "Broken": {
+          "modifierName": "",
+          "elementType": "Water",
+          "elementDurability": 50,
+          "onRemoved": [
+            {
+              "$type": "CreateGadget",
+              "born": {
+                "$type": "ConfigBornByTarget"
+              },
+              "gadgetID": 70270002,
+              "campID": 5001,
+              "campTargetType": "All"
+            },
+            {
+              "$type": "FireEffect",
+              "effectPattern": "Eff_SceneObj_Amber_Water_Hit",
+              "born": {
+                "$type": "ConfigBornByTarget",
+                "offset": {
+                  "y": 0.3
+                }
+              }
+            },
+            {
+              "$type": "KillSelf"
+            }
+          ],
+          "onBeingHit": [
+            {
+              "$type": "RemoveModifier",
+              "predicates": [
+                {
+                  "$type": "ByHitDamage",
+                  "damage": 1
+                }
+              ],
+              "modifierName": "Broken"
+            }
+          ]
+        }
+      },
+      "onAdded": [
+        {
+          "$type": "ApplyModifier",
+          "modifierName": "Broken"
+        },
+        {
+          "$type": "AttachAbilityStateResistance",
+          "resistanceListID": 14005
+        },
+        {
+          "$type": "AttachAbilityStateResistance",
+          "resistanceListID": 14002
+        },
+        {
+          "$type": "FireEffect",
+          "effectPattern": "Eff_EnergyDisk_AddWater"
+        }
+      ]
     }
   },
   {
@@ -2774,29 +3354,39 @@
     "Default": {
       "$type": "ConfigAbility",
       "abilityName": "ActivityAbility_EnergyDisk_Purple_Superconductor_Damage",
-      "abilityMixins": [
-        {
-          "$type": "AttachModifierToSelfGlobalValueMixin",
-          "globalValueTarget": "MPLevel",
-          "globalValueKey": "_Ability_EnergyDisk_SuperconductorTrigger_CD",
-          "defaultGlobalValueOnCreate": 0,
-          "valueSteps": [
-            -1.5,
-            -0.5,
-            0.5
-          ],
-          "modifierNameSteps": [
-            "UNIQUE_EnergyDisk_Purple_SuperconductorTrigger_Cd",
-            "UNIQUE_EnergyDisk_Purple_Superconductor_Damage"
-          ]
-        }
-      ],
       "abilitySpecials": {
         "time": 10,
         "ChanceProb": 0.5,
         "CDTime": 5
       },
       "modifiers": {
+        "UNIQUE_EnergyDisk_Purple_Superconductor_Total": {
+          "stacking": "Unique",
+          "modifierName": "",
+          "isUnique": true,
+          "elementDurability": 100,
+          "modifierMixins": [
+            {
+              "$type": "AttachModifierToSelfGlobalValueMixin",
+              "globalValueTarget": "MPLevel",
+              "globalValueKey": "_Ability_EnergyDisk_Superconductor_CD",
+              "defaultGlobalValueOnCreate": 0,
+              "valueSteps": [
+                -1.5,
+                -0.5,
+                0.5
+              ],
+              "modifierNameSteps": [
+                "UNIQUE_EnergyDisk_Purple_SuperconductorTrigger_Cd",
+                "Blank"
+              ]
+            }
+          ]
+        },
+        "Blank": {
+          "modifierName": "",
+          "elementDurability": 100
+        },
         "UNIQUE_EnergyDisk_Purple_Superconductor_Damage": {
           "modifierName": "",
           "isUnique": true,
@@ -2835,37 +3425,45 @@
                       "gadgetID": 44000301,
                       "campID": 1001,
                       "campTargetType": "Enemy"
-                    },
-                    {
-                      "$type": "DebugLog",
-                      "content": "超导触发反应"
-                    },
-                    {
-                      "$type": "AddGlobalValue",
-                      "target": "MPLevel",
-                      "value": -1,
-                      "key": "_Ability_EnergyDisk_SuperconductorTrigger_CD",
-                      "useLimitRange": true,
-                      "maxValue": -1,
-                      "minValue": -1
                     }
                   ]
+                },
+                {
+                  "$type": "ApplyModifier",
+                  "target": "MPLevel",
+                  "modifierName": "UNIQUE_EnergyDisk_Superconductor_CD_Change_MPLEVEL"
                 }
               ]
+            }
+          ]
+        },
+        "UNIQUE_EnergyDisk_Superconductor_CD_Change_MPLEVEL": {
+          "modifierName": "",
+          "isUnique": true,
+          "duration": 0.1,
+          "elementDurability": 100,
+          "onAdded": [
+            {
+              "$type": "SetGlobalValue",
+              "target": "MPLevel",
+              "value": -1,
+              "key": "_Ability_EnergyDisk_Superconductor_CD",
+              "maxValue": 0,
+              "minValue": 0
             }
           ]
         },
         "UNIQUE_EnergyDisk_Purple_SuperconductorTrigger_Cd": {
           "modifierName": "",
           "isUnique": true,
-          "duration": "CDTime",
           "elementDurability": 100,
-          "onRemoved": [
+          "thinkInterval": "CDTime",
+          "onThinkInterval": [
             {
               "$type": "SetGlobalValue",
               "target": "MPLevel",
               "value": 0,
-              "key": "_Ability_EnergyDisk_SuperconductorTrigger_CD",
+              "key": "_Ability_EnergyDisk_Superconductor_CD",
               "maxValue": 0,
               "minValue": 0
             }
@@ -2874,12 +3472,13 @@
       },
       "onAdded": [
         {
-          "$type": "SetGlobalValue",
+          "$type": "ApplyModifier",
           "target": "MPLevel",
-          "value": 0,
-          "key": "_Ability_EnergyDisk_SuperconductorTrigger_CD",
-          "maxValue": 0,
-          "minValue": 0
+          "modifierName": "UNIQUE_EnergyDisk_Purple_Superconductor_Total"
+        },
+        {
+          "$type": "ApplyModifier",
+          "modifierName": "UNIQUE_EnergyDisk_Purple_Superconductor_Damage"
         }
       ],
       "isDynamicAbility": true
@@ -2952,10 +3551,6 @@
               "targetType": "Enemy"
             },
             {
-              "$type": "DebugLog",
-              "content": "碎冰gadget所做事件"
-            },
-            {
               "$type": "ApplyModifier",
               "otherTargets": {
                 "$type": "SelectTargetsByShape",
@@ -2982,23 +3577,13 @@
           "elementDurability": 100,
           "properties": {
             "Actor_PhysicalSubHurtDelta": "PhysicalSubHurt"
-          },
-          "onAdded": [
-            {
-              "$type": "DebugLog",
-              "content": "物理抗性降低了"
-            }
-          ]
+          }
         }
       },
       "onAdded": [
         {
           "$type": "ApplyModifier",
           "modifierName": "EnergyDisk_SuperconductorGadget_Appear"
-        },
-        {
-          "$type": "DebugLog",
-          "content": "创建了碎冰的gadget"
         }
       ]
     }
@@ -3091,23 +3676,6 @@
     "Default": {
       "$type": "ConfigAbility",
       "abilityName": "ActivityAbility_EnergyDisk_Purple_PickupTriggerAOE",
-      "abilityMixins": [
-        {
-          "$type": "AttachModifierToSelfGlobalValueMixin",
-          "globalValueTarget": "MPLevel",
-          "globalValueKey": "_Ability_EnergyDisk_Purple_PickupTriggerAOE_CD",
-          "defaultGlobalValueOnCreate": 0,
-          "valueSteps": [
-            -1.5,
-            -0.5,
-            0.5
-          ],
-          "modifierNameSteps": [
-            "UNIQUE_EnergyDisk_Purple_PickupTriggerAOE_Cd",
-            "UNIQUE_EnergyDisk_Purple_PickupTriggerAOE"
-          ]
-        }
-      ],
       "abilitySpecials": {
         "DamageRate": 5,
         "CDTime": 5,
@@ -3115,6 +3683,49 @@
         "Bufftime": 10
       },
       "modifiers": {
+        "UNIQUE_EnergyDisk_Purple_PickupTriggerAOE_Total": {
+          "stacking": "Unique",
+          "modifierName": "",
+          "isUnique": true,
+          "elementDurability": 100,
+          "modifierMixins": [
+            {
+              "$type": "AttachModifierToSelfGlobalValueMixin",
+              "globalValueTarget": "MPLevel",
+              "globalValueKey": "_Ability_PickupTriggerAOE_CD",
+              "defaultGlobalValueOnCreate": 0,
+              "valueSteps": [
+                -1.5,
+                -0.5,
+                0.5
+              ],
+              "modifierNameSteps": [
+                "UNIQUE_EnergyDisk_PickupTriggerAOE_Cd",
+                "Blank"
+              ]
+            }
+          ]
+        },
+        "Blank": {
+          "modifierName": "",
+          "elementDurability": 100
+        },
+        "UNIQUE_EnergyDisk_PickupTriggerAOE_CD_Change_MPLEVEL": {
+          "modifierName": "",
+          "isUnique": true,
+          "duration": 0.1,
+          "elementDurability": 100,
+          "onAdded": [
+            {
+              "$type": "SetGlobalValue",
+              "target": "MPLevel",
+              "value": -1,
+              "key": "_Ability_PickupTriggerAOE_CD",
+              "maxValue": 0,
+              "minValue": 0
+            }
+          ]
+        },
         "UNIQUE_EnergyDisk_Purple_PickupTriggerAOE": {
           "modifierName": "",
           "isUnique": true,
@@ -3127,12 +3738,26 @@
               ],
               "actions": [
                 {
-                  "$type": "AddGlobalValue",
+                  "$type": "Predicated",
                   "target": "MPLevel",
-                  "value": -1,
-                  "key": "_Ability_EnergyDisk_Purple_PickupTriggerAOE_CD",
-                  "maxValue": 0,
-                  "minValue": 0
+                  "targetPredicates": [
+                    {
+                      "$type": "ByTargetGlobalValue",
+                      "key": "_Ability_PickupTriggerAOE_CD",
+                      "value": 0
+                    }
+                  ],
+                  "successActions": [
+                    {
+                      "$type": "ApplyModifier",
+                      "modifierName": "UNIQUE_EnergyDisk_Purple_PickupTriggerAOE_Effect"
+                    },
+                    {
+                      "$type": "ApplyModifier",
+                      "target": "MPLevel",
+                      "modifierName": "UNIQUE_EnergyDisk_PickupTriggerAOE_CD_Change_MPLEVEL"
+                    }
+                  ]
                 }
               ]
             },
@@ -3143,12 +3768,26 @@
               ],
               "actions": [
                 {
-                  "$type": "AddGlobalValue",
+                  "$type": "Predicated",
                   "target": "MPLevel",
-                  "value": -1,
-                  "key": "_Ability_EnergyDisk_Purple_PickupTriggerAOE_CD",
-                  "maxValue": 0,
-                  "minValue": 0
+                  "targetPredicates": [
+                    {
+                      "$type": "ByTargetGlobalValue",
+                      "key": "_Ability_PickupTriggerAOE_CD",
+                      "value": 0
+                    }
+                  ],
+                  "successActions": [
+                    {
+                      "$type": "ApplyModifier",
+                      "modifierName": "UNIQUE_EnergyDisk_Purple_PickupTriggerAOE_Effect"
+                    },
+                    {
+                      "$type": "ApplyModifier",
+                      "target": "MPLevel",
+                      "modifierName": "UNIQUE_EnergyDisk_PickupTriggerAOE_CD_Change_MPLEVEL"
+                    }
+                  ]
                 }
               ]
             },
@@ -3159,12 +3798,26 @@
               ],
               "actions": [
                 {
-                  "$type": "AddGlobalValue",
+                  "$type": "Predicated",
                   "target": "MPLevel",
-                  "value": -1,
-                  "key": "_Ability_EnergyDisk_Purple_PickupTriggerAOE_CD",
-                  "maxValue": 0,
-                  "minValue": 0
+                  "targetPredicates": [
+                    {
+                      "$type": "ByTargetGlobalValue",
+                      "key": "_Ability_PickupTriggerAOE_CD",
+                      "value": 0
+                    }
+                  ],
+                  "successActions": [
+                    {
+                      "$type": "ApplyModifier",
+                      "modifierName": "UNIQUE_EnergyDisk_Purple_PickupTriggerAOE_Effect"
+                    },
+                    {
+                      "$type": "ApplyModifier",
+                      "target": "MPLevel",
+                      "modifierName": "UNIQUE_EnergyDisk_PickupTriggerAOE_CD_Change_MPLEVEL"
+                    }
+                  ]
                 }
               ]
             },
@@ -3175,12 +3828,26 @@
               ],
               "actions": [
                 {
-                  "$type": "AddGlobalValue",
+                  "$type": "Predicated",
                   "target": "MPLevel",
-                  "value": -1,
-                  "key": "_Ability_EnergyDisk_Purple_PickupTriggerAOE_CD",
-                  "maxValue": 0,
-                  "minValue": 0
+                  "targetPredicates": [
+                    {
+                      "$type": "ByTargetGlobalValue",
+                      "key": "_Ability_PickupTriggerAOE_CD",
+                      "value": 0
+                    }
+                  ],
+                  "successActions": [
+                    {
+                      "$type": "ApplyModifier",
+                      "modifierName": "UNIQUE_EnergyDisk_Purple_PickupTriggerAOE_Effect"
+                    },
+                    {
+                      "$type": "ApplyModifier",
+                      "target": "MPLevel",
+                      "modifierName": "UNIQUE_EnergyDisk_PickupTriggerAOE_CD_Change_MPLEVEL"
+                    }
+                  ]
                 }
               ]
             },
@@ -3191,12 +3858,26 @@
               ],
               "actions": [
                 {
-                  "$type": "AddGlobalValue",
+                  "$type": "Predicated",
                   "target": "MPLevel",
-                  "value": -1,
-                  "key": "_Ability_EnergyDisk_Purple_PickupTriggerAOE_CD",
-                  "maxValue": 0,
-                  "minValue": 0
+                  "targetPredicates": [
+                    {
+                      "$type": "ByTargetGlobalValue",
+                      "key": "_Ability_PickupTriggerAOE_CD",
+                      "value": 0
+                    }
+                  ],
+                  "successActions": [
+                    {
+                      "$type": "ApplyModifier",
+                      "modifierName": "UNIQUE_EnergyDisk_Purple_PickupTriggerAOE_Effect"
+                    },
+                    {
+                      "$type": "ApplyModifier",
+                      "target": "MPLevel",
+                      "modifierName": "UNIQUE_EnergyDisk_PickupTriggerAOE_CD_Change_MPLEVEL"
+                    }
+                  ]
                 }
               ]
             },
@@ -3207,12 +3888,26 @@
               ],
               "actions": [
                 {
-                  "$type": "AddGlobalValue",
+                  "$type": "Predicated",
                   "target": "MPLevel",
-                  "value": -1,
-                  "key": "_Ability_EnergyDisk_Purple_PickupTriggerAOE_CD",
-                  "maxValue": 0,
-                  "minValue": 0
+                  "targetPredicates": [
+                    {
+                      "$type": "ByTargetGlobalValue",
+                      "key": "_Ability_PickupTriggerAOE_CD",
+                      "value": 0
+                    }
+                  ],
+                  "successActions": [
+                    {
+                      "$type": "ApplyModifier",
+                      "modifierName": "UNIQUE_EnergyDisk_Purple_PickupTriggerAOE_Effect"
+                    },
+                    {
+                      "$type": "ApplyModifier",
+                      "target": "MPLevel",
+                      "modifierName": "UNIQUE_EnergyDisk_PickupTriggerAOE_CD_Change_MPLEVEL"
+                    }
+                  ]
                 }
               ]
             },
@@ -3223,12 +3918,26 @@
               ],
               "actions": [
                 {
-                  "$type": "AddGlobalValue",
+                  "$type": "Predicated",
                   "target": "MPLevel",
-                  "value": -1,
-                  "key": "_Ability_EnergyDisk_Purple_PickupTriggerAOE_CD",
-                  "maxValue": 0,
-                  "minValue": 0
+                  "targetPredicates": [
+                    {
+                      "$type": "ByTargetGlobalValue",
+                      "key": "_Ability_PickupTriggerAOE_CD",
+                      "value": 0
+                    }
+                  ],
+                  "successActions": [
+                    {
+                      "$type": "ApplyModifier",
+                      "modifierName": "UNIQUE_EnergyDisk_Purple_PickupTriggerAOE_Effect"
+                    },
+                    {
+                      "$type": "ApplyModifier",
+                      "target": "MPLevel",
+                      "modifierName": "UNIQUE_EnergyDisk_PickupTriggerAOE_CD_Change_MPLEVEL"
+                    }
+                  ]
                 }
               ]
             }
@@ -3237,13 +3946,9 @@
         "UNIQUE_EnergyDisk_Purple_PickupTriggerAOE_Effect": {
           "modifierName": "",
           "isUnique": true,
-          "duration": 0.2,
+          "duration": 0.1,
           "elementDurability": 100,
           "onAdded": [
-            {
-              "$type": "DebugLog",
-              "content": "进入拾取后效果逻辑！"
-            },
             {
               "$type": "FireEffect",
               "effectPattern": "Eff_EnergyDisk_ElementalBurst_Wave_R40"
@@ -3298,30 +4003,34 @@
             "Actor_RockAddHurtDelta": "RockAddHurt"
           }
         },
-        "UNIQUE_EnergyDisk_Purple_PickupTriggerAOE_Cd": {
+        "UNIQUE_EnergyDisk_PickupTriggerAOE_Cd": {
           "modifierName": "",
           "isUnique": true,
-          "duration": "CDTime",
           "elementDurability": 100,
-          "onAdded": [
+          "thinkInterval": "CDTime",
+          "onThinkInterval": [
             {
-              "$type": "ApplyModifier",
-              "modifierName": "UNIQUE_EnergyDisk_Purple_PickupTriggerAOE_Effect"
-            }
-          ],
-          "onRemoved": [
-            {
-              "$type": "AddGlobalValue",
+              "$type": "SetGlobalValue",
               "target": "MPLevel",
-              "value": 1,
-              "key": "_Ability_EnergyDisk_Purple_PickupTriggerAOE_CD",
-              "useLimitRange": true,
+              "value": 0,
+              "key": "_Ability_PickupTriggerAOE_CD",
               "maxValue": 0,
               "minValue": 0
             }
           ]
         }
       },
+      "onAdded": [
+        {
+          "$type": "ApplyModifier",
+          "target": "MPLevel",
+          "modifierName": "UNIQUE_EnergyDisk_Purple_PickupTriggerAOE_Total"
+        },
+        {
+          "$type": "ApplyModifier",
+          "modifierName": "UNIQUE_EnergyDisk_Purple_PickupTriggerAOE"
+        }
+      ],
       "isDynamicAbility": true
     }
   },
@@ -3459,6 +4168,49 @@
         "time": 2
       },
       "modifiers": {
+        "UNIQUE_EnergyDisk_Purple_BuffAfterCrystalShield_Total": {
+          "stacking": "Unique",
+          "modifierName": "",
+          "isUnique": true,
+          "elementDurability": 100,
+          "modifierMixins": [
+            {
+              "$type": "AttachModifierToSelfGlobalValueMixin",
+              "globalValueTarget": "MPLevel",
+              "globalValueKey": "_Ability_BuffAfterCrystalShield_CD",
+              "defaultGlobalValueOnCreate": 0,
+              "valueSteps": [
+                -1.5,
+                -0.5,
+                0.5
+              ],
+              "modifierNameSteps": [
+                "UNIQUE_EnergyDisk_BuffAfterCrystalShield_Cd",
+                "Blank"
+              ]
+            }
+          ]
+        },
+        "Blank": {
+          "modifierName": "",
+          "elementDurability": 100
+        },
+        "UNIQUE_EnergyDisk_BuffAfterCrystalShield_CD_Change_MPLEVEL": {
+          "modifierName": "",
+          "isUnique": true,
+          "duration": 0.1,
+          "elementDurability": 100,
+          "onAdded": [
+            {
+              "$type": "SetGlobalValue",
+              "target": "MPLevel",
+              "value": -1,
+              "key": "_Ability_BuffAfterCrystalShield_CD",
+              "maxValue": 0,
+              "minValue": 0
+            }
+          ]
+        },
         "UNIQUE_EnergyDisk_Blue_BuffAfterCrystalShield": {
           "modifierName": "",
           "isUnique": true,
@@ -3471,9 +4223,27 @@
               ],
               "actions": [
                 {
-                  "$type": "AttachModifier",
-                  "target": "AllPlayerAvatars",
-                  "modifierName": "UNIQUE_BuffAfterCrystalShield_BuffEffect"
+                  "$type": "Predicated",
+                  "target": "MPLevel",
+                  "targetPredicates": [
+                    {
+                      "$type": "ByTargetGlobalValue",
+                      "key": "_Ability_BuffAfterCrystalShield_CD",
+                      "value": 0
+                    }
+                  ],
+                  "successActions": [
+                    {
+                      "$type": "ApplyModifier",
+                      "target": "AllPlayerAvatars",
+                      "modifierName": "UNIQUE_BuffAfterCrystalShield_BuffEffect"
+                    },
+                    {
+                      "$type": "ApplyModifier",
+                      "target": "MPLevel",
+                      "modifierName": "UNIQUE_EnergyDisk_BuffAfterCrystalShield_CD_Change_MPLEVEL"
+                    }
+                  ]
                 }
               ]
             },
@@ -3484,9 +4254,27 @@
               ],
               "actions": [
                 {
-                  "$type": "AttachModifier",
-                  "target": "AllPlayerAvatars",
-                  "modifierName": "UNIQUE_BuffAfterCrystalShield_BuffEffect"
+                  "$type": "Predicated",
+                  "target": "MPLevel",
+                  "targetPredicates": [
+                    {
+                      "$type": "ByTargetGlobalValue",
+                      "key": "_Ability_BuffAfterCrystalShield_CD",
+                      "value": 0
+                    }
+                  ],
+                  "successActions": [
+                    {
+                      "$type": "ApplyModifier",
+                      "target": "AllPlayerAvatars",
+                      "modifierName": "UNIQUE_BuffAfterCrystalShield_BuffEffect"
+                    },
+                    {
+                      "$type": "ApplyModifier",
+                      "target": "MPLevel",
+                      "modifierName": "UNIQUE_EnergyDisk_BuffAfterCrystalShield_CD_Change_MPLEVEL"
+                    }
+                  ]
                 }
               ]
             },
@@ -3497,9 +4285,27 @@
               ],
               "actions": [
                 {
-                  "$type": "AttachModifier",
-                  "target": "AllPlayerAvatars",
-                  "modifierName": "UNIQUE_BuffAfterCrystalShield_BuffEffect"
+                  "$type": "Predicated",
+                  "target": "MPLevel",
+                  "targetPredicates": [
+                    {
+                      "$type": "ByTargetGlobalValue",
+                      "key": "_Ability_BuffAfterCrystalShield_CD",
+                      "value": 0
+                    }
+                  ],
+                  "successActions": [
+                    {
+                      "$type": "ApplyModifier",
+                      "target": "AllPlayerAvatars",
+                      "modifierName": "UNIQUE_BuffAfterCrystalShield_BuffEffect"
+                    },
+                    {
+                      "$type": "ApplyModifier",
+                      "target": "MPLevel",
+                      "modifierName": "UNIQUE_EnergyDisk_BuffAfterCrystalShield_CD_Change_MPLEVEL"
+                    }
+                  ]
                 }
               ]
             },
@@ -3510,9 +4316,27 @@
               ],
               "actions": [
                 {
-                  "$type": "AttachModifier",
-                  "target": "AllPlayerAvatars",
-                  "modifierName": "UNIQUE_BuffAfterCrystalShield_BuffEffect"
+                  "$type": "Predicated",
+                  "target": "MPLevel",
+                  "targetPredicates": [
+                    {
+                      "$type": "ByTargetGlobalValue",
+                      "key": "_Ability_BuffAfterCrystalShield_CD",
+                      "value": 0
+                    }
+                  ],
+                  "successActions": [
+                    {
+                      "$type": "ApplyModifier",
+                      "target": "AllPlayerAvatars",
+                      "modifierName": "UNIQUE_BuffAfterCrystalShield_BuffEffect"
+                    },
+                    {
+                      "$type": "ApplyModifier",
+                      "target": "MPLevel",
+                      "modifierName": "UNIQUE_EnergyDisk_BuffAfterCrystalShield_CD_Change_MPLEVEL"
+                    }
+                  ]
                 }
               ]
             },
@@ -3523,9 +4347,27 @@
               ],
               "actions": [
                 {
-                  "$type": "AttachModifier",
-                  "target": "AllPlayerAvatars",
-                  "modifierName": "UNIQUE_BuffAfterCrystalShield_BuffEffect"
+                  "$type": "Predicated",
+                  "target": "MPLevel",
+                  "targetPredicates": [
+                    {
+                      "$type": "ByTargetGlobalValue",
+                      "key": "_Ability_BuffAfterCrystalShield_CD",
+                      "value": 0
+                    }
+                  ],
+                  "successActions": [
+                    {
+                      "$type": "ApplyModifier",
+                      "target": "AllPlayerAvatars",
+                      "modifierName": "UNIQUE_BuffAfterCrystalShield_BuffEffect"
+                    },
+                    {
+                      "$type": "ApplyModifier",
+                      "target": "MPLevel",
+                      "modifierName": "UNIQUE_EnergyDisk_BuffAfterCrystalShield_CD_Change_MPLEVEL"
+                    }
+                  ]
                 }
               ]
             },
@@ -3536,9 +4378,27 @@
               ],
               "actions": [
                 {
-                  "$type": "AttachModifier",
-                  "target": "AllPlayerAvatars",
-                  "modifierName": "UNIQUE_BuffAfterCrystalShield_BuffEffect"
+                  "$type": "Predicated",
+                  "target": "MPLevel",
+                  "targetPredicates": [
+                    {
+                      "$type": "ByTargetGlobalValue",
+                      "key": "_Ability_BuffAfterCrystalShield_CD",
+                      "value": 0
+                    }
+                  ],
+                  "successActions": [
+                    {
+                      "$type": "ApplyModifier",
+                      "target": "AllPlayerAvatars",
+                      "modifierName": "UNIQUE_BuffAfterCrystalShield_BuffEffect"
+                    },
+                    {
+                      "$type": "ApplyModifier",
+                      "target": "MPLevel",
+                      "modifierName": "UNIQUE_EnergyDisk_BuffAfterCrystalShield_CD_Change_MPLEVEL"
+                    }
+                  ]
                 }
               ]
             },
@@ -3549,9 +4409,27 @@
               ],
               "actions": [
                 {
-                  "$type": "ApplyModifier",
-                  "target": "AllPlayerAvatars",
-                  "modifierName": "UNIQUE_BuffAfterCrystalShield_BuffEffect"
+                  "$type": "Predicated",
+                  "target": "MPLevel",
+                  "targetPredicates": [
+                    {
+                      "$type": "ByTargetGlobalValue",
+                      "key": "_Ability_BuffAfterCrystalShield_CD",
+                      "value": 0
+                    }
+                  ],
+                  "successActions": [
+                    {
+                      "$type": "ApplyModifier",
+                      "target": "AllPlayerAvatars",
+                      "modifierName": "UNIQUE_BuffAfterCrystalShield_BuffEffect"
+                    },
+                    {
+                      "$type": "ApplyModifier",
+                      "target": "MPLevel",
+                      "modifierName": "UNIQUE_EnergyDisk_BuffAfterCrystalShield_CD_Change_MPLEVEL"
+                    }
+                  ]
                 }
               ]
             }
@@ -3561,13 +4439,9 @@
           "stacking": "Unique",
           "modifierName": "",
           "isUnique": true,
-          "duration": "time",
+          "duration": 0.1,
           "elementDurability": 100,
           "onAdded": [
-            {
-              "$type": "DebugLog",
-              "content": "恢复能量"
-            },
             {
               "$type": "FireEffect",
               "effectPattern": "Eff_Weapon_ExtraElementBall"
@@ -3578,9 +4452,30 @@
               "value": 2
             }
           ]
+        },
+        "UNIQUE_EnergyDisk_BuffAfterCrystalShield_Cd": {
+          "modifierName": "",
+          "isUnique": true,
+          "elementDurability": 100,
+          "thinkInterval": "time",
+          "onThinkInterval": [
+            {
+              "$type": "SetGlobalValue",
+              "target": "MPLevel",
+              "value": 0,
+              "key": "_Ability_BuffAfterCrystalShield_CD",
+              "maxValue": 0,
+              "minValue": 0
+            }
+          ]
         }
       },
       "onAdded": [
+        {
+          "$type": "ApplyModifier",
+          "target": "MPLevel",
+          "modifierName": "UNIQUE_EnergyDisk_Purple_BuffAfterCrystalShield_Total"
+        },
         {
           "$type": "AttachModifier",
           "modifierName": "UNIQUE_EnergyDisk_Blue_BuffAfterCrystalShield"
@@ -3705,10 +4600,6 @@
           "elementDurability": 100,
           "onAdded": [
             {
-              "$type": "DebugLog",
-              "content": "进入技能效果逻辑！"
-            },
-            {
               "$type": "TriggerAttackEvent",
               "attackEvent": {
                 "attackPattern": {
@@ -3767,13 +4658,10 @@
         },
         "UNIQUE_EnergyDisk_Purple_HealthyDamage_AOE_LowHp": {
           "modifierName": "",
+          "isUnique": true,
           "duration": 2,
           "elementDurability": 100,
           "onAdded": [
-            {
-              "$type": "DebugLog",
-              "content": "进入技能效果逻辑！"
-            },
             {
               "$type": "TriggerAttackEvent",
               "attackEvent": {
@@ -3873,10 +4761,6 @@
                   "key": "_Ability_ShieldEnhanceHeal_Check",
                   "maxValue": 0,
                   "minValue": 0
-                },
-                {
-                  "$type": "DebugLog",
-                  "content": "我有盾了！"
                 }
               ],
               "failActions": [
@@ -3886,10 +4770,6 @@
                   "key": "_Ability_ShieldEnhanceHeal_Check",
                   "maxValue": 0,
                   "minValue": 0
-                },
-                {
-                  "$type": "DebugLog",
-                  "content": "我没盾了！"
                 }
               ]
             }
@@ -3953,23 +4833,6 @@
     "Default": {
       "$type": "ConfigAbility",
       "abilityName": "ActivityAbility_EnergyDisk_Blue_ExtraAtkKillMonster",
-      "abilityMixins": [
-        {
-          "$type": "AttachModifierToSelfGlobalValueMixin",
-          "globalValueTarget": "MPLevel",
-          "globalValueKey": "_Ability_EnergyDisk_ExtraAtkKillMonster_CD",
-          "defaultGlobalValueOnCreate": 0,
-          "valueSteps": [
-            -1.5,
-            -0.5,
-            0.5
-          ],
-          "modifierNameSteps": [
-            "UNIQUE_EnergyDisk_ExtraAtkKillMonster_Cd",
-            "UNIQUE_EnergyDisk_Blue_ExtraAtkKillMonster_Handler"
-          ]
-        }
-      ],
       "abilitySpecials": {
         "Damage": 10,
         "DamageSystemValue": 1,
@@ -3977,6 +4840,33 @@
         "HPRatio": 0.3
       },
       "modifiers": {
+        "UNIQUE_EnergyDisk_Blue_ExtraAtkKillMonster_Total": {
+          "stacking": "Unique",
+          "modifierName": "",
+          "isUnique": true,
+          "elementDurability": 100,
+          "modifierMixins": [
+            {
+              "$type": "AttachModifierToSelfGlobalValueMixin",
+              "globalValueTarget": "MPLevel",
+              "globalValueKey": "_Ability_EnergyDisk_ExtraAtkKillMonster_CD",
+              "defaultGlobalValueOnCreate": 0,
+              "valueSteps": [
+                -1.5,
+                -0.5,
+                0.5
+              ],
+              "modifierNameSteps": [
+                "UNIQUE_EnergyDisk_ExtraAtkKillMonster_Cd",
+                "Blank"
+              ]
+            }
+          ]
+        },
+        "Blank": {
+          "modifierName": "",
+          "elementDurability": 100
+        },
         "UNIQUE_EnergyDisk_Blue_ExtraAtkKillMonster_Handler": {
           "modifierName": "",
           "isUnique": true,
@@ -4006,84 +4896,98 @@
               ],
               "successActions": [
                 {
+                  "$type": "ApplyModifier",
+                  "target": "Target",
+                  "modifierName": "EnergyDisk_ExtraAtkKillMonster_Monster"
+                }
+              ]
+            }
+          ]
+        },
+        "EnergyDisk_ExtraAtkKillMonster_Monster": {
+          "stacking": "MultipleRefresh",
+          "modifierName": "",
+          "duration": 0.1,
+          "elementDurability": 100,
+          "onAdded": [
+            {
+              "$type": "Predicated",
+              "target": "MPLevel",
+              "targetPredicates": [
+                {
+                  "$type": "ByTargetGlobalValue",
+                  "key": "_Ability_EnergyDisk_ExtraAtkKillMonster_CD",
+                  "value": 0
+                }
+              ],
+              "successActions": [
+                {
                   "$type": "FireEffect",
-                  "target": "SelfAttackTarget",
                   "effectPattern": "Eff_EnergyDisk_ExtraAtkWave",
                   "born": {
                     "$type": "ConfigBornByTarget"
                   }
                 },
                 {
-                  "$type": "SetGlobalPos",
-                  "target": "SelfAttackTarget",
-                  "key": "_ABILITY_EnergyDisk_ExtraAtkKill_Pos",
-                  "born": {
-                    "$type": "ConfigBornByTarget"
-                  },
-                  "setTarget": false
-                },
-                {
-                  "$type": "TriggerAttackEvent",
-                  "attackEvent": {
-                    "attackPattern": {
-                      "$type": "ConfigAttackSphere",
-                      "triggerType": "TriggerNoRepeat",
-                      "born": {
-                        "$type": "ConfigBornByGlobalValue",
-                        "positionKey": "_ABILITY_EnergyDisk_ExtraAtkKill_Pos",
-                        "directionKey": ""
-                      },
-                      "radius": 2.5
+                  "$type": "DamageByAttackValue",
+                  "attackInfo": {
+                    "attackTag": "",
+                    "attenuationTag": "",
+                    "attenuationGroup": "default",
+                    "attackProperty": {
+                      "damagePercentageRatio": 0,
+                      "elementDurability": 100,
+                      "strikeType": "Default",
+                      "enBreak": 50,
+                      "damageExtra": [
+                        "Damage",
+                        "DamageSystemValue",
+                        "Mul"
+                      ]
                     },
-                    "attackInfo": {
-                      "attackTag": "",
-                      "attenuationTag": "",
-                      "attenuationGroup": "default",
-                      "attackProperty": {
-                        "damagePercentageRatio": 0,
-                        "elementDurability": 100,
-                        "strikeType": "Default",
-                        "enBreak": 50,
-                        "damageExtra": [
-                          "Damage",
-                          "DamageSystemValue",
-                          "Mul"
-                        ]
-                      },
-                      "hitPattern": {
-                        "onHitEffectName": "default",
-                        "hitImpulseType": "Default",
-                        "hitHaltTimeScale": 0.01
-                      }
+                    "hitPattern": {
+                      "onHitEffectName": "default",
+                      "hitImpulseType": "Default",
+                      "hitHaltTimeScale": 0.01
                     }
-                  },
-                  "targetType": "Enemy"
+                  }
                 },
                 {
-                  "$type": "AddGlobalValue",
+                  "$type": "ApplyModifier",
                   "target": "MPLevel",
-                  "value": -1,
-                  "key": "_Ability_EnergyDisk_ShockTriggerThunder_CD",
-                  "useLimitRange": true,
-                  "maxValue": -1,
-                  "minValue": -1
+                  "modifierName": "UNIQUE_EnergyDisk_ExtraAtkKill_CD_Change_MPLEVEL"
                 }
               ]
+            }
+          ]
+        },
+        "UNIQUE_EnergyDisk_ExtraAtkKill_CD_Change_MPLEVEL": {
+          "modifierName": "",
+          "isUnique": true,
+          "duration": 0.1,
+          "elementDurability": 100,
+          "onAdded": [
+            {
+              "$type": "SetGlobalValue",
+              "target": "MPLevel",
+              "value": -1,
+              "key": "_Ability_EnergyDisk_ExtraAtkKillMonster_CD",
+              "maxValue": 0,
+              "minValue": 0
             }
           ]
         },
         "UNIQUE_EnergyDisk_ExtraAtkKillMonster_Cd": {
           "modifierName": "",
           "isUnique": true,
-          "duration": "CDTime",
           "elementDurability": 100,
-          "onRemoved": [
+          "thinkInterval": "CDTime",
+          "onThinkInterval": [
             {
-              "$type": "AddGlobalValue",
+              "$type": "SetGlobalValue",
               "target": "MPLevel",
-              "value": 1,
-              "key": "_Ability_EnergyDisk_ShockTriggerThunder_CD",
-              "useLimitRange": true,
+              "value": 0,
+              "key": "_Ability_EnergyDisk_ExtraAtkKillMonster_CD",
               "maxValue": 0,
               "minValue": 0
             }
@@ -4098,12 +5002,13 @@
           "type": "ElementLevelCo"
         },
         {
-          "$type": "SetGlobalValue",
+          "$type": "ApplyModifier",
           "target": "MPLevel",
-          "value": 0,
-          "key": "_Ability_EnergyDisk_ExtraAtkKillMonster_CD",
-          "maxValue": 0,
-          "minValue": 0
+          "modifierName": "UNIQUE_EnergyDisk_Blue_ExtraAtkKillMonster_Total"
+        },
+        {
+          "$type": "ApplyModifier",
+          "modifierName": "UNIQUE_EnergyDisk_Blue_ExtraAtkKillMonster_Handler"
         }
       ],
       "isDynamicAbility": true
@@ -4249,22 +5154,6 @@
     "Default": {
       "$type": "ConfigAbility",
       "abilityName": "ActivityAbility_EnergyDisk_Blue_MonsterNumAtkDefUp",
-      "abilityMixins": [
-        {
-          "$type": "AttachModifierToSelfGlobalValueMixin",
-          "globalValueKey": "_ABILITY_EnergyDisk_MonsterNumAtkDefUp_Enemy_Count",
-          "defaultGlobalValueOnCreate": 0,
-          "valueSteps": [
-            0.5,
-            2.5,
-            999
-          ],
-          "modifierNameSteps": [
-            "UNIQUE_MonsterNumAtkDefUp_BuffEffect",
-            "UNIQUE_MonsterNumAtkDefUp_MoveBuff"
-          ]
-        }
-      ],
       "abilitySpecials": {
         "Count": 0,
         "Rate": 0,
@@ -4287,6 +5176,10 @@
                 }
               ],
               "successActions": [
+                {
+                  "$type": "ApplyModifier",
+                  "modifierName": "UNIQUE_EnergyDisk_Count_Timer"
+                },
                 {
                   "$type": "SetGlobalValue",
                   "value": 0,
@@ -4311,25 +5204,42 @@
                       ]
                     }
                   ],
-                  "modifierName": "UNIQUE_MonsterNumAtkDefUp_CountAdd"
-                },
+                  "modifierName": "MonsterNumAtkDefUp_CountAdd"
+                }
+              ],
+              "failActions": [
                 {
-                  "$type": "ApplyModifier",
-                  "modifierName": "UNIQUE_EnergyDisk_Count_Timer"
+                  "$type": "SetGlobalValue",
+                  "doOffStage": true,
+                  "value": 0,
+                  "key": "_ABILITY_EnergyDisk_MonsterNumAtkDefUp_Enemy",
+                  "maxValue": 0,
+                  "minValue": 0
                 }
               ]
             }
           ]
         },
-        "UNIQUE_MonsterNumAtkDefUp_CountAdd": {
+        "MonsterNumAtkDefUp_CountAdd": {
           "modifierName": "",
-          "isUnique": true,
           "duration": 0.1,
           "elementDurability": 100,
           "onAdded": [
             {
-              "$type": "AddGlobalValue",
+              "$type": "ApplyModifier",
               "target": "Caster",
+              "modifierName": "MonsterNumAtkDefUp_CountAdd_Effect"
+            }
+          ]
+        },
+        "MonsterNumAtkDefUp_CountAdd_Effect": {
+          "stacking": "MultipleRefresh",
+          "modifierName": "",
+          "duration": 0.01,
+          "elementDurability": 100,
+          "onAdded": [
+            {
+              "$type": "AddGlobalValue",
               "value": 1,
               "key": "_ABILITY_EnergyDisk_MonsterNumAtkDefUp_Enemy_Count",
               "maxValue": 0,
@@ -4340,9 +5250,9 @@
         "UNIQUE_EnergyDisk_Count_Timer": {
           "modifierName": "",
           "isUnique": true,
-          "duration": 0.05,
+          "duration": 0.1,
           "elementDurability": 100,
-          "onRemoved": [
+          "onAdded": [
             {
               "$type": "SetGlobalValueToOverrideMap",
               "doOffStage": true,
@@ -4359,22 +5269,14 @@
             }
           ]
         },
-        "UNIQUE_MonsterNumAtkDefUp_BuffEffect": {
+        "MonsterNumAtkDefUp_BuffEffect": {
           "modifierName": "",
-          "isUnique": true,
-          "duration": 2,
           "elementDurability": 100,
           "properties": {
             "Actor_AttackRatio": "Atk",
             "Actor_DefenceRatio": "Def"
           },
-          "state": "AttackUp",
-          "onAdded": [
-            {
-              "$type": "DebugLog",
-              "content": "执行到了buff效果"
-            }
-          ]
+          "state": "AttackUp"
         },
         "UNIQUE_MonsterNumAtkDefUp_MoveBuff": {
           "modifierName": "",
@@ -4383,8 +5285,28 @@
           "elementDurability": 100,
           "onAdded": [
             {
-              "$type": "RemoveUniqueModifier",
-              "modifierName": "UNIQUE_MonsterNumAtkDefUp_BuffEffect"
+              "$type": "RemoveModifier",
+              "modifierName": "MonsterNumAtkDefUp_BuffEffect"
+            }
+          ]
+        },
+        "EnergyDisk_Blue_MonsterNumAtkDefUp_Mixin": {
+          "modifierName": "",
+          "elementDurability": 100,
+          "modifierMixins": [
+            {
+              "$type": "AttachModifierToSelfGlobalValueMixin",
+              "globalValueKey": "_ABILITY_EnergyDisk_MonsterNumAtkDefUp_Enemy",
+              "defaultGlobalValueOnCreate": 0,
+              "valueSteps": [
+                0.5,
+                2.5,
+                999
+              ],
+              "modifierNameSteps": [
+                "MonsterNumAtkDefUp_BuffEffect",
+                "UNIQUE_MonsterNumAtkDefUp_MoveBuff"
+              ]
             }
           ]
         }
@@ -4393,6 +5315,26 @@
         {
           "$type": "AttachModifier",
           "modifierName": "UNIQUE_EnergyDisk_Blue_MonsterNumAtkDefUp"
+        },
+        {
+          "$type": "AttachModifier",
+          "modifierName": "EnergyDisk_Blue_MonsterNumAtkDefUp_Mixin"
+        },
+        {
+          "$type": "SetGlobalValue",
+          "doOffStage": true,
+          "value": 0,
+          "key": "_ABILITY_EnergyDisk_MonsterNumAtkDefUp_Enemy",
+          "maxValue": 0,
+          "minValue": 0
+        },
+        {
+          "$type": "SetGlobalValue",
+          "doOffStage": true,
+          "value": 0,
+          "key": "_ABILITY_EnergyDisk_MonsterNumAtkDefUp_Enemy_Count",
+          "maxValue": 0,
+          "minValue": 0
         }
       ],
       "isDynamicAbility": true

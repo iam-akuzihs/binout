@@ -186,7 +186,7 @@
               "target": "SelfAttackTarget",
               "key": "_ABILITY_Barbara_ExtraAttack_FX_Pos",
               "born": {
-                "$type": "ConfigBornByTarget",
+                "$type": "ConfigBornBySelectedPoint",
                 "onGround": true
               },
               "setTarget": false
@@ -301,7 +301,7 @@
           "target": "SelfAttackTarget",
           "key": "_ABILITY_Barbara_ExtraAttack_Damage_Pos",
           "born": {
-            "$type": "ConfigBornByTarget",
+            "$type": "ConfigBornBySelectedPoint",
             "onGround": true
           },
           "setTarget": false
@@ -1588,9 +1588,8 @@
         "Time": 1
       },
       "modifiers": {
-        "UNIQUE_Barbara_IdolHeal": {
+        "Barbara_IdolHeal": {
           "modifierName": "",
-          "isUnique": true,
           "duration": 1.167,
           "elementDurability": 100,
           "onRemoved": [
@@ -1687,7 +1686,7 @@
         {
           "$type": "ApplyModifier",
           "target": "AllPlayerAvatars",
-          "modifierName": "UNIQUE_Barbara_IdolHeal"
+          "modifierName": "Barbara_IdolHeal"
         },
         {
           "$type": "AvatarSkillStart",
@@ -2004,40 +2003,46 @@
           "elementDurability": 100,
           "onAttackLanded": [
             {
-              "$type": "AddGlobalValue",
-              "predicates": [
+              "$type": "Predicated",
+              "target": "Target",
+              "targetPredicates": [
                 {
                   "$type": "ByAttackTags",
                   "attackTags": [
                     "ExtraAttack"
                   ]
+                },
+                {
+                  "$type": "ByEntityTypes",
+                  "entityTypes": [
+                    "Monster"
+                  ]
+                },
+                {
+                  "$type": "ByTargetGlobalValue",
+                  "key": "_ANIMAL_ENTITY_TYPE",
+                  "value": 0,
+                  "compareType": "NoneOrEqual"
                 }
               ],
-              "value": 1,
-              "key": "_ABILITY_Barbara_Constellation_ReviveElemEnergy_COUNT",
-              "useLimitRange": true,
-              "maxValue": 5,
-              "minValue": 0
-            },
-            {
-              "$type": "SetGlobalValueToOverrideMap",
-              "globalValueKey": "_ABILITY_Barbara_Constellation_ReviveElemEnergy_COUNT",
-              "overrideMapKey": "Barbara_Constellation_ReviveElemEnergy_Number"
-            },
-            {
-              "$type": "Randomed",
-              "chance": 1,
               "successActions": [
                 {
+                  "$type": "AddGlobalValue",
+                  "target": "Caster",
+                  "value": 1,
+                  "key": "_ABILITY_Barbara_Constellation_ReviveElemEnergy_COUNT",
+                  "useLimitRange": true,
+                  "maxValue": 5,
+                  "minValue": 0
+                },
+                {
+                  "$type": "SetGlobalValueToOverrideMap",
+                  "globalValueKey": "_ABILITY_Barbara_Constellation_ReviveElemEnergy_COUNT",
+                  "overrideMapKey": "Barbara_Constellation_ReviveElemEnergy_Number"
+                },
+                {
                   "$type": "ApplyModifier",
-                  "predicates": [
-                    {
-                      "$type": "ByAttackTags",
-                      "attackTags": [
-                        "ExtraAttack"
-                      ]
-                    }
-                  ],
+                  "target": "Caster",
                   "modifierName": "ReviveElemEnergy_Trigger"
                 }
               ]

@@ -636,7 +636,8 @@
           "elementDurability": 100,
           "properties": {
             "Actor_EndureDelta": 0,
-            "Entity_MassRatio": 100
+            "Entity_MassRatio": 100,
+            "Entity_WeightRatio": 5
           },
           "onAdded": [
             {
@@ -839,7 +840,8 @@
               "hitPattern": {
                 "onHitEffectName": "none",
                 "hitImpulseType": "LV2"
-              }
+              },
+              "canBeModifiedBy": "OriginOwner"
             }
           },
           "targetType": "Enemy"
@@ -971,7 +973,8 @@
               "hitPattern": {
                 "onHitEffectName": "none",
                 "hitImpulseType": "LV2"
-              }
+              },
+              "canBeModifiedBy": "OriginOwner"
             }
           },
           "targetType": "Enemy"
@@ -984,14 +987,6 @@
       "$type": "ConfigAbility",
       "abilityName": "Monster_Skirmisher_Male_Standard_Staff_Rock_FindBlinkPoint",
       "onAbilityStart": [
-        {
-          "$type": "SetGlobalDir",
-          "target": "SelfAttackTarget",
-          "key": "_MONSTER_SKIRMISHER_MALE_BLINK_DIRECTION",
-          "born": {
-            "$type": "ConfigBornBySelf"
-          }
-        },
         {
           "$type": "TryFindBlinkPoint",
           "forwardAngle": -180,
@@ -1073,6 +1068,20 @@
         }
       ],
       "modifiers": {
+        "Monster_Skirmisher_Staff_Rock_KillShield": {
+          "modifierName": "",
+          "duration": 0.3,
+          "elementDurability": 100,
+          "onAdded": [
+            {
+              "$type": "SetGlobalValue",
+              "value": 1,
+              "key": "_MONSTER_SKIRMISHER_STAFF_ROCK_KILLSHIELD",
+              "maxValue": 0,
+              "minValue": 0
+            }
+          ]
+        },
         "Monster_Skirmisher_Staff_Rock_Shield_Timer": {
           "modifierName": "",
           "duration": 10,
@@ -1086,35 +1095,12 @@
               "triggerID": "EndShield"
             },
             {
-              "$type": "SendEffectTrigger",
-              "parameter": "SheildIsClosed",
-              "effectPattern": "Eff_Monster_Skirmisher_Male_Standard_Staff_Rock_RockWall"
-            },
-            {
-              "$type": "AddGlobalValue",
+              "$type": "ApplyModifier",
               "otherTargets": {
                 "$type": "SelectTargetsByChildren",
                 "configID": 42301001
               },
-              "value": 1,
-              "key": "_MONSTER_SKIRMISHER_STAFF_ROCK_KILLSHIELD",
-              "useLimitRange": true,
-              "maxValue": 1,
-              "minValue": 0
-            },
-            {
-              "$type": "AddGlobalValue",
-              "otherTargets": {
-                "$type": "SelectTargetsByShape",
-                "shapeName": "CircleR100",
-                "campTargetType": "Alliance",
-                "sizeRatio": 1
-              },
-              "value": -2,
-              "key": "_MONSTER_SKIRMISHER_ROCKWALL_BROADCAST",
-              "useLimitRange": true,
-              "maxValue": 1,
-              "minValue": 0
+              "modifierName": "Monster_Skirmisher_Staff_Rock_KillShield"
             }
           ],
           "onKill": [
@@ -1123,21 +1109,12 @@
               "triggerID": "EndShield"
             },
             {
-              "$type": "SendEffectTrigger",
-              "parameter": "SheildIsClosed",
-              "effectPattern": "Eff_Monster_Skirmisher_Male_Standard_Staff_Rock_RockWall"
-            },
-            {
-              "$type": "AddGlobalValue",
+              "$type": "ApplyModifier",
               "otherTargets": {
                 "$type": "SelectTargetsByChildren",
                 "configID": 42301001
               },
-              "value": 1,
-              "key": "_MONSTER_SKIRMISHER_STAFF_ROCK_KILLSHIELD",
-              "useLimitRange": true,
-              "maxValue": 1,
-              "minValue": 0
+              "modifierName": "Monster_Skirmisher_Staff_Rock_KillShield"
             }
           ]
         },
@@ -1155,31 +1132,24 @@
                   "z": 0.77
                 }
               },
+              "sightGroupWithOwner": true,
               "gadgetID": 42301001,
               "campID": 4001,
               "byServer": true
             },
             {
-              "$type": "AddGlobalValue",
+              "$type": "ApplyModifier",
               "otherTargets": {
                 "$type": "SelectTargetsByShape",
                 "shapeName": "CircleR10",
                 "campTargetType": "Alliance",
                 "sizeRatio": 1
               },
-              "value": 1,
-              "key": "_MONSTER_SKIRMISHER_ROCKWALL_BROADCAST",
-              "useLimitRange": true,
-              "maxValue": 1,
-              "minValue": 0
+              "modifierName": "Monster_Skirmisher_RockWall_Broadcast"
             },
             {
               "$type": "ApplyModifier",
               "modifierName": "Monster_Skirmisher_Staff_Rock_Shield_Timer"
-            },
-            {
-              "$type": "ApplyModifier",
-              "modifierName": "Monster_Skirmisher_Male_Standard_Staff_Rock_RockWall_Effect"
             }
           ],
           "onRemoved": [
@@ -1192,6 +1162,29 @@
             {
               "$type": "RemoveUniqueModifier",
               "modifierName": "UNIQUE_Monster_Skirmisher_Staff_Rock_Shield_Loop"
+            }
+          ]
+        },
+        "Monster_Skirmisher_RockWall_Broadcast": {
+          "modifierName": "",
+          "duration": 10,
+          "elementDurability": 100,
+          "onAdded": [
+            {
+              "$type": "SetGlobalValue",
+              "value": 1,
+              "key": "_MONSTER_SKIRMISHER_ROCKWALL_BROADCAST",
+              "maxValue": 0,
+              "minValue": 0
+            }
+          ],
+          "onRemoved": [
+            {
+              "$type": "SetGlobalValue",
+              "value": 0,
+              "key": "_MONSTER_SKIRMISHER_ROCKWALL_BROADCAST",
+              "maxValue": 0,
+              "minValue": 0
             }
           ]
         },
@@ -1236,6 +1229,25 @@
         }
       ],
       "modifiers": {
+        "Monster_Skirmisher_Staff_Rock_RockWall_Eff": {
+          "modifierName": "",
+          "duration": 13,
+          "elementDurability": 100,
+          "onAdded": [
+            {
+              "$type": "AttachEffect",
+              "effectPattern": "Eff_Monster_Skirmisher_Male_Standard_Staff_Rock_RockWall",
+              "born": {
+                "$type": "ConfigBornBySelf"
+              }
+            }
+          ],
+          "onRemoved": [
+            {
+              "$type": "KillSelf"
+            }
+          ]
+        },
         "BeHitEffect": {
           "modifierName": "",
           "duration": 10,
@@ -1246,6 +1258,11 @@
               "hitBoxNames": [
                 "HitBox"
               ]
+            },
+            {
+              "$type": "SendEffectTrigger",
+              "parameter": "SheildIsClosed",
+              "effectPattern": "Eff_Monster_Skirmisher_Male_Standard_Staff_Rock_RockWall"
             }
           ],
           "onBeingHit": [
@@ -1267,7 +1284,12 @@
           "elementDurability": 100,
           "onAdded": [
             {
-              "$type": "KillSelf"
+              "$type": "RemoveModifier",
+              "modifierName": "BeHitEffect"
+            },
+            {
+              "$type": "KillSelf",
+              "duration": 3
             }
           ]
         }
@@ -1276,6 +1298,10 @@
         {
           "$type": "AttachModifier",
           "modifierName": "BeHitEffect"
+        },
+        {
+          "$type": "AttachModifier",
+          "modifierName": "Monster_Skirmisher_Staff_Rock_RockWall_Eff"
         },
         {
           "$type": "EnableHitBoxByName",

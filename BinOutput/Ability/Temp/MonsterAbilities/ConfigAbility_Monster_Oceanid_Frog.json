@@ -189,6 +189,16 @@
                   "value": 1
                 }
               ]
+            },
+            {
+              "$type": "ByNot",
+              "predicates": [
+                {
+                  "$type": "ByTargetGlobalValue",
+                  "key": "_MONSTERAFFIX_OCEANID_ANIMAL_FOOTEFFECT_OFF",
+                  "value": 1
+                }
+              ]
             }
           ],
           "modifierName": "Monster_Oceanid_Frog_CommonEffect"
@@ -421,14 +431,14 @@
           "elementDurability": 100,
           "onAdded": [
             {
-              "$type": "SetGlobalValue",
+              "$type": "Predicated",
               "otherTargets": {
                 "$type": "SelectTargetsByShape",
                 "shapeName": "CircleR62",
                 "campTargetType": "Enemy",
                 "sizeRatio": 1
               },
-              "predicates": [
+              "targetPredicates": [
                 {
                   "$type": "ByTargetGlobalValue",
                   "key": "_STAGE_",
@@ -442,6 +452,23 @@
                   ]
                 }
               ],
+              "successActions": [
+                {
+                  "$type": "ApplyModifier",
+                  "target": "Target",
+                  "modifierName": "Frog_Exploded_Handler"
+                }
+              ]
+            }
+          ]
+        },
+        "Frog_Exploded_Handler": {
+          "modifierName": "",
+          "duration": 1,
+          "elementDurability": 100,
+          "onAdded": [
+            {
+              "$type": "SetGlobalValue",
               "value": 1,
               "key": "_OCEANID_DEATHEXPLODED_",
               "maxValue": 0,
@@ -458,6 +485,76 @@
         {
           "$type": "ApplyModifier",
           "modifierName": "Oceanid_Frog_Explode_Watcher"
+        }
+      ]
+    }
+  },
+  {
+    "Default": {
+      "$type": "ConfigAbility",
+      "abilityName": "Oceanid_Affix_DeathExplode",
+      "modifiers": {
+        "Oceanid_Affix_DeathExplode_LifeTimer": {
+          "stacking": "Unique",
+          "modifierName": "",
+          "duration": 4,
+          "elementDurability": 100,
+          "onAdded": [
+            {
+              "$type": "AttachEffect",
+              "effectPattern": "Eff_Monster_Oceanid_Frog_DeathWaterBall_EffigyChallenge"
+            }
+          ],
+          "onRemoved": [
+            {
+              "$type": "FireEffect",
+              "effectPattern": "Eff_Monster_Oceanid_Frog_DeathWaterBallExplode_EffigyChallenge"
+            },
+            {
+              "$type": "DamageByAttackValue",
+              "otherTargets": {
+                "$type": "SelectTargetsByShape",
+                "shapeName": "CircleR7",
+                "campTargetType": "Enemy",
+                "sizeRatio": 1
+              },
+              "attackInfo": {
+                "attackTag": "Oceanid_Frog_Explode",
+                "attenuationTag": "",
+                "attenuationGroup": "default",
+                "attackProperty": {
+                  "damagePercentage": 1,
+                  "damagePercentageRatio": 0,
+                  "elementType": "Water",
+                  "elementDurability": 50,
+                  "strikeType": "Default",
+                  "enBreak": 1
+                },
+                "hitPattern": {
+                  "onHitEffectName": "default",
+                  "hitImpulseType": "LV1",
+                  "hitHaltTimeScale": 0.05
+                },
+                "forceCameraShake": true,
+                "cameraShake": {
+                  "shakeType": "CustomVector",
+                  "shakeRange": 1,
+                  "shakeTime": 0.3,
+                  "shakeDistance": 50
+                }
+              }
+            },
+            {
+              "$type": "KillSelf",
+              "duration": 2
+            }
+          ]
+        }
+      },
+      "onAdded": [
+        {
+          "$type": "ApplyModifier",
+          "modifierName": "Oceanid_Affix_DeathExplode_LifeTimer"
         }
       ]
     }
