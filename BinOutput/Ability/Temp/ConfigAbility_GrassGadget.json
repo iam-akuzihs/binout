@@ -1,0 +1,225 @@
+[
+  {
+    "Default": {
+      "$type": "ConfigAbility",
+      "abilityName": "Oil_Interact",
+      "modifiers": {
+        "NormalModifier": {
+          "modifierName": "",
+          "elementType": "Grass",
+          "elementDurability": 5,
+          "isElementDurabilityMutable": false,
+          "onBeingHit": [
+            {
+              "$type": "ApplyModifier",
+              "predicates": [
+                {
+                  "$type": "ByHitElement",
+                  "element": "Fire"
+                },
+                {
+                  "$type": "ByNot",
+                  "predicates": [
+                    {
+                      "$type": "ByHasElement",
+                      "element": "Fire"
+                    }
+                  ]
+                }
+              ],
+              "modifierName": "Burning"
+            },
+            {
+              "$type": "ApplyModifier",
+              "predicates": [
+                {
+                  "$type": "ByHitElement",
+                  "element": "Fire"
+                },
+                {
+                  "$type": "ByNot",
+                  "predicates": [
+                    {
+                      "$type": "ByHasElement",
+                      "element": "Fire"
+                    }
+                  ]
+                }
+              ],
+              "modifierName": "On_Burning"
+            }
+          ]
+        },
+        "On_Burning": {
+          "modifierName": "",
+          "elementDurability": 100,
+          "onRemoved": [
+            {
+              "$type": "ApplyModifier",
+              "modifierName": "Delay"
+            },
+            {
+              "$type": "FireEffect",
+              "effectPattern": "Eff_FireBasin_Smoke",
+              "born": {
+                "$type": "ConfigBornByAttachPoint",
+                "attachPointName": "attachPoint"
+              }
+            }
+          ],
+          "onBeingHit": [
+            {
+              "$type": "ApplyModifier",
+              "predicates": [
+                {
+                  "$type": "ByHitElement",
+                  "element": "Water"
+                }
+              ],
+              "modifierName": "Check_Fire"
+            },
+            {
+              "$type": "ApplyModifier",
+              "predicates": [
+                {
+                  "$type": "ByHitElement",
+                  "element": "Ice"
+                }
+              ],
+              "modifierName": "Check_Fire"
+            }
+          ]
+        },
+        "Check_Fire": {
+          "modifierName": "",
+          "duration": 0.2,
+          "elementDurability": 100,
+          "onRemoved": [
+            {
+              "$type": "RemoveModifier",
+              "predicates": [
+                {
+                  "$type": "ByNot",
+                  "predicates": [
+                    {
+                      "$type": "ByHasElement",
+                      "element": "Fire"
+                    }
+                  ]
+                }
+              ],
+              "modifierName": "On_Burning"
+            }
+          ]
+        },
+        "Check_Around": {
+          "modifierName": "",
+          "duration": 0.2,
+          "elementDurability": 100,
+          "onAdded": [
+            {
+              "$type": "Predicated",
+              "targetPredicates": [
+                {
+                  "$type": "ByHasElement",
+                  "element": "Fire"
+                }
+              ],
+              "successActions": [
+                {
+                  "$type": "DamageByAttackValue",
+                  "target": "Caster",
+                  "attackInfo": {
+                    "attackTag": "",
+                    "attenuationTag": "",
+                    "attenuationGroup": "default",
+                    "attackProperty": {
+                      "damagePercentage": 0.1,
+                      "damagePercentageRatio": 0,
+                      "elementType": "Fire",
+                      "elementDurability": 40,
+                      "strikeType": "Default"
+                    },
+                    "hitPattern": {
+                      "onHitEffectName": "default",
+                      "hitImpulseType": "",
+                      "overrideHitImpulse": {
+                        "hitLevel": "Air",
+                        "hitImpulseX": 0,
+                        "hitImpulseY": 420
+                      },
+                      "hitHaltTimeScale": 0.01
+                    }
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        "Delay": {
+          "modifierName": "",
+          "duration": 4.5,
+          "elementDurability": 100,
+          "thinkInterval": 3,
+          "onThinkInterval": [
+            {
+              "$type": "ApplyModifier",
+              "otherTargets": {
+                "$type": "SelectTargetsByShape",
+                "shapeName": "CircleR5",
+                "campTargetType": "SelfCamp",
+                "sizeRatio": 1
+              },
+              "modifierName": "Check_Around"
+            }
+          ]
+        },
+        "Burning": {
+          "modifierName": "",
+          "duration": 1.2,
+          "elementDurability": 100,
+          "thinkInterval": 1,
+          "onThinkInterval": [
+            {
+              "$type": "DamageByAttackValue",
+              "otherTargets": {
+                "$type": "SelectTargetsByShape",
+                "shapeName": "CircleR5",
+                "campTargetType": "SelfCamp",
+                "sizeRatio": 1
+              },
+              "attackInfo": {
+                "attackTag": "",
+                "attenuationTag": "",
+                "attenuationGroup": "default",
+                "attackProperty": {
+                  "damagePercentage": 0.1,
+                  "damagePercentageRatio": 0,
+                  "elementType": "Fire",
+                  "elementDurability": 40,
+                  "strikeType": "Default"
+                },
+                "hitPattern": {
+                  "onHitEffectName": "default",
+                  "hitImpulseType": "",
+                  "overrideHitImpulse": {
+                    "hitLevel": "Air",
+                    "hitImpulseX": 0,
+                    "hitImpulseY": 420
+                  },
+                  "hitHaltTimeScale": 0.01
+                }
+              }
+            }
+          ]
+        }
+      },
+      "onAdded": [
+        {
+          "$type": "AttachModifier",
+          "modifierName": "NormalModifier"
+        }
+      ]
+    }
+  }
+]

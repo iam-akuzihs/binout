@@ -1,0 +1,138 @@
+[
+  {
+    "Default": {
+      "$type": "ConfigAbility",
+      "abilityName": "Brute_None_Turn",
+      "abilityMixins": [
+        {
+          "$type": "SteerAttackMixin",
+          "steerStateIDs": [
+            "TurnRight"
+          ],
+          "startNormalizedTime": 0.27,
+          "endNormalizedTime": 0.78,
+          "angularSpeed": 150,
+          "attackTrigger": "",
+          "attackDistance": 2
+        },
+        {
+          "$type": "SteerAttackMixin",
+          "steerStateIDs": [
+            "TurnLeft"
+          ],
+          "startNormalizedTime": 0.15,
+          "endNormalizedTime": 0.71,
+          "angularSpeed": 150,
+          "attackTrigger": "",
+          "attackDistance": 2
+        }
+      ]
+    }
+  },
+  {
+    "Default": {
+      "$type": "ConfigAbility",
+      "abilityName": "Brute_None_Alert",
+      "onAbilityStart": [
+        {
+          "$type": "SetPoseBool",
+          "boolID": "Sleep"
+        },
+        {
+          "$type": "SetPoseBool",
+          "boolID": "Sit"
+        }
+      ]
+    }
+  },
+  {
+    "Default": {
+      "$type": "ConfigAbility",
+      "abilityName": "Brute_None_RushAttack",
+      "abilityMixins": [
+        {
+          "$type": "SteerAttackMixin",
+          "steerStateIDs": [
+            "RushAttack_BS"
+          ],
+          "startNormalizedTime": 0.75,
+          "angularSpeed": 180,
+          "attackTrigger": "",
+          "attackDistance": 2
+        },
+        {
+          "$type": "AttachToStateIDMixin",
+          "stateIDs": [
+            "RushAttack_Loop"
+          ],
+          "modifierName": "Rush"
+        },
+        {
+          "$type": "AttackHittingSceneMixin",
+          "onHittingScene": [
+            {
+              "$type": "SetAnimatorTrigger",
+              "triggerID": "CrashTrigger"
+            }
+          ],
+          "animEventIDs": [
+            "ShieldRush_HitScene"
+          ]
+        }
+      ],
+      "modifiers": {
+        "Rush": {
+          "modifierName": "",
+          "elementDurability": 100,
+          "onAdded": [
+            {
+              "$type": "AttachEffect",
+              "effectPattern": "Eff_Monster_Brute_None_NoWeapon_RushAttack_Dust"
+            }
+          ],
+          "onAttackLanded": [
+            {
+              "$type": "SetAnimatorTrigger",
+              "predicates": [
+                {
+                  "$type": "ByEntityTypes",
+                  "entityTypes": [
+                    "Avatar"
+                  ],
+                  "useEventSource": true
+                }
+              ],
+              "triggerID": "NextSkillTrigger"
+            }
+          ]
+        },
+        "RushAttack_Roar": {
+          "modifierName": "",
+          "duration": 0.4,
+          "elementDurability": 100,
+          "thinkInterval": 0.1,
+          "onThinkInterval": [
+            {
+              "$type": "ActCameraShake",
+              "cameraShake": {
+                "shakeType": "CustomVector",
+                "shakeRange": 0.04,
+                "shakeTime": 0.24,
+                "shakeDir": {
+                  "y": 1,
+                  "z": 0.5
+                }
+              }
+            }
+          ]
+        }
+      },
+      "onAbilityStart": [
+        {
+          "$type": "ApplyModifier",
+          "modifierName": "RushAttack_Roar"
+        }
+      ]
+    }
+  }
+]
