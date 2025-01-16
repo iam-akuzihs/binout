@@ -1,6 +1,6 @@
 .POSIX:
 
-export GENSHIN_DATA_REPO := $(HOME)/git/GenshinData
+export DM_REPO := $(HOME)/git/GenshinData
 export TRANSLATE_DM := $(HOME)/git/translate-dm
 
 undefine CHECKOUT

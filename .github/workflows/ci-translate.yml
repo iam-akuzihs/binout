@@ -48,7 +48,9 @@ jobs:
         id: translate-cache
         with:
           path: ~/checksum
-          key: checksum-${{ hashFiles('checkout.mk', 'git/translate-dm/**', '!**/.git') }}
+          key: checksum-${{ hashFiles('checkout.mk', 'git/translate-dm/**', '!**/.git', '!**/queries/*.yml') }}-${{ hashFiles('**/queries/*.yml') }}
+          restore-keys: |
+            checksum-${{ hashFiles('checkout.mk', 'git/translate-dm/**', '!**/.git', '!**/queries/*.yml') }}-
 
       - name: Run ci-translate
         if: steps.translate-cache.outputs.cache-hit != 'true'
@@ -60,8 +62,8 @@ jobs:
           git config user.email '<>'
           rm -d git
 
-          [ ! -e checksum ] || sha256sum --check -- "$HOME/checksum"
-          sha256sum ../translate-dm/queries.yml > "$HOME/checksum"
+          [ -e "$HOME/checksum" ] && sha256sum --check -- "$HOME/checksum" && exit 0
+          sha256sum ../translate-dm/queries/binout.yml > "$HOME/checksum"
 
           nix develop -c make TRANSLATE_DM=../translate-dm translate 2>/dev/null
 
