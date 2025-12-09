@@ -21,19 +21,17 @@ for dir in v*; do
 	git checkout "$hash" -- "$dir"
 	rm -v -- "$dir/info" 2> /dev/null || :
 	"$TRANSLATE_DM/translate-dm" \
+		--replace \
 		--types "BinOutput:binout" \
 		--dm "$dir" \
 		--queries "$TRANSLATE_DM/queries/binout.yml" \
-		--output "${dir}/translate.sed" |
+		--output "$dir/translate.sed" |
 		tee -- "$dir/info"
 
 	if [ ! -s "$dir/translate.sed" ]; then
 		printf 'E: translation failed at %s\n' "$dir"
 		exit 1
 	fi
-
-	printf '%s\n' "Replacing $dir files"
-	fd -g '*.json' "$dir" -x sed -i -f "$dir/translate.sed" --
 	rm -- "$dir/translate.sed"
 
 	printf '%s\n' "Updating git index"
