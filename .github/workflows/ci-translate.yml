@@ -5,7 +5,7 @@ on:
     branches:
       - master
   schedule:
-    - cron: '0 * * * *'
+    - cron: 0 * * * *
 
 concurrency:
   group: ${{ github.workflow }}
@@ -36,7 +36,7 @@ jobs:
           primary-key: ${{ runner.os }}-nix-${{ hashFiles('**/*.nix', '**/flake.lock') }}
       - name: Prefetch nix shell
         if: steps.nix-cache.outputs.hit-primary-key != 'true'
-        run: nix develop -c true
+        run: nix develop path:nix -c true
 
       - name: Setup go cache
         uses: actions/cache@27d5ce7f107fe9357f9df03efb73ab90386fccae # v5.0.5
@@ -59,7 +59,7 @@ jobs:
 
       - name: Run ci-translate
         if: steps.translate-cache.outputs.cache-hit != 'true'
-        run: |
+        run: |-
           set -eu
 
           mv git/translate-dm ..
@@ -68,7 +68,7 @@ jobs:
           [ -e "$HOME/checksum" ] && sha256sum --check -- "$HOME/checksum" && exit 0
           sha256sum ../translate-dm/queries/binout.yml > "$HOME/checksum"
 
-          nix develop -c make TRANSLATE_DM=../translate-dm translate 2> /dev/null
+          nix develop path:nix -c make TRANSLATE_DM=../translate-dm translate 2> /dev/null
           git push origin master
 
   ci-rebuild:
@@ -83,7 +83,7 @@ jobs:
           ref: master
 
       - name: Rebuild live branch
-        run: |
+        run: |-
           set -eu
 
           make rebuild
