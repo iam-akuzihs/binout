@@ -1,0 +1,6050 @@
+[
+  {
+    "Default": {
+      "abilityName": "SceneObj_Pohjola_InstituteLift_Console",
+      "onFieldEnter": [
+        {
+          "$type": "DebugLog",
+          "content": "Debug PlayerEnterInstitudeConsole"
+        }
+      ],
+      "onFieldExit": [
+        {
+          "$type": "DebugLog",
+          "content": "Debug PlayerExitInstitudeConsole"
+        }
+      ]
+    }
+  },
+  {
+    "Default": {
+      "abilityMixins": [
+        {
+          "$type": "AttachToGadgetStateMixin",
+          "gadgetState": 901,
+          "modifierName": "OnInactiveState"
+        },
+        {
+          "$type": "AttachToGadgetStateMixin",
+          "gadgetState": 902,
+          "modifierName": "OnActivatedState"
+        },
+        {
+          "$type": "AttachToGadgetStateMixin",
+          "gadgetState": 903,
+          "modifierName": "OnPuzzleCompletedState"
+        },
+        {
+          "$type": "DoActionOnGlobalValueChangeMixin",
+          "actions": [
+            {
+              "$type": "Predicated",
+              "failActions": [
+                {
+                  "$type": "DebugLog",
+                  "content": "_EnterToleranceDegCnt changed, new value > 0"
+                },
+                {
+                  "$type": "ApplyModifier",
+                  "modifierName": "CheckCompletedTimer"
+                }
+              ],
+              "successActions": [
+                {
+                  "$type": "DebugLog",
+                  "content": "_EnterToleranceDegCnt changed, new value == 0"
+                },
+                {
+                  "$type": "RemoveModifier",
+                  "modifierName": "CheckCompletedTimer",
+                  "predicates": [
+                    {
+                      "$type": "ByHasModifier",
+                      "modifierName": "CheckCompletedTimer"
+                    }
+                  ]
+                }
+              ],
+              "targetPredicates": [
+                {
+                  "$type": "ByTargetGlobalValue",
+                  "compareType": "NoneOrEqual",
+                  "key": "_EnterToleranceDegCnt",
+                  "value": 0.0
+                }
+              ]
+            }
+          ],
+          "globalValueKey": "_EnterToleranceDegCnt",
+          "DHKOKKHJMHC": true
+        }
+      ],
+      "abilityName": "SceneObj_Area_Phyl_Ani_Prop_XGS_Switch",
+      "modifiers": {
+        "ProgressValueHandlerV2": {
+          "elementDurability": 100.0,
+          "modifierMixins": [
+            {
+              "$type": "DoActionOnGlobalValueChangeMixin",
+              "actions": [
+                {
+                  "$type": "SetGlobalValueV2",
+                  "key": "CurProgress_Clamped",
+                  "maxValue": "SGV_Anim_Progress_Max",
+                  "minValue": "SGV_Anim_Progress_Min",
+                  "useLimitRange": true,
+                  "value": "Current_Progress_Receiver"
+                },
+                {
+                  "$type": "SetGlobalValueV2",
+                  "key": "CurProgress_Remapped",
+                  "maxValue": 0.0,
+                  "minValue": 0.0,
+                  "value": [
+                    "CurProgress_Clamped",
+                    "SGV_Anim_Progress_Min",
+                    "SUB"
+                  ]
+                },
+                {
+                  "$type": "SetGlobalValueV2",
+                  "key": "FinalAngleDeg",
+                  "maxValue": 0.0,
+                  "minValue": 0.0,
+                  "value": [
+                    "CurProgress_Remapped",
+                    "ScaleToDegFactor",
+                    "MUL"
+                  ]
+                },
+                {
+                  "$type": "SetGlobalValueV2",
+                  "key": "FinalAnglePerc",
+                  "maxValue": 0.0,
+                  "minValue": 0.0,
+                  "value": [
+                    "FinalAngleDeg",
+                    360.0,
+                    "DIV"
+                  ]
+                }
+              ],
+              "globalValueKey": "Current_Progress_Receiver",
+              "DHKOKKHJMHC": true
+            },
+            {
+              "$type": "ReceiveGVMixin",
+              "broadcastGVKey": "Current_Progress",
+              "gvKey": "Current_Progress_Receiver",
+              "sgvIDKey": "SGV_LMS_GroupTag",
+              "GCKPMGKGLEG": true
+            }
+          ],
+          "modifierName": "",
+          "IAKNCBDLFKJ": 0.0
+        },
+        "UpdateBeamRotation": {
+          "elementDurability": 100.0,
+          "modifierMixins": [
+            {
+              "$type": "MapGVToRotationMixin",
+              "gvKey": "FinalAnglePerc",
+              "normalizedRange": [
+                -999.0,
+                999.0
+              ],
+              "sgvIDKey": "",
+              "BFGDEIFIKKD": 0.25,
+              "OPFNGFGOKOF": 1,
+              "FHALFEOLEEO": false,
+              "DDJFNLOFKCP": true,
+              "NOKKFIINOLN": "RootNode_Rotator"
+            }
+          ],
+          "modifierName": "",
+          "IAKNCBDLFKJ": 0.0
+        },
+        "UpdateBeamLength": {
+          "elementDurability": 100.0,
+          "modifierMixins": [
+            {
+              "$type": "DoActionOnGlobalValueChangeMixin",
+              "actions": [
+                {
+                  "$type": "Predicated",
+                  "failActions": [
+                    {
+                      "$type": "DebugLog",
+                      "content": "FinalAngleDeg > SGV_Rot_Goal"
+                    },
+                    {
+                      "$type": "SetGlobalValueV2",
+                      "key": "_Temp_CurRotAngleDiff_1",
+                      "maxValue": "SGV_Beam_MaxAngleDiff",
+                      "minValue": 0.0,
+                      "useLimitRange": true,
+                      "value": [
+                        "FinalAngleDeg",
+                        "SGV_Rot_Goal",
+                        "SUB"
+                      ]
+                    },
+                    {
+                      "$type": "SetGlobalValueV2",
+                      "key": "_Temp_CurRotAngleDiff_1",
+                      "maxValue": 0.0,
+                      "minValue": 0.0,
+                      "value": [
+                        "SGV_Beam_MaxAngleDiff",
+                        "_Temp_CurRotAngleDiff_1",
+                        "SUB"
+                      ]
+                    }
+                  ],
+                  "successActions": [
+                    {
+                      "$type": "DebugLog",
+                      "content": "FinalAngleDeg <= SGV_Rot_Goal"
+                    },
+                    {
+                      "$type": "SetGlobalValueV2",
+                      "key": "_Temp_CurRotAngleDiff_1",
+                      "maxValue": "SGV_Beam_MaxAngleDiff",
+                      "minValue": 0.0,
+                      "useLimitRange": true,
+                      "value": [
+                        "SGV_Rot_Goal",
+                        "FinalAngleDeg",
+                        "SUB"
+                      ]
+                    },
+                    {
+                      "$type": "SetGlobalValueV2",
+                      "key": "_Temp_CurRotAngleDiff_1",
+                      "maxValue": 0.0,
+                      "minValue": 0.0,
+                      "value": [
+                        "SGV_Beam_MaxAngleDiff",
+                        "_Temp_CurRotAngleDiff_1",
+                        "SUB"
+                      ]
+                    }
+                  ],
+                  "targetPredicates": [
+                    {
+                      "$type": "ByTargetGlobalValue",
+                      "compareType": "LessAndEqual",
+                      "key": "FinalAngleDeg",
+                      "value": "SGV_Rot_Goal"
+                    }
+                  ]
+                },
+                {
+                  "$type": "Predicated",
+                  "successActions": [
+                    {
+                      "$type": "DebugLog",
+                      "content": "_Rot_Goal_2 >= 0, start calculation"
+                    },
+                    {
+                      "$type": "Predicated",
+                      "failActions": [
+                        {
+                          "$type": "DebugLog",
+                          "content": "FinalAngleDeg > _Rot_Goal_2"
+                        },
+                        {
+                          "$type": "SetGlobalValueV2",
+                          "key": "_Temp_CurRotAngleDiff_2",
+                          "maxValue": "SGV_Beam_MaxAngleDiff",
+                          "minValue": 0.0,
+                          "useLimitRange": true,
+                          "value": [
+                            "FinalAngleDeg",
+                            "_Rot_Goal_2",
+                            "SUB"
+                          ]
+                        },
+                        {
+                          "$type": "SetGlobalValueV2",
+                          "key": "_Temp_CurRotAngleDiff_2",
+                          "maxValue": 0.0,
+                          "minValue": 0.0,
+                          "value": [
+                            "SGV_Beam_MaxAngleDiff",
+                            "_Temp_CurRotAngleDiff_2",
+                            "SUB"
+                          ]
+                        }
+                      ],
+                      "successActions": [
+                        {
+                          "$type": "DebugLog",
+                          "content": "FinalAngleDeg <= _Rot_Goal_2"
+                        },
+                        {
+                          "$type": "SetGlobalValueV2",
+                          "key": "_Temp_CurRotAngleDiff_2",
+                          "maxValue": "SGV_Beam_MaxAngleDiff",
+                          "minValue": 0.0,
+                          "useLimitRange": true,
+                          "value": [
+                            "_Rot_Goal_2",
+                            "FinalAngleDeg",
+                            "SUB"
+                          ]
+                        },
+                        {
+                          "$type": "SetGlobalValueV2",
+                          "key": "_Temp_CurRotAngleDiff_2",
+                          "maxValue": 0.0,
+                          "minValue": 0.0,
+                          "value": [
+                            "SGV_Beam_MaxAngleDiff",
+                            "_Temp_CurRotAngleDiff_2",
+                            "SUB"
+                          ]
+                        }
+                      ],
+                      "targetPredicates": [
+                        {
+                          "$type": "ByTargetGlobalValue",
+                          "compareType": "LessAndEqual",
+                          "key": "FinalAngleDeg",
+                          "value": "_Rot_Goal_2"
+                        }
+                      ]
+                    }
+                  ],
+                  "targetPredicates": [
+                    {
+                      "$type": "ByTargetGlobalValue",
+                      "compareType": "MoreThanAndEqual",
+                      "key": "_Rot_Goal_2",
+                      "value": 0.0
+                    }
+                  ]
+                },
+                {
+                  "$type": "Predicated",
+                  "failActions": [
+                    {
+                      "$type": "SetGlobalValueV2",
+                      "key": "CurRotAngleDiffReversed",
+                      "maxValue": 0.0,
+                      "minValue": 0.0,
+                      "value": "_Temp_CurRotAngleDiff_2"
+                    }
+                  ],
+                  "successActions": [
+                    {
+                      "$type": "SetGlobalValueV2",
+                      "key": "CurRotAngleDiffReversed",
+                      "maxValue": 0.0,
+                      "minValue": 0.0,
+                      "value": "_Temp_CurRotAngleDiff_1"
+                    }
+                  ],
+                  "targetPredicates": [
+                    {
+                      "$type": "ByTargetGlobalValue",
+                      "compareType": "MoreThanAndEqual",
+                      "key": "_Temp_CurRotAngleDiff_1",
+                      "value": "_Temp_CurRotAngleDiff_2"
+                    }
+                  ]
+                },
+                {
+                  "$type": "SetGlobalValueV2",
+                  "key": "BeamFinalScale",
+                  "maxValue": 0.0,
+                  "minValue": 0.0,
+                  "value": [
+                    "BeamLengthScaleDiff",
+                    "CurRotAngleDiffReversed",
+                    "MUL",
+                    "SGV_Beam_MaxAngleDiff",
+                    "DIV"
+                  ]
+                },
+                {
+                  "$type": "SetGlobalValueV2",
+                  "key": "BeamFinalScale",
+                  "maxValue": 0.0,
+                  "minValue": 0.0,
+                  "value": [
+                    "BeamFinalScale",
+                    "SGV_Beam_MinLength",
+                    "ADD"
+                  ]
+                },
+                {
+                  "$type": "SetGlobalValueV2",
+                  "key": "BeamLengthDiff",
+                  "maxValue": 0.0,
+                  "minValue": 0.0,
+                  "value": [
+                    "SGV_Beam_EffMaxLength",
+                    "SGV_Beam_EffMinLength",
+                    "SUB"
+                  ]
+                },
+                {
+                  "$type": "SetGlobalValueV2",
+                  "key": "BeamFinalScaleBlend",
+                  "maxValue": 0.0,
+                  "minValue": 0.0,
+                  "value": [
+                    "BeamFinalScale",
+                    "BeamLengthDiff",
+                    "DIV"
+                  ]
+                },
+                {
+                  "$type": "Predicated",
+                  "failActions": [
+                    {
+                      "$type": "DebugLog",
+                      "content": "Eff_SceneObj_XGS_Switch_Active not ready, skip update length!"
+                    }
+                  ],
+                  "successActions": [
+                    {
+                      "$type": "SendEffectTrigger",
+                      "attachPoint": "",
+                      "dynamicFloatValue": "BeamFinalScaleBlend",
+                      "effectPattern": "Eff_SceneObj_XGS_Switch_Active",
+                      "parameter": "Blend",
+                      "type": "Float",
+                      "useDynamicValue": true,
+                      "LMJGINIDNOB": 0.3
+                    },
+                    {
+                      "$type": "SetAnimatorFloat",
+                      "floatID": ""
+                    }
+                  ],
+                  "targetPredicates": [
+                    {
+                      "$type": "ByTargetGlobalValue",
+                      "key": "_ActiveEffReady",
+                      "value": 1.0
+                    }
+                  ]
+                }
+              ],
+              "globalValueKey": "FinalAngleDeg",
+              "DHKOKKHJMHC": true
+            }
+          ],
+          "modifierName": "",
+          "onAdded": [
+            {
+              "$type": "SetGlobalValueV2",
+              "key": "BeamLengthScaleDiff",
+              "maxValue": 0.0,
+              "minValue": 0.0,
+              "value": [
+                "SGV_Beam_MaxLength",
+                "SGV_Beam_MinLength",
+                "SUB"
+              ]
+            }
+          ],
+          "IAKNCBDLFKJ": 0.0
+        },
+        "CheckCompleted": {
+          "elementDurability": 100.0,
+          "modifierMixins": [
+            {
+              "$type": "AttachModifierToSelfGlobalValueNoInitMixin",
+              "globalValueKey": "FinalAngleDeg",
+              "modifierNameSteps": [
+                "OnEnterToleranceDegRange",
+                "OnEnterInvalidDegRange",
+                "OnEnterToleranceDegRange",
+                "OnEnterInvalidDegRange",
+                "OnEnterToleranceDegRange"
+              ],
+              "valueSteps": [
+                [
+                  "SGV_Rot_Goal",
+                  180.0,
+                  "SUB",
+                  "SGV_Rot_ToleranceDeg",
+                  "SUB"
+                ],
+                [
+                  "SGV_Rot_Goal",
+                  180.0,
+                  "SUB",
+                  "SGV_Rot_ToleranceDeg",
+                  "ADD"
+                ],
+                [
+                  "SGV_Rot_Goal",
+                  "SGV_Rot_ToleranceDeg",
+                  "SUB"
+                ],
+                [
+                  "SGV_Rot_Goal",
+                  "SGV_Rot_ToleranceDeg",
+                  "ADD"
+                ],
+                [
+                  "SGV_Rot_Goal",
+                  180.0,
+                  "ADD",
+                  "SGV_Rot_ToleranceDeg",
+                  "SUB"
+                ],
+                [
+                  "SGV_Rot_Goal",
+                  180.0,
+                  "ADD",
+                  "SGV_Rot_ToleranceDeg",
+                  "ADD"
+                ]
+              ],
+              "EECIIMBIDGB": true
+            }
+          ],
+          "modifierName": "",
+          "IAKNCBDLFKJ": 0.0
+        },
+        "OnEnterInvalidDegRange": {
+          "elementDurability": 100.0,
+          "modifierName": "",
+          "onAdded": [
+            {
+              "$type": "SetGlobalValueV2",
+              "key": "_EnterToleranceDegCnt",
+              "maxValue": 0.0,
+              "minValue": 0.0,
+              "value": 0.0
+            }
+          ],
+          "IAKNCBDLFKJ": 0.0
+        },
+        "OnEnterToleranceDegRange": {
+          "elementDurability": 100.0,
+          "modifierName": "",
+          "onAdded": [
+            {
+              "$type": "SetGlobalValueV2",
+              "key": "_EnterToleranceDegCnt",
+              "maxValue": 0.0,
+              "minValue": 0.0,
+              "value": 1.0
+            }
+          ],
+          "IAKNCBDLFKJ": 0.0
+        },
+        "CheckCompletedTimer": {
+          "duration": "SGV_CheckCompleteTime",
+          "elementDurability": 100.0,
+          "modifierName": "",
+          "onRemoved": [
+            {
+              "$type": "DebugLog",
+              "content": "CheckCompletedTimer - Timeout"
+            },
+            {
+              "$type": "ChangeGadgetState",
+              "predicates": [
+                {
+                  "$type": "ByAnd",
+                  "predicates": [
+                    {
+                      "$type": "ByTargetGadgetState",
+                      "gadgetState": 902
+                    },
+                    {
+                      "$type": "ByTargetGlobalValue",
+                      "compareType": "MoreThan",
+                      "key": "_EnterToleranceDegCnt",
+                      "value": 0.0
+                    }
+                  ]
+                }
+              ],
+              "state": 903
+            }
+          ],
+          "IAKNCBDLFKJ": 0.0
+        },
+        "OnInactiveState": {
+          "elementDurability": 100.0,
+          "modifierName": "",
+          "onAdded": [
+            {
+              "$type": "DebugLog",
+              "content": "OnInactiveState - 901"
+            },
+            {
+              "$type": "SetGlobalValueV2",
+              "key": "_ActiveEffReady",
+              "maxValue": 0.0,
+              "minValue": 0.0,
+              "value": 0.0
+            },
+            {
+              "$type": "RemoveModifier",
+              "modifierName": "ActiveStateEffectBinder"
+            },
+            {
+              "$type": "AttachEffect",
+              "born": {
+                "$type": "ConfigBornByAttachPoint",
+                "attachPointName": "Slot_EffPos",
+                "useRotation": true
+              },
+              "effectPattern": "Eff_SceneObj_XGS_Switch_Pices",
+              "effectTempleteID": -1.0,
+              "scale": 1.0,
+              "JHAGIJGAKMK": ""
+            }
+          ],
+          "IAKNCBDLFKJ": 0.0
+        },
+        "OnActivatedState": {
+          "elementDurability": 100.0,
+          "modifierMixins": [
+            {
+              "$type": "EntityNoPauseMixin"
+            }
+          ],
+          "modifierName": "",
+          "onAdded": [
+            {
+              "$type": "DebugLog",
+              "content": "OnActivatedState - 902"
+            },
+            {
+              "$type": "SetGlobalValueV2",
+              "key": "Current_Progress_Receiver",
+              "maxValue": 0.0,
+              "minValue": 0.0,
+              "value": 0.0
+            },
+            {
+              "$type": "SetGlobalValueV2",
+              "key": "FinalAngleDeg",
+              "maxValue": 0.0,
+              "minValue": 0.0,
+              "value": 0.0
+            },
+            {
+              "$type": "SetGlobalValueV2",
+              "key": "FinalAnglePerc",
+              "maxValue": 0.0,
+              "minValue": 0.0,
+              "value": 0.0
+            },
+            {
+              "$type": "SetGlobalValueV2",
+              "key": "_Rot_Goal_2",
+              "maxValue": 0.0,
+              "minValue": 0.0,
+              "value": -1.0
+            },
+            {
+              "$type": "Predicated",
+              "successActions": [
+                {
+                  "$type": "SetGlobalValueV2",
+                  "key": "_Rot_Goal_2",
+                  "maxValue": 0.0,
+                  "minValue": 0.0,
+                  "value": [
+                    "SGV_Rot_Goal",
+                    180.0,
+                    "ADD"
+                  ]
+                }
+              ],
+              "targetPredicates": [
+                {
+                  "$type": "ByTargetGlobalValue",
+                  "compareType": "MoreThanAndEqual",
+                  "key": "SGV_Rot_Max",
+                  "value": [
+                    "SGV_Rot_Goal",
+                    180.0,
+                    "ADD"
+                  ]
+                }
+              ]
+            },
+            {
+              "$type": "Predicated",
+              "successActions": [
+                {
+                  "$type": "SetGlobalValueV2",
+                  "key": "_Rot_Goal_2",
+                  "maxValue": 0.0,
+                  "minValue": 0.0,
+                  "value": [
+                    "SGV_Rot_Goal",
+                    180.0,
+                    "SUB"
+                  ]
+                }
+              ],
+              "targetPredicates": [
+                {
+                  "$type": "ByTargetGlobalValue",
+                  "compareType": "MoreThanAndEqual",
+                  "key": "SGV_Rot_Goal",
+                  "value": 180.0
+                }
+              ]
+            },
+            {
+              "$type": "SetGlobalValueV2",
+              "key": "AnimProgressValueDiff",
+              "maxValue": 0.0,
+              "minValue": 0.0,
+              "value": [
+                "SGV_Anim_Progress_Max",
+                "SGV_Anim_Progress_Min",
+                "SUB"
+              ]
+            },
+            {
+              "$type": "SetGlobalValueV2",
+              "key": "ScaleToDegFactor",
+              "maxValue": 0.0,
+              "minValue": 0.0,
+              "value": [
+                "SGV_Rot_Max",
+                "AnimProgressValueDiff",
+                "DIV"
+              ]
+            },
+            {
+              "$type": "ApplyModifier",
+              "modifierName": "TransitToActiveStateEffect"
+            },
+            {
+              "$type": "AttachModifier",
+              "modifierName": "ProgressValueHandlerV2"
+            },
+            {
+              "$type": "AttachModifier",
+              "modifierName": "UpdateBeamLength"
+            },
+            {
+              "$type": "AttachModifier",
+              "modifierName": "UpdateBeamRotation"
+            },
+            {
+              "$type": "SetGlobalValueV2",
+              "key": "_EnterToleranceDegCnt",
+              "maxValue": 0.0,
+              "minValue": 0.0,
+              "value": 0.0
+            },
+            {
+              "$type": "AttachModifier",
+              "modifierName": "CheckCompleted"
+            }
+          ],
+          "IAKNCBDLFKJ": 0.0
+        },
+        "OnPuzzleCompletedState": {
+          "elementDurability": 100.0,
+          "modifierName": "",
+          "onAdded": [
+            {
+              "$type": "SetGlobalValueV2",
+              "key": "_ActiveEffReady",
+              "maxValue": 0.0,
+              "minValue": 0.0,
+              "value": 0.0
+            },
+            {
+              "$type": "RemoveModifier",
+              "modifierName": "ProgressValueHandlerV2"
+            },
+            {
+              "$type": "SetGlobalValueV2",
+              "key": "FinalAnglePerc",
+              "maxValue": 0.0,
+              "minValue": 0.0,
+              "value": [
+                "SGV_Rot_Goal",
+                360.0,
+                "DIV"
+              ]
+            },
+            {
+              "$type": "DebugLog",
+              "content": "OnPuzzleCompletedState - 903"
+            },
+            {
+              "$type": "ApplyModifier",
+              "modifierName": "OnReachFinalAngle"
+            }
+          ],
+          "IAKNCBDLFKJ": 0.0
+        },
+        "OnReachFinalAngle": {
+          "duration": 1.0,
+          "elementDurability": 100.0,
+          "modifierName": "",
+          "onRemoved": [
+            {
+              "$type": "RemoveModifier",
+              "modifierName": "ActiveStateEffectBinder"
+            },
+            {
+              "$type": "FireEffect",
+              "born": {
+                "$type": "ConfigBornByAttachPoint",
+                "attachPointName": "Slot_EffPos",
+                "useRotation": true
+              },
+              "effectPattern": "Eff_SceneObj_XGS_Switch_Diss",
+              "effectTempleteID": -1.0,
+              "scale": 1.0,
+              "JHAGIJGAKMK": ""
+            }
+          ],
+          "IAKNCBDLFKJ": 0.0
+        },
+        "TransitToActiveStateEffect": {
+          "elementDurability": 100.0,
+          "modifierName": "",
+          "onAdded": [
+            {
+              "$type": "FireEffect",
+              "born": {
+                "$type": "ConfigBornByAttachPoint",
+                "attachPointName": "Slot_EffPos",
+                "useRotation": true
+              },
+              "effectPattern": "Eff_SceneObj_XGS_Switch_Merge",
+              "effectTempleteID": -1.0,
+              "scale": 1.0,
+              "JHAGIJGAKMK": ""
+            }
+          ],
+          "onThinkInterval": [
+            {
+              "$type": "ApplyModifier",
+              "modifierName": "ActiveStateEffectBinder"
+            },
+            {
+              "$type": "SendEffectTrigger",
+              "attachPoint": "",
+              "dynamicFloatValue": "BeamFinalScaleBlend",
+              "effectPattern": "Eff_SceneObj_XGS_Switch_Active",
+              "parameter": "Blend",
+              "type": "Float",
+              "useDynamicValue": true
+            },
+            {
+              "$type": "SetGlobalValueV2",
+              "key": "_ActiveEffReady",
+              "maxValue": 0.0,
+              "minValue": 0.0,
+              "value": 1.0
+            },
+            {
+              "$type": "RemoveModifier",
+              "modifierName": "TransitToActiveStateEffect"
+            }
+          ],
+          "stacking": "Unique",
+          "thinkInterval": 0.2,
+          "IAKNCBDLFKJ": 0.0
+        },
+        "ActiveStateEffectBinder": {
+          "elementDurability": 100.0,
+          "modifierName": "",
+          "onAdded": [
+            {
+              "$type": "AttachEffect",
+              "born": {
+                "$type": "ConfigBornByAttachPoint",
+                "attachPointName": "Slot_EffPos",
+                "useRotation": true
+              },
+              "effectPattern": "Eff_SceneObj_XGS_Switch_Active",
+              "effectTempleteID": -1.0,
+              "scale": 1.0,
+              "JHAGIJGAKMK": ""
+            },
+            {
+              "$type": "SetEffectFollowPath",
+              "attachPoint": "",
+              "effectPattern": "Eff_SceneObj_XGS_Switch_Active",
+              "followPath": "Slot_EffPos"
+            }
+          ],
+          "stacking": "Unique",
+          "IAKNCBDLFKJ": 0.0
+        }
+      },
+      "onAdded": [
+        {
+          "$type": "SetGlobalValueV2",
+          "key": "_PrevProgressValue",
+          "maxValue": 0.0,
+          "minValue": 0.0,
+          "value": 0.0
+        },
+        {
+          "$type": "SetGlobalValueV2",
+          "key": "_EnterToleranceDegCnt",
+          "maxValue": 0.0,
+          "minValue": 0.0,
+          "value": 0.0
+        }
+      ],
+      "CELKHCPEMFI": [
+        "SGV_LMS_GroupTag",
+        "SGV_Anim_Progress_Min",
+        "SGV_Anim_Progress_Max",
+        "SGV_Rot_Goal",
+        "SGV_Rot_Max",
+        "SGV_Rot_ToleranceDeg",
+        "SGV_Length_Goal",
+        "SGV_CheckCompleteTime",
+        "SGV_Beam_MinLength",
+        "SGV_Beam_MaxLength",
+        "SGV_Beam_MaxAngleDiff",
+        "SGV_Beam_EffMaxLength",
+        "SGV_Beam_EffMinLength",
+        "Current_Progress_Receiver",
+        "ScaleToDegFactor",
+        "AnimProgressValueDiff",
+        "CurProgress_Clamped",
+        "CurProgress_Remapped",
+        "FinalAngleDeg",
+        "FinalAnglePerc",
+        "BeamLengthDiff",
+        "CurRotAngleDiffReversed",
+        "BeamLengthScaleDiff",
+        "BeamFinalScale",
+        "BeamFinalScaleBlend",
+        "_ActiveEffReady",
+        "_EnterToleranceDegCnt",
+        "_PrevProgressValue",
+        "_Temp_CurRotAngleDiff_1",
+        "_Temp_CurRotAngleDiff_2",
+        "_Rot_Goal_2"
+      ]
+    }
+  },
+  {
+    "Default": {
+      "abilityMixins": [
+        {
+          "$type": "AttachToGadgetStateMixin",
+          "modifierName": "OnHiddenState"
+        },
+        {
+          "$type": "AttachToGadgetStateMixin",
+          "gadgetState": 201,
+          "modifierName": "OnCompletedState"
+        },
+        {
+          "$type": "AttachModifierToGlobalValueMixin",
+          "globalValueKey": "SGV_XGS_Switch_ShowMesh",
+          "modifierNameSteps": [
+            "HideMeshHandler"
+          ],
+          "valueSteps": [
+            -0.5,
+            0.5
+          ],
+          "EECIIMBIDGB": true
+        }
+      ],
+      "abilityName": "SceneObj_Area_Phyl_Ani_Prop_XGS_Switch_Completed",
+      "modifiers": {
+        "HideMeshHandler": {
+          "elementDurability": 100.0,
+          "modifierName": "",
+          "onAdded": [
+            {
+              "$type": "EnableSceneTransformByName",
+              "transformNames": [
+                "Mesh"
+              ]
+            }
+          ],
+          "onRemoved": [
+            {
+              "$type": "EnableSceneTransformByName",
+              "setEnable": true,
+              "transformNames": [
+                "Mesh"
+              ]
+            }
+          ],
+          "IAKNCBDLFKJ": 0.0
+        },
+        "EffectBinder": {
+          "elementDurability": 100.0,
+          "modifierName": "",
+          "onAdded": [
+            {
+              "$type": "AttachEffect",
+              "born": {
+                "$type": "ConfigBornByAttachPoint",
+                "attachPointName": "Slot_Effect",
+                "useRotation": true
+              },
+              "effectPattern": "Eff_SceneObj_Stages_XGS_Outline01_Line_01",
+              "effectTempleteID": -1.0,
+              "scale": 1.0,
+              "JHAGIJGAKMK": ""
+            },
+            {
+              "$type": "SetEffectFollowPath",
+              "attachPoint": "",
+              "effectPattern": "Eff_SceneObj_Stages_XGS_Outline01_Line_01",
+              "followPath": "Slot_Effect"
+            },
+            {
+              "$type": "Predicated",
+              "canBeHandledOnRecover": true,
+              "failActions": [
+                {
+                  "$type": "SendEffectTrigger",
+                  "attachPoint": "",
+                  "effectPattern": "Eff_SceneObj_Stages_XGS_Outline01_Line_01",
+                  "parameter": "FadeIn",
+                  "type": "Int"
+                }
+              ],
+              "successActions": [
+                {
+                  "$type": "SendEffectTrigger",
+                  "attachPoint": "",
+                  "effectPattern": "Eff_SceneObj_Stages_XGS_Outline01_Line_01",
+                  "parameter": "FadeIn",
+                  "type": "Int",
+                  "value": 1
+                }
+              ],
+              "targetPredicates": [
+                {
+                  "$type": "ByTargetGadgetState",
+                  "gadgetState": 201
+                }
+              ]
+            }
+          ],
+          "IAKNCBDLFKJ": 0.0
+        },
+        "OnHiddenState": {
+          "elementDurability": 100.0,
+          "modifierMixins": [
+            {
+              "$type": "ShaderStateMachineSwitchMixin",
+              "GPKIBLPALDJ": 0.5,
+              "BGOJEEJGDLD": 1,
+              "BCBNIPCDGCC": "Default"
+            }
+          ],
+          "modifierName": "",
+          "onAdded": [
+            {
+              "$type": "SendEffectTrigger",
+              "attachPoint": "",
+              "canBeHandledOnRecover": true,
+              "effectPattern": "Eff_SceneObj_Stages_XGS_Outline01_Line_01",
+              "parameter": "FadeIn",
+              "type": "Int"
+            },
+            {
+              "$type": "EnableColliderByName",
+              "canBeHandledOnRecover": true,
+              "transformNames": [
+                "Mesh"
+              ]
+            }
+          ],
+          "IAKNCBDLFKJ": 0.0
+        },
+        "OnCompletedState": {
+          "elementDurability": 100.0,
+          "modifierMixins": [
+            {
+              "$type": "ShaderStateMachineSwitchMixin",
+              "GPKIBLPALDJ": 0.5,
+              "BCBNIPCDGCC": "Default"
+            }
+          ],
+          "modifierName": "",
+          "onAdded": [
+            {
+              "$type": "SendEffectTrigger",
+              "attachPoint": "",
+              "canBeHandledOnRecover": true,
+              "effectPattern": "Eff_SceneObj_Stages_XGS_Outline01_Line_01",
+              "parameter": "FadeIn",
+              "type": "Int",
+              "value": 1
+            },
+            {
+              "$type": "EnableColliderByName",
+              "canBeHandledOnRecover": true,
+              "setEnable": true,
+              "transformNames": [
+                "Mesh"
+              ]
+            }
+          ],
+          "IAKNCBDLFKJ": 0.0
+        }
+      },
+      "onAdded": [
+        {
+          "$type": "SetPartScaleByTransform",
+          "canBeHandledOnRecover": true,
+          "HCBKCFOEPHM": "ScaleRoot",
+          "HMOIGGILEKO": {
+            "x": "SGV_XGS_Switch_WidthScale",
+            "y": [
+              "SGV_XGS_Switch_DesiredLength",
+              "SGV_XGS_Switch_BaseLength",
+              "DIV"
+            ],
+            "z": "SGV_XGS_Switch_WidthScale"
+          }
+        },
+        {
+          "$type": "AttachModifier",
+          "modifierName": "EffectBinder"
+        }
+      ],
+      "CELKHCPEMFI": [
+        "SGV_XGS_Switch_BaseLength",
+        "SGV_XGS_Switch_DesiredLength",
+        "SGV_XGS_Switch_WidthScale",
+        "SGV_XGS_Switch_ShowMesh",
+        "_PrevState"
+      ]
+    }
+  },
+  {
+    "Default": {
+      "abilityMixins": [
+        {
+          "$type": "AttachToGadgetStateMixin",
+          "gadgetState": 201,
+          "modifierName": "OnHiddenState"
+        },
+        {
+          "$type": "AttachToGadgetStateMixin",
+          "gadgetState": 202,
+          "modifierName": "OnRevealedState"
+        }
+      ],
+      "abilityName": "SceneObj_Area_Phyl_Ani_Prop_XGS_WallPainting_01",
+      "modifiers": {
+        "OnHiddenState": {
+          "elementDurability": 100.0,
+          "modifierMixins": [
+            {
+              "$type": "ShaderStateMachineSwitchMixin",
+              "GPKIBLPALDJ": 0.5,
+              "BCBNIPCDGCC": "Default"
+            }
+          ],
+          "modifierName": "",
+          "onAdded": [
+            {
+              "$type": "EnableColliderByName",
+              "canBeHandledOnRecover": true,
+              "transformNames": [
+                "Mesh"
+              ]
+            }
+          ],
+          "IAKNCBDLFKJ": 0.0
+        },
+        "OnRevealedState": {
+          "elementDurability": 100.0,
+          "modifierMixins": [
+            {
+              "$type": "ShaderStateMachineSwitchMixin",
+              "GPKIBLPALDJ": 0.5,
+              "BGOJEEJGDLD": 1,
+              "BCBNIPCDGCC": "Default"
+            }
+          ],
+          "modifierName": "",
+          "onAdded": [
+            {
+              "$type": "EnableColliderByName",
+              "canBeHandledOnRecover": true,
+              "setEnable": true,
+              "transformNames": [
+                "Mesh"
+              ]
+            }
+          ],
+          "IAKNCBDLFKJ": 0.0
+        }
+      }
+    }
+  },
+  {
+    "Default": {
+      "abilityMixins": [
+        {
+          "$type": "AttachToGadgetStateMixin",
+          "gadgetState": 201,
+          "modifierName": "OnHiddenState"
+        },
+        {
+          "$type": "AttachToGadgetStateMixin",
+          "gadgetState": 202,
+          "modifierName": "OnShellState"
+        },
+        {
+          "$type": "AttachToGadgetStateMixin",
+          "gadgetState": 203,
+          "modifierName": "OnEnteredState"
+        }
+      ],
+      "abilityName": "SceneObj_Area_Phyl_Ani_Decal_XGS_WallPainting_01",
+      "modifiers": {
+        "OnHiddenState": {
+          "elementDurability": 100.0,
+          "modifierName": "",
+          "onAdded": [
+            {
+              "$type": "EnableSceneTransformByName",
+              "transformNames": [
+                "All"
+              ]
+            },
+            {
+              "$type": "SetGlobalValueV2",
+              "key": "_PrevState",
+              "maxValue": 0.0,
+              "minValue": 0.0,
+              "value": 201.0
+            }
+          ],
+          "IAKNCBDLFKJ": 0.0
+        },
+        "OnShellState": {
+          "elementDurability": 100.0,
+          "modifierMixins": [
+            {
+              "$type": "ShaderStateMachineSwitchMixin",
+              "HBFPEJOBJGJ": true,
+              "BCBNIPCDGCC": ""
+            }
+          ],
+          "modifierName": "",
+          "onAdded": [
+            {
+              "$type": "EnableSceneTransformByName",
+              "setEnable": true,
+              "transformNames": [
+                "All"
+              ]
+            },
+            {
+              "$type": "SetGlobalValueV2",
+              "key": "_PrevState",
+              "maxValue": 0.0,
+              "minValue": 0.0,
+              "value": 202.0
+            }
+          ],
+          "IAKNCBDLFKJ": 0.0
+        },
+        "OnEnteredState": {
+          "elementDurability": 100.0,
+          "modifierMixins": [
+            {
+              "$type": "ShaderStateMachineSwitchMixin",
+              "BGOJEEJGDLD": 1,
+              "BCBNIPCDGCC": "Default"
+            }
+          ],
+          "modifierName": "",
+          "onAdded": [
+            {
+              "$type": "EnableSceneTransformByName",
+              "setEnable": true,
+              "transformNames": [
+                "All"
+              ]
+            },
+            {
+              "$type": "FireEffect",
+              "born": {
+                "$type": "ConfigBornByAttachPoint",
+                "attachPointName": "Slot_FaerieEffPos",
+                "useRotation": true
+              },
+              "effectPattern": "Eff_SceneObj_WallPainting_Faerie_01",
+              "effectTempleteID": -1.0,
+              "predicates": [
+                {
+                  "$type": "ByTargetGlobalValue",
+                  "key": "_PrevState",
+                  "value": 202.0
+                }
+              ],
+              "scale": 1.0,
+              "JHAGIJGAKMK": ""
+            },
+            {
+              "$type": "SetGlobalValueV2",
+              "key": "_PrevState",
+              "maxValue": 0.0,
+              "minValue": 0.0,
+              "value": 203.0
+            }
+          ],
+          "IAKNCBDLFKJ": 0.0
+        }
+      },
+      "CELKHCPEMFI": [
+        "_PrevState"
+      ]
+    }
+  },
+  {
+    "Default": {
+      "abilityMixins": [
+        {
+          "$type": "LevelCurveMoveGVMixin",
+          "speed": "_CurSeelieMoveSpeed",
+          "tag": "",
+          "NCMLGHOEEMA": "",
+          "PNIFFLNDCDL": "_IsSeelieMoving"
+        },
+        {
+          "$type": "AttachModifierToGlobalValueMixin",
+          "globalValueKey": "_IsSeelieMoving",
+          "modifierNameSteps": [
+            "OnStopMove",
+            "OnMoving"
+          ],
+          "valueSteps": [
+            -0.5,
+            0.5,
+            1.5
+          ],
+          "EECIIMBIDGB": true
+        },
+        {
+          "$type": "AttachToGadgetStateMixin",
+          "gadgetState": 201,
+          "modifierName": "HintEffBinder"
+        }
+      ],
+      "abilityName": "SceneObj_Area_Phyl_XGS_Seelie_Large",
+      "modifiers": {
+        "OnMoving": {
+          "elementDurability": 100.0,
+          "modifierName": "",
+          "onAdded": [
+            {
+              "$type": "SetAnimatorInt",
+              "intID": "IsFlying",
+              "value": 1.0
+            }
+          ],
+          "IAKNCBDLFKJ": 0.0
+        },
+        "OnStopMove": {
+          "elementDurability": 100.0,
+          "modifierName": "",
+          "onAdded": [
+            {
+              "$type": "SetAnimatorInt",
+              "intID": "IsFlying",
+              "value": 0.0
+            }
+          ],
+          "IAKNCBDLFKJ": 0.0
+        },
+        "HintEffBinder": {
+          "elementDurability": 100.0,
+          "modifierName": "",
+          "onAdded": [
+            {
+              "$type": "AttachEffect",
+              "born": {
+                "$type": "ConfigBornByAttachPoint",
+                "attachPointName": "MovePoint",
+                "useRotation": true
+              },
+              "effectPattern": "Eff_SceneObj_Common_Mark_01",
+              "effectTempleteID": -1.0,
+              "scale": 1.0,
+              "JHAGIJGAKMK": ""
+            },
+            {
+              "$type": "SetEffectFollowPath",
+              "attachPoint": "",
+              "effectPattern": "Eff_SceneObj_Common_Mark_01",
+              "followPath": "MovePoint"
+            }
+          ],
+          "IAKNCBDLFKJ": 0.0
+        }
+      },
+      "onKill": [
+        {
+          "$type": "SetAnimatorTrigger",
+          "triggerID": "Die"
+        }
+      ],
+      "CELKHCPEMFI": [
+        "_IsSeelieMoving",
+        "_CurSeelieMoveSpeed"
+      ]
+    }
+  },
+  {
+    "Default": {
+      "abilityMixins": [
+        {
+          "$type": "AttachToGadgetStateMixin",
+          "modifierName": "OnDefaultState"
+        },
+        {
+          "$type": "AttachToGadgetStateMixin",
+          "gadgetState": 201,
+          "modifierName": "OnEnlightenState"
+        }
+      ],
+      "abilityName": "SceneObj_Area_Phyl_Ani_Prop_XGS_Yueqi_01",
+      "modifiers": {
+        "OnDefaultState": {
+          "elementDurability": 100.0,
+          "modifierMixins": [
+            {
+              "$type": "ShaderStateMachineSwitchMixin",
+              "BCBNIPCDGCC": "Default"
+            }
+          ],
+          "modifierName": "",
+          "IAKNCBDLFKJ": 0.0
+        },
+        "OnEnlightenState": {
+          "elementDurability": 100.0,
+          "modifierMixins": [
+            {
+              "$type": "ShaderStateMachineSwitchMixin",
+              "BGOJEEJGDLD": 1,
+              "BCBNIPCDGCC": "Default"
+            }
+          ],
+          "modifierName": "",
+          "onAdded": [
+            {
+              "$type": "AttachEffect",
+              "born": {
+                "$type": "ConfigBornByAttachPoint",
+                "attachPointName": "Slot_ActiveEffect",
+                "useRotation": true
+              },
+              "effectPattern": "Eff_SceneObj_PullLinePlant_Fluctuate_Active",
+              "effectTempleteID": -1.0,
+              "scale": 1.0,
+              "JHAGIJGAKMK": ""
+            },
+            {
+              "$type": "TriggerAudioV2",
+              "IMPNDGBPHFF": "v6_3_XGS_Harp_Activate"
+            }
+          ],
+          "IAKNCBDLFKJ": 0.0
+        }
+      }
+    }
+  },
+  {
+    "Default": {
+      "abilityMixins": [
+        {
+          "$type": "AttachModifierToSelfGlobalValueNoInitMixin",
+          "globalValueKey": "SGV_AbyssInvasion_EnableUI",
+          "modifierNameSteps": [
+            "EnableUIProgress"
+          ],
+          "valueSteps": [
+            0.5,
+            1.5
+          ],
+          "EECIIMBIDGB": true
+        }
+      ],
+      "abilityName": "V6_3_Pohjola_AbyssInvasion_ProgressUI_Main",
+      "isDynamicAbility": true,
+      "modifiers": {
+        "EnableUIProgress": {
+          "elementDurability": 100.0,
+          "modifierName": "",
+          "onAdded": [
+            {
+              "$type": "Predicated",
+              "canBeHandledOnRecover": true,
+              "failActions": [
+                {
+                  "$type": "DebugLog",
+                  "content": "Show AbyssInvasion Progress UI fail, SGV_AbyssInvasion_ListenTargetEntID_0 not set!"
+                },
+                {
+                  "$type": "AttachModifier",
+                  "modifierName": "ListenTargetAvailabilityCheck"
+                }
+              ],
+              "successActions": [
+                {
+                  "$type": "AttachModifier",
+                  "modifierName": "UiProgressBinder"
+                }
+              ],
+              "target": "Team",
+              "targetPredicates": [
+                {
+                  "$type": "ByTargetGlobalValue",
+                  "compareType": "MoreThan",
+                  "key": "SGV_AbyssInvasion_ListenTargetEntID_0",
+                  "value": 0.0
+                }
+              ]
+            }
+          ],
+          "IAKNCBDLFKJ": 0.0
+        },
+        "ListenTargetAvailabilityCheck": {
+          "elementDurability": 100.0,
+          "modifierName": "",
+          "onThinkInterval": [
+            {
+              "$type": "Predicated",
+              "successActions": [
+                {
+                  "$type": "AttachModifier",
+                  "modifierName": "UiProgressBinder"
+                }
+              ],
+              "target": "Team",
+              "targetPredicates": [
+                {
+                  "$type": "ByAnd",
+                  "predicates": [
+                    {
+                      "$type": "ByTargetGlobalValue",
+                      "compareType": "MoreThan",
+                      "key": "SGV_AbyssInvasion_ListenTargetEntID_0",
+                      "value": 0.0
+                    },
+                    {
+                      "$type": "ByNot",
+                      "predicates": [
+                        {
+                          "$type": "ByHasModifier",
+                          "modifierName": "UiProgressBinder"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ],
+          "thinkInterval": 0.5,
+          "IAKNCBDLFKJ": 0.0
+        },
+        "UiProgressBinder": {
+          "elementDurability": 100.0,
+          "modifierMixins": [
+            {
+              "$type": "UINotifyAttachToGlobalValueMixin",
+              "authorityOnly": true,
+              "OIBIMOFHDBP": "AbyssInvasion",
+              "ALPLAELOGPP": "SGV_Rt_CurProgress",
+              "PDKAGJOGOBC": "SGV_Rt_MaxProgress",
+              "NOKLICOKDFP": {
+                "$type": "IJIALHOBAAE",
+                "targetKey": "SGV_AbyssInvasion_ListenTargetEntID"
+              }
+            }
+          ],
+          "modifierName": "",
+          "IAKNCBDLFKJ": 0.0
+        }
+      },
+      "CELKHCPEMFI": [
+        "SGV_AbyssInvasion_EnableUI",
+        "SGV_AbyssInvasion_ListenTargetEntID_0",
+        "SGV_AbyssInvasion_ListenTargetEntID_1"
+      ]
+    }
+  },
+  {
+    "Default": {
+      "abilityMixins": [
+        {
+          "$type": "StageReadyMixin",
+          "onStageReady": [
+            {
+              "$type": "ServerLuaCall",
+              "funcName": "SLC_RequestUpdateProgressUI",
+              "luaCallType": "FromGroup",
+              "param1": 0.0,
+              "param2": 0.0,
+              "param3": 0.0
+            }
+          ]
+        }
+      ],
+      "abilityName": "SceneObj_Area_Bhyl_AbyssInvasion_ProgressUI_Relay",
+      "modifiers": {
+        "AchivementHandler": {
+          "elementDurability": 100.0,
+          "modifierMixins": [
+            {
+              "$type": "AttachToGadgetStateMixin",
+              "gadgetState": 201,
+              "modifierName": "TriggerAchivementHandler"
+            }
+          ],
+          "modifierName": "",
+          "IAKNCBDLFKJ": 0.0
+        },
+        "TriggerAchivementHandler": {
+          "elementDurability": 100.0,
+          "modifierName": "",
+          "onAdded": [
+            {
+              "$type": "DebugLog",
+              "content": "[AbyssInvasion] Trigger tutorial"
+            },
+            {
+              "$type": "DoWatcherSystemAction",
+              "authorityOnly": true,
+              "watcherId": 10452
+            }
+          ],
+          "IAKNCBDLFKJ": 0.0
+        }
+      },
+      "onAdded": [
+        {
+          "$type": "AttachModifier",
+          "modifierName": "AchivementHandler"
+        }
+      ],
+      "CELKHCPEMFI": [
+        "SGV_Rt_CurProgress",
+        "SGV_Rt_MaxProgress"
+      ]
+    }
+  },
+  {
+    "Default": {
+      "abilityMixins": [
+        {
+          "$type": "AttachToGadgetStateMixin",
+          "gadgetState": 201,
+          "modifierName": "OnHiddenState"
+        },
+        {
+          "$type": "AttachToGadgetStateMixin",
+          "gadgetState": 202,
+          "modifierName": "OnOccuredState"
+        },
+        {
+          "$type": "AttachToGadgetStateMixin",
+          "gadgetState": 203,
+          "modifierName": "OnClearedState"
+        }
+      ],
+      "abilityName": "SceneObj_Area_Bhyl_AbyssInvasion_AbyssCrack",
+      "modifiers": {
+        "EffectBinder": {
+          "elementDurability": 100.0,
+          "modifierName": "",
+          "onAdded": [
+            {
+              "$type": "AttachEffect",
+              "canBeHandledOnRecover": true,
+              "effectPattern": "Eff_SceneObj_Stages_AbyssCrackBig_01",
+              "effectTempleteID": -1.0,
+              "predicates": [
+                {
+                  "$type": "ByTargetGlobalValue",
+                  "key": "SGV_AbyssCrackType",
+                  "value": 1.0
+                }
+              ],
+              "scale": 1.0,
+              "JHAGIJGAKMK": ""
+            },
+            {
+              "$type": "AttachEffect",
+              "canBeHandledOnRecover": true,
+              "effectPattern": "Eff_SceneObj_Stages_AbyssCrackBig_02",
+              "effectTempleteID": -1.0,
+              "predicates": [
+                {
+                  "$type": "ByTargetGlobalValue",
+                  "key": "SGV_AbyssCrackType",
+                  "value": 2.0
+                }
+              ],
+              "scale": 1.0,
+              "JHAGIJGAKMK": ""
+            }
+          ],
+          "stacking": "Unique",
+          "IAKNCBDLFKJ": 0.0
+        },
+        "OnHiddenState": {
+          "elementDurability": 100.0,
+          "modifierName": "",
+          "onAdded": [
+            {
+              "$type": "RemoveModifier",
+              "modifierName": "EffectBinder",
+              "predicates": [
+                {
+                  "$type": "ByHasModifier",
+                  "modifierName": "EffectBinder"
+                }
+              ]
+            },
+            {
+              "$type": "SetGlobalValueV2",
+              "key": "_PrevState",
+              "maxValue": 0.0,
+              "minValue": 0.0,
+              "value": 201.0
+            }
+          ],
+          "IAKNCBDLFKJ": 0.0
+        },
+        "OnOccuredState": {
+          "elementDurability": 100.0,
+          "modifierName": "",
+          "onAdded": [
+            {
+              "$type": "ApplyModifier",
+              "modifierName": "EffectBinder"
+            },
+            {
+              "$type": "SetGlobalValueV2",
+              "key": "_PrevState",
+              "maxValue": 0.0,
+              "minValue": 0.0,
+              "value": 202.0
+            }
+          ],
+          "onReconnect": [
+            {
+              "$type": "ApplyModifier",
+              "modifierName": "EffectBinder"
+            }
+          ],
+          "IAKNCBDLFKJ": 0.0
+        },
+        "OnClearedState": {
+          "elementDurability": 100.0,
+          "modifierName": "",
+          "onAdded": [
+            {
+              "$type": "AttachModifier",
+              "modifierName": "EffectBinder",
+              "predicates": [
+                {
+                  "$type": "ByNot",
+                  "predicates": [
+                    {
+                      "$type": "ByHasModifier",
+                      "modifierName": "EffectBinder"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "$type": "SendEffectTrigger",
+              "attachPoint": "",
+              "effectPattern": "Eff_SceneObj_Stages_AbyssCrackBig_01",
+              "parameter": "Die",
+              "predicates": [
+                {
+                  "$type": "ByTargetGlobalValue",
+                  "key": "SGV_AbyssCrackType",
+                  "value": 1.0
+                }
+              ]
+            },
+            {
+              "$type": "SendEffectTrigger",
+              "attachPoint": "",
+              "effectPattern": "Eff_SceneObj_Stages_AbyssCrackBig_02",
+              "parameter": "Die",
+              "predicates": [
+                {
+                  "$type": "ByTargetGlobalValue",
+                  "key": "SGV_AbyssCrackType",
+                  "value": 2.0
+                }
+              ]
+            },
+            {
+              "$type": "SetGlobalValueV2",
+              "key": "_PrevState",
+              "maxValue": 0.0,
+              "minValue": 0.0,
+              "value": 203.0
+            }
+          ],
+          "onReconnect": [
+            {
+              "$type": "RemoveModifier",
+              "modifierName": "EffectBinder"
+            }
+          ],
+          "IAKNCBDLFKJ": 0.0
+        }
+      },
+      "CELKHCPEMFI": [
+        "SGV_AbyssCrackType",
+        "_PrevState"
+      ]
+    }
+  },
+  {
+    "Default": {
+      "abilityMixins": [
+        {
+          "$type": "AttachToGadgetStateMixin",
+          "modifierName": "OnDefaultState"
+        },
+        {
+          "$type": "AttachToGadgetStateMixin",
+          "gadgetState": 201,
+          "modifierName": "OnOccurState"
+        },
+        {
+          "$type": "AttachToGadgetStateMixin",
+          "gadgetState": 202,
+          "modifierName": "OnCompletedState"
+        }
+      ],
+      "abilityName": "SceneObj_Area_Bhyl_AbyssInvasion_AbyssLineFallMain",
+      "modifiers": {
+        "OnDefaultState": {
+          "elementDurability": 100.0,
+          "modifierName": "",
+          "onAdded": [
+            {
+              "$type": "RemoveModifier",
+              "modifierName": "CrackEffBinder",
+              "predicates": [
+                {
+                  "$type": "ByHasModifier",
+                  "modifierName": "CrackEffBinder"
+                }
+              ]
+            },
+            {
+              "$type": "SetGlobalValueV2",
+              "key": "_PrevState",
+              "maxValue": 0.0,
+              "minValue": 0.0,
+              "value": 200.0
+            }
+          ],
+          "IAKNCBDLFKJ": 0.0
+        },
+        "OnOccurState": {
+          "elementDurability": 100.0,
+          "modifierName": "",
+          "onAdded": [
+            {
+              "$type": "ApplyModifier",
+              "modifierName": "LineFallEffBinder"
+            },
+            {
+              "$type": "ApplyModifier",
+              "modifierName": "DelayShowCrackEff"
+            },
+            {
+              "$type": "SetGlobalValueV2",
+              "key": "_PrevState",
+              "maxValue": 0.0,
+              "minValue": 0.0,
+              "value": 201.0
+            }
+          ],
+          "onReconnect": [
+            {
+              "$type": "ApplyModifier",
+              "modifierName": "CrackEffBinder"
+            }
+          ],
+          "IAKNCBDLFKJ": 0.0
+        },
+        "DelayShowCrackEff": {
+          "duration": 3.1,
+          "elementDurability": 100.0,
+          "modifierName": "",
+          "onRemoved": [
+            {
+              "$type": "ApplyModifier",
+              "modifierName": "CrackEffBinder"
+            }
+          ],
+          "IAKNCBDLFKJ": 0.0
+        },
+        "LineFallEffBinder": {
+          "duration": 8.0,
+          "elementDurability": 100.0,
+          "modifierName": "",
+          "onAdded": [
+            {
+              "$type": "AttachEffect",
+              "effectPattern": "Eff_SceneObj_Stages_AbyssLineFallMain_01",
+              "effectTempleteID": -1.0,
+              "scale": 1.0,
+              "JHAGIJGAKMK": ""
+            },
+            {
+              "$type": "SendEffectTrigger",
+              "attachPoint": "",
+              "effectPattern": "Eff_SceneObj_Stages_AbyssLineFallMain_01",
+              "parameter": "GadgetState",
+              "type": "Int",
+              "value": 201
+            }
+          ],
+          "IAKNCBDLFKJ": 0.0
+        },
+        "CrackEffBinder": {
+          "elementDurability": 100.0,
+          "modifierName": "",
+          "onAdded": [
+            {
+              "$type": "AttachEffect",
+              "born": {
+                "$type": "ConfigBornByAttachPoint",
+                "attachPointName": "Slot_Crack",
+                "offset": {
+                  "x": 0.0,
+                  "y": 1.0,
+                  "z": 0.0
+                },
+                "useRotation": true
+              },
+              "effectPattern": "Eff_SceneObj_Stages_AbyssCrackBig_01",
+              "effectTempleteID": -1.0,
+              "scale": 1.0,
+              "JHAGIJGAKMK": ""
+            },
+            {
+              "$type": "SetEffectFollowPath",
+              "attachPoint": "Slot_Crack",
+              "effectPattern": "Eff_SceneObj_Stages_AbyssCrackBig_01",
+              "followPath": "Slot_Crack"
+            }
+          ],
+          "stacking": "Unique",
+          "IAKNCBDLFKJ": 0.0
+        },
+        "OnCompletedState": {
+          "elementDurability": 100.0,
+          "modifierName": "",
+          "onAdded": [
+            {
+              "$type": "SendEffectTrigger",
+              "attachPoint": "",
+              "effectPattern": "Eff_SceneObj_Stages_AbyssCrackBig_01",
+              "parameter": "Die"
+            },
+            {
+              "$type": "SetGlobalValueV2",
+              "key": "_PrevState",
+              "maxValue": 0.0,
+              "minValue": 0.0,
+              "value": 202.0
+            }
+          ],
+          "onReconnect": [
+            {
+              "$type": "RemoveModifier",
+              "modifierName": "CrackEffBinder"
+            }
+          ],
+          "IAKNCBDLFKJ": 0.0
+        }
+      },
+      "CELKHCPEMFI": [
+        "_PrevState"
+      ]
+    }
+  },
+  {
+    "Default": {
+      "abilityMixins": [
+        {
+          "$type": "AttachToGadgetStateMixin",
+          "gadgetState": 201,
+          "modifierName": "EffectBinder"
+        }
+      ],
+      "abilityName": "SceneObj_Area_Bhyl_AbyssInvasion_AbyssLineFallEnv",
+      "modifiers": {
+        "EffectBinder": {
+          "elementDurability": 100.0,
+          "modifierName": "",
+          "onAdded": [
+            {
+              "$type": "AttachEffect",
+              "effectPattern": "Eff_SceneObj_Stages_AbyssLineFallEnv_01",
+              "effectTempleteID": -1.0,
+              "scale": 1.0,
+              "JHAGIJGAKMK": ""
+            }
+          ],
+          "IAKNCBDLFKJ": 0.0
+        }
+      }
+    }
+  },
+  {
+    "Default": {
+      "abilityName": "SceneObj_Area_Bhyl_AbyssInvasion_MoonTowerBoom",
+      "modifiers": {
+        "OnBoom": {
+          "duration": "SGV_MoonTowerBoom_BoomDelay",
+          "elementDurability": 100.0,
+          "modifierName": "",
+          "onAdded": [
+            {
+              "$type": "FireEffect",
+              "effectPattern": "Eff_SceneObj_Stages_MoonTowerBoom_WarmUp_01",
+              "effectTempleteID": -1.0,
+              "scale": 1.0,
+              "JHAGIJGAKMK": ""
+            }
+          ],
+          "onRemoved": [
+            {
+              "$type": "SetGlobalValueV2",
+              "key": "GV_LunarisSplash_LV3_EffectType",
+              "maxValue": 0.0,
+              "minValue": 0.0,
+              "value": 1.0
+            },
+            {
+              "$type": "TriggerAbility",
+              "abilityName": "V6_3_Pohjola_LunarisThrow_LunarisSplash_Level_3"
+            },
+            {
+              "$type": "ApplyModifier",
+              "modifierName": "OnPendingKill"
+            }
+          ],
+          "stacking": "Unique",
+          "IAKNCBDLFKJ": 0.0
+        },
+        "OnPendingKill": {
+          "duration": "SGV_MoonTowerBoom_KillSelfDelay",
+          "elementDurability": 100.0,
+          "modifierName": "",
+          "onRemoved": [
+            {
+              "$type": "KillSelf",
+              "configIdArray": [
+                73074077
+              ]
+            }
+          ],
+          "IAKNCBDLFKJ": 0.0
+        }
+      },
+      "onAdded": [
+        {
+          "$type": "ApplyModifier",
+          "modifierName": "OnBoom"
+        }
+      ],
+      "CELKHCPEMFI": [
+        "SGV_MoonTowerBoom_BoomDelay",
+        "SGV_MoonTowerBoom_KillSelfDelay"
+      ]
+    }
+  },
+  {
+    "Default": {
+      "abilityMixins": [
+        {
+          "$type": "AttachToGadgetStateMixin",
+          "gadgetState": 201,
+          "modifierName": "NeurEvtBroadcaster"
+        }
+      ],
+      "abilityName": "SceneObj_Area_Bhyl_AbyssInvasion_NeurEventBroadcaster",
+      "modifiers": {
+        "NeurEvtBroadcaster": {
+          "elementDurability": 100.0,
+          "modifierName": "",
+          "onAdded": [
+            {
+              "$type": "TriggerThinkInterval"
+            }
+          ],
+          "onThinkInterval": [
+            {
+              "$type": "BroadcastNeuronStimulate",
+              "neuronName": "ABYSS_APPEAR",
+              "range": 20.0,
+              "stimulate": true
+            }
+          ],
+          "thinkInterval": 1.0,
+          "IAKNCBDLFKJ": 0.0
+        }
+      }
+    }
+  },
+  {
+    "Default": {
+      "abilityMixins": [
+        {
+          "$type": "AttachToGadgetStateMixin",
+          "gadgetState": 201,
+          "modifierName": "AttractNeurEvtBroadcaster"
+        }
+      ],
+      "abilityName": "SceneObj_Area_Bhyl_AbyssInvasion_AttractNeurEvtBroadcaster",
+      "modifiers": {
+        "AttractNeurEvtBroadcaster": {
+          "duration": "SGV_AiEvt_BroadcastDelay",
+          "elementDurability": 100.0,
+          "modifierName": "",
+          "onRemoved": [
+            {
+              "$type": "SetGlobalValueListV2",
+              "JNBAOPKJKFM": [
+                {
+                  "key": "_Attract_Type",
+                  "maxValue": 0.0,
+                  "minValue": 0.0,
+                  "value": "SGV_AiEvtBroadcaster_AttrType"
+                }
+              ]
+            },
+            {
+              "$type": "BroadcastAttractNeuronStimulate",
+              "predicates": [
+                {
+                  "$type": "ByTargetGlobalValue",
+                  "key": "SGV_AiEvtBroadcaster_AttrRangeType",
+                  "value": 1.0
+                }
+              ],
+              "range": 5.0,
+              "KGGNBADCIEP": [
+                "_Attract_Type"
+              ]
+            },
+            {
+              "$type": "BroadcastAttractNeuronStimulate",
+              "predicates": [
+                {
+                  "$type": "ByTargetGlobalValue",
+                  "key": "SGV_AiEvtBroadcaster_AttrRangeType",
+                  "value": 2.0
+                }
+              ],
+              "range": 20.0,
+              "KGGNBADCIEP": [
+                "_Attract_Type"
+              ]
+            },
+            {
+              "$type": "DebugLog",
+              "content": "[AbyssInvasion_AttractNeurEvtBroadcaster] AttractNeurEvt send"
+            },
+            {
+              "$type": "KillSelf",
+              "configIdArray": [
+                73074092
+              ]
+            }
+          ],
+          "IAKNCBDLFKJ": 0.0
+        }
+      },
+      "CELKHCPEMFI": [
+        "SGV_AiEvtBroadcaster_AttrType",
+        "SGV_AiEvtBroadcaster_AttrRangeType",
+        "SGV_AiEvt_BroadcastDelay",
+        "_Attract_Type"
+      ]
+    }
+  },
+  {
+    "Default": {
+      "abilityMixins": [
+        {
+          "$type": "DoActionOnGlobalValueChangeMixin",
+          "actions": [
+            {
+              "$type": "DebugLog",
+              "content": "UpdateDoorAnimatorState on GV changed"
+            },
+            {
+              "$type": "ApplyModifier",
+              "modifierName": "UpdateDoorAnimatorState"
+            }
+          ],
+          "globalValueKey": "SGV_Rt_Truck_DoorControl"
+        },
+        {
+          "$type": "LevelCurveMoveGVMixin",
+          "speed": "_Truck_MoveSpeed",
+          "tag": "",
+          "NCMLGHOEEMA": "",
+          "PNIFFLNDCDL": "_Truck_IsMoving"
+        },
+        {
+          "$type": "AttachModifierToGlobalValueMixin",
+          "globalValueKey": "_Truck_IsMoving",
+          "modifierNameSteps": [
+            "OnIdleState",
+            "OnMovingState"
+          ],
+          "valueSteps": [
+            -0.5,
+            0.5,
+            1.5
+          ],
+          "EECIIMBIDGB": true
+        },
+        {
+          "$type": "DoActionOnGlobalValueChangeMixin",
+          "actions": [
+            {
+              "$type": "ApplyModifier",
+              "modifierName": "UpdateLightEffState"
+            }
+          ],
+          "globalValueKey": "SGV_Truck_LightOnWhenIdle"
+        },
+        {
+          "$type": "DoActionOnGlobalValueChangeMixin",
+          "actions": [
+            {
+              "$type": "Predicated",
+              "successActions": [
+                {
+                  "$type": "SendEffectTrigger",
+                  "attachPoint": "",
+                  "effectPattern": "Eff_Area_Phyl_Property_NightKeeperTruck_Fac_Light_01",
+                  "isPlatformDependent": true,
+                  "parameter": "LightOn",
+                  "type": "Bool"
+                }
+              ],
+              "targetPredicates": [
+                {
+                  "$type": "ByTargetGlobalValue",
+                  "key": "GV_Debug_LightEffState",
+                  "value": 1.0
+                }
+              ]
+            },
+            {
+              "$type": "Predicated",
+              "successActions": [
+                {
+                  "$type": "SendEffectTrigger",
+                  "attachPoint": "",
+                  "dynamicValue": 0.0,
+                  "effectPattern": "Eff_Area_Phyl_Property_NightKeeperTruck_Fac_Light_01",
+                  "isPlatformDependent": true,
+                  "parameter": "OnlyFrontLight",
+                  "type": "Bool",
+                  "useDynamicValue": true
+                },
+                {
+                  "$type": "SendEffectTrigger",
+                  "attachPoint": "",
+                  "effectPattern": "Eff_Area_Phyl_Property_NightKeeperTruck_Fac_Light_01",
+                  "isPlatformDependent": true,
+                  "parameter": "LightOn",
+                  "type": "Bool",
+                  "value": 1
+                }
+              ],
+              "targetPredicates": [
+                {
+                  "$type": "ByTargetGlobalValue",
+                  "key": "GV_Debug_LightEffState",
+                  "value": 2.0
+                }
+              ]
+            },
+            {
+              "$type": "Predicated",
+              "successActions": [
+                {
+                  "$type": "SendEffectTrigger",
+                  "attachPoint": "",
+                  "dynamicValue": 1.0,
+                  "effectPattern": "Eff_Area_Phyl_Property_NightKeeperTruck_Fac_Light_01",
+                  "isPlatformDependent": true,
+                  "parameter": "OnlyFrontLight",
+                  "type": "Bool",
+                  "useDynamicValue": true
+                },
+                {
+                  "$type": "SendEffectTrigger",
+                  "attachPoint": "",
+                  "effectPattern": "Eff_Area_Phyl_Property_NightKeeperTruck_Fac_Light_01",
+                  "isPlatformDependent": true,
+                  "parameter": "LightOn",
+                  "type": "Bool",
+                  "value": 1
+                }
+              ],
+              "targetPredicates": [
+                {
+                  "$type": "ByTargetGlobalValue",
+                  "key": "GV_Debug_LightEffState",
+                  "value": 3.0
+                }
+              ]
+            }
+          ],
+          "globalValueKey": "GV_Debug_LightEffState",
+          "DHKOKKHJMHC": true
+        }
+      ],
+      "abilityName": "SceneObj_Area_Bhyl_NightKeeperTruck",
+      "modifiers": {
+        "Truck_ReconnectHandler": {
+          "elementDurability": 100.0,
+          "modifierName": "",
+          "onReconnect": [
+            {
+              "$type": "DebugLog",
+              "content": "[NightKeeperTruck] Update display on reconnect"
+            },
+            {
+              "$type": "ApplyModifier",
+              "modifierName": "UpdateDoorAnimatorState"
+            },
+            {
+              "$type": "ApplyModifier",
+              "modifierName": "UpdateLightEffState"
+            }
+          ],
+          "IAKNCBDLFKJ": 0.0
+        },
+        "UpdateDoorAnimatorState": {
+          "duration": 0.2,
+          "elementDurability": 100.0,
+          "modifierName": "",
+          "onAdded": [
+            {
+              "$type": "DebugLog",
+              "content": "ERROR: Trying to switch door state for NightKeeperTruck while it's moving!",
+              "predicates": [
+                {
+                  "$type": "ByTargetGlobalValue",
+                  "key": "_Truck_IsMoving",
+                  "value": 1.0
+                }
+              ]
+            },
+            {
+              "$type": "Predicated",
+              "canBeHandledOnRecover": true,
+              "failActions": [
+                {
+                  "$type": "DebugLog",
+                  "content": "ERROR: SGV_Rt_Truck_DoorControl invalid!"
+                }
+              ],
+              "successActions": [
+                {
+                  "$type": "SetAnimatorInt",
+                  "canBeHandledOnRecover": true,
+                  "intID": "GadgetState",
+                  "predicates": [
+                    {
+                      "$type": "ByTargetGlobalValue",
+                      "key": "SGV_Rt_Truck_DoorControl",
+                      "value": 1.0
+                    }
+                  ],
+                  "value": 0.0
+                },
+                {
+                  "$type": "SetAnimatorInt",
+                  "canBeHandledOnRecover": true,
+                  "intID": "GadgetState",
+                  "predicates": [
+                    {
+                      "$type": "ByTargetGlobalValue",
+                      "key": "SGV_Rt_Truck_DoorControl",
+                      "value": 4.0
+                    }
+                  ],
+                  "value": 204.0
+                },
+                {
+                  "$type": "SetAnimatorInt",
+                  "canBeHandledOnRecover": true,
+                  "intID": "GadgetState",
+                  "predicates": [
+                    {
+                      "$type": "ByTargetGlobalValue",
+                      "key": "SGV_Rt_Truck_DoorControl",
+                      "value": 2.0
+                    }
+                  ],
+                  "value": 202.0
+                },
+                {
+                  "$type": "SetAnimatorInt",
+                  "canBeHandledOnRecover": true,
+                  "intID": "GadgetState",
+                  "predicates": [
+                    {
+                      "$type": "ByTargetGlobalValue",
+                      "key": "SGV_Rt_Truck_DoorControl",
+                      "value": 3.0
+                    }
+                  ],
+                  "value": 203.0
+                }
+              ],
+              "targetPredicates": [
+                {
+                  "$type": "ByTargetGlobalValue",
+                  "compareType": "MoreThan",
+                  "key": "SGV_Rt_Truck_DoorControl",
+                  "value": 0.0
+                }
+              ]
+            }
+          ],
+          "IAKNCBDLFKJ": 0.0
+        },
+        "UpdateLightEffState": {
+          "duration": 0.2,
+          "elementDurability": 100.0,
+          "modifierName": "",
+          "onAdded": [
+            {
+              "$type": "Predicated",
+              "canBeHandledOnRecover": true,
+              "failActions": [
+                {
+                  "$type": "RemoveModifier",
+                  "modifierName": "LightOffBinder"
+                },
+                {
+                  "$type": "ApplyModifier",
+                  "modifierName": "LightOnBinder"
+                },
+                {
+                  "$type": "ApplyModifier",
+                  "modifierName": "LightEffOn"
+                }
+              ],
+              "successActions": [
+                {
+                  "$type": "RemoveModifier",
+                  "modifierName": "LightOnBinder"
+                },
+                {
+                  "$type": "ApplyModifier",
+                  "modifierName": "LightOffBinder"
+                },
+                {
+                  "$type": "ApplyModifier",
+                  "modifierName": "LightEffOff"
+                }
+              ],
+              "targetPredicates": [
+                {
+                  "$type": "ByTargetGlobalValue",
+                  "compareType": "NoneOrEqual",
+                  "key": "SGV_Truck_LightOnWhenIdle",
+                  "value": 0.0
+                }
+              ]
+            }
+          ],
+          "IAKNCBDLFKJ": 0.0
+        },
+        "LightEffOn": {
+          "duration": 0.2,
+          "elementDurability": 100.0,
+          "modifierName": "",
+          "onAdded": [
+            {
+              "$type": "DebugLog",
+              "content": "[NightKeeperTruck] Set light on"
+            },
+            {
+              "$type": "SendEffectTrigger",
+              "attachPoint": "",
+              "dynamicValue": "SGV_Truck_OnlyFrontLight",
+              "effectPattern": "Eff_Area_Phyl_Property_NightKeeperTruck_Fac_Light_01",
+              "isPlatformDependent": true,
+              "parameter": "OnlyFrontLight",
+              "type": "Bool",
+              "useDynamicValue": true
+            },
+            {
+              "$type": "SendEffectTrigger",
+              "attachPoint": "",
+              "effectPattern": "Eff_Area_Phyl_Property_NightKeeperTruck_Fac_Light_01",
+              "isPlatformDependent": true,
+              "parameter": "LightOn",
+              "type": "Bool",
+              "value": 1
+            }
+          ],
+          "IAKNCBDLFKJ": 0.0
+        },
+        "LightEffOff": {
+          "duration": 0.2,
+          "elementDurability": 100.0,
+          "modifierName": "",
+          "onAdded": [
+            {
+              "$type": "DebugLog",
+              "content": "[NightKeeperTruck] Set light off"
+            },
+            {
+              "$type": "SendEffectTrigger",
+              "attachPoint": "",
+              "dynamicValue": "SGV_Truck_OnlyFrontLight",
+              "effectPattern": "Eff_Area_Phyl_Property_NightKeeperTruck_Fac_Light_01",
+              "isPlatformDependent": true,
+              "parameter": "OnlyFrontLight",
+              "type": "Bool",
+              "useDynamicValue": true
+            },
+            {
+              "$type": "SendEffectTrigger",
+              "attachPoint": "",
+              "effectPattern": "Eff_Area_Phyl_Property_NightKeeperTruck_Fac_Light_01",
+              "isPlatformDependent": true,
+              "parameter": "LightOn",
+              "type": "Bool"
+            }
+          ],
+          "IAKNCBDLFKJ": 0.0
+        },
+        "LightEffBinder": {
+          "elementDurability": 100.0,
+          "modifierName": "",
+          "onAdded": [
+            {
+              "$type": "AttachEffect",
+              "effectPattern": "Eff_Area_Phyl_Property_NightKeeperTruck_Fac_Light_01",
+              "effectTempleteID": -1.0,
+              "isPlatformDependent": true,
+              "scale": 1.0,
+              "JHAGIJGAKMK": ""
+            },
+            {
+              "$type": "ApplyModifier",
+              "modifierName": "UpdateLightEffState"
+            }
+          ],
+          "stacking": "Unique",
+          "IAKNCBDLFKJ": 0.0
+        },
+        "LightOnBinder": {
+          "elementDurability": 100.0,
+          "modifierMixins": [
+            {
+              "$type": "ShaderStateMachineSwitchMixin",
+              "BGOJEEJGDLD": 1,
+              "BCBNIPCDGCC": "Default"
+            }
+          ],
+          "modifierName": "",
+          "IAKNCBDLFKJ": 0.0
+        },
+        "LightOffBinder": {
+          "elementDurability": 100.0,
+          "modifierMixins": [
+            {
+              "$type": "ShaderStateMachineSwitchMixin",
+              "BCBNIPCDGCC": "Default"
+            }
+          ],
+          "modifierName": "",
+          "IAKNCBDLFKJ": 0.0
+        },
+        "OnIdleState": {
+          "elementDurability": 100.0,
+          "modifierName": "",
+          "onAdded": [
+            {
+              "$type": "DebugLog",
+              "content": "NightKeeperTruck - Enter Idle State!"
+            },
+            {
+              "$type": "Predicated",
+              "canBeHandledOnRecover": true,
+              "failActions": [
+                {
+                  "$type": "RemoveModifier",
+                  "modifierName": "LightOnBinder"
+                },
+                {
+                  "$type": "AttachModifier",
+                  "modifierName": "LightOffBinder"
+                },
+                {
+                  "$type": "ApplyModifier",
+                  "modifierName": "LightEffOff"
+                }
+              ],
+              "successActions": [
+                {
+                  "$type": "RemoveModifier",
+                  "modifierName": "LightOffBinder"
+                },
+                {
+                  "$type": "AttachModifier",
+                  "modifierName": "LightOnBinder"
+                },
+                {
+                  "$type": "ApplyModifier",
+                  "modifierName": "LightEffOn"
+                }
+              ],
+              "targetPredicates": [
+                {
+                  "$type": "ByTargetGlobalValue",
+                  "key": "SGV_Truck_LightOnWhenIdle",
+                  "value": 1.0
+                }
+              ]
+            },
+            {
+              "$type": "ApplyModifier",
+              "modifierName": "UpdateDoorAnimatorState"
+            },
+            {
+              "$type": "ChangeGadgetState"
+            }
+          ],
+          "IAKNCBDLFKJ": 0.0
+        },
+        "OnMovingState": {
+          "elementDurability": 100.0,
+          "modifierName": "",
+          "onAdded": [
+            {
+              "$type": "SetAnimatorInt",
+              "canBeHandledOnRecover": true,
+              "intID": "GadgetState",
+              "value": 201.0
+            },
+            {
+              "$type": "DebugLog",
+              "content": "NightKeeperTruck - Enter Moving State!"
+            },
+            {
+              "$type": "AttachEffect",
+              "born": {
+                "$type": "ConfigBornByAttachPoint",
+                "attachPointName": "TruckRoot",
+                "useRotation": true
+              },
+              "effectPattern": "Eff_SceneObj_LightKeeperTruck_Smoke",
+              "effectTempleteID": -1.0,
+              "scale": 1.0,
+              "JHAGIJGAKMK": ""
+            },
+            {
+              "$type": "SetEffectFollowPath",
+              "attachPoint": "",
+              "effectPattern": "Eff_SceneObj_LightKeeperTruck_Smoke",
+              "followPath": "TruckRoot"
+            },
+            {
+              "$type": "AttachModifier",
+              "modifierName": "LightOnBinder"
+            },
+            {
+              "$type": "ApplyModifier",
+              "modifierName": "LightEffOn"
+            },
+            {
+              "$type": "ChangeGadgetState",
+              "state": 201
+            }
+          ],
+          "IAKNCBDLFKJ": 0.0
+        }
+      },
+      "onAdded": [
+        {
+          "$type": "DebugLog",
+          "content": "UpdateDoorAnimatorState on init"
+        },
+        {
+          "$type": "ApplyModifier",
+          "modifierName": "UpdateDoorAnimatorState"
+        },
+        {
+          "$type": "AttachModifier",
+          "modifierName": "LightEffBinder"
+        },
+        {
+          "$type": "AttachModifier",
+          "modifierName": "Truck_ReconnectHandler"
+        }
+      ],
+      "CELKHCPEMFI": [
+        "SGV_Rt_Truck_DoorControl",
+        "SGV_Truck_LightOnWhenIdle",
+        "SGV_Truck_OnlyFrontLight",
+        "_Truck_IsMoving",
+        "_Truck_MoveSpeed",
+        "GV_Debug_LightEffState"
+      ]
+    }
+  },
+  {
+    "Default": {
+      "abilityMixins": [
+        {
+          "$type": "AttachToGadgetStateMutexMixin",
+          "gadgetStates": [
+            200,
+            201,
+            202,
+            203,
+            204
+          ],
+          "modifierNames": [
+            [
+              "OnIdleState"
+            ],
+            [
+              "OnBakingState"
+            ],
+            [
+              "OnPerfectBakeState"
+            ],
+            [
+              "OnFailBakeState"
+            ],
+            [
+              "OnOpenedState"
+            ]
+          ]
+        },
+        {
+          "$type": "WidgetMpSupportMixin",
+          "succActions": [
+            {
+              "$type": "ServerLuaCall",
+              "funcName": "SLC_BreadOvenOpen",
+              "luaCallType": "FromGroup",
+              "param1": 0.0,
+              "param2": 0.0,
+              "param3": 0.0
+            }
+          ]
+        }
+      ],
+      "abilityName": "SceneObj_Area_Phyl_BreadOven",
+      "modifiers": {
+        "BakeEffectBinder": {
+          "elementDurability": 100.0,
+          "modifierName": "",
+          "onAdded": [
+            {
+              "$type": "AttachEffect",
+              "born": {
+                "$type": "ConfigBornByAttachPoint",
+                "attachPointName": "Slot_Eff_Oven",
+                "useRotation": true
+              },
+              "effectPattern": "Eff_SceneObj_BreadOven_CookingSmoke_Loop",
+              "effectTempleteID": -1.0,
+              "scale": 1.0,
+              "JHAGIJGAKMK": ""
+            }
+          ],
+          "stacking": "Unique",
+          "IAKNCBDLFKJ": 0.0
+        },
+        "OnIdleState": {
+          "elementDurability": 100.0,
+          "modifierMixins": [
+            {
+              "$type": "ShaderStateMachineSwitchMixin",
+              "BCBNIPCDGCC": "Default"
+            }
+          ],
+          "modifierName": "",
+          "onAdded": [
+            {
+              "$type": "EnableGadgetIntee"
+            },
+            {
+              "$type": "EnableSceneTransformByName",
+              "transformNames": [
+                "Product_Success",
+                "Product_Fail"
+              ]
+            },
+            {
+              "$type": "SetAnimatorInt",
+              "canBeHandledOnRecover": true,
+              "intID": "GadgetState",
+              "value": 201.0
+            },
+            {
+              "$type": "RemoveModifier",
+              "modifierName": "BakeEffectBinder"
+            },
+            {
+              "$type": "SetGlobalValueV2",
+              "key": "_PrevState",
+              "maxValue": 0.0,
+              "minValue": 0.0,
+              "value": 200.0
+            }
+          ],
+          "onReconnect": [
+            {
+              "$type": "EnableGadgetIntee",
+              "canBeHandledOnRecover": true
+            }
+          ],
+          "IAKNCBDLFKJ": 0.0
+        },
+        "OnBakingState": {
+          "elementDurability": 100.0,
+          "modifierMixins": [
+            {
+              "$type": "ShaderStateMachineSwitchMixin",
+              "BGOJEEJGDLD": 1,
+              "BCBNIPCDGCC": "Default"
+            }
+          ],
+          "modifierName": "",
+          "onAdded": [
+            {
+              "$type": "EnableGadgetIntee"
+            },
+            {
+              "$type": "EnableSceneTransformByName",
+              "transformNames": [
+                "Product_Success",
+                "Product_Fail"
+              ]
+            },
+            {
+              "$type": "SetAnimatorInt",
+              "canBeHandledOnRecover": true,
+              "intID": "GadgetState",
+              "value": 0.0
+            },
+            {
+              "$type": "ApplyModifier",
+              "modifierName": "BakeEffectBinder"
+            },
+            {
+              "$type": "SetGlobalValueV2",
+              "key": "_PrevState",
+              "maxValue": 0.0,
+              "minValue": 0.0,
+              "value": 201.0
+            }
+          ],
+          "onReconnect": [
+            {
+              "$type": "EnableGadgetIntee",
+              "canBeHandledOnRecover": true
+            }
+          ],
+          "IAKNCBDLFKJ": 0.0
+        },
+        "OnPerfectBakeState": {
+          "elementDurability": 100.0,
+          "modifierMixins": [
+            {
+              "$type": "ShaderStateMachineSwitchMixin",
+              "BGOJEEJGDLD": 3,
+              "BCBNIPCDGCC": "Default"
+            }
+          ],
+          "modifierName": "",
+          "onAdded": [
+            {
+              "$type": "EnableGadgetIntee",
+              "enable": true
+            },
+            {
+              "$type": "EnableSceneTransformByName",
+              "transformNames": [
+                "Product_Success",
+                "Product_Fail"
+              ]
+            },
+            {
+              "$type": "SetAnimatorInt",
+              "canBeHandledOnRecover": true,
+              "intID": "GadgetState",
+              "value": 202.0
+            },
+            {
+              "$type": "ApplyModifier",
+              "modifierName": "BakeEffectBinder"
+            },
+            {
+              "$type": "SetGlobalValueV2",
+              "key": "_PrevState",
+              "maxValue": 0.0,
+              "minValue": 0.0,
+              "value": 202.0
+            }
+          ],
+          "onReconnect": [
+            {
+              "$type": "EnableGadgetIntee",
+              "canBeHandledOnRecover": true,
+              "enable": true
+            }
+          ],
+          "IAKNCBDLFKJ": 0.0
+        },
+        "OnFailBakeState": {
+          "elementDurability": 100.0,
+          "modifierMixins": [
+            {
+              "$type": "ShaderStateMachineSwitchMixin",
+              "BGOJEEJGDLD": 4,
+              "BCBNIPCDGCC": "Default"
+            }
+          ],
+          "modifierName": "",
+          "onAdded": [
+            {
+              "$type": "EnableGadgetIntee",
+              "enable": true
+            },
+            {
+              "$type": "EnableSceneTransformByName",
+              "transformNames": [
+                "Product_Success",
+                "Product_Fail"
+              ]
+            },
+            {
+              "$type": "SetAnimatorInt",
+              "canBeHandledOnRecover": true,
+              "intID": "GadgetState",
+              "value": 201.0
+            },
+            {
+              "$type": "SetAnimatorInt",
+              "canBeHandledOnRecover": true,
+              "intID": "GadgetState",
+              "value": 203.0
+            },
+            {
+              "$type": "ApplyModifier",
+              "modifierName": "BakeEffectBinder"
+            },
+            {
+              "$type": "SetGlobalValueV2",
+              "key": "_PrevState",
+              "maxValue": 0.0,
+              "minValue": 0.0,
+              "value": 203.0
+            }
+          ],
+          "onReconnect": [
+            {
+              "$type": "EnableGadgetIntee",
+              "canBeHandledOnRecover": true,
+              "enable": true
+            }
+          ],
+          "IAKNCBDLFKJ": 0.0
+        },
+        "OnOpenedState": {
+          "elementDurability": 100.0,
+          "modifierMixins": [
+            {
+              "$type": "ShaderStateMachineSwitchMixin",
+              "BCBNIPCDGCC": "Default"
+            }
+          ],
+          "modifierName": "",
+          "onAdded": [
+            {
+              "$type": "EnableGadgetIntee"
+            },
+            {
+              "$type": "Predicated",
+              "canBeHandledOnRecover": true,
+              "failActions": [
+                {
+                  "$type": "Predicated",
+                  "failActions": [
+                    {
+                      "$type": "DebugLog",
+                      "content": "Error: SGV_Rt_ProductType invalid during gadget state: OnOpenedState, product may be incorrect!"
+                    }
+                  ],
+                  "successActions": [
+                    {
+                      "$type": "EnableSceneTransformByName",
+                      "transformNames": [
+                        "Product_Success"
+                      ]
+                    },
+                    {
+                      "$type": "EnableSceneTransformByName",
+                      "setEnable": true,
+                      "transformNames": [
+                        "Product_Fail"
+                      ]
+                    },
+                    {
+                      "$type": "FireEffect",
+                      "born": {
+                        "$type": "ConfigBornByAttachPoint",
+                        "attachPointName": "Slot_Eff_Oven",
+                        "useRotation": true
+                      },
+                      "effectPattern": "Eff_SceneObj_BreadOven_CookingSmoke_Fail",
+                      "effectTempleteID": -1.0,
+                      "scale": 1.0,
+                      "JHAGIJGAKMK": ""
+                    }
+                  ],
+                  "targetPredicates": [
+                    {
+                      "$type": "ByTargetGlobalValue",
+                      "key": "SGV_Rt_ProductType",
+                      "value": 2.0
+                    }
+                  ]
+                }
+              ],
+              "successActions": [
+                {
+                  "$type": "EnableSceneTransformByName",
+                  "setEnable": true,
+                  "transformNames": [
+                    "Product_Success"
+                  ]
+                },
+                {
+                  "$type": "EnableSceneTransformByName",
+                  "transformNames": [
+                    "Product_Fail"
+                  ]
+                },
+                {
+                  "$type": "FireEffect",
+                  "born": {
+                    "$type": "ConfigBornByAttachPoint",
+                    "attachPointName": "Slot_Eff_Oven",
+                    "useRotation": true
+                  },
+                  "effectPattern": "Eff_SceneObj_BreadOven_CookingSmoke_Success",
+                  "effectTempleteID": -1.0,
+                  "scale": 1.0,
+                  "JHAGIJGAKMK": ""
+                }
+              ],
+              "targetPredicates": [
+                {
+                  "$type": "ByTargetGlobalValue",
+                  "key": "SGV_Rt_ProductType",
+                  "value": 1.0
+                }
+              ]
+            },
+            {
+              "$type": "SetAnimatorInt",
+              "canBeHandledOnRecover": true,
+              "intID": "GadgetState",
+              "value": 201.0
+            },
+            {
+              "$type": "RemoveModifier",
+              "modifierName": "BakeEffectBinder"
+            },
+            {
+              "$type": "SetGlobalValueV2",
+              "key": "_PrevState",
+              "maxValue": 0.0,
+              "minValue": 0.0,
+              "value": 204.0
+            }
+          ],
+          "onReconnect": [
+            {
+              "$type": "EnableGadgetIntee",
+              "canBeHandledOnRecover": true
+            }
+          ],
+          "IAKNCBDLFKJ": 0.0
+        }
+      },
+      "CELKHCPEMFI": [
+        "SGV_Rt_ProductType",
+        "_PrevState"
+      ]
+    }
+  },
+  {
+    "Default": {
+      "abilityMixins": [
+        {
+          "$type": "AttachToGadgetStateMutexMixin",
+          "gadgetStates": [
+            0,
+            201,
+            202
+          ],
+          "modifierNames": [
+            [
+              "OnStage01"
+            ],
+            [
+              "OnStage02"
+            ],
+            [
+              "OnStage03"
+            ]
+          ]
+        }
+      ],
+      "abilityName": "SceneObj_Area_Phyl_Property_Ani_Prop_DTZMapTable_01",
+      "modifiers": {
+        "ExtraContentHandler": {
+          "elementDurability": 100.0,
+          "modifierName": "",
+          "onAdded": [
+            {
+              "$type": "Predicated",
+              "canBeHandledOnRecover": true,
+              "targetPredicates": [
+                {
+                  "$type": "JCFEHPEIIDG",
+                  "CMPGKDKAOGK": [
+                    76025
+                  ]
+                }
+              ]
+            }
+          ],
+          "IAKNCBDLFKJ": 0.0
+        },
+        "OnStage01": {
+          "elementDurability": 100.0,
+          "modifierMixins": [
+            {
+              "$type": "ShaderStateMachineSwitchMixin",
+              "BCBNIPCDGCC": "Default"
+            }
+          ],
+          "modifierName": "",
+          "onAdded": [
+            {
+              "$type": "SetGlobalValueV2",
+              "key": "_PrevState",
+              "maxValue": 0.0,
+              "minValue": 0.0,
+              "value": 200.0
+            }
+          ],
+          "IAKNCBDLFKJ": 0.0
+        },
+        "OnStage02": {
+          "elementDurability": 100.0,
+          "modifierMixins": [
+            {
+              "$type": "ShaderStateMachineSwitchMixin",
+              "BGOJEEJGDLD": 1,
+              "BCBNIPCDGCC": "Default"
+            }
+          ],
+          "modifierName": "",
+          "onAdded": [
+            {
+              "$type": "SetGlobalValueV2",
+              "key": "_PrevState",
+              "maxValue": 0.0,
+              "minValue": 0.0,
+              "value": 201.0
+            }
+          ],
+          "IAKNCBDLFKJ": 0.0
+        },
+        "OnStage03": {
+          "elementDurability": 100.0,
+          "modifierMixins": [
+            {
+              "$type": "ShaderStateMachineSwitchMixin",
+              "BGOJEEJGDLD": 2,
+              "BCBNIPCDGCC": "Default"
+            }
+          ],
+          "modifierName": "",
+          "onAdded": [
+            {
+              "$type": "AttachEffect",
+              "effectPattern": "Eff_SceneObj_ColonelMaxLevel_Loop_01",
+              "effectTempleteID": -1.0,
+              "scale": 1.0,
+              "JHAGIJGAKMK": ""
+            },
+            {
+              "$type": "SetGlobalValueV2",
+              "key": "_PrevState",
+              "maxValue": 0.0,
+              "minValue": 0.0,
+              "value": 202.0
+            }
+          ],
+          "IAKNCBDLFKJ": 0.0
+        }
+      },
+      "onAdded": [
+        {
+          "$type": "AttachModifier",
+          "modifierName": "ExtraContentHandler"
+        }
+      ],
+      "CELKHCPEMFI": [
+        "_PrevState"
+      ]
+    }
+  },
+  {
+    "Default": {
+      "abilityMixins": [
+        {
+          "$type": "AttachToGadgetStateMixin",
+          "modifierName": "OnDefaultState"
+        },
+        {
+          "$type": "AttachToGadgetStateMixin",
+          "gadgetState": 201,
+          "modifierName": "OnMaxLevelState"
+        }
+      ],
+      "abilityName": "SceneObj_Area_Phyl_Ani_Prop_WitchMaxLevel_Offering",
+      "modifiers": {
+        "OnDefaultState": {
+          "elementDurability": 100.0,
+          "modifierName": "",
+          "onAdded": [
+            {
+              "$type": "EnableSceneTransformByName",
+              "transformNames": [
+                "All"
+              ]
+            }
+          ],
+          "IAKNCBDLFKJ": 0.0
+        },
+        "OnMaxLevelState": {
+          "elementDurability": 100.0,
+          "modifierName": "",
+          "onAdded": [
+            {
+              "$type": "EnableSceneTransformByName",
+              "setEnable": true,
+              "transformNames": [
+                "All"
+              ]
+            },
+            {
+              "$type": "AttachEffect",
+              "born": {
+                "$type": "ConfigBornByAttachPoint",
+                "attachPointName": "RootNode",
+                "useRotation": true
+              },
+              "effectPattern": "Eff_SceneObj_WitchMaxLevel_01_Idle",
+              "effectTempleteID": -1.0,
+              "scale": 1.0,
+              "JHAGIJGAKMK": ""
+            }
+          ],
+          "IAKNCBDLFKJ": 0.0
+        }
+      }
+    }
+  },
+  {
+    "Default": {
+      "abilityMixins": [
+        {
+          "$type": "AttachToGadgetStateMixin",
+          "gadgetState": 201,
+          "modifierName": "LightOnState"
+        }
+      ],
+      "abilityName": "SceneObj_Area_Phyl_NightKeeperTruck_Offering_LightHouseEffect",
+      "modifiers": {
+        "EffectBinder": {
+          "elementDurability": 100.0,
+          "modifierName": "",
+          "onAdded": [
+            {
+              "$type": "AttachEffect",
+              "born": {
+                "$type": "ConfigBornByAttachPoint",
+                "attachPointName": "RootNode",
+                "useRotation": true
+              },
+              "effectPattern": "Eff_SceneObj_ZJCSupplyVehicle_01_Idle",
+              "effectTempleteID": -1.0,
+              "scale": 1.0,
+              "JHAGIJGAKMK": ""
+            }
+          ],
+          "IAKNCBDLFKJ": 0.0
+        },
+        "LightOnState": {
+          "elementDurability": 100.0,
+          "modifierName": "",
+          "onAdded": [
+            {
+              "$type": "AttachModifier",
+              "modifierName": "EffectBinder"
+            }
+          ],
+          "IAKNCBDLFKJ": 0.0
+        }
+      }
+    }
+  },
+  {
+    "Default": {
+      "abilityName": "V6_3_Pohjola_Institude_PlayMode_Stealth",
+      "isDynamicAbility": true,
+      "modifiers": {
+        "CrouchStateListener": {
+          "elementDurability": 100.0,
+          "modifierName": "",
+          "onAdded": [
+            {
+              "$type": "TriggerThinkInterval"
+            }
+          ],
+          "onThinkInterval": [
+            {
+              "$type": "Predicated",
+              "failActions": [
+                {
+                  "$type": "DebugLog",
+                  "content": "[InstitudeStealth] Stop try uncrouch due to not in crouch state!"
+                },
+                {
+                  "$type": "RemoveModifier",
+                  "modifierName": "CrouchStateListener"
+                }
+              ],
+              "successActions": [
+                {
+                  "$type": "DebugLog",
+                  "content": "[InstitudeStealth] Try uncrouch during crouch state!"
+                },
+                {
+                  "$type": "SetAvatarUncrouch"
+                }
+              ],
+              "target": "CurLocalAvatar",
+              "targetPredicates": [
+                {
+                  "$type": "NJNJHGLBHAO",
+                  "stateIDs": [
+                    "Crouch"
+                  ]
+                }
+              ]
+            }
+          ],
+          "thinkInterval": 0.5,
+          "IAKNCBDLFKJ": 0.0,
+          "AIGKGDJDDNN": true
+        },
+        "StealthModeHandler": {
+          "elementDurability": 100.0,
+          "modifierMixins": [
+            {
+              "$type": "EnterSneakModeMixin",
+              "FKKACAAIPBP": 24.0,
+              "LHJJIHNIKMK": true,
+              "CJCBADHJFHD": "InstitudeStealth"
+            },
+            {
+              "$type": "AttachModifierToGlobalValueMixin",
+              "globalValueKey": "Level_Ability_State_GV",
+              "globalValueTarget": "Team",
+              "modifierNameSteps": [
+                "OnHideAtkBtn",
+                "OnShowAtkBtn"
+              ],
+              "removeModifierByAttach": true,
+              "valueSteps": [
+                -0.5,
+                0.5,
+                1.5
+              ],
+              "EECIIMBIDGB": true
+            }
+          ],
+          "modifierName": "",
+          "onAdded": [
+            {
+              "$type": "ApplyModifier",
+              "modifierName": "HideAtkBtnHandler"
+            }
+          ],
+          "onRemoved": [
+            {
+              "$type": "RemoveModifier",
+              "modifierName": "HideAtkBtnHandler"
+            }
+          ],
+          "IAKNCBDLFKJ": 0.0
+        },
+        "OnHideAtkBtn": {
+          "elementDurability": 100.0,
+          "modifierName": "",
+          "onAdded": [
+            {
+              "$type": "ApplyModifier",
+              "modifierName": "HideAtkBtnHandler"
+            }
+          ],
+          "IAKNCBDLFKJ": 0.0
+        },
+        "OnShowAtkBtn": {
+          "elementDurability": 100.0,
+          "modifierName": "",
+          "onAdded": [
+            {
+              "$type": "RemoveModifier",
+              "modifierName": "HideAtkBtnHandler"
+            }
+          ],
+          "IAKNCBDLFKJ": 0.0
+        },
+        "HideAtkBtnHandler": {
+          "elementDurability": 100.0,
+          "modifierMixins": [
+            {
+              "$type": "HideActionSlotMixin",
+              "slotType": "Slot1"
+            }
+          ],
+          "modifierName": "",
+          "stacking": "Unique",
+          "IAKNCBDLFKJ": 0.0
+        }
+      },
+      "onAdded": [
+        {
+          "$type": "AttachModifier",
+          "modifierName": "StealthModeHandler"
+        },
+        {
+          "$type": "DebugLog",
+          "content": "Switch to PlayMode - InstitudeStealth"
+        }
+      ],
+      "onRemoved": [
+        {
+          "$type": "DebugLog",
+          "content": "Switch out from PlayMode - InstitudeStealth"
+        },
+        {
+          "$type": "Predicated",
+          "failActions": [
+            {
+              "$type": "DebugLog",
+              "content": "[InstitudeStealth] Exit stealth area NOT in crouch state"
+            }
+          ],
+          "successActions": [
+            {
+              "$type": "DebugLog",
+              "content": "[InstitudeStealth] Exit stealth area in crouch state"
+            },
+            {
+              "$type": "ApplyModifier",
+              "modifierName": "CrouchStateListener"
+            }
+          ],
+          "target": "CurLocalAvatar",
+          "targetPredicates": [
+            {
+              "$type": "NJNJHGLBHAO",
+              "stateIDs": [
+                "Crouch"
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "Default": {
+      "abilityName": "V6_3_Pohjola_Institude_PlayMode_Explore",
+      "isDynamicAbility": true,
+      "modifiers": {
+        "UNIQUE_AvatarSkillHandler": {
+          "elementDurability": 100.0,
+          "isUnique": true,
+          "modifierMixins": [
+            {
+              "$type": "CurLocalAvatarMixinV2",
+              "modifierName": "SkillAvailabilityHandler"
+            }
+          ],
+          "modifierName": "",
+          "stacking": "Unique",
+          "IAKNCBDLFKJ": 0.0
+        },
+        "SkillAvailabilityHandler": {
+          "elementDurability": 100.0,
+          "modifierName": "",
+          "onAdded": [
+            {
+              "$type": "AddAvatarSkillInfo",
+              "doOffStage": true,
+              "skillID": 30201,
+              "target": "CurLocalAvatar"
+            },
+            {
+              "$type": "AttachModifier",
+              "doOffStage": true,
+              "modifierName": "ForceAvailabilityListener"
+            },
+            {
+              "$type": "AttachModifier",
+              "doOffStage": true,
+              "modifierName": "ForbidOtherSkillHandler"
+            }
+          ],
+          "onRemoved": [
+            {
+              "$type": "RemoveAvatarSkillInfo",
+              "doOffStage": true,
+              "skillID": 30201,
+              "target": "CurLocalAvatar"
+            },
+            {
+              "$type": "RemoveAvatarSkillInfo",
+              "doOffStage": true,
+              "skillID": 30202,
+              "target": "CurLocalAvatar"
+            }
+          ],
+          "IAKNCBDLFKJ": 0.0
+        },
+        "ForceAvailabilityListener": {
+          "elementDurability": 100.0,
+          "modifierMixins": [
+            {
+              "$type": "AttachModifierToGlobalValueMixin",
+              "globalValueKey": "_GV_Force_AtkSkill_Availability",
+              "globalValueTarget": "Team",
+              "modifierNameSteps": [
+                "ForbidAtkSkillHandler"
+              ],
+              "valueSteps": [
+                -0.5,
+                0.5
+              ],
+              "EECIIMBIDGB": true
+            }
+          ],
+          "modifierName": "",
+          "IAKNCBDLFKJ": 0.0
+        },
+        "ForbidAtkSkillHandler": {
+          "elementDurability": 100.0,
+          "modifierMixins": [
+            {
+              "$type": "SwitchSkillIDMixin",
+              "priority": "Playmode",
+              "skillID": 30201,
+              "MPJEFGJLMKO": true
+            },
+            {
+              "$type": "ForbidSkillByIDMixin",
+              "skillID": 30201
+            }
+          ],
+          "modifierName": "",
+          "IAKNCBDLFKJ": 0.0
+        },
+        "ForbidOtherSkillHandler": {
+          "elementDurability": 100.0,
+          "modifierMixins": [
+            {
+              "$type": "HideActionSlotMixin",
+              "slotType": "Slot2"
+            },
+            {
+              "$type": "AttachModifierToGlobalValueMixin",
+              "globalValueKey": "_GV_CODE_AbsorbThrow_Phase",
+              "modifierNameSteps": [
+                "HideActionSlot5Handler",
+                "DoNotHideActionSlot5",
+                "HideActionSlot5Handler"
+              ],
+              "valueSteps": [
+                -0.5,
+                1.5,
+                2.5,
+                999.0
+              ],
+              "EECIIMBIDGB": true
+            }
+          ],
+          "modifierName": "",
+          "IAKNCBDLFKJ": 0.0
+        },
+        "DoNotHideActionSlot5": {
+          "elementDurability": 100.0,
+          "modifierName": "",
+          "IAKNCBDLFKJ": 0.0
+        },
+        "HideActionSlot5Handler": {
+          "elementDurability": 100.0,
+          "modifierMixins": [
+            {
+              "$type": "HideActionSlotMixin",
+              "slotType": "Slot5"
+            }
+          ],
+          "modifierName": "",
+          "IAKNCBDLFKJ": 0.0
+        },
+        "BanWidgetHandler": {
+          "elementDurability": 100.0,
+          "modifierMixins": [
+            {
+              "$type": "HideActionSlotMixin",
+              "slotType": "SlotQuickUse"
+            },
+            {
+              "$type": "WidgetDisableMixin",
+              "uiDisableIDs": [
+                220005
+              ],
+              "MFCHONIKBEH": true
+            }
+          ],
+          "modifierName": "",
+          "IAKNCBDLFKJ": 0.0
+        }
+      },
+      "onAdded": [
+        {
+          "$type": "SetGlobalValueV2",
+          "key": "_GV_Force_AtkSkill_Availability",
+          "maxValue": 0.0,
+          "minValue": 0.0,
+          "value": 0.0
+        },
+        {
+          "$type": "ChangePlayModeV2",
+          "DIPAHCDCKMA": "InstitudeExplore"
+        },
+        {
+          "$type": "AttachModifier",
+          "modifierName": "UNIQUE_AvatarSkillHandler"
+        },
+        {
+          "$type": "AttachModifier",
+          "modifierName": "BanWidgetHandler"
+        },
+        {
+          "$type": "DebugLog",
+          "content": "Switch to PlayMode - InstitudeExplore"
+        }
+      ],
+      "onRemoved": [
+        {
+          "$type": "ChangePlayModeV2",
+          "OCGHLADNJJB": false,
+          "DIPAHCDCKMA": "InstitudeExplore"
+        },
+        {
+          "$type": "DebugLog",
+          "content": "Switch out from PlayMode - InstitudeExplore"
+        }
+      ],
+      "CELKHCPEMFI": [
+        "_GV_Force_AtkSkill_Availability"
+      ]
+    }
+  },
+  {
+    "Default": {
+      "abilityMixins": [
+        {
+          "$type": "AttachToGadgetStateMixin",
+          "modifierName": "OnDefaultState"
+        },
+        {
+          "$type": "AttachToGadgetStateMixin",
+          "gadgetState": 201,
+          "modifierName": "OnStartedState"
+        },
+        {
+          "$type": "AttachToGadgetStateMixin",
+          "gadgetState": 202,
+          "modifierName": "OnCompletedState"
+        }
+      ],
+      "abilityName": "SceneObj_Area_Phyl_Prop_Challengestarter_AbyssInfested",
+      "modifiers": {
+        "EffectBinder": {
+          "elementDurability": 100.0,
+          "modifierName": "",
+          "onAdded": [
+            {
+              "$type": "AttachEffect",
+              "born": {
+                "$type": "ConfigBornByAttachPoint",
+                "attachPointName": "EffectPoint",
+                "useRotation": true
+              },
+              "effectPattern": "Eff_SceneObj_Challengestarter_01",
+              "effectTempleteID": -1.0,
+              "scale": 1.0,
+              "JHAGIJGAKMK": ""
+            }
+          ],
+          "onReconnect": [
+            {
+              "$type": "SendEffectTrigger",
+              "attachPoint": "",
+              "effectPattern": "Eff_SceneObj_Challengestarter_01",
+              "parameter": "State",
+              "predicates": [
+                {
+                  "$type": "ByTargetGadgetState",
+                  "gadgetState": 201
+                }
+              ],
+              "type": "Int",
+              "value": 201
+            },
+            {
+              "$type": "SendEffectTrigger",
+              "attachPoint": "",
+              "effectPattern": "Eff_SceneObj_Challengestarter_01",
+              "parameter": "State",
+              "predicates": [
+                {
+                  "$type": "ByTargetGadgetState",
+                  "gadgetState": 202
+                }
+              ],
+              "type": "Int",
+              "value": 202
+            }
+          ],
+          "IAKNCBDLFKJ": 0.0
+        },
+        "OnDefaultState": {
+          "elementDurability": 100.0,
+          "modifierName": "",
+          "onAdded": [
+            {
+              "$type": "ApplyModifier",
+              "modifierName": "EffectBinder",
+              "predicates": [
+                {
+                  "$type": "ByNot",
+                  "predicates": [
+                    {
+                      "$type": "ByHasModifier",
+                      "modifierName": "EffectBinder"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "$type": "SetAnimatorInt",
+              "canBeHandledOnRecover": true,
+              "intID": "State",
+              "value": 0.0
+            },
+            {
+              "$type": "SendEffectTrigger",
+              "attachPoint": "",
+              "effectPattern": "Eff_SceneObj_Challengestarter_01",
+              "parameter": "State",
+              "type": "Int"
+            },
+            {
+              "$type": "AttachEffect",
+              "effectPattern": "Eff_SceneObj_LunarisDown_L",
+              "effectTempleteID": -1.0,
+              "scale": "SGV_Challengestarter_AbyssEffectScale",
+              "JHAGIJGAKMK": ""
+            },
+            {
+              "$type": "SetGlobalValueV2",
+              "key": "_PrevState",
+              "maxValue": 0.0,
+              "minValue": 0.0,
+              "value": 200.0
+            }
+          ],
+          "IAKNCBDLFKJ": 0.0
+        },
+        "OnStartedState": {
+          "elementDurability": 100.0,
+          "modifierName": "",
+          "onAdded": [
+            {
+              "$type": "ApplyModifier",
+              "modifierName": "EffectBinder",
+              "predicates": [
+                {
+                  "$type": "ByNot",
+                  "predicates": [
+                    {
+                      "$type": "ByHasModifier",
+                      "modifierName": "EffectBinder"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "$type": "SetAnimatorInt",
+              "canBeHandledOnRecover": true,
+              "intID": "State",
+              "value": 201.0
+            },
+            {
+              "$type": "SendEffectTrigger",
+              "attachPoint": "",
+              "effectPattern": "Eff_SceneObj_Challengestarter_01",
+              "parameter": "State",
+              "type": "Int",
+              "value": 201
+            },
+            {
+              "$type": "SetGlobalValueV2",
+              "key": "_PrevState",
+              "maxValue": 0.0,
+              "minValue": 0.0,
+              "value": 201.0
+            }
+          ],
+          "IAKNCBDLFKJ": 0.0
+        },
+        "OnCompletedState": {
+          "elementDurability": 100.0,
+          "modifierName": "",
+          "onAdded": [
+            {
+              "$type": "Predicated",
+              "canBeHandledOnRecover": true,
+              "successActions": [
+                {
+                  "$type": "ApplyModifier",
+                  "modifierName": "EffectBinder",
+                  "predicates": [
+                    {
+                      "$type": "ByNot",
+                      "predicates": [
+                        {
+                          "$type": "ByHasModifier",
+                          "modifierName": "EffectBinder"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "$type": "SendEffectTrigger",
+                  "attachPoint": "",
+                  "effectPattern": "Eff_SceneObj_Challengestarter_01",
+                  "parameter": "State",
+                  "type": "Int",
+                  "value": 202
+                },
+                {
+                  "$type": "ApplyModifier",
+                  "modifierName": "DelayRemoveEffect"
+                }
+              ],
+              "targetPredicates": [
+                {
+                  "$type": "ByAny",
+                  "predicates": [
+                    {
+                      "$type": "ByTargetGlobalValue",
+                      "key": "_PrevState",
+                      "value": 200.0
+                    },
+                    {
+                      "$type": "ByTargetGlobalValue",
+                      "key": "_PrevState",
+                      "value": 201.0
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "$type": "SetAnimatorInt",
+              "canBeHandledOnRecover": true,
+              "intID": "State",
+              "value": 202.0
+            },
+            {
+              "$type": "SetGlobalValueV2",
+              "key": "_PrevState",
+              "maxValue": 0.0,
+              "minValue": 0.0,
+              "value": 202.0
+            }
+          ],
+          "IAKNCBDLFKJ": 0.0
+        },
+        "DelayRemoveEffect": {
+          "duration": 2.0,
+          "elementDurability": 100.0,
+          "modifierName": "",
+          "onRemoved": [
+            {
+              "$type": "RemoveModifier",
+              "modifierName": "EffectBinder"
+            }
+          ],
+          "IAKNCBDLFKJ": 0.0
+        }
+      },
+      "CELKHCPEMFI": [
+        "_PrevState",
+        "SGV_Challengestarter_AbyssEffectScale"
+      ]
+    }
+  },
+  {
+    "Default": {
+      "abilityName": "SceneObj_Area_Phyl_Property_Ani_Prop_Hollyleaf_01",
+      "modifiers": {
+        "EffectBinder": {
+          "elementDurability": 100.0,
+          "modifierName": "",
+          "onAdded": [
+            {
+              "$type": "AttachEffect",
+              "born": {
+                "$type": "ConfigBornByAttachPoint",
+                "attachPointName": "Slot_EffectPos",
+                "useRotation": true
+              },
+              "effectPattern": "Eff_Item_Hint_Small",
+              "effectTempleteID": -1.0,
+              "scale": 1.0,
+              "JHAGIJGAKMK": ""
+            },
+            {
+              "$type": "SetEffectFollowPath",
+              "attachPoint": "Slot_EffectPos",
+              "effectPattern": "Eff_Item_Hint_Small",
+              "followPath": "Slot_EffectPos"
+            }
+          ],
+          "IAKNCBDLFKJ": 0.0
+        }
+      },
+      "onAdded": [
+        {
+          "$type": "AttachModifier",
+          "modifierName": "EffectBinder"
+        }
+      ]
+    }
+  },
+  {
+    "Default": {
+      "abilityName": "V6_3_SceneObj_RebornCtrl",
+      "onAbilityStart": [
+        {
+          "$type": "GadgetReborn",
+          "EGJOJKPPLJN": "SGV_GadgetRebornCtrl_Delay"
+        }
+      ],
+      "CELKHCPEMFI": [
+        "SGV_GadgetRebornCtrl_Delay"
+      ]
+    }
+  },
+  {
+    "Default": {
+      "abilityMixins": [
+        {
+          "$type": "AttachToGadgetStateMixin",
+          "gadgetState": 200,
+          "modifierName": "OnCompletedState"
+        },
+        {
+          "$type": "AttachToGadgetStateMixin",
+          "gadgetState": 201,
+          "modifierName": "OnIdleState"
+        },
+        {
+          "$type": "AttachToGadgetStateMixin",
+          "gadgetState": 202,
+          "modifierName": "OnBurrowState"
+        },
+        {
+          "$type": "AttachToGadgetStateMixin",
+          "gadgetState": 203,
+          "modifierName": "OnReachDestState"
+        },
+        {
+          "$type": "AttachToGadgetStateMixin",
+          "gadgetState": 204,
+          "modifierName": "OnSpottedState_Surf"
+        },
+        {
+          "$type": "AttachToGadgetStateMixin",
+          "gadgetState": 205,
+          "modifierName": "OnSpottedState_Burrow"
+        },
+        {
+          "$type": "WidgetMpSupportMixin",
+          "succActions": [
+            {
+              "$type": "DebugLog",
+              "content": "WeaselWithLunarisFruit interacted!"
+            },
+            {
+              "$type": "Predicated",
+              "successActions": [
+                {
+                  "$type": "ServerLuaTriggerEvent",
+                  "luaCallType": "FromGroup",
+                  "param1": 0.0,
+                  "param2": 0.0,
+                  "param3": 0.0,
+                  "sourceName": "TTC_WesealInteracted"
+                },
+                {
+                  "$type": "ChangeGadgetState",
+                  "state": 204
+                }
+              ],
+              "targetPredicates": [
+                {
+                  "$type": "ByTargetGadgetState",
+                  "gadgetState": 203,
+                  "target": "Self"
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "abilityName": "SceneObj_Area_Bhyl_OpenWorld_WeaselWithLunarisFruit",
+      "modifiers": {
+        "HideWeaselMeshHandler": {
+          "elementDurability": 100.0,
+          "modifierMixins": [
+            {
+              "$type": "AttachToStateIDMixin",
+              "isCheckOnAttach": true,
+              "modifierName": "AnimStateHandler_GetinIdle",
+              "stateIDs": [
+                "Ani_Animal_Marten_GetinIdle"
+              ],
+              "HLGPLGFCHND": ""
+            }
+          ],
+          "modifierName": "",
+          "onRemoved": [
+            {
+              "$type": "RemoveModifier",
+              "modifierName": "AnimStateHandler_GetinIdle"
+            }
+          ],
+          "IAKNCBDLFKJ": 0.0
+        },
+        "AnimStateHandler_GetinIdle": {
+          "elementDurability": 100.0,
+          "modifierMixins": [
+            {
+              "$type": "AttachActionToModifierMixin",
+              "onAdded": [
+                {
+                  "$type": "EnableSceneTransformByName",
+                  "transformNames": [
+                    "WeaselRoot"
+                  ]
+                }
+              ],
+              "onRemoved": [
+                {
+                  "$type": "EnableSceneTransformByName",
+                  "setEnable": true,
+                  "transformNames": [
+                    "WeaselRoot"
+                  ]
+                }
+              ]
+            }
+          ],
+          "modifierName": "",
+          "IAKNCBDLFKJ": 0.0
+        },
+        "HeldObjectStateCheckHandler": {
+          "elementDurability": 100.0,
+          "modifierMixins": [
+            {
+              "$type": "DoActionOnGlobalValueChangeMixin",
+              "actions": [
+                {
+                  "$type": "Predicated",
+                  "successActions": [
+                    {
+                      "$type": "DebugLog",
+                      "content": "On fruit dead"
+                    },
+                    {
+                      "$type": "Predicated",
+                      "failActions": [
+                        {
+                          "$type": "ChangeGadgetState",
+                          "state": 205
+                        }
+                      ],
+                      "successActions": [
+                        {
+                          "$type": "ChangeGadgetState",
+                          "state": 200
+                        }
+                      ],
+                      "targetPredicates": [
+                        {
+                          "$type": "ByTargetGlobalValue",
+                          "compareType": "NoneOrEqual",
+                          "key": "SGV_Weasel_FruitRespawnInterval",
+                          "value": 0.0
+                        }
+                      ]
+                    }
+                  ],
+                  "targetPredicates": [
+                    {
+                      "$type": "ByTargetGlobalValue",
+                      "key": "_GV_Object_OnDirectKilled",
+                      "value": 1.0
+                    }
+                  ]
+                }
+              ],
+              "globalValueKey": "_GV_Object_OnDirectKilled",
+              "DHKOKKHJMHC": true
+            },
+            {
+              "$type": "DoActionOnGlobalValueChangeMixin",
+              "actions": [
+                {
+                  "$type": "Predicated",
+                  "successActions": [
+                    {
+                      "$type": "Predicated",
+                      "failActions": [
+                        {
+                          "$type": "ChangeGadgetState",
+                          "state": 205
+                        }
+                      ],
+                      "successActions": [
+                        {
+                          "$type": "ChangeGadgetState",
+                          "state": 200
+                        }
+                      ],
+                      "targetPredicates": [
+                        {
+                          "$type": "ByTargetGlobalValue",
+                          "compareType": "NoneOrEqual",
+                          "key": "SGV_Weasel_FruitRespawnInterval",
+                          "value": 0.0
+                        }
+                      ]
+                    }
+                  ],
+                  "targetPredicates": [
+                    {
+                      "$type": "ByTargetGlobalValue",
+                      "key": "_GV_Object_OnAbsorb",
+                      "value": 1.0
+                    }
+                  ]
+                }
+              ],
+              "globalValueKey": "_GV_Object_OnAbsorb",
+              "DHKOKKHJMHC": true
+            }
+          ],
+          "modifierName": "",
+          "IAKNCBDLFKJ": 0.0
+        },
+        "OnCompletedState": {
+          "elementDurability": 100.0,
+          "modifierName": "",
+          "onAdded": [
+            {
+              "$type": "Predicated",
+              "canBeHandledOnRecover": true,
+              "failActions": [
+                {
+                  "$type": "EnableSceneTransformByName",
+                  "transformNames": [
+                    "HoleRoot"
+                  ]
+                }
+              ],
+              "successActions": [
+                {
+                  "$type": "FireEffect",
+                  "effectPattern": "Eff_SceneObj_WeaselSandpileChallenge_Sandpile_Disappear",
+                  "effectTempleteID": -1.0,
+                  "scale": 1.0,
+                  "JHAGIJGAKMK": ""
+                },
+                {
+                  "$type": "EnableSceneTransformByName",
+                  "transformNames": [
+                    "HoleRoot"
+                  ]
+                }
+              ],
+              "targetPredicates": [
+                {
+                  "$type": "ByAny",
+                  "predicates": [
+                    {
+                      "$type": "ByTargetGlobalValue",
+                      "key": "_PrevState",
+                      "value": 204.0
+                    },
+                    {
+                      "$type": "ByTargetGlobalValue",
+                      "key": "_PrevState",
+                      "value": 201.0
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "$type": "SetAnimatorInt",
+              "canBeHandledOnRecover": true,
+              "intID": "getOut",
+              "value": 0.0
+            },
+            {
+              "$type": "EnableGadgetIntee"
+            },
+            {
+              "$type": "SetGlobalValueV2",
+              "key": "FieldSIOM_On",
+              "maxValue": 0.0,
+              "minValue": 0.0,
+              "value": 0.0
+            },
+            {
+              "$type": "SetGlobalValueV2",
+              "key": "_PrevState",
+              "maxValue": 0.0,
+              "minValue": 0.0,
+              "value": 200.0
+            },
+            {
+              "$type": "AttachModifier",
+              "modifierName": "HideWeaselMeshHandler"
+            }
+          ],
+          "IAKNCBDLFKJ": 0.0
+        },
+        "OnIdleState": {
+          "elementDurability": 100.0,
+          "modifierName": "",
+          "onAdded": [
+            {
+              "$type": "SetAnimatorInt",
+              "intID": "getOut",
+              "value": 1.0
+            },
+            {
+              "$type": "EnableSceneTransformByName",
+              "setEnable": true,
+              "transformNames": [
+                "HoleRoot"
+              ]
+            },
+            {
+              "$type": "EnableGadgetIntee"
+            },
+            {
+              "$type": "ApplyModifier",
+              "modifierName": "LunarisFruitHandler",
+              "predicates": [
+                {
+                  "$type": "ByTargetGlobalValue",
+                  "key": "SGV_Weasel_HeldObjectType",
+                  "value": 1.0
+                }
+              ]
+            },
+            {
+              "$type": "ApplyModifier",
+              "modifierName": "MixMagRockHandler",
+              "predicates": [
+                {
+                  "$type": "ByTargetGlobalValue",
+                  "key": "SGV_Weasel_HeldObjectType",
+                  "value": 2.0
+                }
+              ]
+            },
+            {
+              "$type": "SetGlobalValueV2",
+              "key": "FieldSIOM_On",
+              "maxValue": 0.0,
+              "minValue": 0.0,
+              "predicates": [
+                {
+                  "$type": "ByTargetGlobalValue",
+                  "key": "SGV_Weasel_HeldObjectType",
+                  "value": 1.0
+                }
+              ],
+              "value": 1.0
+            },
+            {
+              "$type": "AttachModifier",
+              "modifierName": "HeldObjectStateCheckHandler"
+            },
+            {
+              "$type": "SetGlobalValueV2",
+              "key": "_PrevState",
+              "maxValue": 0.0,
+              "minValue": 0.0,
+              "value": 201.0
+            }
+          ],
+          "IAKNCBDLFKJ": 0.0
+        },
+        "OnBurrowState": {
+          "elementDurability": 100.0,
+          "modifierMixins": [
+            {
+              "$type": "PlatformMoveMixin",
+              "moveModifiers": [
+                "OnSneakMoving"
+              ]
+            }
+          ],
+          "modifierName": "",
+          "onAdded": [
+            {
+              "$type": "Predicated",
+              "successActions": [
+                {
+                  "$type": "DebugLog",
+                  "content": "ERROR: Transition from GadgetState 202/204 is not supported!"
+                }
+              ],
+              "targetPredicates": [
+                {
+                  "$type": "ByAny",
+                  "predicates": [
+                    {
+                      "$type": "ByTargetGadgetState",
+                      "gadgetState": 204
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "$type": "SetAnimatorInt",
+              "intID": "getOut",
+              "value": 0.0
+            },
+            {
+              "$type": "EnableSceneTransformByName",
+              "transformNames": [
+                "HoleRoot"
+              ]
+            },
+            {
+              "$type": "EnableGadgetIntee"
+            },
+            {
+              "$type": "FireEffect",
+              "effectPattern": "Eff_SceneObj_WeaselSandpileChallenge_Sandpile_Disappear",
+              "effectTempleteID": -1.0,
+              "scale": 1.0,
+              "JHAGIJGAKMK": ""
+            },
+            {
+              "$type": "SetGlobalValueV2",
+              "key": "FieldSIOM_On",
+              "maxValue": 0.0,
+              "minValue": 0.0,
+              "predicates": [
+                {
+                  "$type": "ByTargetGlobalValue",
+                  "key": "SGV_Weasel_HeldObjectType",
+                  "value": 1.0
+                }
+              ],
+              "value": 1.0
+            },
+            {
+              "$type": "AttachModifier",
+              "modifierName": "HideWeaselMeshHandler"
+            },
+            {
+              "$type": "SetGlobalValueV2",
+              "key": "_PrevState",
+              "maxValue": 0.0,
+              "minValue": 0.0,
+              "value": 202.0
+            }
+          ],
+          "IAKNCBDLFKJ": 0.0
+        },
+        "OnSneakMoving": {
+          "elementDurability": 100.0,
+          "modifierName": "",
+          "onAdded": [
+            {
+              "$type": "AttachEffect",
+              "effectPattern": "Eff_SceneObj_Weasel_Lunaris_MoveTrail",
+              "effectTempleteID": -1.0,
+              "scale": 1.0,
+              "JHAGIJGAKMK": ""
+            }
+          ],
+          "IAKNCBDLFKJ": 0.0
+        },
+        "OnReachDestState": {
+          "elementDurability": 100.0,
+          "modifierName": "",
+          "onAdded": [
+            {
+              "$type": "EnableSceneTransformByName",
+              "setEnable": true,
+              "transformNames": [
+                "HoleRoot"
+              ]
+            },
+            {
+              "$type": "EnableGadgetIntee",
+              "enable": true
+            },
+            {
+              "$type": "SetGlobalValueV2",
+              "key": "FieldSIOM_On",
+              "maxValue": 0.0,
+              "minValue": 0.0,
+              "predicates": [
+                {
+                  "$type": "ByTargetGlobalValue",
+                  "key": "SGV_Weasel_HeldObjectType",
+                  "value": 1.0
+                }
+              ],
+              "value": 1.0
+            },
+            {
+              "$type": "SetGlobalValueV2",
+              "key": "_PrevState",
+              "maxValue": 0.0,
+              "minValue": 0.0,
+              "value": 203.0
+            }
+          ],
+          "IAKNCBDLFKJ": 0.0
+        },
+        "OnSpottedState_Surf": {
+          "elementDurability": 100.0,
+          "modifierName": "",
+          "onAdded": [
+            {
+              "$type": "DebugLog",
+              "content": "WeaselWithLunarisFruit enter state 204"
+            },
+            {
+              "$type": "SetAnimatorInt",
+              "intID": "getOut",
+              "value": 1.0
+            },
+            {
+              "$type": "EnableGadgetIntee"
+            },
+            {
+              "$type": "EnableSceneTransformByName",
+              "setEnable": true,
+              "transformNames": [
+                "HoleRoot"
+              ]
+            },
+            {
+              "$type": "FireEffect",
+              "effectPattern": "Eff_SceneObj_WeaselSandpileChallenge_Sandpile_Appear",
+              "effectTempleteID": -1.0,
+              "scale": 1.0,
+              "JHAGIJGAKMK": ""
+            },
+            {
+              "$type": "ApplyModifier",
+              "modifierName": "LunarisFruitHandler",
+              "predicates": [
+                {
+                  "$type": "ByTargetGlobalValue",
+                  "key": "SGV_Weasel_HeldObjectType",
+                  "value": 1.0
+                }
+              ]
+            },
+            {
+              "$type": "ApplyModifier",
+              "modifierName": "MixMagRockHandler",
+              "predicates": [
+                {
+                  "$type": "ByTargetGlobalValue",
+                  "key": "SGV_Weasel_HeldObjectType",
+                  "value": 2.0
+                }
+              ]
+            },
+            {
+              "$type": "SetGlobalValueV2",
+              "key": "FieldSIOM_On",
+              "maxValue": 0.0,
+              "minValue": 0.0,
+              "value": 0.0
+            },
+            {
+              "$type": "SetGlobalValueV2",
+              "key": "_PrevState",
+              "maxValue": 0.0,
+              "minValue": 0.0,
+              "value": 204.0
+            },
+            {
+              "$type": "AttachModifier",
+              "modifierName": "HeldObjectStateCheckHandler"
+            }
+          ],
+          "onReconnect": [
+            {
+              "$type": "DebugLog",
+              "content": "WeaselWithLunarisFruit handle reconnect during state 204"
+            },
+            {
+              "$type": "ApplyModifier",
+              "modifierName": "LunarisFruitHandler",
+              "predicates": [
+                {
+                  "$type": "ByTargetGlobalValue",
+                  "key": "SGV_Weasel_HeldObjectType",
+                  "value": 1.0
+                }
+              ]
+            },
+            {
+              "$type": "ApplyModifier",
+              "modifierName": "MixMagRockHandler",
+              "predicates": [
+                {
+                  "$type": "ByTargetGlobalValue",
+                  "key": "SGV_Weasel_HeldObjectType",
+                  "value": 2.0
+                }
+              ]
+            },
+            {
+              "$type": "SetGlobalValueV2",
+              "key": "FieldSIOM_On",
+              "maxValue": 0.0,
+              "minValue": 0.0,
+              "value": 0.0
+            }
+          ],
+          "IAKNCBDLFKJ": 0.0
+        },
+        "OnSpottedState_Burrow": {
+          "elementDurability": 100.0,
+          "modifierName": "",
+          "onAdded": [
+            {
+              "$type": "Predicated",
+              "failActions": [
+                {
+                  "$type": "DebugLog",
+                  "content": "ERROR: Transition from state other than 204 is not supported!"
+                }
+              ],
+              "targetPredicates": [
+                {
+                  "$type": "ByTargetGlobalValue",
+                  "key": "_PrevState",
+                  "value": 204.0
+                }
+              ]
+            },
+            {
+              "$type": "SetAnimatorInt",
+              "intID": "getOut",
+              "value": 0.0
+            },
+            {
+              "$type": "EnableSceneTransformByName",
+              "setEnable": true,
+              "transformNames": [
+                "HoleRoot"
+              ]
+            },
+            {
+              "$type": "EnableGadgetIntee"
+            },
+            {
+              "$type": "FireEffect",
+              "effectPattern": "Eff_SceneObj_WeaselSandpileChallenge_Sandpile_Disappear",
+              "effectTempleteID": -1.0,
+              "scale": 1.0,
+              "JHAGIJGAKMK": ""
+            },
+            {
+              "$type": "SetGlobalValueV2",
+              "key": "FieldSIOM_On",
+              "maxValue": 0.0,
+              "minValue": 0.0,
+              "predicates": [
+                {
+                  "$type": "ByTargetGlobalValue",
+                  "key": "SGV_Weasel_HeldObjectType",
+                  "value": 1.0
+                }
+              ],
+              "value": 0.0
+            },
+            {
+              "$type": "ApplyModifier",
+              "modifierName": "SpottedState_BurrowDuration"
+            },
+            {
+              "$type": "SetGlobalValueV2",
+              "key": "_PrevState",
+              "maxValue": 0.0,
+              "minValue": 0.0,
+              "value": 205.0
+            }
+          ],
+          "IAKNCBDLFKJ": 0.0
+        },
+        "SpottedState_BurrowDuration": {
+          "duration": "SGV_Weasel_FruitRespawnInterval",
+          "elementDurability": 100.0,
+          "modifierName": "",
+          "onRemoved": [
+            {
+              "$type": "ApplyModifier",
+              "modifierName": "SpottedState_ListenToFruitDestroyHandler"
+            }
+          ],
+          "IAKNCBDLFKJ": 0.0
+        },
+        "SpottedState_ListenToFruitDestroyHandler": {
+          "elementDurability": 100.0,
+          "modifierName": "",
+          "onThinkInterval": [
+            {
+              "$type": "Predicated",
+              "failActions": [
+                {
+                  "$type": "DebugLog",
+                  "content": "_CurrentHeldObject invalid detected, switch weasel to state 204"
+                },
+                {
+                  "$type": "ChangeGadgetState",
+                  "state": 204
+                },
+                {
+                  "$type": "RemoveModifier",
+                  "modifierName": "SpottedState_ListenToFruitDestroyHandler"
+                }
+              ],
+              "targetPredicates": [
+                {
+                  "$type": "NONLKDFCOPP",
+                  "NCANFKGNAMG": "_CurrentHeldObject"
+                }
+              ]
+            }
+          ],
+          "stacking": "Unique",
+          "thinkInterval": 1.0,
+          "IAKNCBDLFKJ": 0.0
+        },
+        "LunarisFruitHandler": {
+          "elementDurability": 100.0,
+          "modifierName": "",
+          "onAdded": [
+            {
+              "$type": "Predicated",
+              "canBeHandledOnRecover": true,
+              "failActions": [
+                {
+                  "$type": "DebugLog",
+                  "content": "_CurrentHeldObject not exist"
+                }
+              ],
+              "successActions": [
+                {
+                  "$type": "DebugLog",
+                  "content": "_CurrentHeldObject exist, kill it first"
+                },
+                {
+                  "$type": "TriggerAbility",
+                  "abilityName": "SceneObj_Area_Pohjola_LunarisThrow_Reset_Controller",
+                  "target": "TempTarget",
+                  "JOEIBCCFOMA": true,
+                  "OJKHOHJPKAM": {
+                    "NCANFKGNAMG": "_CurrentHeldObject"
+                  }
+                }
+              ],
+              "targetPredicates": [
+                {
+                  "$type": "NONLKDFCOPP",
+                  "NCANFKGNAMG": "_CurrentHeldObject"
+                }
+              ]
+            },
+            {
+              "$type": "SetGlobalValueV2",
+              "key": "_GV_Object_OnAbsorb",
+              "maxValue": 0.0,
+              "minValue": 0.0,
+              "value": 0.0
+            },
+            {
+              "$type": "SetGlobalValueV2",
+              "key": "_GV_Object_OnDirectKilled",
+              "maxValue": 0.0,
+              "minValue": 0.0,
+              "value": 0.0
+            },
+            {
+              "$type": "CreateGadget",
+              "born": {
+                "$type": "ConfigBornByAttachPoint",
+                "attachPointName": "Slot_LunarisFruit",
+                "useRotation": true
+              },
+              "byServer": true,
+              "gadgetID": 73070033,
+              "sightGroupWithOwner": true,
+              "ADADIMJGCNE": true
+            }
+          ],
+          "onThinkInterval": [
+            {
+              "$type": "SetTargetToTargetKey",
+              "otherTargets": {
+                "$type": "SelectTargetsByChildren",
+                "configID": 73070033
+              },
+              "targetKey": "_CurrentHeldObject"
+            },
+            {
+              "$type": "Predicated",
+              "successActions": [
+                {
+                  "$type": "ApplyModifier",
+                  "modifierName": "Weasel_LunarisFruitStateListener",
+                  "target": "TempTarget",
+                  "OJKHOHJPKAM": {
+                    "NCANFKGNAMG": "_CurrentHeldObject"
+                  }
+                },
+                {
+                  "$type": "RemoveModifier",
+                  "modifierName": "LunarisFruitHandler"
+                }
+              ],
+              "targetPredicates": [
+                {
+                  "$type": "NONLKDFCOPP",
+                  "NCANFKGNAMG": "_CurrentHeldObject"
+                }
+              ]
+            }
+          ],
+          "thinkInterval": 0.2,
+          "IAKNCBDLFKJ": 0.0
+        },
+        "MixMagRockHandler": {
+          "elementDurability": 100.0,
+          "modifierName": "",
+          "onAdded": [
+            {
+              "$type": "Predicated",
+              "canBeHandledOnRecover": true,
+              "failActions": [
+                {
+                  "$type": "DebugLog",
+                  "content": "_CurrentHeldObject not exist, spawning a new one"
+                },
+                {
+                  "$type": "SetGlobalValueV2",
+                  "key": "_GV_Object_OnAbsorb",
+                  "maxValue": 0.0,
+                  "minValue": 0.0,
+                  "value": 0.0
+                },
+                {
+                  "$type": "SetGlobalValueV2",
+                  "key": "_GV_Object_OnDirectKilled",
+                  "maxValue": 0.0,
+                  "minValue": 0.0,
+                  "value": 0.0
+                },
+                {
+                  "$type": "CreateGadget",
+                  "born": {
+                    "$type": "ConfigBornByAttachPoint",
+                    "attachPointName": "Slot_LunarisFruit",
+                    "useRotation": true
+                  },
+                  "byServer": true,
+                  "gadgetID": 70294052,
+                  "sightGroupWithOwner": true,
+                  "ADADIMJGCNE": true
+                }
+              ],
+              "successActions": [
+                {
+                  "$type": "DebugLog",
+                  "content": "_CurrentHeldObject exist, skip spawning new one"
+                }
+              ],
+              "targetPredicates": [
+                {
+                  "$type": "NONLKDFCOPP",
+                  "NCANFKGNAMG": "_CurrentHeldObject"
+                }
+              ]
+            }
+          ],
+          "onThinkInterval": [
+            {
+              "$type": "SetTargetToTargetKey",
+              "otherTargets": {
+                "$type": "SelectTargetsByChildren",
+                "configID": 70294052
+              },
+              "targetKey": "_CurrentHeldObject"
+            },
+            {
+              "$type": "Predicated",
+              "successActions": [
+                {
+                  "$type": "ApplyModifier",
+                  "modifierName": "Weasel_MixMagRock_AbsorbStateListener",
+                  "target": "TempTarget",
+                  "OJKHOHJPKAM": {
+                    "NCANFKGNAMG": "_CurrentHeldObject"
+                  }
+                },
+                {
+                  "$type": "RemoveModifier",
+                  "modifierName": "MixMagRockHandler"
+                }
+              ],
+              "targetPredicates": [
+                {
+                  "$type": "NONLKDFCOPP",
+                  "NCANFKGNAMG": "_CurrentHeldObject"
+                }
+              ]
+            }
+          ],
+          "thinkInterval": 0.2,
+          "IAKNCBDLFKJ": 0.0
+        },
+        "Weasel_LunarisFruitStateListener": {
+          "elementDurability": 100.0,
+          "modifierMixins": [
+            {
+              "$type": "DoActionOnGlobalValueChangeMixin",
+              "actions": [
+                {
+                  "$type": "Predicated",
+                  "successActions": [
+                    {
+                      "$type": "SetGlobalValueV2",
+                      "key": "_GV_Object_OnDirectKilled",
+                      "maxValue": 0.0,
+                      "minValue": 0.0,
+                      "target": "Applier",
+                      "value": 1.0
+                    },
+                    {
+                      "$type": "RemoveModifier",
+                      "modifierName": "Weasel_LunarisFruitStateListener"
+                    }
+                  ],
+                  "targetPredicates": [
+                    {
+                      "$type": "ByTargetGlobalValue",
+                      "key": "Already_Dead",
+                      "value": 1.0
+                    }
+                  ]
+                }
+              ],
+              "globalValueKey": "Already_Dead",
+              "DHKOKKHJMHC": true
+            },
+            {
+              "$type": "DoActionOnGlobalValueChangeMixin",
+              "actions": [
+                {
+                  "$type": "Predicated",
+                  "successActions": [
+                    {
+                      "$type": "SetGlobalValueV2",
+                      "key": "_GV_Object_OnAbsorb",
+                      "maxValue": 0.0,
+                      "minValue": 0.0,
+                      "target": "Applier",
+                      "value": 1.0
+                    },
+                    {
+                      "$type": "RemoveModifier",
+                      "modifierName": "Weasel_LunarisFruitStateListener"
+                    }
+                  ],
+                  "targetPredicates": [
+                    {
+                      "$type": "ByTargetGlobalValue",
+                      "key": "_GV_CODE_AbsorbThrow_Phase",
+                      "value": 1.0
+                    }
+                  ]
+                }
+              ],
+              "globalValueKey": "_GV_CODE_AbsorbThrow_Phase",
+              "DHKOKKHJMHC": true
+            }
+          ],
+          "modifierName": "",
+          "IAKNCBDLFKJ": 0.0,
+          "AIGKGDJDDNN": true
+        },
+        "Weasel_MixMagRock_AbsorbStateListener": {
+          "elementDurability": 100.0,
+          "modifierMixins": [
+            {
+              "$type": "DoActionOnGlobalValueChangeMixin",
+              "actions": [
+                {
+                  "$type": "Predicated",
+                  "successActions": [
+                    {
+                      "$type": "SetGlobalValueV2",
+                      "key": "_GV_Object_OnAbsorb",
+                      "maxValue": 0.0,
+                      "minValue": 0.0,
+                      "target": "Applier",
+                      "value": 1.0
+                    },
+                    {
+                      "$type": "RemoveModifier",
+                      "modifierName": "Weasel_MixMagRock_AbsorbStateListener"
+                    }
+                  ],
+                  "targetPredicates": [
+                    {
+                      "$type": "ByTargetGlobalValue",
+                      "key": "GV_NK_MixMag_Phase",
+                      "value": 1.0
+                    }
+                  ]
+                }
+              ],
+              "globalValueKey": "GV_NK_MixMag_Phase",
+              "DHKOKKHJMHC": true
+            }
+          ],
+          "modifierName": "",
+          "IAKNCBDLFKJ": 0.0,
+          "AIGKGDJDDNN": true
+        }
+      },
+      "onAdded": [
+        {
+          "$type": "SetGlobalValueV2",
+          "key": "_GV_Object_OnAbsorb",
+          "maxValue": 0.0,
+          "minValue": 0.0,
+          "value": 0.0
+        },
+        {
+          "$type": "SetGlobalValueV2",
+          "key": "_GV_Object_OnDirectKilled",
+          "maxValue": 0.0,
+          "minValue": 0.0,
+          "value": 0.0
+        }
+      ],
+      "CELKHCPEMFI": [
+        "_PrevState",
+        "_CurrentHeldObject",
+        "_GV_Object_OnAbsorb",
+        "_GV_Object_OnDirectKilled",
+        "SGV_Weasel_HeldObjectType",
+        "SGV_Weasel_FruitRespawnInterval"
+      ]
+    }
+  },
+  {
+    "Default": {
+      "abilityMixins": [
+        {
+          "$type": "WidgetMpSupportMixin",
+          "succActions": [
+            {
+              "$type": "Predicated",
+              "successActions": [
+                {
+                  "$type": "ChangeGadgetState",
+                  "state": 202
+                },
+                {
+                  "$type": "ServerLuaTriggerEvent",
+                  "luaCallType": "FromGroup",
+                  "param1": 0.0,
+                  "param2": 0.0,
+                  "param3": 0.0,
+                  "sourceName": "WeaselExpelled"
+                }
+              ],
+              "targetPredicates": [
+                {
+                  "$type": "ByTargetGadgetState",
+                  "gadgetState": 201
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "$type": "AttachToGadgetStateMixin",
+          "modifierName": "OnIdleState"
+        },
+        {
+          "$type": "AttachToGadgetStateMixin",
+          "gadgetState": 201,
+          "modifierName": "OnMovingState"
+        },
+        {
+          "$type": "AttachToGadgetStateMixin",
+          "gadgetState": 202,
+          "modifierName": "OnExpelledState"
+        },
+        {
+          "$type": "AttachToGadgetStateMixin",
+          "gadgetState": 203,
+          "modifierName": "OnLootState"
+        },
+        {
+          "$type": "AttachToGadgetStateMixin",
+          "gadgetState": 204,
+          "modifierName": "OnCompletedState"
+        }
+      ],
+      "abilityName": "SceneObj_Area_Bhyl_OW_WeaselExpel",
+      "modifiers": {
+        "OnIdleState": {
+          "elementDurability": 100.0,
+          "modifierName": "",
+          "onAdded": [
+            {
+              "$type": "SetAnimatorInt",
+              "canBeHandledOnRecover": true,
+              "intID": "getOut",
+              "value": 1.0
+            },
+            {
+              "$type": "EnableGadgetInteeMp"
+            },
+            {
+              "$type": "EnableSceneTransformByName",
+              "setEnable": true,
+              "transformNames": [
+                "HoleRoot"
+              ]
+            },
+            {
+              "$type": "SetGlobalValueV2",
+              "key": "_PrevState",
+              "maxValue": 0.0,
+              "minValue": 0.0,
+              "value": 200.0
+            }
+          ],
+          "IAKNCBDLFKJ": 0.0
+        },
+        "OnMovingState": {
+          "elementDurability": 100.0,
+          "modifierMixins": [
+            {
+              "$type": "PlatformMoveMixin",
+              "moveModifiers": [
+                "OnMoveStarted"
+              ]
+            }
+          ],
+          "modifierName": "",
+          "onAdded": [
+            {
+              "$type": "Predicated",
+              "canBeHandledOnRecover": true,
+              "successActions": [
+                {
+                  "$type": "SetAnimatorInt",
+                  "canBeHandledOnRecover": true,
+                  "intID": "getOut",
+                  "value": 0.0
+                },
+                {
+                  "$type": "FireEffect",
+                  "effectPattern": "Eff_SceneObj_WeaselSandpileChallenge_Sandpile_Disappear",
+                  "effectTempleteID": -1.0,
+                  "scale": 1.0,
+                  "JHAGIJGAKMK": ""
+                }
+              ],
+              "targetPredicates": [
+                {
+                  "$type": "ByTargetGlobalValue",
+                  "key": "_PrevState",
+                  "value": 200.0
+                }
+              ]
+            },
+            {
+              "$type": "EnableGadgetInteeMp",
+              "enable": true
+            },
+            {
+              "$type": "EnableSceneTransformByName",
+              "transformNames": [
+                "HoleRoot"
+              ]
+            },
+            {
+              "$type": "SetGlobalValueV2",
+              "key": "_PrevState",
+              "maxValue": 0.0,
+              "minValue": 0.0,
+              "value": 201.0
+            }
+          ],
+          "IAKNCBDLFKJ": 0.0
+        },
+        "OnMoveStarted": {
+          "elementDurability": 100.0,
+          "modifierName": "",
+          "onAdded": [
+            {
+              "$type": "AttachEffect",
+              "effectPattern": "Eff_SceneObj_WeaselSandpileChallenge_Sandpile_Trail",
+              "effectTempleteID": -1.0,
+              "scale": 1.0,
+              "JHAGIJGAKMK": ""
+            }
+          ],
+          "IAKNCBDLFKJ": 0.0
+        },
+        "OnExpelledState": {
+          "elementDurability": 100.0,
+          "modifierMixins": [
+            {
+              "$type": "PlatformMoveMixin",
+              "stopModifiers": [
+                "OnMoveStopped"
+              ]
+            }
+          ],
+          "modifierName": "",
+          "onAdded": [
+            {
+              "$type": "EnableGadgetInteeMp"
+            }
+          ],
+          "IAKNCBDLFKJ": 0.0
+        },
+        "OnMoveStopped": {
+          "elementDurability": 100.0,
+          "modifierName": "",
+          "onAdded": [
+            {
+              "$type": "SetAnimatorInt",
+              "intID": "getOut",
+              "value": 1.0
+            },
+            {
+              "$type": "FireEffect",
+              "effectPattern": "Eff_SceneObj_WeaselSandpileChallenge_Sandpile_Appear",
+              "effectTempleteID": -1.0,
+              "scale": 1.0,
+              "JHAGIJGAKMK": ""
+            },
+            {
+              "$type": "EnableSceneTransformByName",
+              "setEnable": true,
+              "transformNames": [
+                "HoleRoot"
+              ]
+            },
+            {
+              "$type": "ApplyModifier",
+              "modifierName": "SpawnDirtyBalloonHandler",
+              "predicates": [
+                {
+                  "$type": "ByTargetGlobalValue",
+                  "key": "SGV_WeaselExpel_SpawnItemType",
+                  "value": 1.0
+                }
+              ]
+            },
+            {
+              "$type": "ApplyModifier",
+              "modifierName": "DelaySwitchToCompletedState"
+            },
+            {
+              "$type": "SetGlobalValueV2",
+              "key": "_PrevState",
+              "maxValue": 0.0,
+              "minValue": 0.0,
+              "value": 202.0
+            }
+          ],
+          "IAKNCBDLFKJ": 0.0
+        },
+        "SpawnDirtyBalloonHandler": {
+          "elementDurability": 100.0,
+          "modifierName": "",
+          "onAdded": [
+            {
+              "$type": "Predicated",
+              "canBeHandledOnRecover": true,
+              "failActions": [
+                {
+                  "$type": "DebugLog",
+                  "content": "_CurrentDirtyBalloon not exist, spawning a new one"
+                },
+                {
+                  "$type": "CreateGadget",
+                  "born": {
+                    "$type": "ConfigBornByAttachPoint",
+                    "attachPointName": "Slot_DirtyBalloonSpawn",
+                    "useRotation": true
+                  },
+                  "byServer": true,
+                  "gadgetID": 73074091,
+                  "sightGroupWithOwner": true,
+                  "ADADIMJGCNE": true
+                }
+              ],
+              "successActions": [
+                {
+                  "$type": "DebugLog",
+                  "content": "_CurrentDirtyBalloon existed, skip spawning new one"
+                }
+              ],
+              "targetPredicates": [
+                {
+                  "$type": "NONLKDFCOPP",
+                  "NCANFKGNAMG": "_CurrentDirtyBalloon"
+                }
+              ]
+            }
+          ],
+          "onThinkInterval": [
+            {
+              "$type": "SetTargetToTargetKey",
+              "otherTargets": {
+                "$type": "SelectTargetsByChildren",
+                "configID": 73074091
+              },
+              "targetKey": "_CurrentDirtyBalloon"
+            },
+            {
+              "$type": "Predicated",
+              "successActions": [
+                {
+                  "$type": "SetGlobalValueV2",
+                  "key": "GV_DirtyBalloon_ExplodeDelay",
+                  "maxValue": 0.0,
+                  "minValue": 0.0,
+                  "otherTargets": {
+                    "$type": "IJIALHOBAAE",
+                    "targetKey": "_CurrentDirtyBalloon"
+                  },
+                  "value": "SGV_WeaselExpel_BalloonExplodeDelay"
+                },
+                {
+                  "$type": "RemoveModifier",
+                  "modifierName": "SpawnDirtyBalloonHandler"
+                }
+              ],
+              "targetPredicates": [
+                {
+                  "$type": "NONLKDFCOPP",
+                  "NCANFKGNAMG": "_CurrentDirtyBalloon"
+                }
+              ]
+            }
+          ],
+          "thinkInterval": 0.2,
+          "IAKNCBDLFKJ": 0.0
+        },
+        "DelaySwitchToCompletedState": {
+          "duration": "SGV_WeaselExpel_BurrowDelayAfterExpelled",
+          "elementDurability": 100.0,
+          "modifierName": "",
+          "onRemoved": [
+            {
+              "$type": "ChangeGadgetState",
+              "predicates": [
+                {
+                  "$type": "ByTargetGlobalValue",
+                  "key": "SGV_WeaselExpel_HasLoot",
+                  "value": 1.0
+                }
+              ],
+              "state": 203
+            },
+            {
+              "$type": "ChangeGadgetState",
+              "predicates": [
+                {
+                  "$type": "ByTargetGlobalValue",
+                  "compareType": "NoneOrEqual",
+                  "key": "SGV_WeaselExpel_HasLoot",
+                  "value": 0.0
+                }
+              ],
+              "state": 204
+            }
+          ],
+          "IAKNCBDLFKJ": 0.0
+        },
+        "OnLootState": {
+          "elementDurability": 100.0,
+          "modifierName": "",
+          "onAdded": [
+            {
+              "$type": "Predicated",
+              "canBeHandledOnRecover": true,
+              "successActions": [
+                {
+                  "$type": "SetAnimatorInt",
+                  "canBeHandledOnRecover": true,
+                  "intID": "getOut",
+                  "value": 0.0
+                },
+                {
+                  "$type": "FireEffect",
+                  "effectPattern": "Eff_SceneObj_WeaselSandpileChallenge_Sandpile_Disappear",
+                  "effectTempleteID": -1.0,
+                  "scale": 1.0,
+                  "JHAGIJGAKMK": ""
+                }
+              ],
+              "targetPredicates": [
+                {
+                  "$type": "ByTargetGlobalValue",
+                  "key": "_PrevState",
+                  "value": 202.0
+                }
+              ]
+            },
+            {
+              "$type": "EnableGadgetInteeMp"
+            },
+            {
+              "$type": "EnableSceneTransformByName",
+              "setEnable": true,
+              "transformNames": [
+                "HoleRoot"
+              ]
+            },
+            {
+              "$type": "SetGlobalValueV2",
+              "key": "_PrevState",
+              "maxValue": 0.0,
+              "minValue": 0.0,
+              "value": 203.0
+            }
+          ],
+          "IAKNCBDLFKJ": 0.0
+        },
+        "OnCompletedState": {
+          "elementDurability": 100.0,
+          "modifierName": "",
+          "onAdded": [
+            {
+              "$type": "Predicated",
+              "canBeHandledOnRecover": true,
+              "successActions": [
+                {
+                  "$type": "SetAnimatorInt",
+                  "canBeHandledOnRecover": true,
+                  "intID": "getOut",
+                  "value": 0.0
+                },
+                {
+                  "$type": "FireEffect",
+                  "effectPattern": "Eff_SceneObj_WeaselSandpileChallenge_Sandpile_Disappear",
+                  "effectTempleteID": -1.0,
+                  "scale": 1.0,
+                  "JHAGIJGAKMK": ""
+                }
+              ],
+              "targetPredicates": [
+                {
+                  "$type": "ByTargetGlobalValue",
+                  "key": "_PrevState",
+                  "value": 202.0
+                }
+              ]
+            },
+            {
+              "$type": "EnableGadgetInteeMp"
+            },
+            {
+              "$type": "EnableSceneTransformByName",
+              "transformNames": [
+                "HoleRoot"
+              ]
+            },
+            {
+              "$type": "SetGlobalValueV2",
+              "key": "_PrevState",
+              "maxValue": 0.0,
+              "minValue": 0.0,
+              "value": 204.0
+            }
+          ],
+          "IAKNCBDLFKJ": 0.0
+        }
+      },
+      "CELKHCPEMFI": [
+        "_PrevState",
+        "_CurrentDirtyBalloon",
+        "SGV_WeaselExpel_SpawnItemType",
+        "SGV_WeaselExpel_BalloonExplodeDelay",
+        "SGV_WeaselExpel_BurrowDelayAfterExpelled",
+        "SGV_WeaselExpel_HasLoot"
+      ]
+    }
+  },
+  {
+    "Default": {
+      "abilityMixins": [
+        {
+          "$type": "DoActionOnGlobalValueChangeMixin",
+          "actions": [
+            {
+              "$type": "Predicated",
+              "successActions": [
+                {
+                  "$type": "ApplyModifier",
+                  "modifierName": "DelayExplode"
+                }
+              ],
+              "targetPredicates": [
+                {
+                  "$type": "ByTargetGlobalValue",
+                  "compareType": "MoreThan",
+                  "key": "GV_DirtyBalloon_ExplodeDelay",
+                  "value": 0.0
+                }
+              ]
+            }
+          ],
+          "globalValueKey": "GV_DirtyBalloon_ExplodeDelay",
+          "DHKOKKHJMHC": true
+        }
+      ],
+      "abilityName": "SceneObj_Area_Bhyl_OW_DirtyBalloon_01_Scalable",
+      "modifiers": {
+        "DelayExplode": {
+          "duration": "GV_DirtyBalloon_ExplodeDelay",
+          "elementDurability": 100.0,
+          "modifierName": "",
+          "onRemoved": [
+            {
+              "$type": "Predicated",
+              "otherTargets": {
+                "$type": "SelectTargetsByShape",
+                "campTargetType": "AllExceptSelf",
+                "shapeName": "CircleR3",
+                "sizeRatio": 1.0
+              },
+              "successActions": [
+                {
+                  "$type": "ApplyModifier",
+                  "modifierName": "DirtyBalloon",
+                  "target": "Target"
+                }
+              ],
+              "targetPredicates": [
+                {
+                  "$type": "ByEntityTypes",
+                  "entityTypes": [
+                    "Avatar"
+                  ]
+                }
+              ]
+            },
+            {
+              "$type": "KillSelf",
+              "configIdArray": [
+                73074091
+              ]
+            }
+          ],
+          "IAKNCBDLFKJ": 0.0
+        },
+        "DirtyBalloon": {
+          "duration": 0.2,
+          "elementDurability": 100.0,
+          "modifierName": "",
+          "onAdded": [
+            {
+              "$type": "RemoveUniqueModifier",
+              "modifierName": "UNIQUE_DirtyBalloon_TimedBomb_Eff"
+            }
+          ],
+          "onRemoved": [
+            {
+              "$type": "ApplyModifier",
+              "modifierName": "UNIQUE_DirtyBalloon_TimedBomb_Eff"
+            }
+          ],
+          "IAKNCBDLFKJ": 0.0
+        },
+        "UNIQUE_DirtyBalloon_TimedBomb_Eff": {
+          "duration": 5.0,
+          "elementDurability": 100.0,
+          "isUnique": true,
+          "modifierMixins": [
+            {
+              "$type": "TriggerPostProcessEffectMixin",
+              "duration": 5.0,
+              "postEffectAssetName": "PostEffect_Scene_Mud"
+            }
+          ],
+          "modifierName": "",
+          "onAdded": [
+            {
+              "$type": "DungeonFogEffects",
+              "cameraFogEffectName": "Eff_SceneObj_GlideChampBalloon_03_02",
+              "enable": true,
+              "muteRemoteAction": true,
+              "playerFogEffectName": ""
+            }
+          ],
+          "onRemoved": [
+            {
+              "$type": "DungeonFogEffects",
+              "cameraFogEffectName": "",
+              "playerFogEffectName": ""
+            }
+          ],
+          "IAKNCBDLFKJ": 0.0
+        }
+      },
+      "onAdded": [
+        {
+          "$type": "SetPartScaleByTransform",
+          "canBeHandledOnRecover": true,
+          "HCBKCFOEPHM": "RenderRoot",
+          "HMOIGGILEKO": {
+            "x": 0.5,
+            "y": 0.5,
+            "z": 0.5
+          }
+        },
+        {
+          "$type": "SetGlobalValueV2",
+          "key": "GV_DirtyBalloon_ExplodeDelay",
+          "maxValue": 0.0,
+          "minValue": 0.0,
+          "value": 0.0
+        }
+      ],
+      "CELKHCPEMFI": [
+        "GV_DirtyBalloon_ExplodeDelay"
+      ]
+    }
+  },
+  {
+    "Default": {
+      "abilityMixins": [
+        {
+          "$type": "AttachToGadgetStateMixin",
+          "modifierName": "OnEnabledState"
+        },
+        {
+          "$type": "AttachToGadgetStateMixin",
+          "gadgetState": 201,
+          "modifierName": "OnDisabledState"
+        }
+      ],
+      "abilityName": "SceneObj_Area_Phyl_SX_AirWall_01",
+      "modifiers": {
+        "ApplyTransformHandler": {
+          "elementDurability": 100.0,
+          "modifierName": "",
+          "onAdded": [
+            {
+              "$type": "SetPartScaleByTransform",
+              "canBeHandledOnRecover": true,
+              "HCBKCFOEPHM": "ScaleRoot",
+              "HMOIGGILEKO": {
+                "x": "SGV_SX_AirWall_LengthScale",
+                "y": "SGV_SX_AirWall_HeightScale",
+                "z": 1.0
+              }
+            }
+          ],
+          "onReconnect": [
+            {
+              "$type": "SetPartScaleByTransform",
+              "canBeHandledOnRecover": true,
+              "HCBKCFOEPHM": "ScaleRoot",
+              "HMOIGGILEKO": {
+                "x": "SGV_SX_AirWall_LengthScale",
+                "y": "SGV_SX_AirWall_HeightScale",
+                "z": 1.0
+              }
+            }
+          ],
+          "IAKNCBDLFKJ": 0.0
+        },
+        "EffectBinder": {
+          "elementDurability": 100.0,
+          "modifierName": "",
+          "onAdded": [
+            {
+              "$type": "DebugLog",
+              "content": "[Phyl_SX_AirWall_01] Attach airwall effect"
+            },
+            {
+              "$type": "AttachEffect",
+              "born": {
+                "$type": "ConfigBornByAttachPoint",
+                "attachPointName": "ScaleRoot",
+                "useRotation": true
+              },
+              "effectPattern": "Eff_SceneObj_Stages_LunarisAirWall_SX_AirWall_01",
+              "effectTempleteID": -1.0,
+              "scale": 1.0,
+              "JHAGIJGAKMK": ""
+            },
+            {
+              "$type": "SetEffectFollowPath",
+              "attachPoint": "ScaleRoot",
+              "canBeHandledOnRecover": true,
+              "effectPattern": "Eff_SceneObj_Stages_LunarisAirWall_SX_AirWall_01",
+              "followPath": "ScaleRoot"
+            }
+          ],
+          "stacking": "Unique",
+          "IAKNCBDLFKJ": 0.0
+        },
+        "UpdateEffectParam": {
+          "duration": 0.2,
+          "elementDurability": 100.0,
+          "modifierName": "",
+          "onAdded": [
+            {
+              "$type": "SendEffectTrigger",
+              "attachPoint": "",
+              "canBeHandledOnRecover": true,
+              "effectPattern": "Eff_SceneObj_Stages_LunarisAirWall_SX_AirWall_01",
+              "parameter": "GadgetState",
+              "predicates": [
+                {
+                  "$type": "ByTargetGadgetState"
+                }
+              ],
+              "type": "Int"
+            },
+            {
+              "$type": "SendEffectTrigger",
+              "attachPoint": "",
+              "canBeHandledOnRecover": true,
+              "effectPattern": "Eff_SceneObj_Stages_LunarisAirWall_SX_AirWall_01",
+              "parameter": "GadgetState",
+              "predicates": [
+                {
+                  "$type": "ByTargetGadgetState",
+                  "gadgetState": 201
+                }
+              ],
+              "type": "Int",
+              "value": 201
+            }
+          ],
+          "IAKNCBDLFKJ": 0.0
+        },
+        "OnEnabledState": {
+          "elementDurability": 100.0,
+          "modifierName": "",
+          "onAdded": [
+            {
+              "$type": "ApplyModifier",
+              "modifierName": "EffectBinder"
+            },
+            {
+              "$type": "ApplyModifier",
+              "modifierName": "UpdateEffectParam"
+            }
+          ],
+          "IAKNCBDLFKJ": 0.0
+        },
+        "OnDisabledState": {
+          "elementDurability": 100.0,
+          "modifierName": "",
+          "onAdded": [
+            {
+              "$type": "ApplyModifier",
+              "modifierName": "UpdateEffectParam"
+            },
+            {
+              "$type": "ApplyModifier",
+              "modifierName": "DelayKillSelfHandler"
+            }
+          ],
+          "onReconnect": [
+            {
+              "$type": "ApplyModifier",
+              "modifierName": "DelayKillSelfHandler"
+            }
+          ],
+          "IAKNCBDLFKJ": 0.0
+        },
+        "DelayKillSelfHandler": {
+          "duration": 1.0,
+          "elementDurability": 100.0,
+          "modifierName": "",
+          "onRemoved": [
+            {
+              "$type": "DebugLog",
+              "content": "[Phyl_SX_AirWall_01] delay kill self"
+            },
+            {
+              "$type": "KillSelf",
+              "configIdArray": [
+                73074090
+              ]
+            }
+          ],
+          "stacking": "Unique",
+          "IAKNCBDLFKJ": 0.0
+        }
+      },
+      "onAdded": [
+        {
+          "$type": "AttachModifier",
+          "modifierName": "ApplyTransformHandler"
+        }
+      ],
+      "CELKHCPEMFI": [
+        "SGV_SX_AirWall_LengthScale",
+        "SGV_SX_AirWall_HeightScale"
+      ]
+    }
+  },
+  {
+    "Default": {
+      "abilityMixins": [
+        {
+          "$type": "AttachToGadgetStateMutexMixin",
+          "gadgetStates": [
+            0,
+            201,
+            202
+          ],
+          "modifierNames": [
+            [
+              "OnHiddenState"
+            ],
+            [
+              "OnShowState"
+            ],
+            [
+              "OnGlowState"
+            ]
+          ]
+        }
+      ],
+      "abilityName": "SceneObj_Area_Phyl_Property_Ani_Decal_LunarisWolfTrace_01",
+      "modifiers": {
+        "OnHiddenState": {
+          "elementDurability": 100.0,
+          "modifierName": "",
+          "onAdded": [
+            {
+              "$type": "EnableSceneTransformByName",
+              "transformNames": [
+                "All"
+              ]
+            }
+          ],
+          "IAKNCBDLFKJ": 0.0
+        },
+        "OnShowState": {
+          "elementDurability": 100.0,
+          "modifierMixins": [
+            {
+              "$type": "ShaderStateMachineSwitchMixin",
+              "BGOJEEJGDLD": 1,
+              "BCBNIPCDGCC": "Default"
+            }
+          ],
+          "modifierName": "",
+          "onAdded": [
+            {
+              "$type": "EnableSceneTransformByName",
+              "setEnable": true,
+              "transformNames": [
+                "All"
+              ]
+            }
+          ],
+          "IAKNCBDLFKJ": 0.0
+        },
+        "OnGlowState": {
+          "elementDurability": 100.0,
+          "modifierMixins": [
+            {
+              "$type": "ShaderStateMachineSwitchMixin",
+              "BCBNIPCDGCC": "Default"
+            }
+          ],
+          "modifierName": "",
+          "onAdded": [
+            {
+              "$type": "EnableSceneTransformByName",
+              "setEnable": true,
+              "transformNames": [
+                "All"
+              ]
+            }
+          ],
+          "IAKNCBDLFKJ": 0.0
+        }
+      }
+    }
+  },
+  {
+    "Default": {
+      "abilityMixins": [
+        {
+          "$type": "AttachToGadgetStateMutexMixin",
+          "gadgetStates": [
+            201,
+            202,
+            203
+          ],
+          "modifierNames": [
+            [
+              "OnState201"
+            ],
+            [
+              "OnState202"
+            ],
+            [
+              "OnState203"
+            ]
+          ]
+        }
+      ],
+      "abilityName": "SceneObj_Area_Phyl_BossProgressBar_Test",
+      "modifiers": {
+        "ProgressBarBinder": {
+          "elementDurability": 100.0,
+          "modifierMixins": [
+            {
+              "$type": "UINotifyAttachToGlobalValueMixin",
+              "authorityOnly": true,
+              "OIBIMOFHDBP": "AbyssInvasion",
+              "ALPLAELOGPP": "GV_Progress_Current",
+              "PDKAGJOGOBC": "GV_Progress_Max"
+            }
+          ],
+          "modifierName": "",
+          "IAKNCBDLFKJ": 0.0
+        },
+        "OnState201": {
+          "elementDurability": 100.0,
+          "modifierName": "",
+          "onAdded": [
+            {
+              "$type": "SetGlobalValueV2",
+              "key": "GV_Progress_Current",
+              "maxValue": 0.0,
+              "minValue": 0.0,
+              "value": 25.0
+            }
+          ],
+          "IAKNCBDLFKJ": 0.0
+        },
+        "OnState202": {
+          "elementDurability": 100.0,
+          "modifierName": "",
+          "onAdded": [
+            {
+              "$type": "SetGlobalValueV2",
+              "key": "GV_Progress_Current",
+              "maxValue": 0.0,
+              "minValue": 0.0,
+              "value": 50.0
+            }
+          ],
+          "IAKNCBDLFKJ": 0.0
+        },
+        "OnState203": {
+          "elementDurability": 100.0,
+          "modifierName": "",
+          "onAdded": [
+            {
+              "$type": "SetGlobalValueV2",
+              "key": "GV_Progress_Current",
+              "maxValue": 0.0,
+              "minValue": 0.0,
+              "value": 75.0
+            }
+          ],
+          "IAKNCBDLFKJ": 0.0
+        }
+      },
+      "onAdded": [
+        {
+          "$type": "SetGlobalValueV2",
+          "key": "GV_Progress_Current",
+          "maxValue": 0.0,
+          "minValue": 0.0,
+          "value": 0.0
+        },
+        {
+          "$type": "SetGlobalValueV2",
+          "key": "GV_Progress_Max",
+          "maxValue": 0.0,
+          "minValue": 0.0,
+          "value": 100.0
+        },
+        {
+          "$type": "AttachModifier",
+          "modifierName": "ProgressBarBinder"
+        }
+      ],
+      "onKill": [
+        {
+          "$type": "RemoveModifier",
+          "modifierName": "ProgressBarBinder"
+        }
+      ],
+      "CELKHCPEMFI": [
+        "GV_Progress_Current",
+        "GV_Progress_Max"
+      ]
+    }
+  },
+  {
+    "Default": {
+      "abilityName": "SceneObj_Area_Phyl_AbyssField_EnvPar_01",
+      "modifiers": {
+        "EffectBinder": {
+          "elementDurability": 100.0,
+          "modifierName": "",
+          "onAdded": [
+            {
+              "$type": "AttachEffect",
+              "effectPattern": "Eff_SceneObj_Stages_AbyssField_EnvPar_01",
+              "effectTempleteID": -1.0,
+              "scale": 1.0,
+              "JHAGIJGAKMK": ""
+            }
+          ],
+          "IAKNCBDLFKJ": 0.0
+        }
+      },
+      "onAdded": [
+        {
+          "$type": "AttachModifier",
+          "modifierName": "EffectBinder"
+        }
+      ]
+    }
+  }
+]

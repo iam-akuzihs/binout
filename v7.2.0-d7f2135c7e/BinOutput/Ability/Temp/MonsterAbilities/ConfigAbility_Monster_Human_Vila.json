@@ -1,0 +1,2982 @@
+[
+  {
+    "Default": {
+      "abilityMixins": [
+        {
+          "$type": "AttachToPoseIDMixin",
+          "modifierName": "FightState",
+          "poseIDs": [
+            1,
+            2,
+            501,
+            1901,
+            1902
+          ]
+        },
+        {
+          "$type": "AttachToPoseIDMixin",
+          "modifierName": "FreeAirState",
+          "poseIDs": [
+            501
+          ]
+        },
+        {
+          "$type": "AttachToAnimatorStateIDMixin",
+          "modifierName": "BeHitFallingState",
+          "stateIDs": [
+            "HitThrow",
+            "HitThrowDrop",
+            "HitThrowToGround"
+          ],
+          "HLGPLGFCHND": ""
+        },
+        {
+          "$type": "AttachToAnimatorStateIDMixin",
+          "modifierName": "InvisibleState",
+          "stateIDs": [
+            "HitThrow_Recover_BS",
+            "HitThrow_Recover_AS",
+            "SheathWeapon_Wait",
+            "SheathWeapon_FreeAir_Wait",
+            "CommandMelee"
+          ],
+          "HLGPLGFCHND": ""
+        },
+        {
+          "$type": "DoActionByAnimatorStateIDMixin",
+          "enterActions": [
+            {
+              "$type": "ApplyModifier",
+              "modifierName": "AirRecoverHandler"
+            }
+          ],
+          "stateIDs": [
+            "HitThrow",
+            "HitThrowDrop"
+          ],
+          "HLGPLGFCHND": ""
+        },
+        {
+          "$type": "DoActionByAnimatorStateIDMixin",
+          "enterActions": [
+            {
+              "$type": "RemoveModifier",
+              "modifierName": "AirRecoverHandler"
+            }
+          ],
+          "stateIDs": [
+            "HitThrowToGround"
+          ],
+          "HLGPLGFCHND": ""
+        },
+        {
+          "$type": "AttachToPoseIDMixin",
+          "modifierName": "MoveOnWaterState",
+          "poseIDs": [
+            1,
+            501,
+            1901,
+            1902
+          ]
+        }
+      ],
+      "abilityName": "Monster_Human_Vila_PoseManager",
+      "modifiers": {
+        "FightState": {
+          "elementDurability": 100.0,
+          "modifierName": "",
+          "onAdded": [
+            {
+              "$type": "SetGlobalValueV2",
+              "key": "GV_WINGSTATE",
+              "maxValue": 0.0,
+              "minValue": 0.0,
+              "value": 1.0
+            }
+          ],
+          "onRemoved": [
+            {
+              "$type": "SetGlobalValueV2",
+              "key": "GV_WINGSTATE",
+              "maxValue": 0.0,
+              "minValue": 0.0,
+              "value": 0.0
+            }
+          ],
+          "IAKNCBDLFKJ": 0.0
+        },
+        "FreeAirState": {
+          "elementDurability": 100.0,
+          "modifierName": "",
+          "onAdded": [
+            {
+              "$type": "SetGlobalValueV2",
+              "key": "GV_WINGSTATE",
+              "maxValue": 0.0,
+              "minValue": 0.0,
+              "value": 1.0
+            },
+            {
+              "$type": "SetGlobalValueV2",
+              "key": "_WEAPON_HIDE",
+              "maxValue": 0.0,
+              "minValue": 0.0,
+              "value": 0.0
+            },
+            {
+              "$type": "SetGlobalValue",
+              "key": "_WEAPON_SHEATHED",
+              "maxValue": 0.0,
+              "minValue": 0.0,
+              "value": 0.0
+            },
+            {
+              "$type": "SetAnimatorBool",
+              "boolID": "IsFreeAir",
+              "value": true
+            }
+          ],
+          "IAKNCBDLFKJ": 0.0
+        },
+        "BeHitFallingState": {
+          "elementDurability": 100.0,
+          "modifierName": "",
+          "onAdded": [
+            {
+              "$type": "SetPoseBool",
+              "boolID": "OnGround",
+              "value": true
+            }
+          ],
+          "onRemoved": [
+            {
+              "$type": "SetPoseBool",
+              "boolID": "OnGround"
+            }
+          ],
+          "IAKNCBDLFKJ": 0.0
+        },
+        "InvisibleState": {
+          "elementDurability": 100.0,
+          "modifierMixins": [
+            {
+              "$type": "EntityInVisibleMixin",
+              "reason": "SelfAbility",
+              "HANDACPCGMF": true
+            }
+          ],
+          "modifierName": "",
+          "onAdded": [
+            {
+              "$type": "FireEffect",
+              "effectPattern": "Eff_Monster_Human_Vila_Blink",
+              "effectTempleteID": -1.0,
+              "scale": 1.0,
+              "JHAGIJGAKMK": ""
+            },
+            {
+              "$type": "HideUIBillBoard",
+              "hide": true
+            }
+          ],
+          "onRemoved": [
+            {
+              "$type": "FireEffect",
+              "effectPattern": "Eff_Monster_Human_Vila_Blink_Appear",
+              "effectTempleteID": -1.0,
+              "scale": 1.0,
+              "JHAGIJGAKMK": ""
+            },
+            {
+              "$type": "HideUIBillBoard"
+            }
+          ],
+          "IAKNCBDLFKJ": 0.0
+        },
+        "AirRecoverHandler": {
+          "elementDurability": 100.0,
+          "modifierName": "",
+          "onThinkInterval": [
+            {
+              "$type": "Predicated",
+              "failActions": [
+                {
+                  "$type": "ApplyModifier",
+                  "modifierName": "DoAirRecover"
+                },
+                {
+                  "$type": "RemoveModifier",
+                  "modifierName": "AirRecoverHandler"
+                }
+              ],
+              "targetPredicates": [
+                {
+                  "$type": "ByAny",
+                  "predicates": [
+                    {
+                      "$type": "ByHasAbilityState",
+                      "abilityState": "ElementFreeze"
+                    },
+                    {
+                      "$type": "ByHasAbilityState",
+                      "abilityState": "ElementPetrifaction"
+                    }
+                  ]
+                }
+              ]
+            }
+          ],
+          "stacking": "Unique",
+          "thinkInterval": 0.8,
+          "IAKNCBDLFKJ": 0.0
+        },
+        "DoAirRecover": {
+          "duration": 0.2,
+          "elementDurability": 100.0,
+          "modifierName": "",
+          "onAdded": [
+            {
+              "$type": "SetAnimatorTrigger",
+              "triggerID": "DoAirRecoverTrigger"
+            }
+          ],
+          "IAKNCBDLFKJ": 0.0
+        },
+        "MoveOnWaterState": {
+          "elementDurability": 100.0,
+          "modifierMixins": [
+            {
+              "$type": "EnableCharacterMoveOnWaterMixin"
+            }
+          ],
+          "modifierName": "",
+          "IAKNCBDLFKJ": 0.0
+        }
+      },
+      "onAdded": [
+        {
+          "$type": "SetGlobalValueV2",
+          "key": "GV_WINGSTATE",
+          "maxValue": 0.0,
+          "minValue": 0.0,
+          "predicates": [
+            {
+              "$type": "ByNot",
+              "predicates": [
+                {
+                  "$type": "ByHasModifier",
+                  "modifierName": "FreeAirState",
+                  "target": "Self"
+                }
+              ]
+            }
+          ],
+          "value": 0.0
+        }
+      ]
+    }
+  },
+  {
+    "Default": {
+      "abilityMixins": [
+        {
+          "$type": "AttachModifierToSelfGlobalValueNoInitMixin",
+          "globalValueKey": "GV_WINGSTATE",
+          "modifierNameSteps": [
+            "WingState_Fight"
+          ],
+          "valueSteps": [
+            0.5,
+            1.5
+          ],
+          "EECIIMBIDGB": true
+        },
+        {
+          "$type": "AttachToNormalizedTimeMixin",
+          "modifierName": "WingState_Drop",
+          "normalizeEnd": 0.78,
+          "stateID": "HitThrowToGround",
+          "HLGPLGFCHND": ""
+        }
+      ],
+      "abilityName": "Monster_Human_Vila_WingManager",
+      "modifiers": {
+        "WingState_Fight": {
+          "elementDurability": 100.0,
+          "modifierName": "",
+          "onAdded": [
+            {
+              "$type": "TriggerSetRenderersEnableV2",
+              "renderNames": [
+                "SkillObj_Monster_Human_Girl_Vila_Wing_01_Model"
+              ],
+              "setEnable": true
+            },
+            {
+              "$type": "TriggerSetRenderersEnableV2",
+              "renderNames": [
+                "NPC_ItemDynamic_VilaWing_Model"
+              ]
+            },
+            {
+              "$type": "FireEffect",
+              "effectPattern": "Eff_Monster_Human_Vila_ShootAttack_Wing_Disspear",
+              "effectTempleteID": -1.0,
+              "scale": 1.0,
+              "JHAGIJGAKMK": ""
+            },
+            {
+              "$type": "FireEffect",
+              "effectPattern": "Eff_Monster_Human_Vila_ShootAttack_Wing_Disspear_R",
+              "effectTempleteID": -1.0,
+              "scale": 1.0,
+              "JHAGIJGAKMK": ""
+            }
+          ],
+          "onRemoved": [
+            {
+              "$type": "TriggerSetRenderersEnableV2",
+              "renderNames": [
+                "SkillObj_Monster_Human_Girl_Vila_Wing_01_Model"
+              ]
+            },
+            {
+              "$type": "TriggerSetRenderersEnableV2",
+              "renderNames": [
+                "NPC_ItemDynamic_VilaWing_Model"
+              ],
+              "setEnable": true
+            },
+            {
+              "$type": "FireEffect",
+              "effectPattern": "Eff_Monster_Human_Vila_ShootAttack_Wing_Disspear",
+              "effectTempleteID": -1.0,
+              "scale": 1.0,
+              "JHAGIJGAKMK": ""
+            },
+            {
+              "$type": "FireEffect",
+              "effectPattern": "Eff_Monster_Human_Vila_ShootAttack_Wing_Disspear_R",
+              "effectTempleteID": -1.0,
+              "scale": 1.0,
+              "JHAGIJGAKMK": ""
+            }
+          ],
+          "IAKNCBDLFKJ": 0.0
+        },
+        "WingState_Drop": {
+          "elementDurability": 100.0,
+          "modifierName": "",
+          "onAdded": [
+            {
+              "$type": "SetGlobalValueV2",
+              "key": "GV_WINGSTATE",
+              "maxValue": 0.0,
+              "minValue": 0.0,
+              "value": 0.0
+            }
+          ],
+          "onRemoved": [
+            {
+              "$type": "SetGlobalValueV2",
+              "key": "GV_WINGSTATE",
+              "maxValue": 0.0,
+              "minValue": 0.0,
+              "value": 1.0
+            }
+          ],
+          "IAKNCBDLFKJ": 0.0
+        }
+      }
+    }
+  },
+  {
+    "Default": {
+      "abilityMixins": [
+        {
+          "$type": "AttachModifierToSelfGlobalValueMixin",
+          "defaultGlobalValueOnCreate": 0.0,
+          "globalValueKey": "GV_WINGSTATE",
+          "modifierNameSteps": [
+            "Modifier_Vila_Hitbox_TPS_Wing_Off",
+            "Modifier_Vila_Hitbox_TPS_Wing_On"
+          ],
+          "valueSteps": [
+            -0.5,
+            0.5,
+            1.5
+          ],
+          "EECIIMBIDGB": true
+        }
+      ],
+      "abilityName": "Monster_Human_Vila_WingHitboxManager",
+      "modifiers": {
+        "Modifier_Vila_Hitbox_TPS_Wing_Off": {
+          "elementDurability": 100.0,
+          "modifierName": "",
+          "onAdded": [
+            {
+              "$type": "EnableHitBoxByName",
+              "hitBoxNames": [
+                "TPS_Wing"
+              ]
+            }
+          ],
+          "IAKNCBDLFKJ": 0.0
+        },
+        "Modifier_Vila_Hitbox_TPS_Wing_On": {
+          "elementDurability": 100.0,
+          "modifierName": "",
+          "onAdded": [
+            {
+              "$type": "EnableHitBoxByName",
+              "hitBoxNames": [
+                "TPS_Wing"
+              ],
+              "setEnable": true
+            }
+          ],
+          "IAKNCBDLFKJ": 0.0
+        }
+      }
+    }
+  },
+  {
+    "Default": {
+      "abilityMixins": [
+        {
+          "$type": "AttachToNormalizedTimeMixin",
+          "modifierName": "WingState_Play",
+          "normalizeEnd": 0.89,
+          "normalizeStart": 0.36,
+          "stateID": "Play01",
+          "HLGPLGFCHND": ""
+        }
+      ],
+      "abilityName": "Monster_Human_Vila_Boy_WingManager",
+      "modifiers": {
+        "WingState_Play": {
+          "elementDurability": 100.0,
+          "modifierName": "",
+          "onAdded": [
+            {
+              "$type": "SetGlobalValueV2",
+              "key": "GV_WINGSTATE",
+              "maxValue": 0.0,
+              "minValue": 0.0,
+              "value": 1.0
+            }
+          ],
+          "onRemoved": [
+            {
+              "$type": "SetGlobalValueV2",
+              "key": "GV_WINGSTATE",
+              "maxValue": 0.0,
+              "minValue": 0.0,
+              "value": 2.0
+            }
+          ],
+          "IAKNCBDLFKJ": 0.0
+        }
+      }
+    }
+  },
+  {
+    "Default": {
+      "abilityMixins": [
+        {
+          "$type": "AttachToPoseIDMixin",
+          "modifierName": "FreePose_HideWeapon",
+          "poseIDs": [
+            1001
+          ]
+        }
+      ],
+      "abilityName": "Monster_Human_Vila_WeaponManager",
+      "modifiers": {
+        "FreePose_HideWeapon": {
+          "elementDurability": 100.0,
+          "modifierName": "",
+          "onAdded": [
+            {
+              "$type": "SetGlobalValueV2",
+              "key": "_WEAPON_HIDE",
+              "maxValue": 0.0,
+              "minValue": 0.0,
+              "value": 1.0
+            }
+          ],
+          "IAKNCBDLFKJ": 0.0
+        }
+      },
+      "onAbilityStart": [
+        {
+          "$type": "SetGlobalValueV2",
+          "key": "_WEAPON_HIDE",
+          "maxValue": 0.0,
+          "minValue": 0.0,
+          "value": 0.0
+        }
+      ],
+      "onAdded": [
+        {
+          "$type": "SetGlobalValueV2",
+          "key": "_WEAPON_HIDE",
+          "maxValue": 0.0,
+          "minValue": 0.0,
+          "predicates": [
+            {
+              "$type": "ByNot",
+              "predicates": [
+                {
+                  "$type": "ByHasModifier",
+                  "modifierName": "FreeAirState",
+                  "target": "Self"
+                }
+              ]
+            }
+          ],
+          "value": 1.0
+        }
+      ]
+    }
+  },
+  {
+    "Default": {
+      "abilityMixins": [
+        {
+          "$type": "AttachModifierToSelfGlobalValueMixin",
+          "defaultGlobalValueOnCreate": 1.0,
+          "globalValueKey": "_WEAPON_SHEATHED",
+          "modifierNameSteps": [
+            "State_ShowWeapon",
+            "State_SheathWeapon"
+          ],
+          "valueSteps": [
+            -0.5,
+            0.5,
+            1.5
+          ],
+          "EECIIMBIDGB": true
+        },
+        {
+          "$type": "DoActionOnGlobalValueChangeMixin",
+          "actions": [
+            {
+              "$type": "FireEffect",
+              "effectPattern": "Eff_Monster_Human_Vila_ShootAttack_Bow_Dissappear",
+              "effectTempleteID": -1.0,
+              "predicates": [
+                {
+                  "$type": "ByTargetGlobalValue",
+                  "compareType": "NoneOrEqual",
+                  "key": "PermanentLoseWeapon",
+                  "target": "Self",
+                  "value": 0.0
+                }
+              ],
+              "scale": 1.0,
+              "JHAGIJGAKMK": ""
+            }
+          ],
+          "globalValueKey": "_WEAPON_HIDE",
+          "DHKOKKHJMHC": true
+        },
+        {
+          "$type": "AttachToStateIDMixin",
+          "modifierName": "Weapon_Hide",
+          "stateIDs": [
+            "Struggle"
+          ],
+          "HLGPLGFCHND": ""
+        },
+        {
+          "$type": "DoActionByPoseIDMixin",
+          "enterActions": [
+            {
+              "$type": "SetGlobalValue",
+              "key": "_WEAPON_SHEATHED",
+              "maxValue": 0.0,
+              "minValue": 0.0,
+              "value": 1.0
+            }
+          ],
+          "poseIDs": [
+            1001,
+            501
+          ]
+        }
+      ],
+      "abilityName": "Monster_Human_Vila_Equip_Display_Manager",
+      "modifiers": {
+        "State_SheathWeapon": {
+          "elementDurability": 100.0,
+          "modifierMixins": [
+            {
+              "$type": "AttachToAIAlertnessMixin",
+              "alertness": [
+                1,
+                2,
+                3
+              ],
+              "modifierName": "HitToBattle"
+            }
+          ],
+          "modifierName": "",
+          "onAdded": [
+            {
+              "$type": "SetWeaponAttachPointRealName",
+              "canBeHandledOnRecover": true,
+              "partName": "equip01",
+              "realName": "WeaponSheathPoint"
+            },
+            {
+              "$type": "SetWeaponAttachPointRealName",
+              "canBeHandledOnRecover": true,
+              "partName": "equip02",
+              "realName": "WeaponSheathPoint"
+            },
+            {
+              "$type": "SetPoseBool",
+              "boolID": "WeaponInHand",
+              "canBeHandledOnRecover": true
+            }
+          ],
+          "onChangeAuthority": [
+            {
+              "$type": "SetWeaponAttachPointRealName",
+              "partName": "equip01",
+              "realName": "WeaponSheathPoint"
+            },
+            {
+              "$type": "SetWeaponAttachPointRealName",
+              "partName": "equip02",
+              "realName": "WeaponSheathPoint"
+            },
+            {
+              "$type": "SetPoseBool",
+              "boolID": "WeaponInHand"
+            }
+          ],
+          "onReconnect": [
+            {
+              "$type": "SetWeaponAttachPointRealName",
+              "partName": "equip01",
+              "realName": "WeaponSheathPoint"
+            },
+            {
+              "$type": "SetPoseBool",
+              "boolID": "WeaponInHand"
+            }
+          ],
+          "IAKNCBDLFKJ": 0.0
+        },
+        "State_ShowWeapon": {
+          "elementDurability": 100.0,
+          "modifierName": "",
+          "onAdded": [
+            {
+              "$type": "SetWeaponAttachPointRealName",
+              "partName": "equip01",
+              "realName": ""
+            },
+            {
+              "$type": "SetWeaponAttachPointRealName",
+              "partName": "equip02",
+              "realName": ""
+            },
+            {
+              "$type": "SetPoseBool",
+              "boolID": "WeaponInHand",
+              "value": true
+            }
+          ],
+          "IAKNCBDLFKJ": 0.0
+        },
+        "Weapon_Hide": {
+          "elementDurability": 100.0,
+          "modifierName": "",
+          "onAdded": [
+            {
+              "$type": "TriggerAbility",
+              "abilityName": "Monster_Human_Equip_HideWeapon",
+              "predicates": [
+                {
+                  "$type": "ByTargetGlobalValue",
+                  "compareType": "NoneOrEqual",
+                  "key": "PermanentLoseWeapon",
+                  "value": 0.0
+                }
+              ]
+            }
+          ],
+          "onRemoved": [
+            {
+              "$type": "SetGlobalValue",
+              "key": "_WEAPON_HIDE",
+              "maxValue": 0.0,
+              "minValue": 0.0,
+              "value": 0.0
+            }
+          ],
+          "IAKNCBDLFKJ": 0.0
+        },
+        "HitToBattle": {
+          "elementDurability": 100.0,
+          "modifierMixins": [
+            {
+              "$type": "DoActionByStateIDMixin",
+              "enterActions": [
+                {
+                  "$type": "SetGlobalValue",
+                  "key": "_WEAPON_SHEATHED",
+                  "maxValue": 0.0,
+                  "minValue": 0.0,
+                  "predicates": [
+                    {
+                      "$type": "ByTargetGlobalValue",
+                      "compareType": "NoneOrEqual",
+                      "key": "PermanentLoseWeapon",
+                      "value": 0.0
+                    },
+                    {
+                      "$type": "ByTargetGlobalValue",
+                      "compareType": "NoneOrEqual",
+                      "key": "Oprichnik_BombBackpack",
+                      "value": 0.0
+                    }
+                  ],
+                  "value": 0.0
+                }
+              ],
+              "stateIDs": [
+                "BeHit",
+                "BeHitThrow",
+                "Struggle"
+              ],
+              "HLGPLGFCHND": ""
+            }
+          ],
+          "modifierName": "",
+          "IAKNCBDLFKJ": 0.0
+        }
+      },
+      "onAbilityStart": [
+        {
+          "$type": "SetGlobalValue",
+          "key": "_WEAPON_SHEATHED",
+          "maxValue": 0.0,
+          "minValue": 0.0,
+          "value": 0.0
+        }
+      ]
+    }
+  },
+  {
+    "Default": {
+      "abilityMixins": [
+        {
+          "$type": "SteerAttackMixin",
+          "angularSpeed": 90.0,
+          "attackTrigger": "",
+          "endNormalizedTime": 0.75,
+          "steerStateIDs": [
+            "TauntAware01"
+          ],
+          "LEGDILBDLCB": true,
+          "HLGPLGFCHND": ""
+        },
+        {
+          "$type": "SteerAttackMixin",
+          "angularSpeed": 90.0,
+          "attackTrigger": "",
+          "endNormalizedTime": 0.75,
+          "steerStateIDs": [
+            "TauntAware02"
+          ],
+          "LEGDILBDLCB": true,
+          "HLGPLGFCHND": ""
+        },
+        {
+          "$type": "SteerAttackMixin",
+          "angularSpeed": 90.0,
+          "attackTrigger": "",
+          "steerStateIDs": [
+            "AwareMove"
+          ],
+          "LEGDILBDLCB": true,
+          "HLGPLGFCHND": ""
+        },
+        {
+          "$type": "SteerAttackMixin",
+          "angularSpeed": 90.0,
+          "attackTrigger": "",
+          "steerStateIDs": [
+            "AwareMoveR"
+          ],
+          "LEGDILBDLCB": true,
+          "HLGPLGFCHND": ""
+        },
+        {
+          "$type": "SteerAttackMixin",
+          "angularSpeed": 90.0,
+          "attackTrigger": "",
+          "steerStateIDs": [
+            "AwareMoveL"
+          ],
+          "LEGDILBDLCB": true,
+          "HLGPLGFCHND": ""
+        },
+        {
+          "$type": "SteerAttackMixin",
+          "angularSpeed": 120.0,
+          "attackTrigger": "",
+          "endNormalizedTime": 0.7,
+          "startNormalizedTime": 0.2,
+          "steerStateIDs": [
+            "TauntAware_AS",
+            "TauntAware_BS",
+            "AwareAS",
+            "Aware"
+          ],
+          "LEGDILBDLCB": true,
+          "HLGPLGFCHND": ""
+        }
+      ],
+      "abilityName": "Monster_Human_Girl_Vila_AwareSteer"
+    }
+  },
+  {
+    "Default": {
+      "abilityMixins": [
+        {
+          "$type": "SteerAttackMixin",
+          "angularSpeed": 240.0,
+          "attackTrigger": "",
+          "steerStateIDs": [
+            "Alert"
+          ],
+          "LEGDILBDLCB": true,
+          "HLGPLGFCHND": ""
+        },
+        {
+          "$type": "SteerAttackMixin",
+          "angularSpeed": 240.0,
+          "attackTrigger": "",
+          "endNormalizedTime": 0.7,
+          "steerStateIDs": [
+            "NormalAttack01"
+          ],
+          "LEGDILBDLCB": true,
+          "HLGPLGFCHND": ""
+        },
+        {
+          "$type": "SteerAttackMixin",
+          "angularSpeed": 240.0,
+          "attackTrigger": "",
+          "startNormalizedTime": 0.7,
+          "steerStateIDs": [
+            "NormalAttack01_AS"
+          ],
+          "LEGDILBDLCB": true,
+          "HLGPLGFCHND": ""
+        },
+        {
+          "$type": "SteerAttackMixin",
+          "angularSpeed": 240.0,
+          "attackTrigger": "",
+          "steerStateIDs": [
+            "NormalAttack02_BS"
+          ],
+          "LEGDILBDLCB": true,
+          "HLGPLGFCHND": ""
+        },
+        {
+          "$type": "SteerAttackMixin",
+          "angularSpeed": 240.0,
+          "attackTrigger": "",
+          "endNormalizedTime": 0.18,
+          "steerStateIDs": [
+            "NormalAttack02"
+          ],
+          "LEGDILBDLCB": true,
+          "HLGPLGFCHND": ""
+        },
+        {
+          "$type": "SteerAttackMixin",
+          "angularSpeed": 240.0,
+          "attackTrigger": "",
+          "startNormalizedTime": 0.7,
+          "steerStateIDs": [
+            "NormalAttack02"
+          ],
+          "LEGDILBDLCB": true,
+          "HLGPLGFCHND": ""
+        },
+        {
+          "$type": "SteerAttackMixin",
+          "angularSpeed": 240.0,
+          "attackTrigger": "",
+          "endNormalizedTime": 0.3,
+          "steerStateIDs": [
+            "HeavyAttack"
+          ],
+          "LEGDILBDLCB": true,
+          "HLGPLGFCHND": ""
+        },
+        {
+          "$type": "SteerAttackMixin",
+          "angularSpeed": 240.0,
+          "attackTrigger": "",
+          "startNormalizedTime": 0.68,
+          "steerStateIDs": [
+            "HeavyAttack"
+          ],
+          "LEGDILBDLCB": true,
+          "HLGPLGFCHND": ""
+        },
+        {
+          "$type": "SteerAttackMixin",
+          "angularSpeed": 240.0,
+          "attackTrigger": "",
+          "endNormalizedTime": 0.52,
+          "steerStateIDs": [
+            "ShootAttack"
+          ],
+          "LEGDILBDLCB": true,
+          "HLGPLGFCHND": ""
+        },
+        {
+          "$type": "SteerAttackMixin",
+          "angularSpeed": 240.0,
+          "attackTrigger": "",
+          "startNormalizedTime": 0.9,
+          "steerStateIDs": [
+            "ShootAttack"
+          ],
+          "LEGDILBDLCB": true,
+          "HLGPLGFCHND": ""
+        },
+        {
+          "$type": "SteerAttackMixin",
+          "angularSpeed": 240.0,
+          "attackTrigger": "",
+          "endNormalizedTime": 0.52,
+          "steerStateIDs": [
+            "ShootAttack02"
+          ],
+          "LEGDILBDLCB": true,
+          "HLGPLGFCHND": ""
+        },
+        {
+          "$type": "SteerAttackMixin",
+          "angularSpeed": 240.0,
+          "attackTrigger": "",
+          "endNormalizedTime": 0.52,
+          "steerStateIDs": [
+            "ShootAttack03"
+          ],
+          "LEGDILBDLCB": true,
+          "HLGPLGFCHND": ""
+        },
+        {
+          "$type": "SteerAttackMixin",
+          "angularSpeed": 240.0,
+          "attackTrigger": "",
+          "startNormalizedTime": 0.9,
+          "steerStateIDs": [
+            "ShootAttack03"
+          ],
+          "LEGDILBDLCB": true,
+          "HLGPLGFCHND": ""
+        },
+        {
+          "$type": "SteerAttackMixin",
+          "angularSpeed": 240.0,
+          "attackTrigger": "",
+          "steerStateIDs": [
+            "Personality01"
+          ],
+          "LEGDILBDLCB": true,
+          "HLGPLGFCHND": ""
+        }
+      ],
+      "abilityName": "Monster_Human_Girl_Vila_Glaive_Steer"
+    }
+  },
+  {
+    "Default": {
+      "abilityMixins": [
+        {
+          "$type": "SteerAttackMixin",
+          "angularSpeed": 240.0,
+          "attackTrigger": "",
+          "steerStateIDs": [
+            "Alert"
+          ],
+          "LEGDILBDLCB": true,
+          "HLGPLGFCHND": ""
+        },
+        {
+          "$type": "SteerAttackMixin",
+          "angularSpeed": 240.0,
+          "attackTrigger": "",
+          "endNormalizedTime": 0.76,
+          "steerStateIDs": [
+            "NormalAttack01"
+          ],
+          "LEGDILBDLCB": true,
+          "HLGPLGFCHND": ""
+        },
+        {
+          "$type": "SteerAttackMixin",
+          "angularSpeed": 240.0,
+          "attackTrigger": "",
+          "startNormalizedTime": 0.6,
+          "steerStateIDs": [
+            "NormalAttack01_AS"
+          ],
+          "LEGDILBDLCB": true,
+          "HLGPLGFCHND": ""
+        },
+        {
+          "$type": "SteerAttackMixin",
+          "angularSpeed": 240.0,
+          "attackTrigger": "",
+          "steerStateIDs": [
+            "NormalAttack02_BS"
+          ],
+          "LEGDILBDLCB": true,
+          "HLGPLGFCHND": ""
+        },
+        {
+          "$type": "SteerAttackMixin",
+          "angularSpeed": 240.0,
+          "attackTrigger": "",
+          "endNormalizedTime": 0.6,
+          "steerStateIDs": [
+            "NormalAttack02"
+          ],
+          "LEGDILBDLCB": true,
+          "HLGPLGFCHND": ""
+        },
+        {
+          "$type": "SteerAttackMixin",
+          "angularSpeed": 240.0,
+          "attackTrigger": "",
+          "startNormalizedTime": 0.42,
+          "steerStateIDs": [
+            "NormalAttack02_AS"
+          ],
+          "LEGDILBDLCB": true,
+          "HLGPLGFCHND": ""
+        },
+        {
+          "$type": "SteerAttackMixin",
+          "angularSpeed": 240.0,
+          "attackTrigger": "",
+          "steerStateIDs": [
+            "NormalAttack03_BS"
+          ],
+          "LEGDILBDLCB": true,
+          "HLGPLGFCHND": ""
+        },
+        {
+          "$type": "SteerAttackMixin",
+          "angularSpeed": 240.0,
+          "attackTrigger": "",
+          "endNormalizedTime": 0.44,
+          "steerStateIDs": [
+            "NormalAttack03"
+          ],
+          "LEGDILBDLCB": true,
+          "HLGPLGFCHND": ""
+        },
+        {
+          "$type": "SteerAttackMixin",
+          "angularSpeed": 240.0,
+          "attackTrigger": "",
+          "startNormalizedTime": 0.85,
+          "steerStateIDs": [
+            "NormalAttack03_AS"
+          ],
+          "LEGDILBDLCB": true,
+          "HLGPLGFCHND": ""
+        },
+        {
+          "$type": "SteerAttackMixin",
+          "angularSpeed": 240.0,
+          "attackTrigger": "",
+          "endNormalizedTime": 0.55,
+          "steerStateIDs": [
+            "ShootAttack"
+          ],
+          "LEGDILBDLCB": true,
+          "HLGPLGFCHND": ""
+        },
+        {
+          "$type": "SteerAttackMixin",
+          "angularSpeed": 240.0,
+          "attackTrigger": "",
+          "startNormalizedTime": 0.82,
+          "steerStateIDs": [
+            "ShootAttack"
+          ],
+          "LEGDILBDLCB": true,
+          "HLGPLGFCHND": ""
+        },
+        {
+          "$type": "SteerAttackMixin",
+          "angularSpeed": 240.0,
+          "attackTrigger": "",
+          "endNormalizedTime": 0.55,
+          "steerStateIDs": [
+            "ShootAttack02"
+          ],
+          "LEGDILBDLCB": true,
+          "HLGPLGFCHND": ""
+        },
+        {
+          "$type": "SteerAttackMixin",
+          "angularSpeed": 240.0,
+          "attackTrigger": "",
+          "endNormalizedTime": 0.55,
+          "steerStateIDs": [
+            "ShootAttack03"
+          ],
+          "LEGDILBDLCB": true,
+          "HLGPLGFCHND": ""
+        },
+        {
+          "$type": "SteerAttackMixin",
+          "angularSpeed": 240.0,
+          "attackTrigger": "",
+          "startNormalizedTime": 0.82,
+          "steerStateIDs": [
+            "ShootAttack03"
+          ],
+          "LEGDILBDLCB": true,
+          "HLGPLGFCHND": ""
+        },
+        {
+          "$type": "SteerAttackMixin",
+          "angularSpeed": 240.0,
+          "attackTrigger": "",
+          "steerStateIDs": [
+            "Personality01"
+          ],
+          "LEGDILBDLCB": true,
+          "HLGPLGFCHND": ""
+        }
+      ],
+      "abilityName": "Monster_Human_Girl_Vila_Blade_Steer"
+    }
+  },
+  {
+    "Default": {
+      "abilityMixins": [
+        {
+          "$type": "SteerAttackMixin",
+          "angularSpeed": 240.0,
+          "attackTrigger": "",
+          "steerStateIDs": [
+            "Alert"
+          ],
+          "LEGDILBDLCB": true,
+          "HLGPLGFCHND": ""
+        },
+        {
+          "$type": "SteerAttackMixin",
+          "angularSpeed": 240.0,
+          "attackTrigger": "",
+          "endNormalizedTime": 0.33,
+          "steerStateIDs": [
+            "NormalAttack01"
+          ],
+          "LEGDILBDLCB": true,
+          "HLGPLGFCHND": ""
+        },
+        {
+          "$type": "SteerAttackMixin",
+          "angularSpeed": 240.0,
+          "attackTrigger": "",
+          "startNormalizedTime": 0.7,
+          "steerStateIDs": [
+            "NormalAttack01"
+          ],
+          "LEGDILBDLCB": true,
+          "HLGPLGFCHND": ""
+        },
+        {
+          "$type": "SteerAttackMixin",
+          "angularSpeed": 240.0,
+          "attackTrigger": "",
+          "endNormalizedTime": 0.33,
+          "steerStateIDs": [
+            "NormalAttack02"
+          ],
+          "LEGDILBDLCB": true,
+          "HLGPLGFCHND": ""
+        },
+        {
+          "$type": "SteerAttackMixin",
+          "angularSpeed": 240.0,
+          "attackTrigger": "",
+          "startNormalizedTime": 0.75,
+          "steerStateIDs": [
+            "NormalAttack02"
+          ],
+          "LEGDILBDLCB": true,
+          "HLGPLGFCHND": ""
+        },
+        {
+          "$type": "SteerAttackMixin",
+          "angularSpeed": 240.0,
+          "attackTrigger": "",
+          "endNormalizedTime": 0.18,
+          "steerStateIDs": [
+            "NormalAttack03"
+          ],
+          "LEGDILBDLCB": true,
+          "HLGPLGFCHND": ""
+        },
+        {
+          "$type": "SteerAttackMixin",
+          "angularSpeed": 240.0,
+          "attackTrigger": "",
+          "startNormalizedTime": 0.6,
+          "steerStateIDs": [
+            "NormalAttack03"
+          ],
+          "LEGDILBDLCB": true,
+          "HLGPLGFCHND": ""
+        },
+        {
+          "$type": "SteerAttackMixin",
+          "angularSpeed": 240.0,
+          "attackTrigger": "",
+          "endNormalizedTime": 0.43,
+          "steerStateIDs": [
+            "ShootAttack"
+          ],
+          "LEGDILBDLCB": true,
+          "HLGPLGFCHND": ""
+        },
+        {
+          "$type": "SteerAttackMixin",
+          "angularSpeed": 240.0,
+          "attackTrigger": "",
+          "startNormalizedTime": 0.7,
+          "steerStateIDs": [
+            "ShootAttack"
+          ],
+          "LEGDILBDLCB": true,
+          "HLGPLGFCHND": ""
+        },
+        {
+          "$type": "SteerAttackMixin",
+          "angularSpeed": 240.0,
+          "attackTrigger": "",
+          "endNormalizedTime": 0.43,
+          "steerStateIDs": [
+            "ShootAttack02"
+          ],
+          "LEGDILBDLCB": true,
+          "HLGPLGFCHND": ""
+        },
+        {
+          "$type": "SteerAttackMixin",
+          "angularSpeed": 240.0,
+          "attackTrigger": "",
+          "endNormalizedTime": 0.43,
+          "steerStateIDs": [
+            "ShootAttack03"
+          ],
+          "LEGDILBDLCB": true,
+          "HLGPLGFCHND": ""
+        },
+        {
+          "$type": "SteerAttackMixin",
+          "angularSpeed": 240.0,
+          "attackTrigger": "",
+          "startNormalizedTime": 0.7,
+          "steerStateIDs": [
+            "ShootAttack03"
+          ],
+          "LEGDILBDLCB": true,
+          "HLGPLGFCHND": ""
+        },
+        {
+          "$type": "SteerAttackMixin",
+          "angularSpeed": 240.0,
+          "attackTrigger": "",
+          "steerStateIDs": [
+            "Personality01"
+          ],
+          "LEGDILBDLCB": true,
+          "HLGPLGFCHND": ""
+        }
+      ],
+      "abilityName": "Monster_Human_Boy_Vila_Blade_Steer"
+    }
+  },
+  {
+    "Default": {
+      "abilityMixins": [
+        {
+          "$type": "AttachToNormalizedTimeMixin",
+          "modifierName": "ShootAttack_BowEffect",
+          "normalizeEnd": 0.814,
+          "normalizeStart": 0.082,
+          "stateID": "ShootAttack",
+          "HLGPLGFCHND": ""
+        },
+        {
+          "$type": "AttachToNormalizedTimeMixin",
+          "modifierName": "ShootAttack_WeaponHide",
+          "normalizeEnd": 0.84,
+          "normalizeStart": 0.561,
+          "stateID": "ShootAttack",
+          "HLGPLGFCHND": ""
+        },
+        {
+          "$type": "AttachToNormalizedTimeMixin",
+          "modifierName": "ShootAttack_BowEffect",
+          "normalizeEnd": 0.814,
+          "normalizeStart": 0.082,
+          "stateID": "ShootAttack02",
+          "HLGPLGFCHND": ""
+        },
+        {
+          "$type": "AttachToNormalizedTimeMixin",
+          "modifierName": "ShootAttack_WeaponHide",
+          "normalizeEnd": 0.84,
+          "normalizeStart": 0.561,
+          "stateID": "ShootAttack02",
+          "HLGPLGFCHND": ""
+        },
+        {
+          "$type": "AttachToNormalizedTimeMixin",
+          "modifierName": "ShootAttack_BowEffect",
+          "normalizeEnd": 0.814,
+          "normalizeStart": 0.082,
+          "stateID": "ShootAttack03",
+          "HLGPLGFCHND": ""
+        },
+        {
+          "$type": "AttachToNormalizedTimeMixin",
+          "modifierName": "ShootAttack_WeaponHide",
+          "normalizeEnd": 0.84,
+          "normalizeStart": 0.561,
+          "stateID": "ShootAttack03",
+          "HLGPLGFCHND": ""
+        }
+      ],
+      "abilityName": "Monster_Human_Girl_Vila_Glaive_ShootAttackManager",
+      "modifiers": {
+        "ShootAttack_BowEffect": {
+          "elementDurability": 100.0,
+          "modifierName": "",
+          "onAdded": [
+            {
+              "$type": "AttachEffect",
+              "effectPattern": "Eff_Monster_Human_Girl_Vila_ShootAttack_Bow",
+              "effectTempleteID": -1.0,
+              "scale": 1.0,
+              "JHAGIJGAKMK": ""
+            }
+          ],
+          "IAKNCBDLFKJ": 0.0
+        },
+        "ShootAttack_WeaponHide": {
+          "elementDurability": 100.0,
+          "modifierName": "",
+          "onAdded": [
+            {
+              "$type": "SetGlobalValueV2",
+              "key": "_WEAPON_HIDE",
+              "maxValue": 0.0,
+              "minValue": 0.0,
+              "value": 1.0
+            }
+          ],
+          "onRemoved": [
+            {
+              "$type": "SetGlobalValueV2",
+              "key": "_WEAPON_HIDE",
+              "maxValue": 0.0,
+              "minValue": 0.0,
+              "value": 0.0
+            },
+            {
+              "$type": "FireEffect",
+              "effectPattern": "Eff_Monster_Human_Vila_Blade_ShootAttack_Weapon_Appear",
+              "effectTempleteID": -1.0,
+              "scale": 1.0,
+              "JHAGIJGAKMK": ""
+            }
+          ],
+          "IAKNCBDLFKJ": 0.0
+        }
+      },
+      "onAbilityStart": [
+        {
+          "$type": "SetGlobalValueV2",
+          "key": "Vila_BulletIsAccurate",
+          "maxValue": 0.0,
+          "minValue": 0.0,
+          "value": 1.0
+        },
+        {
+          "$type": "Predicated",
+          "failActions": [
+            {
+              "$type": "TriggerBullet",
+              "born": {
+                "$type": "ConfigBornByAttachPoint",
+                "attachPointName": "BulletSource",
+                "direction": {
+                  "$type": "ConfigDirectionByAttackTarget",
+                  "maxAngle": 30.0,
+                  "startPoint": ""
+                },
+                "useRotation": true
+              },
+              "bulletID": 42510008
+            }
+          ],
+          "successActions": [
+            {
+              "$type": "Randomed",
+              "chance": 0.3,
+              "failActions": [
+                {
+                  "$type": "SetGlobalValueV2",
+                  "key": "Vila_BulletIsAccurate",
+                  "maxValue": 0.0,
+                  "minValue": 0.0,
+                  "value": 0.0
+                }
+              ]
+            },
+            {
+              "$type": "FireEffect",
+              "born": {
+                "$type": "ConfigBornByAttachPoint",
+                "attachPointName": "Fx_ChestNode",
+                "useRotation": true
+              },
+              "effectPattern": "Eff_Monster_Common_AffectedByStarReaction_Flash",
+              "effectTempleteID": -1.0,
+              "scale": 1.0,
+              "JHAGIJGAKMK": ""
+            },
+            {
+              "$type": "DamageByAttackValue",
+              "attackInfo": {
+                "attackProperty": {
+                  "damagePercentage": 0.0,
+                  "damagePercentageRatio": 0.0,
+                  "elementDurability": 100.0,
+                  "enBreak": 200.0,
+                  "DIEKDGNBHLH": 0.0
+                },
+                "attackTag": "",
+                "attenuationGroup": "default",
+                "attenuationTag": "",
+                "hitPattern": {
+                  "hitImpulseType": "",
+                  "onHitEffectName": "default",
+                  "overrideHitImpulse": {
+                    "hitImpulseX": 600.0,
+                    "hitImpulseY": 600.0,
+                    "hitLevel": "Air"
+                  },
+                  "MALCHCIBBBC": ""
+                }
+              }
+            },
+            {
+              "$type": "Predicated",
+              "failActions": [
+                {
+                  "$type": "TriggerBullet",
+                  "born": {
+                    "$type": "ConfigBornByAttachPoint",
+                    "attachPointName": "BulletSource",
+                    "direction": {
+                      "$type": "ConfigDirectionByEntity",
+                      "maxAngle": 0.0,
+                      "randomAngleHor": 90.0,
+                      "randomAngleVer": 90.0
+                    },
+                    "useRotation": true
+                  },
+                  "bulletID": 42510008
+                }
+              ],
+              "successActions": [
+                {
+                  "$type": "TriggerBullet",
+                  "born": {
+                    "$type": "ConfigBornByAttachPoint",
+                    "attachPointName": "BulletSource",
+                    "direction": {
+                      "$type": "ConfigDirectionByAttackTarget",
+                      "maxAngle": 30.0,
+                      "startPoint": ""
+                    },
+                    "useRotation": true
+                  },
+                  "bulletID": 42510008
+                }
+              ],
+              "targetPredicates": [
+                {
+                  "$type": "ByTargetGlobalValue",
+                  "key": "Vila_BulletIsAccurate",
+                  "value": 1.0
+                }
+              ]
+            }
+          ],
+          "targetPredicates": [
+            {
+              "$type": "ByHasModifier",
+              "modifierName": "Monster_IsInStarMode"
+            }
+          ]
+        }
+      ],
+      "onAdded": [
+        {
+          "$type": "SetGlobalValueV2",
+          "key": "Vila_BulletIsAccurate",
+          "maxValue": 0.0,
+          "minValue": 0.0,
+          "value": 1.0
+        }
+      ]
+    }
+  },
+  {
+    "Default": {
+      "abilityMixins": [
+        {
+          "$type": "AttachToNormalizedTimeMixin",
+          "modifierName": "ShootAttack_BowEffect",
+          "normalizeEnd": 0.701,
+          "normalizeStart": 0.073,
+          "stateID": "ShootAttack",
+          "HLGPLGFCHND": ""
+        },
+        {
+          "$type": "AttachToNormalizedTimeMixin",
+          "modifierName": "ShootAttack_WeaponHide",
+          "normalizeEnd": 0.807,
+          "normalizeStart": 0.437,
+          "stateID": "ShootAttack",
+          "HLGPLGFCHND": ""
+        }
+      ],
+      "abilityName": "Monster_Human_Boy_Vila_Blade_ShootAttackManager",
+      "modifiers": {
+        "ShootAttack_BowEffect": {
+          "elementDurability": 100.0,
+          "modifierName": "",
+          "onAdded": [
+            {
+              "$type": "AttachEffect",
+              "effectPattern": "Eff_Monster_Human_Boy_Vila_ShootAttack_Bow",
+              "effectTempleteID": -1.0,
+              "scale": 1.0,
+              "JHAGIJGAKMK": ""
+            }
+          ],
+          "IAKNCBDLFKJ": 0.0
+        },
+        "ShootAttack_WeaponHide": {
+          "elementDurability": 100.0,
+          "modifierName": "",
+          "onAdded": [
+            {
+              "$type": "SetGlobalValueV2",
+              "key": "_WEAPON_HIDE",
+              "maxValue": 0.0,
+              "minValue": 0.0,
+              "value": 1.0
+            }
+          ],
+          "onRemoved": [
+            {
+              "$type": "SetGlobalValueV2",
+              "key": "_WEAPON_HIDE",
+              "maxValue": 0.0,
+              "minValue": 0.0,
+              "value": 0.0
+            },
+            {
+              "$type": "FireEffect",
+              "effectPattern": "Eff_Monster_Human_Vila_Blade_ShootAttack_Weapon_Appear",
+              "effectTempleteID": -1.0,
+              "scale": 1.0,
+              "JHAGIJGAKMK": ""
+            }
+          ],
+          "IAKNCBDLFKJ": 0.0
+        }
+      },
+      "onAbilityStart": [
+        {
+          "$type": "SetGlobalValueV2",
+          "key": "Vila_BulletIsAccurate",
+          "maxValue": 0.0,
+          "minValue": 0.0,
+          "value": 1.0
+        },
+        {
+          "$type": "Predicated",
+          "failActions": [
+            {
+              "$type": "TriggerBullet",
+              "born": {
+                "$type": "ConfigBornByAttachPoint",
+                "attachPointName": "BulletSource",
+                "direction": {
+                  "$type": "ConfigDirectionByAttackTarget",
+                  "maxAngle": 30.0,
+                  "startPoint": ""
+                },
+                "useRotation": true
+              },
+              "bulletID": 42510009
+            }
+          ],
+          "successActions": [
+            {
+              "$type": "Randomed",
+              "chance": 0.3,
+              "failActions": [
+                {
+                  "$type": "SetGlobalValueV2",
+                  "key": "Vila_BulletIsAccurate",
+                  "maxValue": 0.0,
+                  "minValue": 0.0,
+                  "value": 0.0
+                }
+              ]
+            },
+            {
+              "$type": "FireEffect",
+              "born": {
+                "$type": "ConfigBornByAttachPoint",
+                "attachPointName": "Fx_ChestNode",
+                "useRotation": true
+              },
+              "effectPattern": "Eff_Monster_Common_AffectedByStarReaction_Flash",
+              "effectTempleteID": -1.0,
+              "scale": 1.0,
+              "JHAGIJGAKMK": ""
+            },
+            {
+              "$type": "DamageByAttackValue",
+              "attackInfo": {
+                "attackProperty": {
+                  "damagePercentage": 0.0,
+                  "damagePercentageRatio": 0.0,
+                  "elementDurability": 100.0,
+                  "enBreak": 200.0,
+                  "DIEKDGNBHLH": 0.0
+                },
+                "attackTag": "",
+                "attenuationGroup": "default",
+                "attenuationTag": "",
+                "hitPattern": {
+                  "hitImpulseType": "",
+                  "onHitEffectName": "default",
+                  "overrideHitImpulse": {
+                    "hitImpulseX": 600.0,
+                    "hitImpulseY": 600.0,
+                    "hitLevel": "Air"
+                  },
+                  "MALCHCIBBBC": ""
+                }
+              }
+            },
+            {
+              "$type": "Predicated",
+              "failActions": [
+                {
+                  "$type": "TriggerBullet",
+                  "born": {
+                    "$type": "ConfigBornByAttachPoint",
+                    "attachPointName": "BulletSource",
+                    "direction": {
+                      "$type": "ConfigDirectionByEntity",
+                      "maxAngle": 0.0,
+                      "randomAngleHor": 90.0,
+                      "randomAngleVer": 90.0
+                    },
+                    "useRotation": true
+                  },
+                  "bulletID": 42510009
+                }
+              ],
+              "successActions": [
+                {
+                  "$type": "TriggerBullet",
+                  "born": {
+                    "$type": "ConfigBornByAttachPoint",
+                    "attachPointName": "BulletSource",
+                    "direction": {
+                      "$type": "ConfigDirectionByAttackTarget",
+                      "maxAngle": 30.0,
+                      "startPoint": ""
+                    },
+                    "useRotation": true
+                  },
+                  "bulletID": 42510009
+                }
+              ],
+              "targetPredicates": [
+                {
+                  "$type": "ByTargetGlobalValue",
+                  "key": "Vila_BulletIsAccurate",
+                  "value": 1.0
+                }
+              ]
+            }
+          ],
+          "targetPredicates": [
+            {
+              "$type": "ByHasModifier",
+              "modifierName": "Monster_IsInStarMode"
+            }
+          ]
+        }
+      ],
+      "onAdded": [
+        {
+          "$type": "SetGlobalValueV2",
+          "key": "Vila_BulletIsAccurate",
+          "maxValue": 0.0,
+          "minValue": 0.0,
+          "value": 1.0
+        }
+      ]
+    }
+  },
+  {
+    "Default": {
+      "abilityMixins": [
+        {
+          "$type": "AttachToNormalizedTimeMixin",
+          "modifierName": "ShootAttack_BowEffect",
+          "normalizeEnd": 0.816,
+          "normalizeStart": 0.084,
+          "stateID": "ShootAttack",
+          "HLGPLGFCHND": ""
+        },
+        {
+          "$type": "AttachToNormalizedTimeMixin",
+          "modifierName": "ShootAttack_WeaponHide",
+          "normalizeEnd": 0.852,
+          "normalizeStart": 0.558,
+          "stateID": "ShootAttack",
+          "HLGPLGFCHND": ""
+        }
+      ],
+      "abilityName": "Monster_Human_Girl_Vila_Blade_ShootAttackManager",
+      "modifiers": {
+        "ShootAttack_BowEffect": {
+          "elementDurability": 100.0,
+          "modifierName": "",
+          "onAdded": [
+            {
+              "$type": "AttachEffect",
+              "effectPattern": "Eff_Monster_Human_Girl_Vila_ShootAttack_Bow",
+              "effectTempleteID": -1.0,
+              "scale": 1.0,
+              "JHAGIJGAKMK": ""
+            }
+          ],
+          "IAKNCBDLFKJ": 0.0
+        },
+        "ShootAttack_WeaponHide": {
+          "elementDurability": 100.0,
+          "modifierName": "",
+          "onAdded": [
+            {
+              "$type": "SetGlobalValueV2",
+              "key": "_WEAPON_HIDE",
+              "maxValue": 0.0,
+              "minValue": 0.0,
+              "value": 1.0
+            }
+          ],
+          "onRemoved": [
+            {
+              "$type": "SetGlobalValueV2",
+              "key": "_WEAPON_HIDE",
+              "maxValue": 0.0,
+              "minValue": 0.0,
+              "value": 0.0
+            },
+            {
+              "$type": "FireEffect",
+              "effectPattern": "Eff_Monster_Human_Vila_Blade_ShootAttack_Weapon_Appear",
+              "effectTempleteID": -1.0,
+              "scale": 1.0,
+              "JHAGIJGAKMK": ""
+            }
+          ],
+          "IAKNCBDLFKJ": 0.0
+        }
+      },
+      "onAbilityStart": [
+        {
+          "$type": "SetGlobalValueV2",
+          "key": "Vila_BulletIsAccurate",
+          "maxValue": 0.0,
+          "minValue": 0.0,
+          "value": 1.0
+        },
+        {
+          "$type": "Predicated",
+          "failActions": [
+            {
+              "$type": "TriggerBullet",
+              "born": {
+                "$type": "ConfigBornByAttachPoint",
+                "attachPointName": "BulletSource",
+                "direction": {
+                  "$type": "ConfigDirectionByAttackTarget",
+                  "maxAngle": 30.0,
+                  "startPoint": ""
+                },
+                "useRotation": true
+              },
+              "bulletID": 42510009
+            }
+          ],
+          "successActions": [
+            {
+              "$type": "Randomed",
+              "chance": 0.3,
+              "failActions": [
+                {
+                  "$type": "SetGlobalValueV2",
+                  "key": "Vila_BulletIsAccurate",
+                  "maxValue": 0.0,
+                  "minValue": 0.0,
+                  "value": 0.0
+                }
+              ]
+            },
+            {
+              "$type": "FireEffect",
+              "born": {
+                "$type": "ConfigBornByAttachPoint",
+                "attachPointName": "Fx_ChestNode",
+                "useRotation": true
+              },
+              "effectPattern": "Eff_Monster_Common_AffectedByStarReaction_Flash",
+              "effectTempleteID": -1.0,
+              "scale": 1.0,
+              "JHAGIJGAKMK": ""
+            },
+            {
+              "$type": "DamageByAttackValue",
+              "attackInfo": {
+                "attackProperty": {
+                  "damagePercentage": 0.0,
+                  "damagePercentageRatio": 0.0,
+                  "elementDurability": 100.0,
+                  "enBreak": 200.0,
+                  "DIEKDGNBHLH": 0.0
+                },
+                "attackTag": "",
+                "attenuationGroup": "default",
+                "attenuationTag": "",
+                "hitPattern": {
+                  "hitImpulseType": "",
+                  "onHitEffectName": "default",
+                  "overrideHitImpulse": {
+                    "hitImpulseX": 600.0,
+                    "hitImpulseY": 600.0,
+                    "hitLevel": "Air"
+                  },
+                  "MALCHCIBBBC": ""
+                }
+              }
+            },
+            {
+              "$type": "Predicated",
+              "failActions": [
+                {
+                  "$type": "TriggerBullet",
+                  "born": {
+                    "$type": "ConfigBornByAttachPoint",
+                    "attachPointName": "BulletSource",
+                    "direction": {
+                      "$type": "ConfigDirectionByEntity",
+                      "maxAngle": 0.0,
+                      "randomAngleHor": 90.0,
+                      "randomAngleVer": 90.0
+                    },
+                    "useRotation": true
+                  },
+                  "bulletID": 42510009
+                }
+              ],
+              "successActions": [
+                {
+                  "$type": "TriggerBullet",
+                  "born": {
+                    "$type": "ConfigBornByAttachPoint",
+                    "attachPointName": "BulletSource",
+                    "direction": {
+                      "$type": "ConfigDirectionByAttackTarget",
+                      "maxAngle": 30.0,
+                      "startPoint": ""
+                    },
+                    "useRotation": true
+                  },
+                  "bulletID": 42510009
+                }
+              ],
+              "targetPredicates": [
+                {
+                  "$type": "ByTargetGlobalValue",
+                  "key": "Vila_BulletIsAccurate",
+                  "value": 1.0
+                }
+              ]
+            }
+          ],
+          "targetPredicates": [
+            {
+              "$type": "ByHasModifier",
+              "modifierName": "Monster_IsInStarMode"
+            }
+          ]
+        }
+      ],
+      "onAdded": [
+        {
+          "$type": "SetGlobalValueV2",
+          "key": "Vila_BulletIsAccurate",
+          "maxValue": 0.0,
+          "minValue": 0.0,
+          "value": 1.0
+        }
+      ]
+    }
+  },
+  {
+    "Default": {
+      "abilityName": "Vila_Glaive_ShootAttackBullet",
+      "modifiers": {
+        "Bullet_Loop": {
+          "elementDurability": 100.0,
+          "modifierName": "",
+          "onAdded": [
+            {
+              "$type": "AttachEffect",
+              "effectPattern": "Eff_Monster_Human_Girl_Vila_Glaive_ShootAttack_Bullet",
+              "effectTempleteID": -1.0,
+              "scale": 1.0,
+              "JHAGIJGAKMK": ""
+            },
+            {
+              "$type": "AttachEffect",
+              "effectPattern": "Eff_Monster_Human_Girl_Vila_Glaive_ShootAttack_BulletTrail",
+              "effectTempleteID": -1.0,
+              "scale": 1.0,
+              "JHAGIJGAKMK": ""
+            }
+          ],
+          "IAKNCBDLFKJ": 0.0
+        }
+      },
+      "onAbilityStart": [
+        {
+          "$type": "FireEffect",
+          "born": {
+            "$type": "ConfigBornByCollisionPoint",
+            "useRotation": true
+          },
+          "effectPattern": "Eff_Monster_Human_Vila_ShootAttack_Bullet_Hit",
+          "effectTempleteID": -1.0,
+          "scale": 1.0,
+          "JHAGIJGAKMK": ""
+        },
+        {
+          "$type": "TriggerAttackEvent",
+          "attackEvent": {
+            "attackInfo": {
+              "attackProperty": {
+                "damagePercentage": 1.0,
+                "damagePercentageRatio": 0.0,
+                "elementDurability": 25.0,
+                "elementType": "Wind",
+                "enBreak": 100.0,
+                "strikeType": "Pierce",
+                "DIEKDGNBHLH": 0.0
+              },
+              "attackTag": "",
+              "attenuationGroup": "default",
+              "attenuationTag": "",
+              "cameraShake": {
+                "shakeRange": 0.06,
+                "shakeTime": 0.09,
+                "OFGBHFBAEKK": ""
+              },
+              "canBeModifiedBy": "OriginOwner",
+              "hitPattern": {
+                "hitHaltTimeScale": 0.01,
+                "hitImpulseType": "LV4",
+                "onHitEffectName": "default",
+                "MALCHCIBBBC": ""
+              }
+            },
+            "attackPattern": {
+              "$type": "ConfigAttackSphere",
+              "born": {
+                "$type": "ConfigBornByCollisionPoint"
+              },
+              "radius": 0.5,
+              "triggerType": "TriggerNoRepeat"
+            }
+          },
+          "targetType": "Enemy"
+        },
+        {
+          "$type": "RemoveModifier",
+          "modifierName": "Bullet_Loop"
+        }
+      ],
+      "onAdded": [
+        {
+          "$type": "ApplyModifier",
+          "modifierName": "Bullet_Loop"
+        }
+      ]
+    }
+  },
+  {
+    "Default": {
+      "abilityName": "Vila_Blade_ShootAttackBullet",
+      "modifiers": {
+        "Bullet_Loop": {
+          "elementDurability": 100.0,
+          "modifierName": "",
+          "onAdded": [
+            {
+              "$type": "AttachEffect",
+              "effectPattern": "Eff_Monster_Human_Boy_Vila_Blade_ShootAttack_Bullet",
+              "effectTempleteID": -1.0,
+              "scale": 1.0,
+              "JHAGIJGAKMK": ""
+            },
+            {
+              "$type": "AttachEffect",
+              "effectPattern": "Eff_Monster_Human_Boy_Vila_Blade_ShootAttack_BulletTrail",
+              "effectTempleteID": -1.0,
+              "scale": 1.0,
+              "JHAGIJGAKMK": ""
+            }
+          ],
+          "IAKNCBDLFKJ": 0.0
+        }
+      },
+      "onAbilityStart": [
+        {
+          "$type": "FireEffect",
+          "born": {
+            "$type": "ConfigBornByCollisionPoint",
+            "useRotation": true
+          },
+          "effectPattern": "Eff_Monster_Human_Vila_ShootAttack_Bullet_Hit",
+          "effectTempleteID": -1.0,
+          "scale": 1.0,
+          "JHAGIJGAKMK": ""
+        },
+        {
+          "$type": "TriggerAttackEvent",
+          "attackEvent": {
+            "attackInfo": {
+              "attackProperty": {
+                "damagePercentage": 1.0,
+                "damagePercentageRatio": 0.0,
+                "elementDurability": 25.0,
+                "elementType": "Wind",
+                "enBreak": 70.0,
+                "strikeType": "Pierce",
+                "DIEKDGNBHLH": 0.0
+              },
+              "attackTag": "",
+              "attenuationGroup": "default",
+              "attenuationTag": "",
+              "cameraShake": {
+                "shakeRange": 0.06,
+                "shakeTime": 0.09,
+                "OFGBHFBAEKK": ""
+              },
+              "canBeModifiedBy": "OriginOwner",
+              "hitPattern": {
+                "hitHaltTimeScale": 0.01,
+                "hitImpulseType": "LV4",
+                "onHitEffectName": "default",
+                "MALCHCIBBBC": ""
+              }
+            },
+            "attackPattern": {
+              "$type": "ConfigAttackSphere",
+              "born": {
+                "$type": "ConfigBornByCollisionPoint"
+              },
+              "radius": 0.5,
+              "triggerType": "TriggerNoRepeat"
+            }
+          },
+          "targetType": "Enemy"
+        },
+        {
+          "$type": "RemoveModifier",
+          "modifierName": "Bullet_Loop"
+        }
+      ],
+      "onAdded": [
+        {
+          "$type": "ApplyModifier",
+          "modifierName": "Bullet_Loop"
+        }
+      ]
+    }
+  },
+  {
+    "Default": {
+      "abilityMixins": [
+        {
+          "$type": "AttachToPoseIDMixin",
+          "modifierName": "NearbySoliderCounter",
+          "poseIDs": [
+            1
+          ]
+        },
+        {
+          "$type": "AttachModifierToSelfGlobalValueMixin",
+          "actionQueues": [
+            [
+              {
+                "$type": "SetGlobalValueV2",
+                "key": "GV_Vila_CanDoOrderSkill",
+                "maxValue": 0.0,
+                "minValue": 0.0,
+                "value": 0.0
+              }
+            ],
+            [
+              {
+                "$type": "SetGlobalValueV2",
+                "key": "GV_Vila_CanDoOrderSkill",
+                "maxValue": 0.0,
+                "minValue": 0.0,
+                "value": 1.0
+              }
+            ]
+          ],
+          "defaultGlobalValueOnCreate": 0.0,
+          "globalValueKey": "_ABILITY_Count_NearbySoldiers",
+          "modifierNameSteps": [
+            "T",
+            "T"
+          ],
+          "removeAppliedModifier": false,
+          "valueSteps": [
+            -0.5,
+            0.5,
+            6.5
+          ],
+          "EECIIMBIDGB": true
+        }
+      ],
+      "abilityName": "Monster_Vila_Order_CommandManager",
+      "isDynamicAbility": true,
+      "modifiers": {
+        "T": {
+          "elementDurability": 100.0,
+          "modifierName": "",
+          "IAKNCBDLFKJ": 0.0
+        },
+        "NearbySoliderCounter": {
+          "elementDurability": 100.0,
+          "modifierName": "",
+          "onAdded": [
+            {
+              "$type": "SetGlobalValueV2",
+              "key": "_ABILITY_Count_NearbySoldiers",
+              "maxValue": 0.0,
+              "minValue": 0.0,
+              "value": 0.0
+            }
+          ],
+          "onThinkInterval": [
+            {
+              "$type": "SetGlobalValueV2",
+              "key": "_ABILITY_Count_NearbySoldiers",
+              "maxValue": 0.0,
+              "minValue": 0.0,
+              "value": 0.0
+            },
+            {
+              "$type": "Predicated",
+              "otherTargets": {
+                "$type": "SelectTargetsByShape",
+                "campTargetType": "AllExceptSelf",
+                "shapeName": "CircleR50H50C",
+                "sizeRatio": 1.0
+              },
+              "successActions": [
+                {
+                  "$type": "AddGlobalValue",
+                  "key": "_ABILITY_Count_NearbySoldiers",
+                  "maxValue": 9.0,
+                  "minValue": 0.0,
+                  "useLimitRange": true,
+                  "value": 1.0
+                }
+              ],
+              "targetPredicates": [
+                {
+                  "$type": "ByEntityTypes",
+                  "entityTypes": [
+                    "Monster"
+                  ]
+                },
+                {
+                  "$type": "ByTargetGlobalValue",
+                  "key": "GV_Vila_IsSoldier",
+                  "value": 1.0
+                }
+              ]
+            }
+          ],
+          "stacking": "Unique",
+          "thinkInterval": 1.0,
+          "IAKNCBDLFKJ": 0.0
+        }
+      },
+      "onAdded": [
+        {
+          "$type": "SetGlobalValueV2",
+          "key": "GV_Vila_IsLeader",
+          "maxValue": 0.0,
+          "minValue": 0.0,
+          "value": 1.0
+        },
+        {
+          "$type": "SetGlobalValueV2",
+          "key": "GV_Vila_BanPersonality",
+          "maxValue": 0.0,
+          "minValue": 0.0,
+          "value": 1.0
+        }
+      ]
+    }
+  },
+  {
+    "Default": {
+      "abilityName": "Monster_Vila_Order_LineCommand",
+      "isDynamicAbility": true,
+      "onAbilityStart": [
+        {
+          "$type": "IssueCommand",
+          "commandID": 251301011,
+          "duration": 1.5,
+          "otherTargets": {
+            "$type": "SelectTargetsByShape",
+            "campTargetType": "AllExceptSelf",
+            "shapeName": "CircleR50H50C",
+            "sizeRatio": 1.0,
+            "topLimit": 9
+          },
+          "predicates": [
+            {
+              "$type": "ByEntityTypes",
+              "entityTypes": [
+                "Monster"
+              ]
+            },
+            {
+              "$type": "ByTargetGlobalValue",
+              "key": "GV_Vila_IsSoldier",
+              "value": 1.0
+            }
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "Default": {
+      "abilityName": "Monster_Vila_Order_Shoot",
+      "isDynamicAbility": true,
+      "onAbilityStart": [
+        {
+          "$type": "IssueCommand",
+          "commandID": 251301012,
+          "duration": 1.5,
+          "otherTargets": {
+            "$type": "SelectTargetsByShape",
+            "campTargetType": "AllExceptSelf",
+            "shapeName": "CircleR50H50C",
+            "sizeRatio": 1.0,
+            "topLimit": 9
+          },
+          "predicates": [
+            {
+              "$type": "ByEntityTypes",
+              "entityTypes": [
+                "Monster"
+              ]
+            },
+            {
+              "$type": "ByTargetGlobalValue",
+              "key": "GV_Vila_IsSoldier",
+              "value": 1.0
+            }
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "Default": {
+      "abilityName": "Monster_Vila_Order_Melee",
+      "isDynamicAbility": true,
+      "onAbilityStart": [
+        {
+          "$type": "IssueCommand",
+          "commandID": 251301013,
+          "duration": 1.5,
+          "otherTargets": {
+            "$type": "SelectTargetsByShape",
+            "campTargetType": "AllExceptSelf",
+            "shapeName": "CircleR50H50C",
+            "sizeRatio": 1.0,
+            "topLimit": 9
+          },
+          "predicates": [
+            {
+              "$type": "ByEntityTypes",
+              "entityTypes": [
+                "Monster"
+              ]
+            },
+            {
+              "$type": "ByTargetGlobalValue",
+              "key": "GV_Vila_IsSoldier",
+              "value": 1.0
+            }
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "Default": {
+      "abilityMixins": [
+        {
+          "$type": "ReplaceEventPatternMixin",
+          "newPatterns": [
+            "Monster_Human_Girl_Vila_Glaive_ShootAttack_Leader"
+          ],
+          "oldPatterns": [
+            "Monster_Human_Girl_Vila_Glaive_ShootAttack"
+          ]
+        }
+      ],
+      "abilityName": "Monster_Vila_Glaive_LeaderShootAttack",
+      "isDynamicAbility": true,
+      "onAbilityStart": [
+        {
+          "$type": "SetGlobalValueV2",
+          "key": "Vila_BulletIsAccurate",
+          "maxValue": 0.0,
+          "minValue": 0.0,
+          "value": 1.0
+        },
+        {
+          "$type": "Predicated",
+          "failActions": [
+            {
+              "$type": "TriggerBullet",
+              "born": {
+                "$type": "ConfigBornByAttachPoint",
+                "attachPointName": "BulletSource",
+                "direction": {
+                  "$type": "ConfigDirectionByAttackTarget",
+                  "maxAngle": 30.0,
+                  "startPoint": ""
+                },
+                "useRotation": true
+              },
+              "bulletID": 42510008
+            },
+            {
+              "$type": "TriggerBullet",
+              "born": {
+                "$type": "ConfigBornByAttachPoint",
+                "attachPointName": "BulletSource",
+                "direction": {
+                  "$type": "ConfigDirectionByAttackTarget",
+                  "angleOffsetCorrect": {
+                    "y": 15.0
+                  },
+                  "maxAngle": 30.0,
+                  "startPoint": "",
+                  "useCorrectDir": true
+                },
+                "useRotation": true
+              },
+              "bulletID": 42510008
+            },
+            {
+              "$type": "TriggerBullet",
+              "born": {
+                "$type": "ConfigBornByAttachPoint",
+                "attachPointName": "BulletSource",
+                "direction": {
+                  "$type": "ConfigDirectionByAttackTarget",
+                  "angleOffsetCorrect": {
+                    "y": -15.0
+                  },
+                  "maxAngle": 30.0,
+                  "startPoint": "",
+                  "useCorrectDir": true
+                },
+                "useRotation": true
+              },
+              "bulletID": 42510008
+            },
+            {
+              "$type": "TriggerBullet",
+              "born": {
+                "$type": "ConfigBornByAttachPoint",
+                "attachPointName": "BulletSource",
+                "direction": {
+                  "$type": "ConfigDirectionByAttackTarget",
+                  "angleOffsetCorrect": {
+                    "z": 15.0
+                  },
+                  "maxAngle": 30.0,
+                  "startPoint": "",
+                  "useCorrectDir": true
+                },
+                "useRotation": true
+              },
+              "bulletID": 42510008
+            },
+            {
+              "$type": "TriggerBullet",
+              "born": {
+                "$type": "ConfigBornByAttachPoint",
+                "attachPointName": "BulletSource",
+                "direction": {
+                  "$type": "ConfigDirectionByAttackTarget",
+                  "angleOffsetCorrect": {
+                    "z": -15.0
+                  },
+                  "maxAngle": 30.0,
+                  "startPoint": "",
+                  "useCorrectDir": true
+                },
+                "useRotation": true
+              },
+              "bulletID": 42510008
+            }
+          ],
+          "successActions": [
+            {
+              "$type": "Randomed",
+              "chance": 0.3,
+              "failActions": [
+                {
+                  "$type": "SetGlobalValueV2",
+                  "key": "Vila_BulletIsAccurate",
+                  "maxValue": 0.0,
+                  "minValue": 0.0,
+                  "value": 0.0
+                }
+              ]
+            },
+            {
+              "$type": "FireEffect",
+              "born": {
+                "$type": "ConfigBornByAttachPoint",
+                "attachPointName": "Fx_ChestNode",
+                "useRotation": true
+              },
+              "effectPattern": "Eff_Monster_Common_AffectedByStarReaction_Flash",
+              "effectTempleteID": -1.0,
+              "scale": 1.0,
+              "JHAGIJGAKMK": ""
+            },
+            {
+              "$type": "DamageByAttackValue",
+              "attackInfo": {
+                "attackProperty": {
+                  "damagePercentage": 0.0,
+                  "damagePercentageRatio": 0.0,
+                  "elementDurability": 100.0,
+                  "enBreak": 200.0,
+                  "DIEKDGNBHLH": 0.0
+                },
+                "attackTag": "",
+                "attenuationGroup": "default",
+                "attenuationTag": "",
+                "hitPattern": {
+                  "hitImpulseType": "",
+                  "onHitEffectName": "default",
+                  "overrideHitImpulse": {
+                    "hitImpulseX": 600.0,
+                    "hitImpulseY": 600.0,
+                    "hitLevel": "Air"
+                  },
+                  "MALCHCIBBBC": ""
+                }
+              }
+            },
+            {
+              "$type": "Predicated",
+              "failActions": [
+                {
+                  "$type": "TriggerBullet",
+                  "born": {
+                    "$type": "ConfigBornByAttachPoint",
+                    "attachPointName": "BulletSource",
+                    "direction": {
+                      "$type": "ConfigDirectionByEntity",
+                      "maxAngle": 0.0,
+                      "randomAngleHor": 90.0,
+                      "randomAngleVer": 90.0
+                    },
+                    "useRotation": true
+                  },
+                  "bulletID": 42510008
+                },
+                {
+                  "$type": "TriggerBullet",
+                  "born": {
+                    "$type": "ConfigBornByAttachPoint",
+                    "attachPointName": "BulletSource",
+                    "direction": {
+                      "$type": "ConfigDirectionByEntity",
+                      "angleOffsetCorrect": {
+                        "y": 15.0
+                      },
+                      "maxAngle": 0.0,
+                      "randomAngleHor": 90.0,
+                      "randomAngleVer": 90.0
+                    },
+                    "useRotation": true
+                  },
+                  "bulletID": 42510008
+                },
+                {
+                  "$type": "TriggerBullet",
+                  "born": {
+                    "$type": "ConfigBornByAttachPoint",
+                    "attachPointName": "BulletSource",
+                    "direction": {
+                      "$type": "ConfigDirectionByEntity",
+                      "angleOffsetCorrect": {
+                        "y": -15.0
+                      },
+                      "maxAngle": 0.0,
+                      "randomAngleHor": 90.0,
+                      "randomAngleVer": 90.0
+                    },
+                    "useRotation": true
+                  },
+                  "bulletID": 42510008
+                },
+                {
+                  "$type": "TriggerBullet",
+                  "born": {
+                    "$type": "ConfigBornByAttachPoint",
+                    "attachPointName": "BulletSource",
+                    "direction": {
+                      "$type": "ConfigDirectionByEntity",
+                      "angleOffsetCorrect": {
+                        "z": 15.0
+                      },
+                      "maxAngle": 0.0,
+                      "randomAngleHor": 90.0,
+                      "randomAngleVer": 90.0
+                    },
+                    "useRotation": true
+                  },
+                  "bulletID": 42510008
+                },
+                {
+                  "$type": "TriggerBullet",
+                  "born": {
+                    "$type": "ConfigBornByAttachPoint",
+                    "attachPointName": "BulletSource",
+                    "direction": {
+                      "$type": "ConfigDirectionByEntity",
+                      "angleOffsetCorrect": {
+                        "z": -15.0
+                      },
+                      "maxAngle": 0.0,
+                      "randomAngleHor": 90.0,
+                      "randomAngleVer": 90.0
+                    },
+                    "useRotation": true
+                  },
+                  "bulletID": 42510008
+                }
+              ],
+              "successActions": [
+                {
+                  "$type": "TriggerBullet",
+                  "born": {
+                    "$type": "ConfigBornByAttachPoint",
+                    "attachPointName": "BulletSource",
+                    "direction": {
+                      "$type": "ConfigDirectionByAttackTarget",
+                      "maxAngle": 30.0,
+                      "startPoint": ""
+                    },
+                    "useRotation": true
+                  },
+                  "bulletID": 42510008
+                },
+                {
+                  "$type": "TriggerBullet",
+                  "born": {
+                    "$type": "ConfigBornByAttachPoint",
+                    "attachPointName": "BulletSource",
+                    "direction": {
+                      "$type": "ConfigDirectionByAttackTarget",
+                      "angleOffsetCorrect": {
+                        "y": 15.0
+                      },
+                      "maxAngle": 30.0,
+                      "startPoint": "",
+                      "useCorrectDir": true
+                    },
+                    "useRotation": true
+                  },
+                  "bulletID": 42510008
+                },
+                {
+                  "$type": "TriggerBullet",
+                  "born": {
+                    "$type": "ConfigBornByAttachPoint",
+                    "attachPointName": "BulletSource",
+                    "direction": {
+                      "$type": "ConfigDirectionByAttackTarget",
+                      "angleOffsetCorrect": {
+                        "y": -15.0
+                      },
+                      "maxAngle": 30.0,
+                      "startPoint": "",
+                      "useCorrectDir": true
+                    },
+                    "useRotation": true
+                  },
+                  "bulletID": 42510008
+                },
+                {
+                  "$type": "TriggerBullet",
+                  "born": {
+                    "$type": "ConfigBornByAttachPoint",
+                    "attachPointName": "BulletSource",
+                    "direction": {
+                      "$type": "ConfigDirectionByAttackTarget",
+                      "angleOffsetCorrect": {
+                        "z": 15.0
+                      },
+                      "maxAngle": 30.0,
+                      "startPoint": "",
+                      "useCorrectDir": true
+                    },
+                    "useRotation": true
+                  },
+                  "bulletID": 42510008
+                },
+                {
+                  "$type": "TriggerBullet",
+                  "born": {
+                    "$type": "ConfigBornByAttachPoint",
+                    "attachPointName": "BulletSource",
+                    "direction": {
+                      "$type": "ConfigDirectionByAttackTarget",
+                      "angleOffsetCorrect": {
+                        "z": -15.0
+                      },
+                      "maxAngle": 30.0,
+                      "startPoint": "",
+                      "useCorrectDir": true
+                    },
+                    "useRotation": true
+                  },
+                  "bulletID": 42510008
+                }
+              ],
+              "targetPredicates": [
+                {
+                  "$type": "ByTargetGlobalValue",
+                  "key": "Vila_BulletIsAccurate",
+                  "value": 1.0
+                }
+              ]
+            }
+          ],
+          "targetPredicates": [
+            {
+              "$type": "ByHasModifier",
+              "modifierName": "Monster_IsInStarMode"
+            }
+          ]
+        }
+      ],
+      "onAdded": [
+        {
+          "$type": "SetGlobalValueV2",
+          "key": "Vila_BulletIsAccurate",
+          "maxValue": 0.0,
+          "minValue": 0.0,
+          "value": 1.0
+        },
+        {
+          "$type": "SetGlobalValueV2",
+          "key": "GV_Vila_LeaderShootSkill",
+          "maxValue": 0.0,
+          "minValue": 0.0,
+          "value": 1.0
+        },
+        {
+          "$type": "SetAnimatorBool",
+          "boolID": "ShootAttackLeader",
+          "value": true
+        }
+      ]
+    }
+  },
+  {
+    "Default": {
+      "abilityMixins": [
+        {
+          "$type": "DoActionByStateIDMixin",
+          "enterActions": [
+            {
+              "$type": "TryFindBlinkPointByBorn",
+              "born": {
+                "$type": "ConfigBornByTargetLinearPoint",
+                "linearMax": 50.0,
+                "linearMin": 0.0,
+                "linearOffset": -4.0,
+                "CPNPDMBFFNB": "",
+                "MDFECMNIOEK": ""
+              },
+              "hitSceneTest": false,
+              "limitY": 2.5,
+              "target": "SelfAttackTarget"
+            },
+            {
+              "$type": "DoBlink"
+            }
+          ],
+          "stateIDs": [
+            "CommandMelee"
+          ],
+          "HLGPLGFCHND": ""
+        },
+        {
+          "$type": "AttachToPoseIDMixin",
+          "modifierName": "NearbyLeaderCounter",
+          "poseIDs": [
+            1
+          ]
+        },
+        {
+          "$type": "AttachModifierToSelfGlobalValueMixin",
+          "actionQueues": [
+            [
+              {
+                "$type": "SetGlobalValueV2",
+                "key": "GV_Vila_BanShootSkill",
+                "maxValue": 0.0,
+                "minValue": 0.0,
+                "value": 0.0
+              },
+              {
+                "$type": "SetGlobalValueV2",
+                "key": "GV_Vila_BanPersonality",
+                "maxValue": 0.0,
+                "minValue": 0.0,
+                "value": 0.0
+              }
+            ],
+            [
+              {
+                "$type": "SetGlobalValueV2",
+                "key": "GV_Vila_BanShootSkill",
+                "maxValue": 0.0,
+                "minValue": 0.0,
+                "value": 1.0
+              },
+              {
+                "$type": "SetGlobalValueV2",
+                "key": "GV_Vila_BanPersonality",
+                "maxValue": 0.0,
+                "minValue": 0.0,
+                "value": 1.0
+              }
+            ]
+          ],
+          "defaultGlobalValueOnCreate": 0.0,
+          "globalValueKey": "_ABILITY_Count_NearbyLeaders",
+          "modifierNameSteps": [
+            "T",
+            "T"
+          ],
+          "removeAppliedModifier": false,
+          "valueSteps": [
+            -0.5,
+            0.5,
+            1.5
+          ],
+          "EECIIMBIDGB": true
+        }
+      ],
+      "abilityName": "Monster_Vila_Order_SoldierManager",
+      "isDynamicAbility": true,
+      "modifiers": {
+        "T": {
+          "elementDurability": 100.0,
+          "modifierName": "",
+          "IAKNCBDLFKJ": 0.0
+        },
+        "NearbyLeaderCounter": {
+          "elementDurability": 100.0,
+          "modifierName": "",
+          "onAdded": [
+            {
+              "$type": "SetGlobalValueV2",
+              "key": "_ABILITY_Count_NearbyLeaders",
+              "maxValue": 0.0,
+              "minValue": 0.0,
+              "value": 0.0
+            }
+          ],
+          "onThinkInterval": [
+            {
+              "$type": "SetGlobalValueV2",
+              "key": "_ABILITY_Count_NearbyLeaders",
+              "maxValue": 0.0,
+              "minValue": 0.0,
+              "value": 0.0
+            },
+            {
+              "$type": "Predicated",
+              "otherTargets": {
+                "$type": "SelectTargetsByShape",
+                "campTargetType": "AllExceptSelf",
+                "shapeName": "CircleR50H50C",
+                "sizeRatio": 1.0
+              },
+              "successActions": [
+                {
+                  "$type": "AddGlobalValue",
+                  "key": "_ABILITY_Count_NearbyLeaders",
+                  "maxValue": 1.0,
+                  "minValue": 0.0,
+                  "useLimitRange": true,
+                  "value": 1.0
+                }
+              ],
+              "targetPredicates": [
+                {
+                  "$type": "ByEntityTypes",
+                  "entityTypes": [
+                    "Monster"
+                  ]
+                },
+                {
+                  "$type": "ByTargetGlobalValue",
+                  "key": "GV_Vila_IsLeader",
+                  "value": 1.0
+                }
+              ]
+            }
+          ],
+          "stacking": "Unique",
+          "thinkInterval": 1.0,
+          "IAKNCBDLFKJ": 0.0
+        }
+      },
+      "onAdded": [
+        {
+          "$type": "SetGlobalValueV2",
+          "key": "GV_Vila_IsSoldier",
+          "maxValue": 0.0,
+          "minValue": 0.0,
+          "value": 1.0
+        },
+        {
+          "$type": "SetGlobalValueV2",
+          "key": "GV_Vila_BanPersonality",
+          "maxValue": 0.0,
+          "minValue": 0.0,
+          "value": 1.0
+        }
+      ]
+    }
+  },
+  {
+    "Default": {
+      "abilityName": "Monster_Vila_BanMovement",
+      "isDynamicAbility": true,
+      "modifiers": {
+        "Vila_BanMovement": {
+          "elementDurability": 100.0,
+          "modifierMixins": [
+            {
+              "$type": "RigidBodyFreezeMixin"
+            }
+          ],
+          "modifierName": "",
+          "onAdded": [
+            {
+              "$type": "SetGlobalValueV2",
+              "key": "GV_Vila_BanMovement",
+              "maxValue": 0.0,
+              "minValue": 0.0,
+              "value": 1.0
+            },
+            {
+              "$type": "SetGlobalValueV2",
+              "key": "GV_Vila_BanDash",
+              "maxValue": 0.0,
+              "minValue": 0.0,
+              "value": 1.0
+            }
+          ],
+          "IAKNCBDLFKJ": 0.0
+        }
+      },
+      "onAdded": [
+        {
+          "$type": "ApplyModifier",
+          "modifierName": "Vila_BanMovement"
+        }
+      ]
+    }
+  }
+]
